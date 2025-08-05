@@ -39,7 +39,13 @@ export default function Login() {
         <Card>
           <CardHeader>
             <CardTitle>Welcome back</CardTitle>
-            <CardDescription>Enter your credentials to access your account</CardDescription>
+            <CardDescription>
+              Enter any credentials to access demo mode
+              <br />
+              <small className="text-xs text-gray-500">
+                For development: any phone/password will work
+              </small>
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

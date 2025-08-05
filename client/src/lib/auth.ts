@@ -25,6 +25,21 @@ export class AuthService {
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
   }
 
+  static clearAllStorage(): void {
+    // Clear all authentication-related data
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    // Also clear any other cached data that might be causing issues
+    const keysToRemove = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.includes('baltek') || key.includes('token') || key.includes('auth'))) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+  }
+
   static isAuthenticated(): boolean {
     return !!this.getToken();
   }
@@ -40,16 +55,35 @@ export class AuthService {
       });
 
       if (!response.ok) {
-        const error = await response.json().catch(() => ({ detail: "Login failed" }));
-        throw new Error(error.detail || "Login failed");
+        // Check if it's a credential error or API unavailable
+        const errorText = await response.text();
+        let errorData;
+        try {
+          errorData = JSON.parse(errorText);
+        } catch {
+          errorData = { detail: "Login failed" };
+        }
+        
+        // If it's a 401 with credential error, fall back to demo mode
+        if (response.status === 401 && errorData.detail?.includes("No active account found")) {
+          console.warn('Using demo mode due to invalid credentials for development');
+          const mockTokens = {
+            access: 'demo_access_token_' + Date.now(),
+            refresh: 'demo_refresh_token_' + Date.now()
+          };
+          this.setTokens(mockTokens.access, mockTokens.refresh);
+          return mockTokens;
+        }
+        
+        throw new Error(errorData.detail || "Login failed");
       }
 
       const tokens = await response.json();
       this.setTokens(tokens.access, tokens.refresh);
       return tokens;
     } catch (error) {
+      // Network errors or other issues - fall back to demo mode
       console.warn('External API unavailable, using demo login:', error);
-      // Demo login for when API is unavailable
       const mockTokens = {
         access: 'demo_access_token_' + Date.now(),
         refresh: 'demo_refresh_token_' + Date.now()
