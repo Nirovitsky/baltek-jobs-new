@@ -56,7 +56,7 @@ export default function JobDetails({ job }: JobDetailsProps) {
     if (navigator.share) {
       navigator.share({
         title: job.title,
-        text: `Check out this job at ${job.organization.name}`,
+        text: `Check out this job at ${job.organization?.name || 'this company'}`,
         url: window.location.href,
       });
     } else {
@@ -105,10 +105,10 @@ export default function JobDetails({ job }: JobDetailsProps) {
           <div className="flex items-start justify-between mb-6">
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                {job.organization.logo ? (
+                {job.organization?.logo ? (
                   <img
                     src={job.organization.logo}
-                    alt={job.organization.name}
+                    alt={job.organization.name || 'Company'}
                     className="w-16 h-16 rounded-lg object-cover"
                   />
                 ) : (
@@ -116,16 +116,16 @@ export default function JobDetails({ job }: JobDetailsProps) {
                 )}
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">{job.title}</h1>
-                <p className="text-lg text-gray-600">{job.organization.name}</p>
+                <h1 className="text-2xl font-bold text-gray-900">{job.title || 'Job Title'}</h1>
+                <p className="text-lg text-gray-600">{job.organization?.name || 'Unknown Company'}</p>
                 <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
                   <span className="flex items-center">
                     <MapPin className="w-4 h-4 mr-1" />
-                    {job.location.name}, {job.location.country}
+                    {job.location?.name || 'Unknown'}, {job.location?.country || 'Unknown'}
                   </span>
                   <span className="flex items-center">
                     <Calendar className="w-4 h-4 mr-1" />
-                    Posted {getTimeAgo(job.created_at)}
+                    Posted {job.created_at ? getTimeAgo(job.created_at) : 'Recently'}
                   </span>
                 </div>
               </div>
@@ -166,11 +166,15 @@ export default function JobDetails({ job }: JobDetailsProps) {
           <div className="mb-6">
             <h3 className="font-semibold text-gray-900 mb-3">Required Skills</h3>
             <div className="flex flex-wrap gap-2">
-              {job.skills.map((skill, index) => (
-                <Badge key={index} className="bg-blue-100 text-blue-800 hover:bg-blue-200">
-                  {skill}
-                </Badge>
-              ))}
+              {job.skills && job.skills.length > 0 ? (
+                job.skills.map((skill, index) => (
+                  <Badge key={index} className="bg-blue-100 text-blue-800 hover:bg-blue-200">
+                    {skill}
+                  </Badge>
+                ))
+              ) : (
+                <p className="text-gray-500">No specific skills listed</p>
+              )}
             </div>
           </div>
 
@@ -178,7 +182,7 @@ export default function JobDetails({ job }: JobDetailsProps) {
           <div className="mb-6">
             <h3 className="font-semibold text-gray-900 mb-3">Job Description</h3>
             <div className="prose max-w-none text-gray-700">
-              <div className="whitespace-pre-wrap">{job.description}</div>
+              <div className="whitespace-pre-wrap">{job.description || 'No description available'}</div>
             </div>
           </div>
 
@@ -204,14 +208,14 @@ export default function JobDetails({ job }: JobDetailsProps) {
 
           {/* Company Info */}
           <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">About {job.organization.name}</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">About {job.organization?.name || 'this company'}</h3>
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="flex items-center space-x-3 mb-2">
                 <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
-                  {job.organization.logo ? (
+                  {job.organization?.logo ? (
                     <img
                       src={job.organization.logo}
-                      alt={job.organization.name}
+                      alt={job.organization.name || 'Company'}
                       className="w-10 h-10 rounded-lg object-cover"
                     />
                   ) : (
@@ -219,14 +223,14 @@ export default function JobDetails({ job }: JobDetailsProps) {
                   )}
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">{job.organization.name}</p>
+                  <p className="font-medium text-gray-900">{job.organization?.name || 'Unknown Company'}</p>
                   <div className="flex items-center text-sm text-gray-500">
                     <Users className="w-4 h-4 mr-1" />
-                    <span>{job.category.name}</span>
+                    <span>{job.category?.name || 'Uncategorized'}</span>
                   </div>
                 </div>
               </div>
-              {job.organization.description && (
+              {job.organization?.description && (
                 <p className="text-sm text-gray-700">{job.organization.description}</p>
               )}
             </div>

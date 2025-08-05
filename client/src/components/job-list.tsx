@@ -158,10 +158,10 @@ export default function JobList({
               <div className="flex-1">
                 <div className="flex items-center space-x-3 mb-2">
                   <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                    {job.organization.logo ? (
+                    {job.organization?.logo ? (
                       <img
                         src={job.organization.logo}
-                        alt={job.organization.name}
+                        alt={job.organization.name || 'Company'}
                         className="w-12 h-12 rounded-lg object-cover"
                       />
                     ) : (
@@ -170,10 +170,10 @@ export default function JobList({
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-900 line-clamp-1">
-                      {job.title}
+                      {job.title || 'Job Title'}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      {job.organization.name}
+                      {job.organization?.name || 'Unknown Company'}
                     </p>
                   </div>
                 </div>
@@ -181,7 +181,7 @@ export default function JobList({
                 <div className="flex items-center space-x-4 text-sm text-gray-500 mb-2">
                   <span className="flex items-center">
                     <MapPin className="w-4 h-4 mr-1" />
-                    {job.location.name}, {job.location.country}
+                    {job.location?.name || 'Unknown'}, {job.location?.country || 'Unknown'}
                   </span>
                   <span className="flex items-center">
                     <Clock className="w-4 h-4 mr-1" />
@@ -194,18 +194,26 @@ export default function JobList({
                 </div>
                 
                 <p className="text-sm text-gray-700 line-clamp-2 mb-2">
-                  {job.description}
+                  {job.description || 'No description available'}
                 </p>
                 
                 <div className="flex items-center space-x-2">
-                  {job.skills.slice(0, 3).map((skill, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {skill}
-                    </Badge>
-                  ))}
-                  {job.skills.length > 3 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{job.skills.length - 3} more
+                  {job.skills && job.skills.length > 0 ? (
+                    <>
+                      {job.skills.slice(0, 3).map((skill, index) => (
+                        <Badge key={index} variant="secondary" className="text-xs">
+                          {skill}
+                        </Badge>
+                      ))}
+                      {job.skills.length > 3 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{job.skills.length - 3} more
+                        </Badge>
+                      )}
+                    </>
+                  ) : (
+                    <Badge variant="outline" className="text-xs text-gray-500">
+                      No skills listed
                     </Badge>
                   )}
                 </div>
