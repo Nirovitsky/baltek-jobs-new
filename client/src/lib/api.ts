@@ -172,6 +172,54 @@ export class ApiClient {
       // Single job
       const id = parseInt(endpoint.match(/\/(\d+)\//)?.[1] || '1');
       return MOCK_JOBS.find(job => job.id === id) || MOCK_JOBS[0];
+    } else if (endpoint === '/job-types/') {
+      return {
+        results: [
+          { id: 1, name: "Full Time", value: "full_time" },
+          { id: 2, name: "Part Time", value: "part_time" },
+          { id: 3, name: "Contract", value: "contract" },
+          { id: 4, name: "Internship", value: "internship" },
+          { id: 5, name: "Freelance", value: "freelance" }
+        ]
+      };
+    } else if (endpoint === '/workplace-types/') {
+      return {
+        results: [
+          { id: 1, name: "Remote", value: "remote" },
+          { id: 2, name: "On-site", value: "on_site" },
+          { id: 3, name: "Hybrid", value: "hybrid" }
+        ]
+      };
+    } else if (endpoint === '/currencies/') {
+      return {
+        results: [
+          { id: 1, name: "USD", value: "USD", symbol: "$" },
+          { id: 2, name: "EUR", value: "EUR", symbol: "€" },
+          { id: 3, name: "GBP", value: "GBP", symbol: "£" },
+          { id: 4, name: "CAD", value: "CAD", symbol: "C$" },
+          { id: 5, name: "AUD", value: "AUD", symbol: "A$" }
+        ]
+      };
+    } else if (endpoint === '/payment-frequencies/') {
+      return {
+        results: [
+          { id: 1, name: "Per Hour", value: "hourly" },
+          { id: 2, name: "Per Day", value: "daily" },
+          { id: 3, name: "Per Week", value: "weekly" },
+          { id: 4, name: "Per Month", value: "monthly" },
+          { id: 5, name: "Per Year", value: "yearly" }
+        ]
+      };
+    } else if (endpoint === '/education-levels/') {
+      return {
+        results: [
+          { id: 1, name: "High School", value: "high_school" },
+          { id: 2, name: "Associate", value: "associate" },
+          { id: 3, name: "Bachelor's", value: "bachelors" },
+          { id: 4, name: "Master's", value: "masters" },
+          { id: 5, name: "PhD", value: "phd" }
+        ]
+      };
     } else if (endpoint.includes('/profile/') || endpoint.includes('/users/')) {
       // User profile
       return {
@@ -218,44 +266,6 @@ export class ApiClient {
           { id: 1, name: 'Tech Corp', logo: null },
           { id: 2, name: 'Design Studio', logo: null },
           { id: 3, name: 'Growth Co', logo: null }
-        ]
-      };
-    } else if (endpoint.includes('/job-types/')) {
-      return {
-        results: [
-          { id: 1, name: 'Full-time', value: 'FULL_TIME' },
-          { id: 2, name: 'Part-time', value: 'PART_TIME' },
-          { id: 3, name: 'Contract', value: 'CONTRACT' },
-          { id: 4, name: 'Freelance', value: 'FREELANCE' },
-          { id: 5, name: 'Internship', value: 'INTERNSHIP' }
-        ]
-      };
-    } else if (endpoint.includes('/workplace-types/')) {
-      return {
-        results: [
-          { id: 1, name: 'Remote', value: 'REMOTE' },
-          { id: 2, name: 'On-site', value: 'ON_SITE' },
-          { id: 3, name: 'Hybrid', value: 'HYBRID' }
-        ]
-      };
-    } else if (endpoint.includes('/currencies/')) {
-      return {
-        results: [
-          { id: 1, name: 'USD', value: 'USD' },
-          { id: 2, name: 'EUR', value: 'EUR' },
-          { id: 3, name: 'GBP', value: 'GBP' },
-          { id: 4, name: 'CAD', value: 'CAD' },
-          { id: 5, name: 'AUD', value: 'AUD' }
-        ]
-      };
-    } else if (endpoint.includes('/payment-frequencies/')) {
-      return {
-        results: [
-          { id: 1, name: 'Hourly', value: 'HOURLY' },
-          { id: 2, name: 'Daily', value: 'DAILY' },
-          { id: 3, name: 'Weekly', value: 'WEEKLY' },
-          { id: 4, name: 'Monthly', value: 'MONTHLY' },
-          { id: 5, name: 'Yearly', value: 'YEARLY' }
         ]
       };
     } else if (endpoint.includes('/education-levels/')) {
