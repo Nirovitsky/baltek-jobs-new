@@ -155,18 +155,15 @@ export default function JobList({
             onClick={() => onJobSelect(job)}
           >
             <div className="flex justify-between items-start">
-              <div className="flex-1">
+              <div className="flex-1 pr-4">
                 {/* Job Title */}
-                <h3 className="font-semibold text-lg text-gray-900 line-clamp-1 mb-2">
+                <h3 className="font-semibold text-lg text-gray-900 line-clamp-1 mb-3">
                   {job.title || 'Job Title'}
                 </h3>
                 
-                {/* Salary */}
+                {/* Job Type */}
                 <div className="mb-3">
-                  <span className="text-lg font-medium text-primary">
-                    {formatSalary(job.salary_min, job.salary_max, job.currency)}
-                  </span>
-                  <span className="text-sm text-gray-500 ml-2">
+                  <span className="text-sm text-gray-500">
                     {formatJobType(job.job_type)}
                   </span>
                 </div>
@@ -218,19 +215,10 @@ export default function JobList({
                 </div>
               </div>
               
-              <div className="flex flex-col items-end space-y-2 ml-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => handleBookmark(e, job.id)}
-                  disabled={bookmarkMutation.isPending}
-                  className={job.is_bookmarked ? "text-red-500" : "text-gray-400 hover:text-red-500"}
-                >
-                  <Heart className={`w-4 h-4 ${job.is_bookmarked ? "fill-current" : ""}`} />
-                </Button>
-                <span className="text-xs text-gray-500 flex items-center">
-                  <Calendar className="w-3 h-3 mr-1" />
-                  {getTimeAgo(job.created_at)}
+              {/* Salary on Top Right */}
+              <div className="text-right">
+                <span className="text-lg font-medium text-primary">
+                  {formatSalary(job.salary_min, job.salary_max, job.currency)}
                 </span>
               </div>
             </div>

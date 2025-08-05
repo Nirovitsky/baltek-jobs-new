@@ -14,6 +14,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Defensive Programming**: Added comprehensive null/undefined checks for all job properties (skills, organization, location, description) to prevent runtime errors. The application now safely handles incomplete job data from the API
 - **UI Cleanup**: Removed demo mode notification banner to provide a cleaner user interface
 - **Job Card Redesign**: Restructured job cards with improved layout - job title at top, salary prominently displayed, skills tags in middle, and company details (logo, name, location) at bottom. Removed job description from cards for cleaner appearance
+- **Job Card Simplification**: Removed bookmark and date elements, moved salary to top-right corner for better visual hierarchy
 
 ## User Preferences
 
