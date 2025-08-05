@@ -20,7 +20,7 @@ interface JobFiltersProps {
 }
 
 export default function JobFiltersComponent({ filters, onFiltersChange }: JobFiltersProps) {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
   const { data: locations, isLoading: locationsLoading } = useQuery({
     queryKey: ["locations"],
     queryFn: () => ApiClient.getLocations(),
@@ -73,20 +73,12 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     <div className="filter-bar sticky top-0 z-40 bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div 
-            className="flex flex-wrap items-center gap-4"
-            onMouseLeave={() => setOpenDropdown(null)}
-          >
+          <div className="flex flex-wrap items-center gap-4">
           <Select
             value={filters.location?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("location", value !== "all" ? parseInt(value) : undefined)}
-            open={openDropdown === "location"}
-            onOpenChange={(open) => setOpenDropdown(open ? "location" : null)}
           >
-            <SelectTrigger 
-              className="w-[90px] h-8 text-xs hover:text-primary focus:text-primary focus:border-ring focus-visible:ring-0"
-              onMouseEnter={() => setOpenDropdown("location")}
-            >
+            <SelectTrigger className="w-[110px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Location" />
             </SelectTrigger>
             <SelectContent>
@@ -102,13 +94,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <Select
             value={filters.category?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("category", value !== "all" ? parseInt(value) : undefined)}
-            open={openDropdown === "category"}
-            onOpenChange={(open) => setOpenDropdown(open ? "category" : null)}
           >
-            <SelectTrigger 
-              className="w-[90px] h-8 text-xs hover:text-primary focus:text-primary focus:border-ring focus-visible:ring-0"
-              onMouseEnter={() => setOpenDropdown("category")}
-            >
+            <SelectTrigger className="w-[100px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -124,14 +111,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <Select
             value={filters.job_type || "all"}
             onValueChange={(value) => handleFilterChange("job_type", value)}
-            open={openDropdown === "job_type"}
-            onOpenChange={(open) => setOpenDropdown(open ? "job_type" : null)}
           >
-            <SelectTrigger 
-              className="w-[80px] h-8 text-xs hover:text-primary focus:text-primary focus:border-ring focus-visible:ring-0"
-              onMouseEnter={() => setOpenDropdown("job_type")}
-            >
-              <SelectValue placeholder="Type" />
+            <SelectTrigger className="w-[95px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+              <SelectValue placeholder="Job Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Type</SelectItem>
@@ -146,14 +128,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <Select
             value={filters.workplace_type || "all"}
             onValueChange={(value) => handleFilterChange("workplace_type", value)}
-            open={openDropdown === "workplace_type"}
-            onOpenChange={(open) => setOpenDropdown(open ? "workplace_type" : null)}
           >
-            <SelectTrigger 
-              className="w-[80px] h-8 text-xs hover:text-primary focus:text-primary focus:border-ring focus-visible:ring-0"
-              onMouseEnter={() => setOpenDropdown("workplace_type")}
-            >
-              <SelectValue placeholder="Work" />
+            <SelectTrigger className="w-[90px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+              <SelectValue placeholder="Remote" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Work</SelectItem>
@@ -186,14 +163,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <Select
             value={filters.currency || "all"}
             onValueChange={(value) => handleFilterChange("currency", value)}
-            open={openDropdown === "currency"}
-            onOpenChange={(open) => setOpenDropdown(open ? "currency" : null)}
           >
-            <SelectTrigger 
-              className="w-[70px] h-8 text-xs hover:text-primary focus:text-primary focus:border-ring focus-visible:ring-0"
-              onMouseEnter={() => setOpenDropdown("currency")}
-            >
-              <SelectValue placeholder="$" />
+            <SelectTrigger className="w-[85px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+              <SelectValue placeholder="Currency" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Currency</SelectItem>
@@ -208,14 +180,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <Select
             value={filters.payment_frequency || "all"}
             onValueChange={(value) => handleFilterChange("payment_frequency", value)}
-            open={openDropdown === "payment_frequency"}
-            onOpenChange={(open) => setOpenDropdown(open ? "payment_frequency" : null)}
           >
-            <SelectTrigger 
-              className="w-[80px] h-8 text-xs hover:text-primary focus:text-primary focus:border-ring focus-visible:ring-0"
-              onMouseEnter={() => setOpenDropdown("payment_frequency")}
-            >
-              <SelectValue placeholder="Per" />
+            <SelectTrigger className="w-[85px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+              <SelectValue placeholder="Per Month" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Frequency</SelectItem>
@@ -230,14 +197,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <Select
             value={filters.min_education_level || "all"}
             onValueChange={(value) => handleFilterChange("min_education_level", value)}
-            open={openDropdown === "min_education_level"}
-            onOpenChange={(open) => setOpenDropdown(open ? "min_education_level" : null)}
           >
-            <SelectTrigger 
-              className="w-[90px] h-8 text-xs hover:text-primary focus:text-primary focus:border-ring focus-visible:ring-0"
-              onMouseEnter={() => setOpenDropdown("min_education_level")}
-            >
-              <SelectValue placeholder="Edu" />
+            <SelectTrigger className="w-[100px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+              <SelectValue placeholder="Education" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Education</SelectItem>
