@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { X } from "lucide-react";
 
 interface JobFiltersProps {
@@ -113,31 +114,92 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             </SelectContent>
           </Select>
 
+          <div className="flex items-center space-x-2">
+            <Input
+              type="number"
+              placeholder="Min salary"
+              value={filters.salary_min || ""}
+              onChange={(e) => handleFilterChange("salary_min", e.target.value ? parseInt(e.target.value) : undefined)}
+              className="w-[120px]"
+            />
+            <span className="text-gray-500">-</span>
+            <Input
+              type="number"
+              placeholder="Max salary"
+              value={filters.salary_max || ""}
+              onChange={(e) => handleFilterChange("salary_max", e.target.value ? parseInt(e.target.value) : undefined)}
+              className="w-[120px]"
+            />
+          </div>
+
           <Select
-            value={filters.salary_min || filters.salary_max ? `${filters.salary_min || ""}-${filters.salary_max || ""}` : "all"}
-            onValueChange={(value) => {
-              if (value === "all") {
-                handleFilterChange("salary_min", undefined);
-                handleFilterChange("salary_max", undefined);
-              } else {
-                const [min, max] = value.split("-").map(v => v ? parseInt(v) : undefined);
-                handleFilterChange("salary_min", min);
-                handleFilterChange("salary_max", max);
-              }
-            }}
+            value={filters.currency || "all"}
+            onValueChange={(value) => handleFilterChange("currency", value)}
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Salary Range" />
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Currency" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Any Salary</SelectItem>
-              <SelectItem value="30000-50000">$30K - $50K</SelectItem>
-              <SelectItem value="50000-75000">$50K - $75K</SelectItem>
-              <SelectItem value="75000-100000">$75K - $100K</SelectItem>
-              <SelectItem value="100000-150000">$100K - $150K</SelectItem>
-              <SelectItem value="150000-">$150K+</SelectItem>
+              <SelectItem value="all">All Currencies</SelectItem>
+              <SelectItem value="USD">USD</SelectItem>
+              <SelectItem value="EUR">EUR</SelectItem>
+              <SelectItem value="GBP">GBP</SelectItem>
+              <SelectItem value="CAD">CAD</SelectItem>
+              <SelectItem value="AUD">AUD</SelectItem>
             </SelectContent>
           </Select>
+
+          <Select
+            value={filters.payment_frequency || "all"}
+            onValueChange={(value) => handleFilterChange("payment_frequency", value)}
+          >
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Payment" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Frequencies</SelectItem>
+              <SelectItem value="HOURLY">Hourly</SelectItem>
+              <SelectItem value="DAILY">Daily</SelectItem>
+              <SelectItem value="WEEKLY">Weekly</SelectItem>
+              <SelectItem value="MONTHLY">Monthly</SelectItem>
+              <SelectItem value="YEARLY">Yearly</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select
+            value={filters.min_education_level || "all"}
+            onValueChange={(value) => handleFilterChange("min_education_level", value)}
+          >
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="Education" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Education</SelectItem>
+              <SelectItem value="HIGH_SCHOOL">High School</SelectItem>
+              <SelectItem value="ASSOCIATE">Associate</SelectItem>
+              <SelectItem value="BACHELOR">Bachelor's</SelectItem>
+              <SelectItem value="MASTER">Master's</SelectItem>
+              <SelectItem value="DOCTORATE">Doctorate</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <div className="flex items-center space-x-2">
+            <Input
+              type="number"
+              placeholder="Payment from"
+              value={filters.payment_from || ""}
+              onChange={(e) => handleFilterChange("payment_from", e.target.value ? parseInt(e.target.value) : undefined)}
+              className="w-[120px]"
+            />
+            <span className="text-gray-500">-</span>
+            <Input
+              type="number"
+              placeholder="Payment to"
+              value={filters.payment_to || ""}
+              onChange={(e) => handleFilterChange("payment_to", e.target.value ? parseInt(e.target.value) : undefined)}
+              className="w-[120px]"
+            />
+          </div>
 
           {hasActiveFilters && (
             <Button

@@ -17,6 +17,10 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Job Card Simplification**: Removed bookmark and date elements, moved salary to top-right corner for better visual hierarchy
 - **Token Management**: Enhanced token refresh mechanism using correct `/api/token/refresh` endpoint - automatically refreshes expired tokens on 401 errors, gracefully logs out user if refresh fails
 - **Bookmark System**: Fixed bookmark functionality to send boolean values (bookmarked: true/false) to API, changed heart icon to bookmark icon with blue styling for better visual consistency
+- **Job Sorting Removal**: Removed job sorting functionality to display jobs without ordering, simplifying the job list interface
+- **Filter UI Improvements**: Simplified "Save Filters" button by removing icon and "Filters" text, now displays just "Save"
+- **Enhanced Salary Filtering**: Replaced salary dropdown with flexible input fields allowing users to specify custom salary ranges
+- **Additional Filter Options**: Added new filter fields including currency selection, payment frequency, minimum education level, and custom payment range (payment_from/payment_to) for more granular job search capabilities
 
 ## User Preferences
 
