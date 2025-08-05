@@ -34,8 +34,6 @@ export function useAuth() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginRequest) => {
-      // Clear any existing tokens first to avoid conflicts
-      AuthService.clearTokens();
       const tokens = await AuthService.login(credentials);
       return tokens;
     },
