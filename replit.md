@@ -16,6 +16,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Job Card Redesign**: Restructured job cards with improved layout - job title at top, salary prominently displayed, skills tags in middle, and company details (logo, name, location) at bottom. Removed job description from cards for cleaner appearance
 - **Job Card Simplification**: Removed bookmark and date elements, moved salary to top-right corner for better visual hierarchy
 - **Token Management**: Enhanced token refresh mechanism using correct `/api/token/refresh` endpoint - automatically refreshes expired tokens on 401 errors, gracefully logs out user if refresh fails
+- **Bookmark System**: Fixed bookmark functionality to send boolean values (bookmarked: true/false) to API, changed heart icon to bookmark icon with blue styling for better visual consistency
 
 ## User Preferences
 

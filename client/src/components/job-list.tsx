@@ -17,7 +17,7 @@ import {
   MapPin, 
   Clock, 
   DollarSign, 
-  Heart, 
+  Bookmark, 
   Building,
   Calendar,
   Loader2
@@ -54,26 +54,27 @@ export default function JobList({
   });
 
   const bookmarkMutation = useMutation({
-    mutationFn: (jobId: number) => ApiClient.bookmarkJob(jobId),
-    onSuccess: () => {
+    mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 
+      ApiClient.bookmarkJob(jobId, isBookmarked),
+    onSuccess: (_, { isBookmarked }) => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast({
-        title: "Job bookmarked",
-        description: "Job added to your bookmarks",
+        title: isBookmarked ? "Job unbookmarked" : "Job bookmarked",
+        description: isBookmarked ? "Job removed from your bookmarks" : "Job added to your bookmarks",
       });
     },
     onError: (error) => {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to bookmark job",
+        description: error instanceof Error ? error.message : "Failed to update bookmark",
         variant: "destructive",
       });
     },
   });
 
-  const handleBookmark = (e: React.MouseEvent, jobId: number) => {
+  const handleBookmark = (e: React.MouseEvent, jobId: number, isBookmarked: boolean) => {
     e.stopPropagation();
-    bookmarkMutation.mutate(jobId);
+    bookmarkMutation.mutate({ jobId, isBookmarked });
   };
 
   const formatSalary = (min?: number, max?: number, currency = "USD") => {

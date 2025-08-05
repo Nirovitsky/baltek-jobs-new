@@ -12,7 +12,7 @@ import {
   MapPin, 
   Clock, 
   DollarSign, 
-  Heart, 
+  Bookmark, 
   Share, 
   Send,
   Building,
@@ -31,25 +31,26 @@ export default function JobDetails({ job }: JobDetailsProps) {
   const queryClient = useQueryClient();
 
   const bookmarkMutation = useMutation({
-    mutationFn: () => ApiClient.bookmarkJob(job.id),
-    onSuccess: () => {
+    mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 
+      ApiClient.bookmarkJob(jobId, isBookmarked),
+    onSuccess: (_, { isBookmarked }) => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast({
-        title: job.is_bookmarked ? "Bookmark removed" : "Job bookmarked",
-        description: job.is_bookmarked ? "Job removed from bookmarks" : "Job added to your bookmarks",
+        title: isBookmarked ? "Job unbookmarked" : "Job bookmarked",
+        description: isBookmarked ? "Job removed from your bookmarks" : "Job added to your bookmarks",
       });
     },
     onError: (error) => {
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to bookmark job",
+        description: error instanceof Error ? error.message : "Failed to update bookmark",
         variant: "destructive",
       });
     },
   });
 
   const handleBookmark = () => {
-    bookmarkMutation.mutate();
+    bookmarkMutation.mutate({ jobId: job.id, isBookmarked: job.is_bookmarked || false });
   };
 
   const handleShare = () => {
@@ -136,9 +137,9 @@ export default function JobDetails({ job }: JobDetailsProps) {
                 size="sm"
                 onClick={handleBookmark}
                 disabled={bookmarkMutation.isPending}
-                className={job.is_bookmarked ? "text-red-500 border-red-200" : ""}
+                className={job.is_bookmarked ? "text-blue-500 border-blue-200" : "text-blue-400 hover:text-blue-500"}
               >
-                <Heart className={`w-4 h-4 ${job.is_bookmarked ? "fill-current" : ""}`} />
+                <Bookmark className={`w-4 h-4 ${job.is_bookmarked ? "fill-current" : ""}`} />
               </Button>
               <Button variant="outline" size="sm" onClick={handleShare}>
                 <Share className="w-4 h-4" />

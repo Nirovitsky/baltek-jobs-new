@@ -254,8 +254,11 @@ export class ApiClient {
     return this.makeRequest(`/jobs/${id}/`);
   }
 
-  static async bookmarkJob(id: number) {
-    return this.makeRequest(`/jobs/${id}/bookmark/`, { method: "POST" });
+  static async bookmarkJob(id: number, isBookmarked: boolean) {
+    return this.makeRequest(`/jobs/${id}/bookmark/`, { 
+      method: "POST",
+      body: JSON.stringify({ bookmarked: !isBookmarked })
+    });
   }
 
   static async getBookmarkedJobs() {
