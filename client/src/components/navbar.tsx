@@ -31,7 +31,7 @@ interface NavbarProps {
 
 export default function Navbar({ onSearch, searchQuery }: NavbarProps) {
   const { user, logout } = useAuth();
-  const [notificationCount] = useState(3);
+  const [notificationCount] = useState(0);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value);
@@ -117,7 +117,7 @@ export default function Navbar({ onSearch, searchQuery }: NavbarProps) {
               <DropdownMenuContent align="end" className="w-56">
                 <div className="px-2 py-1.5">
                   <p className="font-medium">{user?.first_name} {user?.last_name}</p>
-                  <p className="text-sm text-gray-500">@{user?.username}</p>
+                  <p className="text-sm text-gray-500">{user?.email}</p>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>

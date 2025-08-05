@@ -436,7 +436,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">{user.first_name} {user.last_name}</h3>
-                    <p className="text-gray-600">@{user.username}</p>
+                    <p className="text-gray-600">{user.email}</p>
                   </div>
                 </div>
 

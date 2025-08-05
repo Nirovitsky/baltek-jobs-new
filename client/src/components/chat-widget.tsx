@@ -42,12 +42,14 @@ export default function ChatWidget() {
         size="lg"
       >
         <MessageCircle className="w-6 h-6" />
-        <Badge
-          variant="destructive"
-          className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-        >
-          3
-        </Badge>
+        {(chatRooms as any)?.results?.length > 0 && (
+          <Badge
+            variant="destructive"
+            className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+          >
+            {(chatRooms as any)?.results?.length}
+          </Badge>
+        )}
       </Button>
     );
   }

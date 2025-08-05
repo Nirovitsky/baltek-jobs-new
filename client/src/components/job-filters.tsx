@@ -31,27 +31,27 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     queryFn: () => ApiClient.getCategories(),
   });
 
-  const { data: jobTypes, isLoading: jobTypesLoading } = useQuery({
+  const { data: jobTypes } = useQuery({
     queryKey: ["jobTypes"],
     queryFn: () => ApiClient.getJobTypes(),
   });
 
-  const { data: workplaceTypes, isLoading: workplaceTypesLoading } = useQuery({
+  const { data: workplaceTypes } = useQuery({
     queryKey: ["workplaceTypes"],
     queryFn: () => ApiClient.getWorkplaceTypes(),
   });
 
-  const { data: currencies, isLoading: currenciesLoading } = useQuery({
+  const { data: currencies } = useQuery({
     queryKey: ["currencies"],
     queryFn: () => ApiClient.getCurrencies(),
   });
 
-  const { data: paymentFrequencies, isLoading: paymentFrequenciesLoading } = useQuery({
+  const { data: paymentFrequencies } = useQuery({
     queryKey: ["paymentFrequencies"],
     queryFn: () => ApiClient.getPaymentFrequencies(),
   });
 
-  const { data: educationLevels, isLoading: educationLevelsLoading } = useQuery({
+  const { data: educationLevels } = useQuery({
     queryKey: ["educationLevels"],
     queryFn: () => ApiClient.getEducationLevels(),
   });
@@ -135,9 +135,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Type</SelectItem>
-              {!jobTypesLoading && (jobTypes as any)?.results?.map((jobType: any) => (
-                <SelectItem key={jobType.id} value={jobType.value}>
-                  {jobType.name}
+              {jobTypes?.map((jobType: any) => (
+                <SelectItem key={jobType.value} value={jobType.value}>
+                  {jobType.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -157,9 +157,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Work</SelectItem>
-              {!workplaceTypesLoading && (workplaceTypes as any)?.results?.map((workplaceType: any) => (
-                <SelectItem key={workplaceType.id} value={workplaceType.value}>
-                  {workplaceType.name}
+              {workplaceTypes?.map((workplaceType: any) => (
+                <SelectItem key={workplaceType.value} value={workplaceType.value}>
+                  {workplaceType.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -197,9 +197,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Currency</SelectItem>
-              {!currenciesLoading && (currencies as any)?.results?.map((currency: any) => (
-                <SelectItem key={currency.id} value={currency.value}>
-                  {currency.name}
+              {currencies?.map((currency: any) => (
+                <SelectItem key={currency.value} value={currency.value}>
+                  {currency.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -219,9 +219,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Frequency</SelectItem>
-              {!paymentFrequenciesLoading && (paymentFrequencies as any)?.results?.map((frequency: any) => (
-                <SelectItem key={frequency.id} value={frequency.value}>
-                  {frequency.name}
+              {paymentFrequencies?.map((frequency: any) => (
+                <SelectItem key={frequency.value} value={frequency.value}>
+                  {frequency.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -241,9 +241,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Education</SelectItem>
-              {!educationLevelsLoading && (educationLevels as any)?.results?.map((level: any) => (
-                <SelectItem key={level.id} value={level.value}>
-                  {level.name}
+              {educationLevels?.map((level: any) => (
+                <SelectItem key={level.value} value={level.value}>
+                  {level.label}
                 </SelectItem>
               ))}
             </SelectContent>
