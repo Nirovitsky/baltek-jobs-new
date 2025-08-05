@@ -70,10 +70,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   const hasActiveFilters = Object.values(filters).some(value => value !== undefined && value !== "");
 
   return (
-    <div className="filter-bar">
+    <div className="filter-bar sticky top-0 z-40 bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="flex flex-wrap items-center gap-4">
-          
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-4">
           <Select
             value={filters.location?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("location", value !== "all" ? parseInt(value) : undefined)}
@@ -81,14 +81,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "location" : null)}
           >
             <SelectTrigger 
-              className="w-[80px] h-8 text-xs"
+              className="w-[80px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
               onMouseEnter={() => setOpenDropdown("location")}
               onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Location" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Locations</SelectItem>
+              <SelectItem value="all">Location</SelectItem>
               {!locationsLoading && (locations as any)?.results?.map((location: Location) => (
                 <SelectItem key={location.id} value={location.id.toString()}>
                   {location.name}, {location.country}
@@ -104,14 +104,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "category" : null)}
           >
             <SelectTrigger 
-              className="w-[80px] h-8 text-xs"
+              className="w-[80px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
               onMouseEnter={() => setOpenDropdown("category")}
               onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="all">Category</SelectItem>
               {!categoriesLoading && (categories as any)?.results?.map((category: Category) => (
                 <SelectItem key={category.id} value={category.id.toString()}>
                   {category.name}
@@ -127,14 +127,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "job_type" : null)}
           >
             <SelectTrigger 
-              className="w-[70px] h-8 text-xs"
+              className="w-[70px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
               onMouseEnter={() => setOpenDropdown("job_type")}
               onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="all">Type</SelectItem>
               {!jobTypesLoading && (jobTypes as any)?.results?.map((jobType: any) => (
                 <SelectItem key={jobType.id} value={jobType.value}>
                   {jobType.name}
@@ -150,14 +150,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "workplace_type" : null)}
           >
             <SelectTrigger 
-              className="w-[70px] h-8 text-xs"
+              className="w-[70px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
               onMouseEnter={() => setOpenDropdown("workplace_type")}
               onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Work" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Work Types</SelectItem>
+              <SelectItem value="all">Work</SelectItem>
               {!workplaceTypesLoading && (workplaceTypes as any)?.results?.map((workplaceType: any) => (
                 <SelectItem key={workplaceType.id} value={workplaceType.value}>
                   {workplaceType.name}
@@ -191,14 +191,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "currency" : null)}
           >
             <SelectTrigger 
-              className="w-[50px] h-8 text-xs"
+              className="w-[50px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
               onMouseEnter={() => setOpenDropdown("currency")}
               onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="$" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Currencies</SelectItem>
+              <SelectItem value="all">Currency</SelectItem>
               {!currenciesLoading && (currencies as any)?.results?.map((currency: any) => (
                 <SelectItem key={currency.id} value={currency.value}>
                   {currency.name}
@@ -214,14 +214,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "payment_frequency" : null)}
           >
             <SelectTrigger 
-              className="w-[55px] h-8 text-xs"
+              className="w-[55px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
               onMouseEnter={() => setOpenDropdown("payment_frequency")}
               onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Per" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Frequencies</SelectItem>
+              <SelectItem value="all">Frequency</SelectItem>
               {!paymentFrequenciesLoading && (paymentFrequencies as any)?.results?.map((frequency: any) => (
                 <SelectItem key={frequency.id} value={frequency.value}>
                   {frequency.name}
@@ -237,14 +237,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "min_education_level" : null)}
           >
             <SelectTrigger 
-              className="w-[60px] h-8 text-xs"
+              className="w-[60px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
               onMouseEnter={() => setOpenDropdown("min_education_level")}
               onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Edu" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Education</SelectItem>
+              <SelectItem value="all">Education</SelectItem>
               {!educationLevelsLoading && (educationLevels as any)?.results?.map((level: any) => (
                 <SelectItem key={level.id} value={level.value}>
                   {level.name}
@@ -252,9 +252,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               ))}
             </SelectContent>
           </Select>
+          </div>
 
-
-
+          <div className="flex items-center gap-2">
           {hasActiveFilters && (
             <Button
               onClick={clearFilters}
@@ -272,6 +272,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           >
             Save
           </Button>
+          </div>
         </div>
       </div>
     </div>
