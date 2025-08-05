@@ -80,12 +80,11 @@ export class AuthService {
       // Demo registration for when API is unavailable
       return {
         id: Math.floor(Math.random() * 1000),
-        username: userData.username,
+        phone: userData.phone,
         email: userData.email,
         first_name: userData.first_name,
         last_name: userData.last_name,
         bio: '',
-        phone: '',
         location: '',
         avatar: '',
         skills: [],
