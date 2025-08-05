@@ -17,10 +17,7 @@ const STATIC_FILTER_OPTIONS = {
     { value: "hybrid", label: "Hybrid" }
   ],
   CURRENCIES: [
-    { value: "TMT", label: "TMT (Turkmen Manat)" },
-    { value: "USD", label: "USD (US Dollar)" },
-    { value: "EUR", label: "EUR (Euro)" },
-    { value: "GBP", label: "GBP (British Pound)" }
+    { value: "TMT", label: "TMT" }
   ],
   PAYMENT_FREQUENCIES: [
     { value: "hourly", label: "Hourly" },
