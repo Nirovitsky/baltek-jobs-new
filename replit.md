@@ -28,7 +28,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **API Structure Updates**: Updated job schema to support new Baltek API structure with payment_from/payment_to fields, organization display_name/official_name fields, and proper handling of optional location/category fields
 - **Enhanced Data Handling**: Fixed all job display components to properly handle the actual API response structure including TMT currency support and organization name variations
 - **Verified API Endpoints**: Confirmed working endpoints including /jobs/, /locations/, /categories/, /organizations/, /universities/, and /jobs/applications/ with proper response handling
-- **Currency Filter Integration**: Updated currency filter to only show TMT (Turkmen Manat) as this is the only currency currently available in the Baltek API backend data
+- **Currency Filter Integration**: Updated currency filter to show both TMT and USD currencies matching the backend CurrencyEnum (even though current job data primarily uses TMT)
 - **Filter UI Improvements**: Fixed dropdown behavior to use click instead of hover, removed blue focus colors, increased field widths for better text display, and removed grey highlighting on job card clicks
 
 ## User Preferences

@@ -17,7 +17,8 @@ const STATIC_FILTER_OPTIONS = {
     { value: "hybrid", label: "Hybrid" }
   ],
   CURRENCIES: [
-    { value: "TMT", label: "TMT" }
+    { value: "TMT", label: "TMT" },
+    { value: "USD", label: "USD" }
   ],
   PAYMENT_FREQUENCIES: [
     { value: "hourly", label: "Hourly" },
