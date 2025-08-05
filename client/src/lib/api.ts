@@ -120,8 +120,10 @@ export class ApiClient {
       });
 
       if (response.status === 401 && token) {
+        console.warn('Received 401, attempting token refresh...');
         try {
           await AuthService.refreshToken();
+          console.log('Token refresh successful, retrying request...');
           // Retry with new token
           const retryHeaders = {
             ...headers,
@@ -132,14 +134,21 @@ export class ApiClient {
             headers: retryHeaders,
           });
           
+          if (retryResponse.status === 401) {
+            console.warn('Still unauthorized after refresh, logging out...');
+            AuthService.logout();
+            throw new Error("Session expired, please login again");
+          }
+          
           if (!retryResponse.ok) {
             throw new Error(`API Error: ${retryResponse.status}`);
           }
           
           return retryResponse.json();
-        } catch {
+        } catch (error) {
+          console.warn('Token refresh failed, logging out:', error);
           AuthService.logout();
-          throw new Error("Authentication failed");
+          throw new Error("Session expired, please login again");
         }
       }
 

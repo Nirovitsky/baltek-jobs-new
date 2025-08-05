@@ -101,26 +101,47 @@ export class AuthService {
       throw new Error("No refresh token available");
     }
 
-    const response = await fetch(`${API_BASE}/token/refresh/`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refresh: refreshToken }),
-    });
+    try {
+      // Try the standard refresh endpoint first
+      let response = await fetch(`${API_BASE}/token/refresh/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh: refreshToken }),
+      });
 
-    if (!response.ok) {
+      // If that doesn't work, try without the /api prefix
+      if (!response.ok && response.status === 404) {
+        response = await fetch(`https://api.baltek.net/token/refresh/`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ refresh: refreshToken }),
+        });
+      }
+
+      if (!response.ok) {
+        console.warn('Token refresh failed, clearing tokens and redirecting to login');
+        this.clearTokens();
+        throw new Error("Token refresh failed");
+      }
+
+      const { access } = await response.json();
+      localStorage.setItem(this.TOKEN_KEY, access);
+      return access;
+    } catch (error) {
+      console.warn('Token refresh error:', error);
       this.clearTokens();
       throw new Error("Token refresh failed");
     }
-
-    const { access } = await response.json();
-    localStorage.setItem(this.TOKEN_KEY, access);
-    return access;
   }
 
   static async logout(): Promise<void> {
+    console.log('Logging out user and clearing tokens...');
     this.clearTokens();
+    // Use window.location to ensure a full page refresh and clear any cached state
     window.location.href = "/login";
   }
 
