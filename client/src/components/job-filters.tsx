@@ -73,7 +73,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     <div className="filter-bar sticky top-0 z-40 bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-4">
+          <div 
+            className="flex flex-wrap items-center gap-4"
+            onMouseLeave={() => setOpenDropdown(null)}
+          >
           <Select
             value={filters.location?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("location", value !== "all" ? parseInt(value) : undefined)}
@@ -81,9 +84,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "location" : null)}
           >
             <SelectTrigger 
-              className="w-[80px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
+              className="w-[90px] h-8 text-xs hover:text-primary focus:text-primary"
               onMouseEnter={() => setOpenDropdown("location")}
-              onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Location" />
             </SelectTrigger>
@@ -104,9 +106,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "category" : null)}
           >
             <SelectTrigger 
-              className="w-[80px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
+              className="w-[90px] h-8 text-xs hover:text-primary focus:text-primary"
               onMouseEnter={() => setOpenDropdown("category")}
-              onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Category" />
             </SelectTrigger>
@@ -127,9 +128,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "job_type" : null)}
           >
             <SelectTrigger 
-              className="w-[70px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
+              className="w-[80px] h-8 text-xs hover:text-primary focus:text-primary"
               onMouseEnter={() => setOpenDropdown("job_type")}
-              onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Type" />
             </SelectTrigger>
@@ -150,9 +150,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "workplace_type" : null)}
           >
             <SelectTrigger 
-              className="w-[70px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
+              className="w-[80px] h-8 text-xs hover:text-primary focus:text-primary"
               onMouseEnter={() => setOpenDropdown("workplace_type")}
-              onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Work" />
             </SelectTrigger>
@@ -172,7 +171,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               placeholder="Min"
               value={filters.salary_min || ""}
               onChange={(e) => handleFilterChange("salary_min", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[60px] h-8 text-xs"
+              className="w-[70px] h-8 text-xs"
             />
             <span className="text-gray-500">-</span>
             <Input
@@ -180,7 +179,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               placeholder="Max"
               value={filters.salary_max || ""}
               onChange={(e) => handleFilterChange("salary_max", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[60px] h-8 text-xs"
+              className="w-[70px] h-8 text-xs"
             />
           </div>
 
@@ -191,9 +190,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "currency" : null)}
           >
             <SelectTrigger 
-              className="w-[50px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
+              className="w-[70px] h-8 text-xs hover:text-primary focus:text-primary"
               onMouseEnter={() => setOpenDropdown("currency")}
-              onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="$" />
             </SelectTrigger>
@@ -214,9 +212,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "payment_frequency" : null)}
           >
             <SelectTrigger 
-              className="w-[55px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
+              className="w-[80px] h-8 text-xs hover:text-primary focus:text-primary"
               onMouseEnter={() => setOpenDropdown("payment_frequency")}
-              onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Per" />
             </SelectTrigger>
@@ -237,9 +234,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onOpenChange={(open) => setOpenDropdown(open ? "min_education_level" : null)}
           >
             <SelectTrigger 
-              className="w-[60px] h-8 text-xs border-gray-300 hover:text-primary hover:border-gray-300 focus:text-primary"
+              className="w-[90px] h-8 text-xs hover:text-primary focus:text-primary"
               onMouseEnter={() => setOpenDropdown("min_education_level")}
-              onMouseLeave={() => setOpenDropdown(null)}
             >
               <SelectValue placeholder="Edu" />
             </SelectTrigger>
