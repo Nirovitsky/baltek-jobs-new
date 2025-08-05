@@ -102,25 +102,13 @@ export class AuthService {
     }
 
     try {
-      // Try the standard refresh endpoint first
-      let response = await fetch(`${API_BASE}/token/refresh/`, {
+      const response = await fetch(`${API_BASE}/token/refresh`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ refresh: refreshToken }),
       });
-
-      // If that doesn't work, try without the /api prefix
-      if (!response.ok && response.status === 404) {
-        response = await fetch(`https://api.baltek.net/token/refresh/`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ refresh: refreshToken }),
-        });
-      }
 
       if (!response.ok) {
         console.warn('Token refresh failed, clearing tokens and redirecting to login');
