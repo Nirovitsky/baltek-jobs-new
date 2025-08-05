@@ -31,7 +31,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   const handleFilterChange = (key: keyof JobFilters, value: any) => {
     onFiltersChange({
       ...filters,
-      [key]: value === "" ? undefined : value,
+      [key]: value === "" || value === "all" ? undefined : value,
     });
   };
 
@@ -48,14 +48,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <Label className="text-sm font-medium text-gray-700">Filters:</Label>
           
           <Select
-            value={filters.location?.toString() || ""}
-            onValueChange={(value) => handleFilterChange("location", value ? parseInt(value) : undefined)}
+            value={filters.location?.toString() || "all"}
+            onValueChange={(value) => handleFilterChange("location", value !== "all" ? parseInt(value) : undefined)}
           >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="All Locations" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Locations</SelectItem>
+              <SelectItem value="all">All Locations</SelectItem>
               {!locationsLoading && (locations as any)?.results?.map((location: Location) => (
                 <SelectItem key={location.id} value={location.id.toString()}>
                   {location.name}, {location.country}
@@ -65,14 +65,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           </Select>
 
           <Select
-            value={filters.category?.toString() || ""}
-            onValueChange={(value) => handleFilterChange("category", value ? parseInt(value) : undefined)}
+            value={filters.category?.toString() || "all"}
+            onValueChange={(value) => handleFilterChange("category", value !== "all" ? parseInt(value) : undefined)}
           >
             <SelectTrigger className="w-[200px]">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem>
               {!categoriesLoading && (categories as any)?.results?.map((category: Category) => (
                 <SelectItem key={category.id} value={category.id.toString()}>
                   {category.name}
@@ -82,14 +82,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           </Select>
 
           <Select
-            value={filters.job_type || ""}
+            value={filters.job_type || "all"}
             onValueChange={(value) => handleFilterChange("job_type", value)}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Job Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Types</SelectItem>
+              <SelectItem value="all">All Types</SelectItem>
               <SelectItem value="FULL_TIME">Full-time</SelectItem>
               <SelectItem value="PART_TIME">Part-time</SelectItem>
               <SelectItem value="CONTRACT">Contract</SelectItem>
@@ -99,14 +99,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           </Select>
 
           <Select
-            value={filters.workplace_type || ""}
+            value={filters.workplace_type || "all"}
             onValueChange={(value) => handleFilterChange("workplace_type", value)}
           >
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Work Type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Work Types</SelectItem>
+              <SelectItem value="all">All Work Types</SelectItem>
               <SelectItem value="REMOTE">Remote</SelectItem>
               <SelectItem value="ON_SITE">On-site</SelectItem>
               <SelectItem value="HYBRID">Hybrid</SelectItem>
@@ -114,9 +114,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           </Select>
 
           <Select
-            value={`${filters.salary_min || ""}-${filters.salary_max || ""}`}
+            value={filters.salary_min || filters.salary_max ? `${filters.salary_min || ""}-${filters.salary_max || ""}` : "all"}
             onValueChange={(value) => {
-              if (value === "") {
+              if (value === "all") {
                 handleFilterChange("salary_min", undefined);
                 handleFilterChange("salary_max", undefined);
               } else {
@@ -130,7 +130,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               <SelectValue placeholder="Salary Range" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any Salary</SelectItem>
+              <SelectItem value="all">Any Salary</SelectItem>
               <SelectItem value="30000-50000">$30K - $50K</SelectItem>
               <SelectItem value="50000-75000">$50K - $75K</SelectItem>
               <SelectItem value="75000-100000">$75K - $100K</SelectItem>
