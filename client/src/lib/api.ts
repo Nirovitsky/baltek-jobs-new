@@ -172,54 +172,7 @@ export class ApiClient {
       // Single job
       const id = parseInt(endpoint.match(/\/(\d+)\//)?.[1] || '1');
       return MOCK_JOBS.find(job => job.id === id) || MOCK_JOBS[0];
-    } else if (endpoint === '/job-types/') {
-      return {
-        results: [
-          { id: 1, name: "Full Time", value: "full_time" },
-          { id: 2, name: "Part Time", value: "part_time" },
-          { id: 3, name: "Contract", value: "contract" },
-          { id: 4, name: "Internship", value: "internship" },
-          { id: 5, name: "Freelance", value: "freelance" }
-        ]
-      };
-    } else if (endpoint === '/workplace-types/') {
-      return {
-        results: [
-          { id: 1, name: "Remote", value: "remote" },
-          { id: 2, name: "On-site", value: "on_site" },
-          { id: 3, name: "Hybrid", value: "hybrid" }
-        ]
-      };
-    } else if (endpoint === '/currencies/') {
-      return {
-        results: [
-          { id: 1, name: "USD", value: "USD", symbol: "$" },
-          { id: 2, name: "EUR", value: "EUR", symbol: "€" },
-          { id: 3, name: "GBP", value: "GBP", symbol: "£" },
-          { id: 4, name: "CAD", value: "CAD", symbol: "C$" },
-          { id: 5, name: "AUD", value: "AUD", symbol: "A$" }
-        ]
-      };
-    } else if (endpoint === '/payment-frequencies/') {
-      return {
-        results: [
-          { id: 1, name: "Per Hour", value: "hourly" },
-          { id: 2, name: "Per Day", value: "daily" },
-          { id: 3, name: "Per Week", value: "weekly" },
-          { id: 4, name: "Per Month", value: "monthly" },
-          { id: 5, name: "Per Year", value: "yearly" }
-        ]
-      };
-    } else if (endpoint === '/education-levels/') {
-      return {
-        results: [
-          { id: 1, name: "High School", value: "high_school" },
-          { id: 2, name: "Associate", value: "associate" },
-          { id: 3, name: "Bachelor's", value: "bachelors" },
-          { id: 4, name: "Master's", value: "masters" },
-          { id: 5, name: "PhD", value: "phd" }
-        ]
-      };
+
     } else if (endpoint.includes('/profile/') || endpoint.includes('/users/')) {
       // User profile
       return {
@@ -472,25 +425,61 @@ export class ApiClient {
     return this.makeRequest("/categories/");
   }
 
-  // Filter options API
+  // Filter options API - these are enums in the API, so we return static data
   static async getJobTypes() {
-    return this.makeRequest("/job-types/");
+    return {
+      results: [
+        { id: 1, name: "Full Time", value: "full_time" },
+        { id: 2, name: "Part Time", value: "part_time" },
+        { id: 3, name: "Contract", value: "contract" },
+        { id: 4, name: "Internship", value: "internship" }
+      ]
+    };
   }
 
   static async getWorkplaceTypes() {
-    return this.makeRequest("/workplace-types/");
+    return {
+      results: [
+        { id: 1, name: "Remote", value: "remote" },
+        { id: 2, name: "On-site", value: "on_site" },
+        { id: 3, name: "Hybrid", value: "hybrid" }
+      ]
+    };
   }
 
   static async getCurrencies() {
-    return this.makeRequest("/currencies/");
+    return {
+      results: [
+        { id: 1, name: "TMT", value: "TMT", symbol: "M" },
+        { id: 2, name: "USD", value: "USD", symbol: "$" },
+        { id: 3, name: "EUR", value: "EUR", symbol: "€" },
+        { id: 4, name: "GBP", value: "GBP", symbol: "£" }
+      ]
+    };
   }
 
   static async getPaymentFrequencies() {
-    return this.makeRequest("/payment-frequencies/");
+    return {
+      results: [
+        { id: 1, name: "Hourly", value: "hourly" },
+        { id: 2, name: "Daily", value: "daily" },
+        { id: 3, name: "Weekly", value: "weekly" },
+        { id: 4, name: "Monthly", value: "monthly" },
+        { id: 5, name: "Yearly", value: "yearly" }
+      ]
+    };
   }
 
   static async getEducationLevels() {
-    return this.makeRequest("/education-levels/");
+    return {
+      results: [
+        { id: 1, name: "High School", value: "high_school" },
+        { id: 2, name: "Associate", value: "associate" },
+        { id: 3, name: "Bachelor's", value: "bachelors" },
+        { id: 4, name: "Master's", value: "masters" },
+        { id: 5, name: "PhD", value: "phd" }
+      ]
+    };
   }
 
   static async getUniversities() {

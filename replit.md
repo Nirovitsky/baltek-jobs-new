@@ -22,8 +22,9 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Enhanced Salary Filtering**: Replaced salary dropdown with flexible input fields allowing users to specify custom salary ranges
 - **Additional Filter Options**: Added new filter fields including currency selection, payment frequency, minimum education level for more granular job search capabilities
 - **Optimized Filter Layout**: Removed hardcoded "Filters:" label and reduced dropdown widths to fit all filters in a single line for improved space efficiency  
-- **API-Driven Filter Options**: Replaced all hardcoded filter dropdown options (job types, workplace types, currencies, payment frequencies, education levels) with dynamic API calls, ensuring data consistency and maintainability
-- **Enhanced API Structure**: Added new API endpoints for fetching filter options with proper mock data support for development
+- **API-Driven Filter Options**: Replaced all hardcoded filter dropdown options with proper API integration based on actual Baltek API structure
+- **Enhanced API Structure**: Corrected API endpoints based on actual Baltek API documentation - filter options (job types, workplace types, currencies, payment frequencies, education levels) are provided as static enum data since they're not separate endpoints in the real API
+- **API Endpoint Corrections**: Fixed all filter API calls to use correct Baltek API structure - removed non-existent endpoints and implemented proper enum-based filter options matching actual API schema
 
 ## User Preferences
 
