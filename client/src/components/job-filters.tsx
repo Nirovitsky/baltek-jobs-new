@@ -78,7 +78,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.location?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("location", value !== "all" ? parseInt(value) : undefined)}
           >
-            <SelectTrigger className="w-[110px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[110px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Location" />
             </SelectTrigger>
             <SelectContent>
@@ -95,7 +95,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.category?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("category", value !== "all" ? parseInt(value) : undefined)}
           >
-            <SelectTrigger className="w-[100px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[100px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -112,7 +112,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.job_type || "all"}
             onValueChange={(value) => handleFilterChange("job_type", value)}
           >
-            <SelectTrigger className="w-[95px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[95px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Job Type" />
             </SelectTrigger>
             <SelectContent>
@@ -129,7 +129,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.workplace_type || "all"}
             onValueChange={(value) => handleFilterChange("workplace_type", value)}
           >
-            <SelectTrigger className="w-[90px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[90px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Remote" />
             </SelectTrigger>
             <SelectContent>
@@ -148,7 +148,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               placeholder="Min"
               value={filters.salary_min || ""}
               onChange={(e) => handleFilterChange("salary_min", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[70px] h-8 text-xs"
+              className="w-[80px] h-8 text-xs focus-visible:ring-0"
             />
             <span className="text-gray-500">-</span>
             <Input
@@ -156,7 +156,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               placeholder="Max"
               value={filters.salary_max || ""}
               onChange={(e) => handleFilterChange("salary_max", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[70px] h-8 text-xs"
+              className="w-[80px] h-8 text-xs focus-visible:ring-0"
             />
           </div>
 
@@ -164,7 +164,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.currency || "all"}
             onValueChange={(value) => handleFilterChange("currency", value)}
           >
-            <SelectTrigger className="w-[85px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[95px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Currency" />
             </SelectTrigger>
             <SelectContent>
@@ -181,7 +181,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.payment_frequency || "all"}
             onValueChange={(value) => handleFilterChange("payment_frequency", value)}
           >
-            <SelectTrigger className="w-[85px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[95px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Per Month" />
             </SelectTrigger>
             <SelectContent>
@@ -198,7 +198,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.min_education_level || "all"}
             onValueChange={(value) => handleFilterChange("min_education_level", value)}
           >
-            <SelectTrigger className="w-[100px] h-8 text-xs focus:text-primary focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[100px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Education" />
             </SelectTrigger>
             <SelectContent>
@@ -219,7 +219,6 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               variant="outline"
               className="text-gray-700 h-8 text-xs px-2"
             >
-              <X className="h-3 w-3 mr-1" />
               Clear
             </Button>
           )}
