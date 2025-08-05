@@ -71,9 +71,20 @@ export default function JobList({
     bookmarkMutation.mutate({ jobId, isBookmarked });
   };
 
-  const formatSalary = (min?: number, max?: number, currency?: string) => {
+  const formatSalary = (job: Job) => {
+    // Support both new API structure (payment_from/payment_to) and legacy (salary_min/salary_max)
+    const min = job.payment_from || job.salary_min;
+    const max = job.payment_to || job.salary_max;
+    const currency = job.currency || "TMT";
+    
     if (!min && !max) return "Salary not specified";
-    const currencySymbol = currency === "EUR" ? "€" : currency === "GBP" ? "£" : "$";
+    
+    const currencySymbol = currency === "EUR" ? "€" : 
+                           currency === "GBP" ? "£" : 
+                           currency === "USD" ? "$" : 
+                           currency === "TMT" ? "M" : 
+                           currency;
+    
     if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
     if (min) return `From ${currencySymbol}${min.toLocaleString()}`;
     if (max) return `Up to ${currencySymbol}${max.toLocaleString()}`;
@@ -180,7 +191,7 @@ export default function JobList({
                     {job.organization?.logo ? (
                       <img
                         src={job.organization.logo}
-                        alt={job.organization.name || 'Company'}
+                        alt={job.organization.display_name || job.organization.name || 'Company'}
                         className="w-10 h-10 rounded-lg object-cover"
                       />
                     ) : (
@@ -189,7 +200,7 @@ export default function JobList({
                   </div>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900 text-sm">
-                      {job.organization?.name || 'Unknown Company'}
+                      {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
                     </p>
                     <p className="text-sm text-gray-500 flex items-center">
                       <MapPin className="w-3 h-3 mr-1" />
@@ -202,7 +213,7 @@ export default function JobList({
               {/* Salary on Top Right */}
               <div className="text-right">
                 <span className="text-lg font-medium text-primary">
-                  {formatSalary(job.salary_min, job.salary_max, job.currency)}
+                  {formatSalary(job)}
                 </span>
               </div>
             </div>

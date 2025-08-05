@@ -69,9 +69,20 @@ export default function JobDetails({ job }: JobDetailsProps) {
     }
   };
 
-  const formatSalary = (min?: number, max?: number, currency?: string) => {
+  const formatSalary = (job: Job) => {
+    // Support both new API structure (payment_from/payment_to) and legacy (salary_min/salary_max)
+    const min = job.payment_from || job.salary_min;
+    const max = job.payment_to || job.salary_max;
+    const currency = job.currency || "TMT";
+    
     if (!min && !max) return "Salary not specified";
-    const currencySymbol = currency === "EUR" ? "€" : currency === "GBP" ? "£" : "$";
+    
+    const currencySymbol = currency === "EUR" ? "€" : 
+                           currency === "GBP" ? "£" : 
+                           currency === "USD" ? "$" : 
+                           currency === "TMT" ? "M" : 
+                           currency;
+    
     if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
     if (min) return `From ${currencySymbol}${min.toLocaleString()}`;
     if (max) return `Up to ${currencySymbol}${max.toLocaleString()}`;
@@ -110,7 +121,7 @@ export default function JobDetails({ job }: JobDetailsProps) {
                 {job.organization?.logo ? (
                   <img
                     src={job.organization.logo}
-                    alt={job.organization.name || 'Company'}
+                    alt={job.organization.display_name || job.organization.name || 'Company'}
                     className="w-16 h-16 rounded-lg object-cover"
                   />
                 ) : (
@@ -119,7 +130,7 @@ export default function JobDetails({ job }: JobDetailsProps) {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">{job.title || 'Job Title'}</h1>
-                <p className="text-lg text-gray-600">{job.organization?.name || 'Unknown Company'}</p>
+                <p className="text-lg text-gray-600">{job.organization?.display_name || job.organization?.name || 'Unknown Company'}</p>
                 <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
                   <span className="flex items-center">
                     <MapPin className="w-4 h-4 mr-1" />
@@ -153,7 +164,7 @@ export default function JobDetails({ job }: JobDetailsProps) {
             <div className="bg-gray-50 p-4 rounded-lg">
               <h3 className="font-semibold text-gray-900 mb-2">Salary Range</h3>
               <p className="text-xl font-bold text-primary">
-                {formatSalary(job.salary_min, job.salary_max, job.currency)}
+                {formatSalary(job)}
               </p>
               <p className="text-sm text-gray-500">per year</p>
             </div>
@@ -210,14 +221,14 @@ export default function JobDetails({ job }: JobDetailsProps) {
 
           {/* Company Info */}
           <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">About {job.organization?.name || 'this company'}</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">About {job.organization?.display_name || job.organization?.name || 'this company'}</h3>
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="flex items-center space-x-3 mb-2">
                 <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
                   {job.organization?.logo ? (
                     <img
                       src={job.organization.logo}
-                      alt={job.organization.name || 'Company'}
+                      alt={job.organization.display_name || job.organization.name || 'Company'}
                       className="w-10 h-10 rounded-lg object-cover"
                     />
                   ) : (
@@ -225,7 +236,7 @@ export default function JobDetails({ job }: JobDetailsProps) {
                   )}
                 </div>
                 <div>
-                  <p className="font-medium text-gray-900">{job.organization?.name || 'Unknown Company'}</p>
+                  <p className="font-medium text-gray-900">{job.organization?.display_name || job.organization?.name || 'Unknown Company'}</p>
                   <div className="flex items-center text-sm text-gray-500">
                     <Users className="w-4 h-4 mr-1" />
                     <span>{job.category?.name || 'Uncategorized'}</span>

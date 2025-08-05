@@ -25,6 +25,9 @@ The application features a modern two-column job browsing interface, comprehensi
 - **API-Driven Filter Options**: Replaced all hardcoded filter dropdown options with proper API integration based on actual Baltek API structure
 - **Enhanced API Structure**: Corrected API endpoints based on actual Baltek API documentation - filter options (job types, workplace types, currencies, payment frequencies, education levels) are provided as static enum data since they're not separate endpoints in the real API
 - **API Endpoint Corrections**: Fixed all filter API calls to use correct Baltek API structure - removed non-existent endpoints and implemented proper enum-based filter options matching actual API schema
+- **API Structure Updates**: Updated job schema to support new Baltek API structure with payment_from/payment_to fields, organization display_name/official_name fields, and proper handling of optional location/category fields
+- **Enhanced Data Handling**: Fixed all job display components to properly handle the actual API response structure including TMT currency support and organization name variations
+- **Verified API Endpoints**: Confirmed working endpoints including /jobs/, /locations/, /categories/, /organizations/, /universities/, and /jobs/applications/ with proper response handling
 
 ## User Preferences
 

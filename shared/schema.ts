@@ -37,31 +37,39 @@ export const jobSchema = z.object({
   description: z.string(),
   requirements: z.string().optional(),
   benefits: z.string().optional(),
-  salary_min: z.number().optional(),
-  salary_max: z.number().optional(),
+  payment_from: z.number().nullable().optional(),
+  payment_to: z.number().nullable().optional(),
+  salary_min: z.number().optional(), // Keep for backward compatibility
+  salary_max: z.number().optional(), // Keep for backward compatibility
   currency: z.string().optional(),
+  payment_frequency: z.string().optional(),
   job_type: z.string(),
   workplace_type: z.string(),
   location: z.object({
     id: z.number(),
     name: z.string(),
-    country: z.string(),
-  }),
+    country: z.string().optional(),
+  }).optional(),
   category: z.object({
     id: z.number(),
     name: z.string(),
-  }),
+  }).optional(),
   organization: z.object({
     id: z.number(),
-    name: z.string(),
+    official_name: z.string().optional(),
+    display_name: z.string().optional(),
+    name: z.string().optional(), // Keep for backward compatibility
     logo: z.string().optional(),
     description: z.string().optional(),
   }),
-  skills: z.array(z.string()),
-  is_active: z.boolean(),
-  created_at: z.string(),
-  updated_at: z.string(),
+  skills: z.array(z.string()).optional(),
+  is_active: z.boolean().optional(),
+  is_public: z.boolean().optional(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
   is_bookmarked: z.boolean().optional(),
+  my_application_id: z.number().nullable().optional(),
+  applications_count: z.number().nullable().optional(),
 });
 
 // Job application schemas

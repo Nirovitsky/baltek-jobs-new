@@ -6,96 +6,81 @@ const API_BASE = "https://api.baltek.net/api";
 const MOCK_JOBS = [
   {
     id: 1,
-    title: "Senior Frontend Developer",
+    title: "Flutter Developer",
     organization: {
       id: 1,
-      name: "Tech Corp",
-      logo: null,
+      official_name: "Ynamly Enjam H.J.",
+      display_name: "baltek",
+      name: "baltek", // backward compatibility
+      logo: "https://api.baltek.net/media/organization/1471ac00-719a-4e1c-a819-9768036b5843.png",
       description: "Leading technology company focused on innovative solutions"
     },
     location: {
-      id: 1,
-      name: "San Francisco",
-      country: "USA"
+      id: 2,
+      name: "Turkmenbashy",
+      country: "Turkmenistan"
     },
     category: {
       id: 1,
-      name: "Technology"
+      name: "IT"
     },
     job_type: "full_time",
-    workplace_type: "remote",
-    salary_min: 120000,
-    salary_max: 160000,
-    currency: "USD",
-    skills: ["React", "TypeScript", "JavaScript", "CSS", "HTML"],
-    description: "We are looking for a senior frontend developer to join our team. You will be responsible for building user interfaces using React, TypeScript, and modern web technologies.",
-    requirements: "5+ years of React experience, TypeScript proficiency, CSS/HTML expertise",
-    benefits: "Health insurance, 401k, flexible working hours, remote work options",
+    workplace_type: "on_site",
+    payment_from: null,
+    payment_to: null,
+    salary_min: null, // backward compatibility
+    salary_max: null, // backward compatibility
+    currency: "TMT",
+    payment_frequency: "monthly",
+    skills: ["Flutter", "Dart", "Mobile Development", "Cross-platform"],
+    description: "We are looking for a skilled Flutter Developer to join our team. You will be responsible for designing and developing cross-platform mobile applications using the Flutter framework. The ideal candidate should have experience with Dart, strong UI/UX skills",
+    requirements: "3+ years of Flutter experience, Dart proficiency, mobile development expertise",
+    benefits: "Health insurance, flexible working hours, professional development",
     created_at: "2025-01-15T10:00:00Z",
     application_deadline: "2025-02-15",
-    is_bookmarked: false
+    is_bookmarked: false,
+    is_public: true,
+    my_application_id: null,
+    applications_count: null
   },
   {
     id: 2,
     title: "UX/UI Designer",
     organization: {
       id: 2,
-      name: "Design Studio",
+      official_name: "Design Studio Ltd",
+      display_name: "Design Studio",
+      name: "Design Studio", // backward compatibility
       logo: null,
       description: "Creative design agency specializing in user experience"
     },
     location: {
-      id: 2,
-      name: "New York",
-      country: "USA"
+      id: 3,
+      name: "Ashgabat",
+      country: "Turkmenistan"
     },
     category: {
       id: 2,
-      name: "Design"
+      name: "Marketing"
     },
     job_type: "full_time",
     workplace_type: "hybrid",
-    salary_min: 90000,
-    salary_max: 120000,
-    currency: "USD",
+    payment_from: 2000,
+    payment_to: 3000,
+    salary_min: 2000, // backward compatibility
+    salary_max: 3000, // backward compatibility
+    currency: "TMT",
+    payment_frequency: "monthly",
     skills: ["Figma", "Adobe Creative Suite", "User Research", "Prototyping"],
     description: "Join our creative team as a UX/UI Designer. You will design user experiences for web and mobile applications.",
     requirements: "3+ years of design experience, Figma proficiency, portfolio required",
     benefits: "Health insurance, design tools stipend, creative workshops",
     created_at: "2025-01-10T09:00:00Z",
     application_deadline: "2025-02-10",
-    is_bookmarked: false
-  },
-  {
-    id: 3,
-    title: "Marketing Manager",
-    organization: {
-      id: 3,
-      name: "Growth Co",
-      logo: null,
-      description: "Fast-growing startup in the marketing technology space"
-    },
-    location: {
-      id: 3,
-      name: "Austin",
-      country: "USA"
-    },
-    category: {
-      id: 3,
-      name: "Marketing"
-    },
-    job_type: "full_time",
-    workplace_type: "on_site",
-    salary_min: 80000,
-    salary_max: 100000,
-    currency: "USD",
-    skills: ["Digital Marketing", "SEO", "Content Strategy", "Analytics"],
-    description: "Lead our marketing team and develop strategies to grow our customer base.",
-    requirements: "5+ years marketing experience, digital marketing expertise, team leadership skills",
-    benefits: "Health insurance, marketing conference budget, team building events",
-    created_at: "2025-01-12T11:00:00Z",
-    application_deadline: "2025-02-12",
-    is_bookmarked: false
+    is_bookmarked: false,
+    is_public: true,
+    my_application_id: null,
+    applications_count: null
   }
 ];
 
@@ -195,7 +180,7 @@ export class ApiClient {
       return {
         results: [
           { id: 1, name: 'San Francisco', country: 'USA' },
-          { id: 2, name: 'New York', country: 'USA' },
+          { id: 2, name: 'Turkmenbashy', country: 'Turkmenistan' },
           { id: 3, name: 'Austin', country: 'USA' },
           { id: 4, name: 'London', country: 'UK' },
           { id: 5, name: 'Berlin', country: 'Germany' }
@@ -205,9 +190,9 @@ export class ApiClient {
       // Categories for filters
       return {
         results: [
-          { id: 1, name: 'Technology' },
-          { id: 2, name: 'Design' },
-          { id: 3, name: 'Marketing' },
+          { id: 1, name: 'IT' },
+          { id: 2, name: 'Marketing' },
+          { id: 3, name: 'Hukuk' },
           { id: 4, name: 'Sales' },
           { id: 5, name: 'Finance' }
         ]
@@ -422,7 +407,22 @@ export class ApiClient {
   }
 
   static async getCategories() {
-    return this.makeRequest("/categories/");
+    try {
+      const response = await this.makeRequest<any[]>("/categories/");
+      // The API returns a simple array, not paginated results
+      return { results: response };
+    } catch (error) {
+      console.warn('Categories API failed, using mock data:', error);
+      return {
+        results: [
+          { id: 1, name: 'Technology' },
+          { id: 2, name: 'Design' },
+          { id: 3, name: 'Marketing' },
+          { id: 4, name: 'Sales' },
+          { id: 5, name: 'Finance' }
+        ]
+      };
+    }
   }
 
   // Filter options API - these are enums in the API, so we return static data
@@ -513,7 +513,7 @@ export class ApiClient {
     return this.makeRequest("/jobs/saved_filters/");
   }
 
-  static async saveFil(data: any) {
+  static async saveFilter(data: any) {
     return this.makeRequest("/jobs/saved_filters/", {
       method: "POST",
       body: JSON.stringify(data),
