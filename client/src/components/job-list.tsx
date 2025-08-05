@@ -6,13 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { 
   MapPin, 
   Clock, 
@@ -43,7 +37,7 @@ export default function JobList({
   isFetchingNextPage,
   fetchNextPage,
 }: JobListProps) {
-  const [sortBy, setSortBy] = useState("newest");
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -129,21 +123,9 @@ export default function JobList({
   return (
     <Card>
       <div className="p-4 border-b">
-        <div className="flex justify-between items-center">
-          <h2 className="text-lg font-semibold text-gray-900">
-            {jobs.length} Job{jobs.length !== 1 ? "s" : ""} Found
-          </h2>
-          <Select value={sortBy} onValueChange={setSortBy}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Sort by" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Newest First</SelectItem>
-              <SelectItem value="salary">Highest Salary</SelectItem>
-              <SelectItem value="relevance">Most Relevant</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <h2 className="text-lg font-semibold text-gray-900">
+          {jobs.length} Job{jobs.length !== 1 ? "s" : ""} Found
+        </h2>
       </div>
       
       <div className="infinite-scroll">

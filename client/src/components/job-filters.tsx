@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { X, Save } from "lucide-react";
+import { X } from "lucide-react";
 
 interface JobFiltersProps {
   filters: JobFilters;
@@ -156,8 +156,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             size="sm"
             className="bg-primary hover:bg-primary/90"
           >
-            <Save className="h-4 w-4 mr-1" />
-            Save Filters
+            Save
           </Button>
         </div>
       </div>
