@@ -181,7 +181,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.payment_frequency || "all"}
             onValueChange={(value) => handleFilterChange("payment_frequency", value)}
           >
-            <SelectTrigger className="w-[95px] h-8 text-xs focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[105px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Per Month" />
             </SelectTrigger>
             <SelectContent>
@@ -219,6 +219,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               variant="outline"
               className="text-gray-700 h-8 text-xs px-2"
             >
+              <X className="h-3 w-3 mr-1" />
               Clear
             </Button>
           )}
