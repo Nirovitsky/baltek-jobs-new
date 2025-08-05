@@ -1,0 +1,248 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ApiClient } from "@/lib/api";
+import type { Job } from "@shared/schema";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { 
+  MapPin, 
+  Clock, 
+  DollarSign, 
+  Heart, 
+  Building,
+  Calendar,
+  Loader2
+} from "lucide-react";
+import { useState } from "react";
+
+interface JobListProps {
+  jobs: Job[];
+  selectedJobId: number | null;
+  onJobSelect: (job: Job) => void;
+  isLoading: boolean;
+  hasNextPage: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage: () => void;
+}
+
+export default function JobList({
+  jobs,
+  selectedJobId,
+  onJobSelect,
+  isLoading,
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+}: JobListProps) {
+  const [sortBy, setSortBy] = useState("newest");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const loadMoreRef = useInfiniteScroll({
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  });
+
+  const bookmarkMutation = useMutation({
+    mutationFn: (jobId: number) => ApiClient.bookmarkJob(jobId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      toast({
+        title: "Job bookmarked",
+        description: "Job added to your bookmarks",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to bookmark job",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleBookmark = (e: React.MouseEvent, jobId: number) => {
+    e.stopPropagation();
+    bookmarkMutation.mutate(jobId);
+  };
+
+  const formatSalary = (min?: number, max?: number, currency = "USD") => {
+    if (!min && !max) return "Salary not specified";
+    if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
+    if (min) return `From $${min.toLocaleString()}`;
+    if (max) return `Up to $${max.toLocaleString()}`;
+    return "Salary not specified";
+  };
+
+  const formatJobType = (type: string) => {
+    return type.replace("_", " ").toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+  };
+
+  const getTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMs = now.getTime() - date.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+    
+    if (diffInDays === 0) return "Today";
+    if (diffInDays === 1) return "1 day ago";
+    if (diffInDays < 7) return `${diffInDays} days ago`;
+    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
+    return `${Math.floor(diffInDays / 30)} months ago`;
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-6 w-6 animate-spin" />
+            <span className="ml-2">Loading jobs...</span>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (jobs.length === 0) {
+    return (
+      <Card>
+        <CardContent className="p-6 text-center">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
+          <p className="text-gray-600">Try adjusting your filters or search terms</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card>
+      <div className="p-4 border-b">
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-gray-900">
+            {jobs.length} Job{jobs.length !== 1 ? "s" : ""} Found
+          </h2>
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest First</SelectItem>
+              <SelectItem value="salary">Highest Salary</SelectItem>
+              <SelectItem value="relevance">Most Relevant</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+      
+      <div className="infinite-scroll">
+        {jobs.map((job) => (
+          <div
+            key={job.id}
+            className={`job-card p-4 border-b hover:bg-gray-50 cursor-pointer ${
+              selectedJobId === job.id ? "selected" : ""
+            }`}
+            onClick={() => onJobSelect(job)}
+          >
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center space-x-3 mb-2">
+                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
+                    {job.organization.logo ? (
+                      <img
+                        src={job.organization.logo}
+                        alt={job.organization.name}
+                        className="w-12 h-12 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <Building className="w-6 h-6 text-gray-400" />
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 line-clamp-1">
+                      {job.title}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {job.organization.name}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-4 text-sm text-gray-500 mb-2">
+                  <span className="flex items-center">
+                    <MapPin className="w-4 h-4 mr-1" />
+                    {job.location.name}, {job.location.country}
+                  </span>
+                  <span className="flex items-center">
+                    <Clock className="w-4 h-4 mr-1" />
+                    {formatJobType(job.job_type)}
+                  </span>
+                  <span className="flex items-center">
+                    <DollarSign className="w-4 h-4 mr-1" />
+                    {formatSalary(job.salary_min, job.salary_max, job.currency)}
+                  </span>
+                </div>
+                
+                <p className="text-sm text-gray-700 line-clamp-2 mb-2">
+                  {job.description}
+                </p>
+                
+                <div className="flex items-center space-x-2">
+                  {job.skills.slice(0, 3).map((skill, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs">
+                      {skill}
+                    </Badge>
+                  ))}
+                  {job.skills.length > 3 && (
+                    <Badge variant="outline" className="text-xs">
+                      +{job.skills.length - 3} more
+                    </Badge>
+                  )}
+                </div>
+              </div>
+              
+              <div className="flex flex-col items-end space-y-2 ml-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => handleBookmark(e, job.id)}
+                  disabled={bookmarkMutation.isPending}
+                  className={job.is_bookmarked ? "text-red-500" : "text-gray-400 hover:text-red-500"}
+                >
+                  <Heart className={`w-4 h-4 ${job.is_bookmarked ? "fill-current" : ""}`} />
+                </Button>
+                <span className="text-xs text-gray-500 flex items-center">
+                  <Calendar className="w-3 h-3 mr-1" />
+                  {getTimeAgo(job.created_at)}
+                </span>
+              </div>
+            </div>
+          </div>
+        ))}
+        
+        {/* Infinite scroll trigger */}
+        <div ref={loadMoreRef} className="p-4 text-center">
+          {isFetchingNextPage && (
+            <div className="inline-flex items-center space-x-2 text-gray-500">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span className="text-sm">Loading more jobs...</span>
+            </div>
+          )}
+          {!hasNextPage && jobs.length > 0 && (
+            <p className="text-sm text-gray-500">No more jobs to load</p>
+          )}
+        </div>
+      </div>
+    </Card>
+  );
+}
