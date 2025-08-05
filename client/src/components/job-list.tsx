@@ -156,58 +156,33 @@ export default function JobList({
           >
             <div className="flex justify-between items-start">
               <div className="flex-1">
-                <div className="flex items-center space-x-3 mb-2">
-                  <div className="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center">
-                    {job.organization?.logo ? (
-                      <img
-                        src={job.organization.logo}
-                        alt={job.organization.name || 'Company'}
-                        className="w-12 h-12 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <Building className="w-6 h-6 text-gray-400" />
-                    )}
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 line-clamp-1">
-                      {job.title || 'Job Title'}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      {job.organization?.name || 'Unknown Company'}
-                    </p>
-                  </div>
-                </div>
+                {/* Job Title */}
+                <h3 className="font-semibold text-lg text-gray-900 line-clamp-1 mb-2">
+                  {job.title || 'Job Title'}
+                </h3>
                 
-                <div className="flex items-center space-x-4 text-sm text-gray-500 mb-2">
-                  <span className="flex items-center">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {job.location?.name || 'Unknown'}, {job.location?.country || 'Unknown'}
-                  </span>
-                  <span className="flex items-center">
-                    <Clock className="w-4 h-4 mr-1" />
-                    {formatJobType(job.job_type)}
-                  </span>
-                  <span className="flex items-center">
-                    <DollarSign className="w-4 h-4 mr-1" />
+                {/* Salary */}
+                <div className="mb-3">
+                  <span className="text-lg font-medium text-primary">
                     {formatSalary(job.salary_min, job.salary_max, job.currency)}
                   </span>
+                  <span className="text-sm text-gray-500 ml-2">
+                    {formatJobType(job.job_type)}
+                  </span>
                 </div>
                 
-                <p className="text-sm text-gray-700 line-clamp-2 mb-2">
-                  {job.description || 'No description available'}
-                </p>
-                
-                <div className="flex items-center space-x-2">
+                {/* Skills Tags */}
+                <div className="flex items-center space-x-2 mb-4">
                   {job.skills && job.skills.length > 0 ? (
                     <>
-                      {job.skills.slice(0, 3).map((skill, index) => (
+                      {job.skills.slice(0, 4).map((skill, index) => (
                         <Badge key={index} variant="secondary" className="text-xs">
                           {skill}
                         </Badge>
                       ))}
-                      {job.skills.length > 3 && (
+                      {job.skills.length > 4 && (
                         <Badge variant="outline" className="text-xs">
-                          +{job.skills.length - 3} more
+                          +{job.skills.length - 4} more
                         </Badge>
                       )}
                     </>
@@ -216,6 +191,30 @@ export default function JobList({
                       No skills listed
                     </Badge>
                   )}
+                </div>
+                
+                {/* Company Details at Bottom */}
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                    {job.organization?.logo ? (
+                      <img
+                        src={job.organization.logo}
+                        alt={job.organization.name || 'Company'}
+                        className="w-10 h-10 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <Building className="w-5 h-5 text-gray-400" />
+                    )}
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-gray-900 text-sm">
+                      {job.organization?.name || 'Unknown Company'}
+                    </p>
+                    <p className="text-sm text-gray-500 flex items-center">
+                      <MapPin className="w-3 h-3 mr-1" />
+                      {job.location?.name || 'Unknown'}, {job.location?.country || 'Unknown'}
+                    </p>
+                  </div>
                 </div>
               </div>
               
