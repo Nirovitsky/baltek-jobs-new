@@ -158,8 +158,6 @@ export const jobFiltersSchema = z.object({
   currency: z.string().optional(),
   payment_frequency: z.string().optional(),
   min_education_level: z.string().optional(),
-  payment_from: z.number().optional(),
-  payment_to: z.number().optional(),
   organization: z.number().optional(),
 });
 

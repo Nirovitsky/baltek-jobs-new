@@ -29,6 +29,31 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     queryFn: () => ApiClient.getCategories(),
   });
 
+  const { data: jobTypes, isLoading: jobTypesLoading } = useQuery({
+    queryKey: ["jobTypes"],
+    queryFn: () => ApiClient.getJobTypes(),
+  });
+
+  const { data: workplaceTypes, isLoading: workplaceTypesLoading } = useQuery({
+    queryKey: ["workplaceTypes"],
+    queryFn: () => ApiClient.getWorkplaceTypes(),
+  });
+
+  const { data: currencies, isLoading: currenciesLoading } = useQuery({
+    queryKey: ["currencies"],
+    queryFn: () => ApiClient.getCurrencies(),
+  });
+
+  const { data: paymentFrequencies, isLoading: paymentFrequenciesLoading } = useQuery({
+    queryKey: ["paymentFrequencies"],
+    queryFn: () => ApiClient.getPaymentFrequencies(),
+  });
+
+  const { data: educationLevels, isLoading: educationLevelsLoading } = useQuery({
+    queryKey: ["educationLevels"],
+    queryFn: () => ApiClient.getEducationLevels(),
+  });
+
   const handleFilterChange = (key: keyof JobFilters, value: any) => {
     onFiltersChange({
       ...filters,
@@ -46,13 +71,12 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     <div className="filter-bar">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-wrap items-center gap-4">
-          <Label className="text-sm font-medium text-gray-700">Filters:</Label>
           
           <Select
             value={filters.location?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("location", value !== "all" ? parseInt(value) : undefined)}
           >
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-[140px]">
               <SelectValue placeholder="All Locations" />
             </SelectTrigger>
             <SelectContent>
@@ -69,7 +93,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.category?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("category", value !== "all" ? parseInt(value) : undefined)}
           >
-            <SelectTrigger className="w-[200px]">
+            <SelectTrigger className="w-[140px]">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
             <SelectContent>
@@ -86,16 +110,16 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.job_type || "all"}
             onValueChange={(value) => handleFilterChange("job_type", value)}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Job Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
-              <SelectItem value="FULL_TIME">Full-time</SelectItem>
-              <SelectItem value="PART_TIME">Part-time</SelectItem>
-              <SelectItem value="CONTRACT">Contract</SelectItem>
-              <SelectItem value="FREELANCE">Freelance</SelectItem>
-              <SelectItem value="INTERNSHIP">Internship</SelectItem>
+              {!jobTypesLoading && (jobTypes as any)?.results?.map((jobType: any) => (
+                <SelectItem key={jobType.id} value={jobType.value}>
+                  {jobType.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -103,14 +127,16 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.workplace_type || "all"}
             onValueChange={(value) => handleFilterChange("workplace_type", value)}
           >
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Work Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Work Types</SelectItem>
-              <SelectItem value="REMOTE">Remote</SelectItem>
-              <SelectItem value="ON_SITE">On-site</SelectItem>
-              <SelectItem value="HYBRID">Hybrid</SelectItem>
+              {!workplaceTypesLoading && (workplaceTypes as any)?.results?.map((workplaceType: any) => (
+                <SelectItem key={workplaceType.id} value={workplaceType.value}>
+                  {workplaceType.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -120,7 +146,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               placeholder="Min salary"
               value={filters.salary_min || ""}
               onChange={(e) => handleFilterChange("salary_min", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[120px]"
+              className="w-[100px]"
             />
             <span className="text-gray-500">-</span>
             <Input
@@ -128,7 +154,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               placeholder="Max salary"
               value={filters.salary_max || ""}
               onChange={(e) => handleFilterChange("salary_max", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[120px]"
+              className="w-[100px]"
             />
           </div>
 
@@ -136,16 +162,16 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.currency || "all"}
             onValueChange={(value) => handleFilterChange("currency", value)}
           >
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-[100px]">
               <SelectValue placeholder="Currency" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Currencies</SelectItem>
-              <SelectItem value="USD">USD</SelectItem>
-              <SelectItem value="EUR">EUR</SelectItem>
-              <SelectItem value="GBP">GBP</SelectItem>
-              <SelectItem value="CAD">CAD</SelectItem>
-              <SelectItem value="AUD">AUD</SelectItem>
+              {!currenciesLoading && (currencies as any)?.results?.map((currency: any) => (
+                <SelectItem key={currency.id} value={currency.value}>
+                  {currency.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -153,16 +179,16 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.payment_frequency || "all"}
             onValueChange={(value) => handleFilterChange("payment_frequency", value)}
           >
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-[110px]">
               <SelectValue placeholder="Payment" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Frequencies</SelectItem>
-              <SelectItem value="HOURLY">Hourly</SelectItem>
-              <SelectItem value="DAILY">Daily</SelectItem>
-              <SelectItem value="WEEKLY">Weekly</SelectItem>
-              <SelectItem value="MONTHLY">Monthly</SelectItem>
-              <SelectItem value="YEARLY">Yearly</SelectItem>
+              {!paymentFrequenciesLoading && (paymentFrequencies as any)?.results?.map((frequency: any) => (
+                <SelectItem key={frequency.id} value={frequency.value}>
+                  {frequency.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -170,36 +196,20 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.min_education_level || "all"}
             onValueChange={(value) => handleFilterChange("min_education_level", value)}
           >
-            <SelectTrigger className="w-[160px]">
+            <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Education" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Education</SelectItem>
-              <SelectItem value="HIGH_SCHOOL">High School</SelectItem>
-              <SelectItem value="ASSOCIATE">Associate</SelectItem>
-              <SelectItem value="BACHELOR">Bachelor's</SelectItem>
-              <SelectItem value="MASTER">Master's</SelectItem>
-              <SelectItem value="DOCTORATE">Doctorate</SelectItem>
+              {!educationLevelsLoading && (educationLevels as any)?.results?.map((level: any) => (
+                <SelectItem key={level.id} value={level.value}>
+                  {level.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
-          <div className="flex items-center space-x-2">
-            <Input
-              type="number"
-              placeholder="Payment from"
-              value={filters.payment_from || ""}
-              onChange={(e) => handleFilterChange("payment_from", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[120px]"
-            />
-            <span className="text-gray-500">-</span>
-            <Input
-              type="number"
-              placeholder="Payment to"
-              value={filters.payment_to || ""}
-              onChange={(e) => handleFilterChange("payment_to", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[120px]"
-            />
-          </div>
+
 
           {hasActiveFilters && (
             <Button

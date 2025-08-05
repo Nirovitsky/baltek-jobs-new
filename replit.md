@@ -20,7 +20,10 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Job Sorting Removal**: Removed job sorting functionality to display jobs without ordering, simplifying the job list interface
 - **Filter UI Improvements**: Simplified "Save Filters" button by removing icon and "Filters" text, now displays just "Save"
 - **Enhanced Salary Filtering**: Replaced salary dropdown with flexible input fields allowing users to specify custom salary ranges
-- **Additional Filter Options**: Added new filter fields including currency selection, payment frequency, minimum education level, and custom payment range (payment_from/payment_to) for more granular job search capabilities
+- **Additional Filter Options**: Added new filter fields including currency selection, payment frequency, minimum education level for more granular job search capabilities
+- **Optimized Filter Layout**: Removed hardcoded "Filters:" label and reduced dropdown widths to fit all filters in a single line for improved space efficiency  
+- **API-Driven Filter Options**: Replaced all hardcoded filter dropdown options (job types, workplace types, currencies, payment frequencies, education levels) with dynamic API calls, ensuring data consistency and maintainability
+- **Enhanced API Structure**: Added new API endpoints for fetching filter options with proper mock data support for development
 
 ## User Preferences
 

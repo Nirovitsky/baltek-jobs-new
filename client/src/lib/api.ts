@@ -220,6 +220,54 @@ export class ApiClient {
           { id: 3, name: 'Growth Co', logo: null }
         ]
       };
+    } else if (endpoint.includes('/job-types/')) {
+      return {
+        results: [
+          { id: 1, name: 'Full-time', value: 'FULL_TIME' },
+          { id: 2, name: 'Part-time', value: 'PART_TIME' },
+          { id: 3, name: 'Contract', value: 'CONTRACT' },
+          { id: 4, name: 'Freelance', value: 'FREELANCE' },
+          { id: 5, name: 'Internship', value: 'INTERNSHIP' }
+        ]
+      };
+    } else if (endpoint.includes('/workplace-types/')) {
+      return {
+        results: [
+          { id: 1, name: 'Remote', value: 'REMOTE' },
+          { id: 2, name: 'On-site', value: 'ON_SITE' },
+          { id: 3, name: 'Hybrid', value: 'HYBRID' }
+        ]
+      };
+    } else if (endpoint.includes('/currencies/')) {
+      return {
+        results: [
+          { id: 1, name: 'USD', value: 'USD' },
+          { id: 2, name: 'EUR', value: 'EUR' },
+          { id: 3, name: 'GBP', value: 'GBP' },
+          { id: 4, name: 'CAD', value: 'CAD' },
+          { id: 5, name: 'AUD', value: 'AUD' }
+        ]
+      };
+    } else if (endpoint.includes('/payment-frequencies/')) {
+      return {
+        results: [
+          { id: 1, name: 'Hourly', value: 'HOURLY' },
+          { id: 2, name: 'Daily', value: 'DAILY' },
+          { id: 3, name: 'Weekly', value: 'WEEKLY' },
+          { id: 4, name: 'Monthly', value: 'MONTHLY' },
+          { id: 5, name: 'Yearly', value: 'YEARLY' }
+        ]
+      };
+    } else if (endpoint.includes('/education-levels/')) {
+      return {
+        results: [
+          { id: 1, name: 'High School', value: 'HIGH_SCHOOL' },
+          { id: 2, name: 'Associate', value: 'ASSOCIATE' },
+          { id: 3, name: "Bachelor's", value: 'BACHELOR' },
+          { id: 4, name: "Master's", value: 'MASTER' },
+          { id: 5, name: 'Doctorate', value: 'DOCTORATE' }
+        ]
+      };
     } else if (endpoint.includes('/resumes/')) {
       // User resumes
       return {
@@ -412,6 +460,27 @@ export class ApiClient {
 
   static async getCategories() {
     return this.makeRequest("/categories/");
+  }
+
+  // Filter options API
+  static async getJobTypes() {
+    return this.makeRequest("/job-types/");
+  }
+
+  static async getWorkplaceTypes() {
+    return this.makeRequest("/workplace-types/");
+  }
+
+  static async getCurrencies() {
+    return this.makeRequest("/currencies/");
+  }
+
+  static async getPaymentFrequencies() {
+    return this.makeRequest("/payment-frequencies/");
+  }
+
+  static async getEducationLevels() {
+    return this.makeRequest("/education-levels/");
   }
 
   static async getUniversities() {
