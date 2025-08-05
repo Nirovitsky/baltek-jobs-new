@@ -69,11 +69,12 @@ export default function JobDetails({ job }: JobDetailsProps) {
     }
   };
 
-  const formatSalary = (min?: number, max?: number, currency = "USD") => {
+  const formatSalary = (min?: number, max?: number, currency?: string) => {
     if (!min && !max) return "Salary not specified";
-    if (min && max) return `$${min.toLocaleString()} - $${max.toLocaleString()}`;
-    if (min) return `From $${min.toLocaleString()}`;
-    if (max) return `Up to $${max.toLocaleString()}`;
+    const currencySymbol = currency === "EUR" ? "€" : currency === "GBP" ? "£" : "$";
+    if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
+    if (min) return `From ${currencySymbol}${min.toLocaleString()}`;
+    if (max) return `Up to ${currencySymbol}${max.toLocaleString()}`;
     return "Salary not specified";
   };
 

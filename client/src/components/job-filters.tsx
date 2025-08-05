@@ -76,8 +76,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.location?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("location", value !== "all" ? parseInt(value) : undefined)}
           >
-            <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="All Locations" />
+            <SelectTrigger className="w-[100px]">
+              <SelectValue placeholder="Location" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Locations</SelectItem>
@@ -93,8 +93,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.category?.toString() || "all"}
             onValueChange={(value) => handleFilterChange("category", value !== "all" ? parseInt(value) : undefined)}
           >
-            <SelectTrigger className="w-[140px]">
-              <SelectValue placeholder="All Categories" />
+            <SelectTrigger className="w-[100px]">
+              <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Categories</SelectItem>
@@ -110,8 +110,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.job_type || "all"}
             onValueChange={(value) => handleFilterChange("job_type", value)}
           >
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Job Type" />
+            <SelectTrigger className="w-[90px]">
+              <SelectValue placeholder="Type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Types</SelectItem>
@@ -127,8 +127,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.workplace_type || "all"}
             onValueChange={(value) => handleFilterChange("workplace_type", value)}
           >
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Work Type" />
+            <SelectTrigger className="w-[90px]">
+              <SelectValue placeholder="Work" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Work Types</SelectItem>
@@ -143,18 +143,18 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <div className="flex items-center space-x-2">
             <Input
               type="number"
-              placeholder="Min salary"
+              placeholder="Min"
               value={filters.salary_min || ""}
               onChange={(e) => handleFilterChange("salary_min", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[100px]"
+              className="w-[80px]"
             />
             <span className="text-gray-500">-</span>
             <Input
               type="number"
-              placeholder="Max salary"
+              placeholder="Max"
               value={filters.salary_max || ""}
               onChange={(e) => handleFilterChange("salary_max", e.target.value ? parseInt(e.target.value) : undefined)}
-              className="w-[100px]"
+              className="w-[80px]"
             />
           </div>
 
@@ -162,8 +162,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.currency || "all"}
             onValueChange={(value) => handleFilterChange("currency", value)}
           >
-            <SelectTrigger className="w-[100px]">
-              <SelectValue placeholder="Currency" />
+            <SelectTrigger className="w-[60px]">
+              <SelectValue placeholder="$" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Currencies</SelectItem>
@@ -179,8 +179,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.payment_frequency || "all"}
             onValueChange={(value) => handleFilterChange("payment_frequency", value)}
           >
-            <SelectTrigger className="w-[110px]">
-              <SelectValue placeholder="Payment" />
+            <SelectTrigger className="w-[70px]">
+              <SelectValue placeholder="Per" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Frequencies</SelectItem>
@@ -196,8 +196,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.min_education_level || "all"}
             onValueChange={(value) => handleFilterChange("min_education_level", value)}
           >
-            <SelectTrigger className="w-[120px]">
-              <SelectValue placeholder="Education" />
+            <SelectTrigger className="w-[80px]">
+              <SelectValue placeholder="Edu" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Education</SelectItem>
