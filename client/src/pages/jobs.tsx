@@ -72,16 +72,6 @@ export default function Jobs() {
     <div className="min-h-screen bg-gray-50">
       <Navbar onSearch={handleSearch} searchQuery={searchQuery} />
       
-      {/* API Status Notice */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <Alert className="mb-4 border-orange-200 bg-orange-50 text-orange-800">
-          <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            Demo Mode: The external Baltek API is currently unavailable. You're viewing sample job listings to explore the interface.
-          </AlertDescription>
-        </Alert>
-      </div>
-
       <JobFiltersComponent filters={filters} onFiltersChange={handleFiltersChange} />
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
