@@ -4,7 +4,12 @@
 
 This is a complete job seeker frontend application built with React, Express, and TypeScript. The application provides a professional job search platform that integrates seamlessly with the external Baltek API (https://api.baltek.net/api/) for all backend functionality.
 
-The application features a modern two-column job browsing interface, comprehensive filtering system, infinite scroll for seamless navigation, user authentication, profile management, job application system with resume upload, and real-time chat capabilities for employer-candidate communication. The frontend is built with shadcn/ui components and Tailwind CSS using the specified primary color (#1877F2).
+The application features a modern two-column job browsing interface, comprehensive filtering system, infinite scroll for seamless navigation, user authentication with phone-based login, profile management, job application system with resume upload, and real-time chat capabilities for employer-candidate communication. The frontend is built with shadcn/ui components and Tailwind CSS using the specified primary color (#1877F2).
+
+## Recent Changes (Jan 2025)
+- **Authentication Update**: Modified authentication system to use phone number instead of username as required by the Baltek API
+- **Schema Migration**: Updated all authentication schemas and forms to use phone-based authentication
+- **Replit Migration**: Successfully migrated project from Replit Agent to standard Replit environment with proper security practices
 
 ## User Preferences
 

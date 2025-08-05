@@ -80,15 +80,15 @@ export default function Register() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="phone">Phone Number</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  {...register("username")}
-                  placeholder="johndoe"
+                  id="phone"
+                  type="tel"
+                  {...register("phone")}
+                  placeholder="+1234567890"
                 />
-                {errors.username && (
-                  <p className="text-sm text-red-600">{errors.username.message}</p>
+                {errors.phone && (
+                  <p className="text-sm text-red-600">{errors.phone.message}</p>
                 )}
               </div>
 

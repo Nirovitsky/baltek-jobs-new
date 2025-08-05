@@ -2,12 +2,12 @@ import { z } from "zod";
 
 // Authentication schemas
 export const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
+  phone: z.string().min(1, "Phone number is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export const registerSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  phone: z.string().min(1, "Phone number is required"),
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   first_name: z.string().min(1, "First name is required"),
@@ -17,12 +17,11 @@ export const registerSchema = z.object({
 // User profile schemas
 export const userProfileSchema = z.object({
   id: z.number(),
-  username: z.string(),
+  phone: z.string(),
   email: z.string(),
   first_name: z.string(),
   last_name: z.string(),
   bio: z.string().optional(),
-  phone: z.string().optional(),
   location: z.string().optional(),
   avatar: z.string().optional(),
   skills: z.array(z.string()).optional(),
@@ -189,18 +188,6 @@ export const categorySchema = z.object({
   name: z.string(),
 });
 
-export const universitySchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  country: z.string().optional(),
-});
-
-export const languageSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  code: z.string(),
-});
-
 // Type exports
 export type LoginRequest = z.infer<typeof loginSchema>;
 export type RegisterRequest = z.infer<typeof registerSchema>;
@@ -218,5 +205,18 @@ export type SavedFilter = z.infer<typeof savedFilterSchema>;
 export type Organization = z.infer<typeof organizationSchema>;
 export type Location = z.infer<typeof locationSchema>;
 export type Category = z.infer<typeof categorySchema>;
+
+export const universitySchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  country: z.string().optional(),
+});
+
+export const languageSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  code: z.string(),
+});
+
 export type University = z.infer<typeof universitySchema>;
 export type Language = z.infer<typeof languageSchema>;

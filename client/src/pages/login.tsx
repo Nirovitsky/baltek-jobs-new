@@ -52,15 +52,15 @@ export default function Login() {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="username">Username</Label>
+                <Label htmlFor="phone">Phone Number</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  {...register("username")}
-                  placeholder="Enter your username"
+                  id="phone"
+                  type="tel"
+                  {...register("phone")}
+                  placeholder="Enter your phone number"
                 />
-                {errors.username && (
-                  <p className="text-sm text-red-600">{errors.username.message}</p>
+                {errors.phone && (
+                  <p className="text-sm text-red-600">{errors.phone.message}</p>
                 )}
               </div>
 
