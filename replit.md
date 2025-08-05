@@ -2,13 +2,15 @@
 
 ## Overview
 
-This is a full-stack job platform application built with React, Express, and TypeScript. The application allows users to browse jobs, apply to positions, and manage their profiles. It integrates with the external Baltek API (https://api.baltek.net/api/) for backend functionality while providing a modern, responsive frontend experience.
+This is a complete job seeker frontend application built with React, Express, and TypeScript. The application provides a professional job search platform that integrates seamlessly with the external Baltek API (https://api.baltek.net/api/) for all backend functionality.
 
-The application features a job search interface with filtering capabilities, user authentication, profile management, and a chat system for employer-candidate communication. The frontend is built with shadcn/ui components and Tailwind CSS for a polished user interface.
+The application features a modern two-column job browsing interface, comprehensive filtering system, infinite scroll for seamless navigation, user authentication, profile management, job application system with resume upload, and real-time chat capabilities for employer-candidate communication. The frontend is built with shadcn/ui components and Tailwind CSS using the specified primary color (#1877F2).
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+UI/UX Requirements: Two-column layout (jobs left, details right), infinite scroll, primary color #1877F2, simple interface for average users.
+Backend Integration: External Baltek API (https://api.baltek.net/api/) for all data operations.
 
 ## System Architecture
 
