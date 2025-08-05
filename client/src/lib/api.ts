@@ -7,45 +7,93 @@ const MOCK_JOBS = [
   {
     id: 1,
     title: "Senior Frontend Developer",
-    company: "Tech Corp",
-    location: "San Francisco, CA",
-    job_type: "Full-time",
-    workplace_type: "Remote",
-    salary_range: "$120,000 - $160,000",
-    category: "Technology",
+    organization: {
+      id: 1,
+      name: "Tech Corp",
+      logo: null,
+      description: "Leading technology company focused on innovative solutions"
+    },
+    location: {
+      id: 1,
+      name: "San Francisco",
+      country: "USA"
+    },
+    category: {
+      id: 1,
+      name: "Technology"
+    },
+    job_type: "full_time",
+    workplace_type: "remote",
+    salary_min: 120000,
+    salary_max: 160000,
+    currency: "USD",
+    skills: ["React", "TypeScript", "JavaScript", "CSS", "HTML"],
     description: "We are looking for a senior frontend developer to join our team. You will be responsible for building user interfaces using React, TypeScript, and modern web technologies.",
     requirements: "5+ years of React experience, TypeScript proficiency, CSS/HTML expertise",
-    posted_date: "2025-01-15",
+    benefits: "Health insurance, 401k, flexible working hours, remote work options",
+    created_at: "2025-01-15T10:00:00Z",
     application_deadline: "2025-02-15",
     is_bookmarked: false
   },
   {
     id: 2,
     title: "UX/UI Designer",
-    company: "Design Studio",
-    location: "New York, NY",
-    job_type: "Full-time",
-    workplace_type: "Hybrid",
-    salary_range: "$90,000 - $120,000",
-    category: "Design",
+    organization: {
+      id: 2,
+      name: "Design Studio",
+      logo: null,
+      description: "Creative design agency specializing in user experience"
+    },
+    location: {
+      id: 2,
+      name: "New York",
+      country: "USA"
+    },
+    category: {
+      id: 2,
+      name: "Design"
+    },
+    job_type: "full_time",
+    workplace_type: "hybrid",
+    salary_min: 90000,
+    salary_max: 120000,
+    currency: "USD",
+    skills: ["Figma", "Adobe Creative Suite", "User Research", "Prototyping"],
     description: "Join our creative team as a UX/UI Designer. You will design user experiences for web and mobile applications.",
     requirements: "3+ years of design experience, Figma proficiency, portfolio required",
-    posted_date: "2025-01-10",
+    benefits: "Health insurance, design tools stipend, creative workshops",
+    created_at: "2025-01-10T09:00:00Z",
     application_deadline: "2025-02-10",
     is_bookmarked: false
   },
   {
     id: 3,
     title: "Marketing Manager",
-    company: "Growth Co",
-    location: "Austin, TX",
-    job_type: "Full-time",
-    workplace_type: "On-site",
-    salary_range: "$80,000 - $100,000",
-    category: "Marketing",
+    organization: {
+      id: 3,
+      name: "Growth Co",
+      logo: null,
+      description: "Fast-growing startup in the marketing technology space"
+    },
+    location: {
+      id: 3,
+      name: "Austin",
+      country: "USA"
+    },
+    category: {
+      id: 3,
+      name: "Marketing"
+    },
+    job_type: "full_time",
+    workplace_type: "on_site",
+    salary_min: 80000,
+    salary_max: 100000,
+    currency: "USD",
+    skills: ["Digital Marketing", "SEO", "Content Strategy", "Analytics"],
     description: "Lead our marketing team and develop strategies to grow our customer base.",
     requirements: "5+ years marketing experience, digital marketing expertise, team leadership skills",
-    posted_date: "2025-01-12",
+    benefits: "Health insurance, marketing conference budget, team building events",
+    created_at: "2025-01-12T11:00:00Z",
     application_deadline: "2025-02-12",
     is_bookmarked: false
   }
@@ -124,13 +172,56 @@ export class ApiClient {
         first_name: 'Demo',
         last_name: 'User',
         bio: 'Demo user profile',
-        phone: '',
+        phone: '+1234567890',
         location: 'Demo City',
         avatar: '',
         skills: ['React', 'TypeScript', 'Node.js'],
         linkedin_url: '',
         github_url: '',
         portfolio_url: ''
+      };
+    } else if (endpoint.includes('/locations/')) {
+      // Locations for filters
+      return {
+        results: [
+          { id: 1, name: 'San Francisco', country: 'USA' },
+          { id: 2, name: 'New York', country: 'USA' },
+          { id: 3, name: 'Austin', country: 'USA' },
+          { id: 4, name: 'London', country: 'UK' },
+          { id: 5, name: 'Berlin', country: 'Germany' }
+        ]
+      };
+    } else if (endpoint.includes('/categories/')) {
+      // Categories for filters
+      return {
+        results: [
+          { id: 1, name: 'Technology' },
+          { id: 2, name: 'Design' },
+          { id: 3, name: 'Marketing' },
+          { id: 4, name: 'Sales' },
+          { id: 5, name: 'Finance' }
+        ]
+      };
+    } else if (endpoint.includes('/organizations/')) {
+      // Organizations for filters
+      return {
+        results: [
+          { id: 1, name: 'Tech Corp', logo: null },
+          { id: 2, name: 'Design Studio', logo: null },
+          { id: 3, name: 'Growth Co', logo: null }
+        ]
+      };
+    } else if (endpoint.includes('/resumes/')) {
+      // User resumes
+      return {
+        results: [
+          { 
+            id: 1, 
+            title: 'Software Engineer Resume', 
+            file_url: '/resumes/resume1.pdf',
+            created_at: '2025-01-01T10:00:00Z'
+          }
+        ]
       };
     }
     

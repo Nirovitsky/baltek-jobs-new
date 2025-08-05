@@ -120,9 +120,9 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
         <DialogHeader>
           <div className="flex items-center justify-between">
             <div>
-              <DialogTitle className="text-xl">Apply for {job.title}</DialogTitle>
+              <DialogTitle className="text-xl">Apply for {job.title || 'Job Position'}</DialogTitle>
               <DialogDescription>
-                {job.organization.name} • {job.location.name}, {job.location.country}
+                {job.organization?.name || 'Unknown Company'} • {job.location?.name || 'Unknown'}, {job.location?.country || 'Unknown'}
               </DialogDescription>
             </div>
             <Button variant="ghost" size="sm" onClick={handleClose}>
