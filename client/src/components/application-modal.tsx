@@ -58,8 +58,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
     defaultValues: {
       job: job.id,
       cover_letter: "",
-      expected_salary: undefined,
-      availability: "",
+      resume: "",
     },
   });
 
@@ -73,9 +72,19 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
         resumeUrl = fileData.url;
       }
 
+      // Ensure both cover letter and resume are provided
+      if (!data.cover_letter) {
+        throw new Error("Cover letter is required");
+      }
+      
+      if (!resumeUrl) {
+        throw new Error("Resume is required");
+      }
+
       return ApiClient.applyToJob({
-        ...data,
-        resume: resumeUrl || undefined,
+        job: data.job,
+        cover_letter: data.cover_letter,
+        resume: resumeUrl,
       });
     },
     onSuccess: () => {
@@ -134,12 +143,12 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Cover Letter */}
           <div className="space-y-2">
-            <Label htmlFor="cover_letter">Cover Letter</Label>
+            <Label htmlFor="cover_letter">Cover Letter *</Label>
             <Textarea
               id="cover_letter"
-              rows={4}
+              rows={6}
               {...register("cover_letter")}
-              placeholder="Tell the employer why you're a great fit for this role..."
+              placeholder="Write a compelling cover letter explaining why you're the perfect fit for this role. Highlight your relevant experience, skills, and enthusiasm for the position..."
               className="resize-none"
             />
             {errors.cover_letter && (
@@ -149,7 +158,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
 
           {/* Resume Selection */}
           <div className="space-y-4">
-            <Label>Resume</Label>
+            <Label>Resume/CV *</Label>
             
             {/* Existing Resumes */}
             {!resumesLoading && (resumes as any)?.results?.length > 0 && (
@@ -183,47 +192,13 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
             </div>
 
             {!selectedResumeId && !uploadedFile && (
-              <p className="text-sm text-amber-600">
-                Please select a resume or upload a new one to proceed with your application.
+              <p className="text-sm text-red-600">
+                Resume is required. Please select a resume or upload a new one.
               </p>
             )}
           </div>
 
-          {/* Expected Salary */}
-          <div className="space-y-2">
-            <Label htmlFor="expected_salary">Expected Salary (Optional)</Label>
-            <Input
-              id="expected_salary"
-              type="number"
-              {...register("expected_salary", {
-                setValueAs: (value) => value === "" ? undefined : parseInt(value),
-              })}
-              placeholder="e.g., 120000"
-            />
-            {errors.expected_salary && (
-              <p className="text-sm text-red-600">{errors.expected_salary.message}</p>
-            )}
-          </div>
 
-          {/* Availability */}
-          <div className="space-y-2">
-            <Label htmlFor="availability">Availability</Label>
-            <Select value={watch("availability") || ""} onValueChange={(value) => setValue("availability", value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select your availability" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="immediate">Available immediately</SelectItem>
-                <SelectItem value="2weeks">2 weeks notice</SelectItem>
-                <SelectItem value="1month">1 month notice</SelectItem>
-                <SelectItem value="3months">3 months notice</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.availability && (
-              <p className="text-sm text-red-600">{errors.availability.message}</p>
-            )}
-          </div>
 
           {/* Submit Buttons */}
           <div className="flex justify-end space-x-3 pt-4 border-t">
@@ -232,7 +207,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
             </Button>
             <Button
               type="submit"
-              disabled={applicationMutation.isPending || (!selectedResumeId && !uploadedFile)}
+              disabled={applicationMutation.isPending}
             >
               {applicationMutation.isPending ? (
                 "Submitting..."

@@ -37,6 +37,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Progressive Loading Skeletons**: Added dedicated skeleton components for both initial page load and infinite scroll states to maintain consistent visual feedback
 - **Individual Job Details Fetching**: Implemented API calls to fetch complete job details when a job is clicked, providing fresh detailed information including full job descriptions and requirements
 - **Currency Filter Fix**: Fixed currency filtering functionality by implementing client-side filtering as workaround for non-functional API currency parameter. Now TMT/USD filter correctly shows only matching jobs with proper job selection handling after filtering
+- **Simplified Job Application**: Streamlined application form to focus only on essential fields - cover letter and CV/resume upload. Removed optional fields like expected salary and availability for cleaner user experience. Both fields are now required with proper validation
 
 ## User Preferences
 
