@@ -24,29 +24,17 @@ import {
   FileText
 } from "lucide-react";
 
-interface NavbarProps {
-  onSearch: (query: string) => void;
-  searchQuery: string;
-}
+interface NavbarProps {}
 
-export default function Navbar({ onSearch, searchQuery }: NavbarProps) {
+export default function Navbar({}: NavbarProps) {
   const { user, logout } = useAuth();
   const [notificationCount] = useState(3); // Mock unread notifications
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onSearch(e.target.value);
-  };
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Search is handled in real-time via onChange
-  };
 
   return (
     <nav className="navbar-sticky">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo and Search */}
+          {/* Logo */}
           <div className="flex items-center flex-1">
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
@@ -54,23 +42,6 @@ export default function Navbar({ onSearch, searchQuery }: NavbarProps) {
                 <h1 className="text-xl font-bold text-primary">Baltek Jobs</h1>
               </div>
             </Link>
-            
-            <div className="ml-8 flex-1 max-w-md">
-              <form onSubmit={handleSearchSubmit}>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Search className="h-4 w-4 text-gray-400" />
-                  </div>
-                  <Input
-                    type="text"
-                    placeholder="Search jobs, companies, skills..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    className="pl-10 pr-3 py-2"
-                  />
-                </div>
-              </form>
-            </div>
           </div>
 
           {/* Navigation Items */}

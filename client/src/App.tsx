@@ -53,12 +53,11 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 function Router() {
-  const [searchQuery, setSearchQuery] = useState("");
   const { isAuthenticated } = useAuth();
 
   const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
     <div className="h-full bg-gray-50 flex flex-col overflow-hidden">
-      <Navbar onSearch={setSearchQuery} searchQuery={searchQuery} />
+      <Navbar />
       <main className="flex-1 overflow-hidden">
         {children}
       </main>
@@ -115,7 +114,7 @@ function Router() {
       <Route path="/">
         <ProtectedRoute>
           <ProtectedLayout>
-            <Jobs searchQuery={searchQuery} />
+            <Jobs />
           </ProtectedLayout>
         </ProtectedRoute>
       </Route>
