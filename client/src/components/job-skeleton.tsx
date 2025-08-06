@@ -7,12 +7,12 @@ interface JobSkeletonProps {
 
 export default function JobSkeleton({ count = 10 }: JobSkeletonProps) {
   return (
-    <Card>
-      <div className="p-4 border-b">
+    <Card className="h-full flex flex-col">
+      <div className="p-4 border-b flex-shrink-0">
         <Skeleton className="h-6 w-32" />
       </div>
       
-      <div className="space-y-0">
+      <div className="space-y-0 flex-1 overflow-y-auto">
         {Array.from({ length: count }).map((_, index) => (
           <div key={index} className="p-4 border-b">
             <div className="flex justify-between items-start">
