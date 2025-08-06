@@ -75,8 +75,8 @@ export const jobSchema = z.object({
 // Job application schemas
 export const jobApplicationSchema = z.object({
   job: z.number(),
-  cover_letter: z.string().min(1, "Cover letter is required"),
-  resume: z.string().min(1, "Resume is required"),
+  cover_letter: z.string().optional(),
+  resume: z.string().optional(),
 });
 
 // Education schema

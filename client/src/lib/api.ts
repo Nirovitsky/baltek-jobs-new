@@ -51,6 +51,11 @@ export class ApiClient {
         ...options.headers,
       };
 
+      // Don't set Content-Type for FormData - let browser handle it
+      if (options.body instanceof FormData) {
+        delete headers["Content-Type"];
+      }
+
       const response = await fetch(url, {
         ...options,
         headers,
@@ -135,11 +140,26 @@ export class ApiClient {
   }
 
   // Applications API
-  static async applyToJob(data: any) {
-    return this.makeRequest("/jobs/applications/", {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+  static async applyToJob(data: any, resumeFile?: File) {
+    // If there's a resume file, use FormData for multipart upload
+    if (resumeFile) {
+      const formData = new FormData();
+      formData.append("job", data.job.toString());
+      formData.append("cover_letter", data.cover_letter || "");
+      formData.append("resume", resumeFile);
+
+      return this.makeRequest("/jobs/applications/", {
+        method: "POST",
+        body: formData,
+        headers: {}, // Let browser set multipart headers
+      });
+    } else {
+      // If only cover letter, send as JSON
+      return this.makeRequest("/jobs/applications/", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+    }
   }
 
   static async getMyApplications() {

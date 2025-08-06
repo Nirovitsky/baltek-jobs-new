@@ -72,20 +72,27 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
         resumeUrl = fileData.url;
       }
 
-      // Ensure both cover letter and resume are provided
-      if (!data.cover_letter) {
-        throw new Error("Cover letter is required");
-      }
-      
-      if (!resumeUrl) {
-        throw new Error("Resume is required");
-      }
+      // Both fields can be empty for now - let API validation handle requirements
 
-      return ApiClient.applyToJob({
+      const applicationData = {
         job: data.job,
-        cover_letter: data.cover_letter,
-        resume: resumeUrl,
-      });
+        cover_letter: data.cover_letter || "",
+      };
+      
+      console.log("Submitting application:", applicationData);
+      console.log("Resume file:", uploadedFile);
+      console.log("Selected resume ID:", selectedResumeId);
+      
+      // Pass the file directly to API if new file uploaded
+      if (uploadedFile) {
+        return ApiClient.applyToJob(applicationData, uploadedFile);
+      } else {
+        // Handle existing resume selection or no resume case
+        return ApiClient.applyToJob({
+          ...applicationData,
+          resume: selectedResumeId || undefined,
+        });
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
@@ -99,6 +106,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
       setUploadedFile(null);
     },
     onError: (error) => {
+      console.error("Application submission error:", error);
       toast({
         title: "Application failed",
         description: error instanceof Error ? error.message : "Failed to submit application",
@@ -108,6 +116,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
   });
 
   const onSubmit = (data: JobApplication) => {
+    console.log("Form submitted with data:", data);
     applicationMutation.mutate(data);
   };
 
@@ -143,7 +152,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Cover Letter */}
           <div className="space-y-2">
-            <Label htmlFor="cover_letter">Cover Letter *</Label>
+            <Label htmlFor="cover_letter">Cover Letter</Label>
             <Textarea
               id="cover_letter"
               rows={6}
@@ -158,7 +167,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
 
           {/* Resume Selection */}
           <div className="space-y-4">
-            <Label>Resume/CV *</Label>
+            <Label>Resume/CV</Label>
             
             {/* Existing Resumes */}
             {!resumesLoading && (resumes as any)?.results?.length > 0 && (
@@ -192,8 +201,8 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
             </div>
 
             {!selectedResumeId && !uploadedFile && (
-              <p className="text-sm text-red-600">
-                Resume is required. Please select a resume or upload a new one.
+              <p className="text-sm text-gray-500">
+                Optional: Select an existing resume or upload a new one.
               </p>
             )}
           </div>
