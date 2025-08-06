@@ -31,7 +31,7 @@ interface NavbarProps {
 
 export default function Navbar({ onSearch, searchQuery }: NavbarProps) {
   const { user, logout } = useAuth();
-  const [notificationCount] = useState(0);
+  const [notificationCount] = useState(3); // Mock unread notifications
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSearch(e.target.value);
@@ -76,17 +76,19 @@ export default function Navbar({ onSearch, searchQuery }: NavbarProps) {
           {/* Navigation Items */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="h-5 w-5" />
-              {notificationCount > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                >
-                  {notificationCount}
-                </Badge>
-              )}
-            </Button>
+            <Link href="/notifications">
+              <Button variant="ghost" size="sm" className="relative">
+                <Bell className="h-5 w-5" />
+                {notificationCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                  >
+                    {notificationCount}
+                  </Badge>
+                )}
+              </Button>
+            </Link>
 
             {/* Messages */}
             <Link href="/chat">

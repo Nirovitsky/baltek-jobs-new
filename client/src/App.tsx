@@ -13,6 +13,7 @@ import Profile from "@/pages/profile";
 import Applications from "@/pages/applications";
 import Settings from "@/pages/settings";
 import Chat from "@/pages/chat";
+import Notifications from "@/pages/notifications";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -101,6 +102,13 @@ function Router() {
         <ProtectedRoute>
           <ProtectedLayout>
             <Chat />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/notifications">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <Notifications />
           </ProtectedLayout>
         </ProtectedRoute>
       </Route>
