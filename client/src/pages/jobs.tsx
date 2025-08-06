@@ -46,8 +46,16 @@ export default function Jobs() {
     initialPageParam: 0,
   });
 
-  const jobs = data?.pages.flatMap((page: any) => page?.results || []) || [];
-  const currentSelectedJobId = selectedJobId || (jobs.length > 0 ? jobs[0].id : null);
+  let jobs = data?.pages.flatMap((page: any) => page?.results || []) || [];
+  
+  // Client-side currency filtering as API currency filter appears to be non-functional
+  if (filters.currency) {
+    jobs = jobs.filter((job: Job) => job.currency === filters.currency);
+  }
+  
+  // Ensure selected job is valid after filtering, or select first available job
+  const isSelectedJobInResults = selectedJobId && jobs.some((job: Job) => job.id === selectedJobId);
+  const currentSelectedJobId = isSelectedJobInResults ? selectedJobId : (jobs.length > 0 ? jobs[0].id : null);
 
   const handleJobSelect = (job: Job) => {
     setSelectedJobId(job.id);
@@ -60,6 +68,7 @@ export default function Jobs() {
 
   const handleFiltersChange = (newFilters: JobFilters) => {
     setFilters(newFilters);
+    // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
   };
 

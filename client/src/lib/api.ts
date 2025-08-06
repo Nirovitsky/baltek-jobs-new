@@ -105,15 +105,17 @@ export class ApiClient {
   // Jobs API
   static async getJobs(params: Record<string, any> = {}) {
     const searchParams = new URLSearchParams();
-    Object.entries(params).forEach(([key, value]) => {
+    // Temporarily exclude currency from API params as API currency filter is non-functional
+    // We'll handle currency filtering on the client side
+    const { currency, ...apiParams } = params;
+    
+    Object.entries(apiParams).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
         searchParams.append(key, value.toString());
       }
     });
     
     const query = searchParams.toString();
-    console.log('API Request params:', params);
-    console.log('Query string:', query);
     return this.makeRequest(`/jobs/${query ? `?${query}` : ""}`);
   }
 
