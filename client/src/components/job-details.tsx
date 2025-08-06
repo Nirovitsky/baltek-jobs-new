@@ -19,7 +19,8 @@ import {
   Building,
   Calendar,
   Users,
-  Globe
+  Globe,
+  CheckCircle
 } from "lucide-react";
 
 interface JobDetailsProps {
@@ -37,6 +38,15 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     queryFn: () => ApiClient.getJob(jobId),
     enabled: !!jobId,
   }) as { data: Job | undefined; isLoading: boolean; error: any };
+
+  // Fetch user's applications to check if already applied
+  const { data: applications } = useQuery({
+    queryKey: ["applications"],
+    queryFn: () => ApiClient.getMyApplications(),
+  });
+
+  // Check if user has already applied to this job
+  const hasApplied = (applications as any)?.results?.some((app: any) => app.job.id === jobId) || false;
 
   const bookmarkMutation = useMutation({
     mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 
@@ -294,12 +304,23 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
           {/* Action Buttons */}
           <div className="flex space-x-3">
             <Button
-              onClick={() => setIsApplicationModalOpen(true)}
+              onClick={hasApplied ? undefined : () => setIsApplicationModalOpen(true)}
               className="flex-1"
               size="lg"
+              variant={hasApplied ? "outline" : "default"}
+              disabled={hasApplied}
             >
-              <Send className="w-4 h-4 mr-2" />
-              Apply Now
+              {hasApplied ? (
+                <>
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Applied
+                </>
+              ) : (
+                <>
+                  <Send className="w-4 h-4 mr-2" />
+                  Apply Now
+                </>
+              )}
             </Button>
             <Button variant="outline" size="lg">
               <Building className="w-4 h-4 mr-2" />
