@@ -6,6 +6,7 @@ import Navbar from "@/components/navbar";
 import JobFiltersComponent from "@/components/job-filters";
 import JobList from "@/components/job-list";
 import JobDetails from "@/components/job-details";
+import JobDetailsSkeleton from "@/components/job-details-skeleton";
 import ChatWidget from "@/components/chat-widget";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
@@ -96,9 +97,11 @@ export default function Jobs() {
           </div>
           
           <div className="w-1/2">
-            {selectedJob && (
+            {isLoading ? (
+              <JobDetailsSkeleton />
+            ) : selectedJob ? (
               <JobDetails job={selectedJob} />
-            )}
+            ) : null}
           </div>
         </div>
       </div>
