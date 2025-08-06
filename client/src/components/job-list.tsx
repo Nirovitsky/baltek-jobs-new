@@ -171,8 +171,8 @@ export default function JobList({
                 </div>
                 
                 {/* Bottom Row: Company Left, Location Right */}
-                <div className="flex items-center">
-                  <div className="flex items-center space-x-2">
+                <div className="flex justify-between items-center w-full">
+                  <div className="flex items-center space-x-2 flex-shrink-0">
                     <div className="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">
                       {job.organization?.logo ? (
                         <img
@@ -189,18 +189,16 @@ export default function JobList({
                     </p>
                   </div>
                   
-                  <div className="flex-1 min-w-8"></div>
-                  
-                  <p className="text-xs text-gray-500 flex items-center">
+                  <div className="text-xs text-gray-500 flex items-center flex-shrink-0 ml-4">
                     <MapPin className="w-3 h-3 mr-1" />
-                    {job.location?.name || 'Unknown'}
-                  </p>
+                    <span className="whitespace-nowrap">{job.location?.name || 'Unknown'}</span>
+                  </div>
                 </div>
               </div>
               
               {/* Salary on Top Right */}
-              <div className="text-right">
-                <span className="text-sm font-medium text-primary">
+              <div className="text-right flex-shrink-0">
+                <span className="text-sm font-medium text-primary whitespace-nowrap">
                   {formatSalary(job)}
                 </span>
               </div>
