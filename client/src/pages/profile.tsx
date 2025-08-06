@@ -21,8 +21,7 @@ export default function Profile() {
     enabled: !!user?.id,
   });
 
-  // Log the profile data for debugging
-  console.log("Full Profile Data:", fullProfile);
+
 
   // Fetch user applications for stats
   const { data: applications } = useQuery({
@@ -66,6 +65,14 @@ export default function Profile() {
   // Type assertion for the profile data to avoid TypeScript errors
   const typedProfile = profileData as any;
 
+  // Add profession and additional profile fields from API
+  const displayProfile = {
+    ...typedProfile,
+    profession: (fullProfile as any)?.profession || '',
+    date_of_birth: (fullProfile as any)?.date_of_birth || '',
+    gender: (fullProfile as any)?.gender || '',
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar onSearch={() => {}} searchQuery="" />
@@ -90,15 +97,20 @@ export default function Profile() {
                   </div>
                   <div>
                     <CardTitle className="text-2xl">
-                      {typedProfile.first_name} {typedProfile.last_name}
+                      {displayProfile.first_name} {displayProfile.last_name}
                     </CardTitle>
-                    <CardDescription className="text-lg">
-                      {typedProfile.email}
+                    {displayProfile.profession && (
+                      <CardDescription className="text-lg font-medium text-primary">
+                        {displayProfile.profession}
+                      </CardDescription>
+                    )}
+                    <CardDescription className="text-base text-gray-600">
+                      {displayProfile.email}
                     </CardDescription>
-                    {typedProfile.location && (
+                    {displayProfile.location && (
                       <div className="flex items-center text-gray-500 mt-1">
                         <MapPin className="w-4 h-4 mr-1" />
-                        <span className="text-sm">{typedProfile.location}</span>
+                        <span className="text-sm">{displayProfile.location}</span>
                       </div>
                     )}
                   </div>
@@ -116,26 +128,45 @@ export default function Profile() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center text-gray-600">
                   <Mail className="w-4 h-4 mr-2" />
-                  <span>{typedProfile.email}</span>
+                  <span>{displayProfile.email}</span>
                 </div>
-                {typedProfile.phone && (
+                {displayProfile.phone && (
                   <div className="flex items-center text-gray-600">
                     <Phone className="w-4 h-4 mr-2" />
-                    <span>{typedProfile.phone}</span>
+                    <span>{displayProfile.phone}</span>
                   </div>
                 )}
               </div>
 
+              {/* Additional Profile Information */}
+              {(displayProfile.date_of_birth || displayProfile.gender) && (
+                <>
+                  <Separator className="my-4" />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {displayProfile.date_of_birth && (
+                      <div className="text-sm text-gray-600">
+                        <span className="font-medium">Date of Birth:</span> {new Date(displayProfile.date_of_birth).toLocaleDateString()}
+                      </div>
+                    )}
+                    {displayProfile.gender && (
+                      <div className="text-sm text-gray-600">
+                        <span className="font-medium">Gender:</span> {displayProfile.gender}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+
               {/* Professional Links */}
-              {(typedProfile.linkedin_url || typedProfile.github_url || typedProfile.portfolio_url) && (
+              {(displayProfile.linkedin_url || displayProfile.github_url || displayProfile.portfolio_url) && (
                 <>
                   <Separator className="my-4" />
                   <div>
                     <h3 className="font-semibold mb-2">Professional Links</h3>
                     <div className="flex flex-wrap gap-3">
-                      {typedProfile.linkedin_url && (
+                      {displayProfile.linkedin_url && (
                         <a
-                          href={typedProfile.linkedin_url}
+                          href={displayProfile.linkedin_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center text-sm text-blue-600 hover:text-blue-800"
@@ -144,9 +175,9 @@ export default function Profile() {
                           LinkedIn
                         </a>
                       )}
-                      {typedProfile.github_url && (
+                      {displayProfile.github_url && (
                         <a
-                          href={typedProfile.github_url}
+                          href={displayProfile.github_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center text-sm text-gray-700 hover:text-gray-900"
@@ -155,9 +186,9 @@ export default function Profile() {
                           GitHub
                         </a>
                       )}
-                      {typedProfile.portfolio_url && (
+                      {displayProfile.portfolio_url && (
                         <a
-                          href={typedProfile.portfolio_url}
+                          href={displayProfile.portfolio_url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center text-sm text-green-600 hover:text-green-800"
@@ -171,23 +202,23 @@ export default function Profile() {
                 </>
               )}
               
-              {typedProfile.bio && (
+              {displayProfile.bio && (
                 <>
                   <Separator className="my-4" />
                   <div>
                     <h3 className="font-semibold mb-2">About</h3>
-                    <p className="text-gray-700">{typedProfile.bio}</p>
+                    <p className="text-gray-700">{displayProfile.bio}</p>
                   </div>
                 </>
               )}
 
-              {typedProfile.skills && typedProfile.skills.length > 0 && (
+              {displayProfile.skills && displayProfile.skills.length > 0 && (
                 <>
                   <Separator className="my-4" />
                   <div>
                     <h3 className="font-semibold mb-2">Skills</h3>
                     <div className="flex flex-wrap gap-2">
-                      {typedProfile.skills.map((skill: string, index: number) => (
+                      {displayProfile.skills.map((skill: string, index: number) => (
                         <Badge key={index} variant="secondary">
                           {skill}
                         </Badge>
@@ -228,14 +259,15 @@ export default function Profile() {
               <CardContent>
                 <div className="text-2xl font-bold">
                   {Math.round(
-                    ((typedProfile.first_name ? 1 : 0) +
-                    (typedProfile.last_name ? 1 : 0) +
-                    (typedProfile.email ? 1 : 0) +
-                    (typedProfile.phone ? 1 : 0) +
-                    (typedProfile.bio ? 1 : 0) +
-                    (typedProfile.location ? 1 : 0) +
-                    (typedProfile.skills && typedProfile.skills.length > 0 ? 1 : 0) +
-                    (typedProfile.linkedin_url || typedProfile.github_url || typedProfile.portfolio_url ? 1 : 0)) / 8 * 100
+                    ((displayProfile.first_name ? 1 : 0) +
+                    (displayProfile.last_name ? 1 : 0) +
+                    (displayProfile.email ? 1 : 0) +
+                    (displayProfile.phone ? 1 : 0) +
+                    (displayProfile.bio ? 1 : 0) +
+                    (displayProfile.location ? 1 : 0) +
+                    (displayProfile.profession ? 1 : 0) +
+                    (displayProfile.skills && displayProfile.skills.length > 0 ? 1 : 0) +
+                    (displayProfile.linkedin_url || displayProfile.github_url || displayProfile.portfolio_url ? 1 : 0)) / 9 * 100
                   )}%
                 </div>
                 <p className="text-xs text-gray-500">Complete your profile</p>
@@ -243,28 +275,8 @@ export default function Profile() {
             </Card>
           </div>
 
-          {/* Debug Info */}
-          {user && (
-            <Card className="bg-yellow-50 border-yellow-200">
-              <CardHeader>
-                <CardTitle className="text-sm text-yellow-800">Debug Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-xs text-yellow-700">User ID: {user.id}</p>
-                <p className="text-xs text-yellow-700">Profile Loading: {profileLoading ? 'Yes' : 'No'}</p>
-                <p className="text-xs text-yellow-700">Profile Error: {profileError ? 'Yes' : 'No'}</p>
-                <p className="text-xs text-yellow-700">Profile Data Available: {fullProfile ? 'Yes' : 'No'}</p>
-                {fullProfile && (
-                  <p className="text-xs text-yellow-700">
-                    Profile Keys: {Object.keys(fullProfile).join(', ')}
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          )}
-
           {/* Experience Section */}
-          {(fullProfile as any)?.experience && (fullProfile as any).experience.length > 0 && (
+          {(fullProfile as any)?.experiences && (fullProfile as any).experiences.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
@@ -273,7 +285,7 @@ export default function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {(fullProfile as any).experience.map((exp: any, index: number) => (
+                {(fullProfile as any).experiences.map((exp: any, index: number) => (
                   <div key={index} className="flex gap-4 pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
@@ -341,7 +353,7 @@ export default function Profile() {
           )}
 
           {/* Education Section */}
-          {(fullProfile as any)?.education && (fullProfile as any).education.length > 0 && (
+          {(fullProfile as any)?.educations && (fullProfile as any).educations.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
@@ -350,7 +362,7 @@ export default function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {(fullProfile as any).education.map((edu: any, index: number) => (
+                {(fullProfile as any).educations.map((edu: any, index: number) => (
                   <div key={index} className="flex gap-4 pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
