@@ -141,15 +141,17 @@ export class ApiClient {
   }
 
   // Applications API
-  static async applyToJob(data: any, resumeFile?: File) {
+  static async applyToJob(data: any, resumeFile?: File, selectedResumeId?: string) {
     // Always use FormData since API expects multipart form
     const formData = new FormData();
     formData.append("job", data.job.toString());
     formData.append("cover_letter", data.cover_letter || "");
     
-    // Only append resume if file is provided
+    // Handle resume submission - either file upload or existing resume ID
     if (resumeFile) {
       formData.append("resume", resumeFile);
+    } else if (selectedResumeId) {
+      formData.append("resume_id", selectedResumeId);
     }
 
     return this.makeRequest("/jobs/applications/", {

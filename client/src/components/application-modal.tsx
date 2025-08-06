@@ -64,15 +64,10 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
 
   const applicationMutation = useMutation({
     mutationFn: async (data: JobApplication) => {
-      let resumeUrl = selectedResumeId;
-      
-      // Upload new file if provided
-      if (uploadedFile) {
-        const fileData = await ApiClient.uploadFile(uploadedFile);
-        resumeUrl = fileData.url;
+      // Validate that we have either an uploaded file or selected resume
+      if (!uploadedFile && !selectedResumeId) {
+        throw new Error("Please upload a resume or select an existing one");
       }
-
-      // Both fields can be empty for now - let API validation handle requirements
 
       const applicationData = {
         job: data.job,
@@ -83,8 +78,8 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
       console.log("Resume file:", uploadedFile);
       console.log("Selected resume ID:", selectedResumeId);
       
-      // Pass the file to API (could be undefined if no file selected)
-      return ApiClient.applyToJob(applicationData, uploadedFile);
+      // Pass the file or selected resume ID to the application API
+      return ApiClient.applyToJob(applicationData, uploadedFile || undefined, selectedResumeId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });
@@ -193,8 +188,8 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
             </div>
 
             {!selectedResumeId && !uploadedFile && (
-              <p className="text-sm text-gray-500">
-                Optional: Select an existing resume or upload a new one.
+              <p className="text-sm text-red-500">
+                Required: Please select an existing resume or upload a new one to apply.
               </p>
             )}
           </div>
@@ -208,7 +203,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
             </Button>
             <Button
               type="submit"
-              disabled={applicationMutation.isPending}
+              disabled={applicationMutation.isPending || (!uploadedFile && !selectedResumeId)}
             >
               {applicationMutation.isPending ? (
                 "Submitting..."
