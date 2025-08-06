@@ -60,6 +60,10 @@
     @apply border-border;
   }
 
+  html, body {
+    overscroll-behavior: none;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
     font-family: 'Inter', sans-serif;
@@ -101,6 +105,16 @@
   }
   
   .infinite-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+  
+  .job-description-scroll {
+    /* Hidden scrollbar for job description */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+  }
+  
+  .job-description-scroll::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
   

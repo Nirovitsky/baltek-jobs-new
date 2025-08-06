@@ -144,68 +144,76 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
   return (
     <>
-      <Card className="sticky top-24">
-        <CardContent className="p-6">
-          {/* Header */}
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
-                {job.organization?.logo ? (
-                  <img
-                    src={job.organization.logo}
-                    alt={job.organization.display_name || job.organization.name || 'Company'}
-                    className="w-16 h-16 rounded-lg object-cover"
-                  />
-                ) : (
-                  <Building className="w-8 h-8 text-gray-400" />
-                )}
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">{job.title || 'Job Title'}</h1>
-                <p className="text-lg text-gray-600">{job.organization?.display_name || job.organization?.name || 'Unknown Company'}</p>
-                <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
-                  <span className="flex items-center">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {job.location?.name || 'Unknown'}, {job.location?.country || 'Unknown'}
-                  </span>
-                  <span className="flex items-center">
-                    <Calendar className="w-4 h-4 mr-1" />
-                    Posted {job.created_at ? getTimeAgo(job.created_at) : 'Recently'}
-                  </span>
+      <div className="flex flex-col h-full">
+        <Card className="flex-1 flex flex-col max-h-[calc(100vh-120px)]">
+          {/* Fixed Header */}
+          <div className="p-6 border-b bg-white">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                  {job.organization?.logo ? (
+                    <img
+                      src={job.organization.logo}
+                      alt={job.organization.display_name || job.organization.name || 'Company'}
+                      className="w-16 h-16 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <Building className="w-8 h-8 text-gray-400" />
+                  )}
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">{job.title || 'Job Title'}</h1>
+                  <p className="text-lg text-gray-600">{job.organization?.display_name || job.organization?.name || 'Unknown Company'}</p>
+                  <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
+                    <span className="flex items-center">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      {job.location?.name || 'Unknown'}, {job.location?.country || 'Unknown'}
+                    </span>
+                    <span className="flex items-center">
+                      <Calendar className="w-4 h-4 mr-1" />
+                      Posted {job.created_at ? getTimeAgo(job.created_at) : 'Recently'}
+                    </span>
+                  </div>
                 </div>
               </div>
+              <div className="flex space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleBookmark}
+                  disabled={bookmarkMutation.isPending}
+                  className={job.is_bookmarked ? "text-blue-500 border-blue-200" : "text-blue-400 hover:text-blue-500"}
+                >
+                  <Bookmark className={`w-4 h-4 ${job.is_bookmarked ? "fill-current" : ""}`} />
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleShare}>
+                  <Share className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleBookmark}
-                disabled={bookmarkMutation.isPending}
-                className={job.is_bookmarked ? "text-blue-500 border-blue-200" : "text-blue-400 hover:text-blue-500"}
-              >
-                <Bookmark className={`w-4 h-4 ${job.is_bookmarked ? "fill-current" : ""}`} />
-              </Button>
-              <Button variant="outline" size="sm" onClick={handleShare}>
-                <Share className="w-4 h-4" />
-              </Button>
+
+            {/* Quick Info Cards */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-gray-900 mb-2">Salary Range</h3>
+                <p className="text-xl font-bold text-primary">
+                  {formatSalary(job)}
+                </p>
+                <p className="text-sm text-gray-500">per year</p>
+              </div>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="font-semibold text-gray-900 mb-2">Job Type</h3>
+                <p className="text-lg">{formatJobType(job.job_type)}</p>
+                <p className="text-sm text-gray-500">{formatWorkplaceType(job.workplace_type)}</p>
+              </div>
             </div>
           </div>
 
-          {/* Quick Info Cards */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-900 mb-2">Salary Range</h3>
-              <p className="text-xl font-bold text-primary">
-                {formatSalary(job)}
-              </p>
-              <p className="text-sm text-gray-500">per year</p>
-            </div>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-gray-900 mb-2">Job Type</h3>
-              <p className="text-lg">{formatJobType(job.job_type)}</p>
-              <p className="text-sm text-gray-500">{formatWorkplaceType(job.workplace_type)}</p>
-            </div>
-          </div>
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto job-description-scroll">
+            <CardContent className="p-6">
+
 
           {/* Skills */}
           <div className="mb-6">
@@ -298,8 +306,10 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               Company Profile
             </Button>
           </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </div>
+        </Card>
+      </div>
 
       <ApplicationModal
         job={job}
