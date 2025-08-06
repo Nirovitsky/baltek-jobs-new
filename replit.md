@@ -35,6 +35,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Skeleton Loading States**: Replaced generic loading indicators with detailed skeleton components that mirror the actual job card layout, providing smooth visual feedback during initial page loads and infinite scroll loading
 - **Hidden Scrollbar UX**: Implemented invisible scrollbar for cleaner visual appearance while maintaining full scrolling functionality
 - **Progressive Loading Skeletons**: Added dedicated skeleton components for both initial page load and infinite scroll states to maintain consistent visual feedback
+- **Individual Job Details Fetching**: Implemented API calls to fetch complete job details when a job is clicked, providing fresh detailed information including full job descriptions and requirements
 
 ## User Preferences
 

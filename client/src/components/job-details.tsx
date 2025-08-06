@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import type { Job } from "@shared/schema";
+import JobDetailsSkeleton from "@/components/job-details-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,13 +23,41 @@ import {
 } from "lucide-react";
 
 interface JobDetailsProps {
-  job: Job;
+  jobId: number;
 }
 
-export default function JobDetails({ job }: JobDetailsProps) {
+export default function JobDetails({ jobId }: JobDetailsProps) {
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Fetch detailed job data
+  const { data: job, isLoading, error } = useQuery({
+    queryKey: ["job", jobId],
+    queryFn: () => ApiClient.getJob(jobId),
+    enabled: !!jobId,
+  });
+
+  if (isLoading) {
+    return <JobDetailsSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <Card className="h-full">
+        <CardContent className="p-6 text-center">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to load job details</h3>
+          <p className="text-gray-600">
+            {error instanceof Error ? error.message : "Something went wrong"}
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!job) {
+    return null;
+  }
 
   const bookmarkMutation = useMutation({
     mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 

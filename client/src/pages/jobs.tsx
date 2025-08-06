@@ -47,7 +47,7 @@ export default function Jobs() {
   });
 
   const jobs = data?.pages.flatMap((page: any) => page?.results || []) || [];
-  const selectedJob = jobs.find(job => job.id === selectedJobId) || jobs[0];
+  const currentSelectedJobId = selectedJobId || (jobs.length > 0 ? jobs[0].id : null);
 
   const handleJobSelect = (job: Job) => {
     setSelectedJobId(job.id);
@@ -87,7 +87,7 @@ export default function Jobs() {
           <div className="w-1/2">
             <JobList
               jobs={jobs}
-              selectedJobId={selectedJobId}
+              selectedJobId={currentSelectedJobId}
               onJobSelect={handleJobSelect}
               isLoading={isLoading}
               hasNextPage={hasNextPage}
@@ -97,10 +97,10 @@ export default function Jobs() {
           </div>
           
           <div className="w-1/2">
-            {isLoading ? (
+            {currentSelectedJobId ? (
+              <JobDetails jobId={currentSelectedJobId} />
+            ) : isLoading ? (
               <JobDetailsSkeleton />
-            ) : selectedJob ? (
-              <JobDetails job={selectedJob} />
             ) : null}
           </div>
         </div>
