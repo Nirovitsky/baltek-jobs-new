@@ -112,7 +112,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     const currencySymbol = currency === "EUR" ? "€" : 
                            currency === "GBP" ? "£" : 
                            currency === "USD" ? "$" : 
-                           currency === "TMT" ? "M" : 
+                           currency === "TMT" ? "TMT" : 
                            currency;
     
     if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
