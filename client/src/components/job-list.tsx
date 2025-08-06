@@ -99,6 +99,10 @@ export default function JobList({
     return type.replace("_", " ").toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
   };
 
+  const formatWorkplaceType = (type: string) => {
+    return type.replace("_", " ").toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+  };
+
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -151,34 +155,43 @@ export default function JobList({
                   {job.title || 'Job Title'}
                 </h3>
                 
-                {/* Company Details */}
-                <div className="flex items-center space-x-2.5 mb-1.5">
-                  <div className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center">
-                    {job.organization?.logo ? (
-                      <img
-                        src={job.organization.logo}
-                        alt={job.organization.display_name || job.organization.name || 'Company'}
-                        className="w-6 h-6 rounded object-cover"
-                      />
-                    ) : (
-                      <Building className="w-3 h-3 text-gray-400" />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-gray-900 text-xs truncate">
-                      {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
-                    </p>
-                  </div>
+                {/* Tags in Middle */}
+                <div className="flex flex-wrap gap-1.5 mb-3">
+                  <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-md">
+                    {formatJobType(job.job_type)}
+                  </span>
+                  <span className="px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded-md">
+                    {formatWorkplaceType(job.workplace_type)}
+                  </span>
+                  {job.minimum_education_level && (
+                    <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-md">
+                      {job.minimum_education_level}
+                    </span>
+                  )}
                 </div>
                 
-                {/* Location and Job Type */}
-                <div className="space-y-1">
+                {/* Bottom Row: Company Left, Location Right */}
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">
+                      {job.organization?.logo ? (
+                        <img
+                          src={job.organization.logo}
+                          alt={job.organization.display_name || job.organization.name || 'Company'}
+                          className="w-5 h-5 rounded object-cover"
+                        />
+                      ) : (
+                        <Building className="w-3 h-3 text-gray-400" />
+                      )}
+                    </div>
+                    <p className="font-medium text-gray-900 text-xs truncate max-w-24">
+                      {job.organization?.display_name || job.organization?.name || 'Unknown'}
+                    </p>
+                  </div>
+                  
                   <p className="text-xs text-gray-500 flex items-center">
                     <MapPin className="w-3 h-3 mr-1" />
                     {job.location?.name || 'Unknown'}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {formatJobType(job.job_type)}
                   </p>
                 </div>
               </div>
