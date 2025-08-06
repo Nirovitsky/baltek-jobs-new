@@ -126,7 +126,7 @@ export default function JobList({
 
   if (isLoading) {
     return (
-      <Card className="h-full flex flex-col w-full">
+      <Card className="h-full flex flex-col w-[400px]">
         <div className="flex-1 flex items-center justify-center">
           <div className="flex flex-col items-center space-y-3">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -139,17 +139,19 @@ export default function JobList({
 
   if (jobs.length === 0) {
     return (
-      <Card>
-        <CardContent className="p-6 text-center">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
-          <p className="text-gray-600">Try adjusting your filters or search terms</p>
+      <Card className="h-full flex flex-col w-[400px]">
+        <CardContent className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
+            <p className="text-gray-600">Try adjusting your filters or search terms</p>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="h-full flex flex-col w-full">
+    <Card className="h-full flex flex-col w-[400px]">
       <div className="p-4 border-b flex-shrink-0 space-y-3">
         <h2 className="text-lg font-semibold text-gray-900">
           {totalCount !== undefined ? `${totalCount} Job${totalCount !== 1 ? "s" : ""} Found` : `${jobs.length} Job${jobs.length !== 1 ? "s" : ""} Found`}
