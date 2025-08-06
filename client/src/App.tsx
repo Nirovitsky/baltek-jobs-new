@@ -56,9 +56,9 @@ function Router() {
   const { isAuthenticated } = useAuth();
 
   const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-full bg-gray-50 flex flex-col overflow-hidden">
       <Navbar onSearch={setSearchQuery} searchQuery={searchQuery} />
-      <main>
+      <main className="flex-1 overflow-hidden">
         {children}
       </main>
     </div>
