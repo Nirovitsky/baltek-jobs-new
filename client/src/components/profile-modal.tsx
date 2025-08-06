@@ -78,83 +78,73 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     enabled: isOpen,
   });
 
-  const { data: userEducation, isLoading: educationLoading } = useQuery({
-    queryKey: ["user", user?.id, "education"],
-    queryFn: () => ApiClient.getProfile(user!.id),
-    enabled: isOpen && !!user?.id,
-    select: (data: any) => data.education || [],
+  const { data: organizations, isLoading: organizationsLoading } = useQuery({
+    queryKey: ["organizations"],
+    queryFn: () => ApiClient.getOrganizations(),
+    enabled: isOpen,
   });
 
-  const { data: userExperience, isLoading: experienceLoading } = useQuery({
-    queryKey: ["user", user?.id, "experience"],
+  // Fetch complete user profile
+  const { data: fullProfile } = useQuery({
+    queryKey: ["user", "profile", user?.id],
     queryFn: () => ApiClient.getProfile(user!.id),
     enabled: isOpen && !!user?.id,
-    select: (data: any) => data.experience || [],
   });
 
-  const { data: userProjects, isLoading: projectsLoading } = useQuery({
-    queryKey: ["user", user?.id, "projects"],
-    queryFn: () => ApiClient.getProfile(user!.id),
-    enabled: isOpen && !!user?.id,
-    select: (data: any) => data.projects || [],
-  });
+  const userEducation = (fullProfile as any)?.educations || [];
+  const userExperience = (fullProfile as any)?.experiences || [];
+  const userProjects = (fullProfile as any)?.projects || [];
 
-  // Personal info form
-  const personalForm = useForm<Partial<UserProfile>>({
-    resolver: zodResolver(userProfileSchema.partial()),
+  // Personal info form - use full profile data if available, fallback to user
+  const profileData = fullProfile || user;
+  const personalForm = useForm<any>({
     defaultValues: {
-      first_name: user?.first_name || "",
-      last_name: user?.last_name || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
-      bio: user?.bio || "",
-      location: user?.location || "",
-      skills: user?.skills || [],
-      linkedin_url: user?.linkedin_url || "",
-      github_url: user?.github_url || "",
-      portfolio_url: user?.portfolio_url || "",
+      first_name: (profileData as any)?.first_name || "",
+      last_name: (profileData as any)?.last_name || "",
+      email: (profileData as any)?.email || "",
+      phone: (profileData as any)?.phone || "",
+      profession: (profileData as any)?.profession || "",
+      bio: (profileData as any)?.bio || "",
+      location: (profileData as any)?.location || "",
+      skills: (profileData as any)?.skills || [],
+      linkedin_url: (profileData as any)?.linkedin_url || "",
+      github_url: (profileData as any)?.github_url || "",
+      portfolio_url: (profileData as any)?.portfolio_url || "",
     },
   });
 
-  // Education form
-  const educationForm = useForm<EducationFormData>({
-    resolver: zodResolver(educationSchema),
+  // Education form - updated for API structure
+  const educationForm = useForm<any>({
     defaultValues: {
       university: 0,
-      degree: "",
-      field_of_study: "",
-      start_date: "",
-      end_date: "",
-      grade: "",
+      level: "",
+      date_started: "",
+      date_finished: "",
       description: "",
     },
   });
 
-  // Experience form
-  const experienceForm = useForm<ExperienceFormData>({
-    resolver: zodResolver(experienceSchema),
+  // Experience form - updated for API structure
+  const experienceForm = useForm<any>({
     defaultValues: {
-      title: "",
-      company: "",
-      location: "",
-      start_date: "",
-      end_date: "",
+      organization: 0,
+      position: "",
+      date_started: "",
+      date_finished: "",
       description: "",
-      is_current: false,
     },
   });
 
-  // Project form
-  const projectForm = useForm<ProjectFormData>({
-    resolver: zodResolver(projectSchema),
+  // Project form - updated for API structure
+  const projectForm = useForm<any>({
     defaultValues: {
       title: "",
       description: "",
       technologies: [],
       url: "",
       github_url: "",
-      start_date: "",
-      end_date: "",
+      date_started: "",
+      date_finished: "",
     },
   });
 
@@ -163,6 +153,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     mutationFn: (data: Partial<UserProfile>) => ApiClient.updateProfile(user!.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       toast({ title: "Profile updated", description: "Your profile has been updated successfully" });
     },
     onError: (error) => {
@@ -175,9 +166,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   const addEducationMutation = useMutation({
-    mutationFn: (data: EducationFormData) => ApiClient.addEducation(data),
+    mutationFn: (data: any) => ApiClient.addEducation(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "education"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       educationForm.reset();
       toast({ title: "Education added", description: "Education record added successfully" });
     },
@@ -191,10 +182,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   const updateEducationMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: EducationFormData }) => 
+    mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateEducation(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "education"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       setEditingEducation(null);
       educationForm.reset();
       toast({ title: "Education updated", description: "Education record updated successfully" });
@@ -211,7 +202,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const deleteEducationMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteEducation(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "education"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       toast({ title: "Education deleted", description: "Education record deleted successfully" });
     },
     onError: (error) => {
@@ -224,9 +215,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   const addExperienceMutation = useMutation({
-    mutationFn: (data: ExperienceFormData) => ApiClient.addExperience(data),
+    mutationFn: (data: any) => ApiClient.addExperience(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "experience"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       experienceForm.reset();
       toast({ title: "Experience added", description: "Work experience added successfully" });
     },
@@ -240,10 +231,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   const updateExperienceMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: ExperienceFormData }) => 
+    mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateExperience(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "experience"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       setEditingExperience(null);
       experienceForm.reset();
       toast({ title: "Experience updated", description: "Work experience updated successfully" });
@@ -260,7 +251,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const deleteExperienceMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteExperience(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "experience"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       toast({ title: "Experience deleted", description: "Work experience deleted successfully" });
     },
     onError: (error) => {
@@ -273,9 +264,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   const addProjectMutation = useMutation({
-    mutationFn: (data: ProjectFormData) => ApiClient.addProject(data),
+    mutationFn: (data: any) => ApiClient.addProject(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "projects"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       projectForm.reset();
       toast({ title: "Project added", description: "Project added successfully" });
     },
@@ -289,10 +280,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   const updateProjectMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: ProjectFormData }) => 
+    mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateProject(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "projects"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       setEditingProject(null);
       projectForm.reset();
       toast({ title: "Project updated", description: "Project updated successfully" });
@@ -309,7 +300,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const deleteProjectMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteProject(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", user?.id, "projects"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
       toast({ title: "Project deleted", description: "Project deleted successfully" });
     },
     onError: (error) => {
@@ -322,11 +313,11 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   // Form handlers
-  const handlePersonalSubmit = (data: Partial<UserProfile>) => {
+  const handlePersonalSubmit = (data: any) => {
     updateProfileMutation.mutate(data);
   };
 
-  const handleEducationSubmit = (data: EducationFormData) => {
+  const handleEducationSubmit = (data: any) => {
     if (editingEducation) {
       updateEducationMutation.mutate({ id: editingEducation.id, data });
     } else {
@@ -334,7 +325,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }
   };
 
-  const handleExperienceSubmit = (data: ExperienceFormData) => {
+  const handleExperienceSubmit = (data: any) => {
     if (editingExperience) {
       updateExperienceMutation.mutate({ id: editingExperience.id, data });
     } else {
@@ -342,7 +333,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     }
   };
 
-  const handleProjectSubmit = (data: ProjectFormData) => {
+  const handleProjectSubmit = (data: any) => {
     if (editingProject) {
       updateProjectMutation.mutate({ id: editingProject.id, data });
     } else {
@@ -358,6 +349,42 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const handleTechnologiesChange = (techString: string) => {
     const technologies = techString.split(",").map(tech => tech.trim()).filter(Boolean);
     projectForm.setValue("technologies", technologies);
+  };
+
+  // Handle form population when editing
+  const handleEditEducation = (edu: any) => {
+    setEditingEducation(edu);
+    educationForm.reset({
+      university: edu.university?.id || 0,
+      level: edu.level || "",
+      date_started: edu.date_started || "",
+      date_finished: edu.date_finished || "",
+      description: edu.description || "",
+    });
+  };
+
+  const handleEditExperience = (exp: any) => {
+    setEditingExperience(exp);
+    experienceForm.reset({
+      organization: exp.organization?.id || 0,
+      position: exp.position || "",
+      date_started: exp.date_started || "",
+      date_finished: exp.date_finished || "",
+      description: exp.description || "",
+    });
+  };
+
+  const handleEditProject = (project: any) => {
+    setEditingProject(project);
+    projectForm.reset({
+      title: project.title || "",
+      description: project.description || "",
+      technologies: project.technologies || [],
+      url: project.url || "",
+      github_url: project.github_url || "",
+      date_started: project.date_started || "",
+      date_finished: project.date_finished || "",
+    });
   };
 
   if (!user) return null;
@@ -490,6 +517,15 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   </div>
 
                   <div className="space-y-2">
+                    <Label htmlFor="profession">Profession</Label>
+                    <Input
+                      id="profession"
+                      {...personalForm.register("profession")}
+                      placeholder="Software Engineer"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="bio">Bio</Label>
                     <Textarea
                       id="bio"
@@ -591,48 +627,30 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                         </Select>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="degree">Degree</Label>
-                          <Input
-                            id="degree"
-                            {...educationForm.register("degree")}
-                            placeholder="Bachelor of Science"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="field_of_study">Field of Study</Label>
-                          <Input
-                            id="field_of_study"
-                            {...educationForm.register("field_of_study")}
-                            placeholder="Computer Science"
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="level">Education Level</Label>
+                        <Input
+                          id="level"
+                          {...educationForm.register("level")}
+                          placeholder="Bachelor of Science in Computer Science"
+                        />
                       </div>
 
-                      <div className="grid grid-cols-3 gap-4">
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="start_date">Start Date</Label>
+                          <Label htmlFor="date_started">Start Date</Label>
                           <Input
-                            id="start_date"
+                            id="date_started"
                             type="date"
-                            {...educationForm.register("start_date")}
+                            {...educationForm.register("date_started")}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="end_date">End Date</Label>
+                          <Label htmlFor="date_finished">End Date</Label>
                           <Input
-                            id="end_date"
+                            id="date_finished"
                             type="date"
-                            {...educationForm.register("end_date")}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="grade">Grade (Optional)</Label>
-                          <Input
-                            id="grade"
-                            {...educationForm.register("grade")}
-                            placeholder="3.8 GPA"
+                            {...educationForm.register("date_finished")}
                           />
                         </div>
                       </div>
@@ -672,7 +690,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 </Card>
 
                 {/* Education List */}
-                {!educationLoading && userEducation?.map((edu: any) => (
+                {userEducation?.map((edu: any) => (
                   <Card key={edu.id}>
                     <CardContent className="pt-4">
                       <div className="flex items-start justify-between">
@@ -692,10 +710,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => {
-                              setEditingEducation(edu);
-                              educationForm.reset(edu);
-                            }}
+                            onClick={() => handleEditEducation(edu)}
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -741,62 +756,51 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={experienceForm.handleSubmit(handleExperienceSubmit)} className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="title">Job Title</Label>
-                          <Input
-                            id="title"
-                            {...experienceForm.register("title")}
-                            placeholder="Senior Frontend Developer"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="company">Company</Label>
-                          <Input
-                            id="company"
-                            {...experienceForm.register("company")}
-                            placeholder="TechCorp Inc."
-                          />
-                        </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="organization">Organization</Label>
+                        <Select
+                          value={experienceForm.watch("organization")?.toString() || ""}
+                          onValueChange={(value) => experienceForm.setValue("organization", parseInt(value))}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select organization" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {!organizationsLoading && (organizations as any)?.results?.map((org: any) => (
+                              <SelectItem key={org.id} value={org.id.toString()}>
+                                {org.official_name || org.display_name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="exp_location">Location</Label>
+                        <Label htmlFor="position">Position</Label>
                         <Input
-                          id="exp_location"
-                          {...experienceForm.register("location")}
-                          placeholder="San Francisco, CA"
+                          id="position"
+                          {...experienceForm.register("position")}
+                          placeholder="Senior Frontend Developer"
                         />
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="exp_start_date">Start Date</Label>
+                          <Label htmlFor="exp_date_started">Start Date</Label>
                           <Input
-                            id="exp_start_date"
+                            id="exp_date_started"
                             type="date"
-                            {...experienceForm.register("start_date")}
+                            {...experienceForm.register("date_started")}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="exp_end_date">End Date</Label>
+                          <Label htmlFor="exp_date_finished">End Date</Label>
                           <Input
-                            id="exp_end_date"
+                            id="exp_date_finished"
                             type="date"
-                            {...experienceForm.register("end_date")}
-                            disabled={experienceForm.watch("is_current")}
+                            {...experienceForm.register("date_finished")}
                           />
                         </div>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id="is_current"
-                          {...experienceForm.register("is_current")}
-                          className="rounded border-gray-300"
-                        />
-                        <Label htmlFor="is_current">I currently work here</Label>
                       </div>
 
                       <div className="space-y-2">
@@ -834,16 +838,15 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 </Card>
 
                 {/* Experience List */}
-                {!experienceLoading && userExperience?.map((exp: any) => (
+                {userExperience?.map((exp: any) => (
                   <Card key={exp.id}>
                     <CardContent className="pt-4">
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="font-semibold">{exp.title}</h4>
-                          <p className="text-gray-600">{exp.company}</p>
-                          {exp.location && <p className="text-sm text-gray-500">{exp.location}</p>}
+                          <h4 className="font-semibold">{exp.position}</h4>
+                          <p className="text-gray-600">{exp.organization_name}</p>
                           <p className="text-sm text-gray-500">
-                            {exp.start_date} - {exp.is_current ? "Present" : exp.end_date}
+                            {exp.date_started} - {exp.date_finished || "Present"}
                           </p>
                           {exp.description && (
                             <p className="text-sm text-gray-700 mt-2">{exp.description}</p>
@@ -853,10 +856,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => {
-                              setEditingExperience(exp);
-                              experienceForm.reset(exp);
-                            }}
+                            onClick={() => handleEditExperience(exp)}
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
@@ -959,19 +959,19 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="proj_start_date">Start Date</Label>
+                          <Label htmlFor="proj_date_started">Start Date</Label>
                           <Input
-                            id="proj_start_date"
+                            id="proj_date_started"
                             type="date"
-                            {...projectForm.register("start_date")}
+                            {...projectForm.register("date_started")}
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="proj_end_date">End Date</Label>
+                          <Label htmlFor="proj_date_finished">End Date</Label>
                           <Input
-                            id="proj_end_date"
+                            id="proj_date_finished"
                             type="date"
-                            {...projectForm.register("end_date")}
+                            {...projectForm.register("date_finished")}
                           />
                         </div>
                       </div>
@@ -1001,7 +1001,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 </Card>
 
                 {/* Projects List */}
-                {!projectsLoading && userProjects?.map((project: any) => (
+                {userProjects?.map((project: any) => (
                   <Card key={project.id}>
                     <CardContent className="pt-4">
                       <div className="flex items-start justify-between">
@@ -1029,9 +1029,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                               </a>
                             )}
                           </div>
-                          {(project.start_date || project.end_date) && (
+                          {(project.date_started || project.date_finished) && (
                             <p className="text-sm text-gray-500 mt-1">
-                              {project.start_date} - {project.end_date || "Ongoing"}
+                              {project.date_started} - {project.date_finished || "Ongoing"}
                             </p>
                           )}
                         </div>
@@ -1039,10 +1039,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={() => {
-                              setEditingProject(project);
-                              projectForm.reset(project);
-                            }}
+                            onClick={() => handleEditProject(project)}
                           >
                             <Edit className="w-4 h-4" />
                           </Button>

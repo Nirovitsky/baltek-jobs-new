@@ -331,6 +331,8 @@ export class ApiClient {
     return this.makeRequest("/universities/");
   }
 
+
+
   static async getLanguages() {
     return this.makeRequest("/languages/");
   }
