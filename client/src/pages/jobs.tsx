@@ -47,6 +47,7 @@ export default function Jobs() {
   });
 
   let jobs = data?.pages.flatMap((page: any) => page?.results || []) || [];
+  const totalCount = (data?.pages?.[0] as any)?.count; // Get count from the first page response
   
   // Client-side currency filtering as API currency filter appears to be non-functional
   if (filters.currency) {
@@ -102,6 +103,7 @@ export default function Jobs() {
               hasNextPage={hasNextPage}
               isFetchingNextPage={isFetchingNextPage}
               fetchNextPage={fetchNextPage}
+              totalCount={totalCount}
             />
           </div>
           

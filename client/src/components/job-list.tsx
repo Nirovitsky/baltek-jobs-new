@@ -28,6 +28,7 @@ interface JobListProps {
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
   fetchNextPage: () => void;
+  totalCount?: number;
 }
 
 export default function JobList({
@@ -38,6 +39,7 @@ export default function JobList({
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
+  totalCount,
 }: JobListProps) {
 
   const { toast } = useToast();
@@ -135,7 +137,7 @@ export default function JobList({
     <Card className="h-full flex flex-col">
       <div className="p-4 border-b flex-shrink-0">
         <h2 className="text-lg font-semibold text-gray-900">
-          {jobs.length} Job{jobs.length !== 1 ? "s" : ""} Found
+          {totalCount !== undefined ? `${totalCount} Job${totalCount !== 1 ? "s" : ""} Found` : `${jobs.length} Job${jobs.length !== 1 ? "s" : ""} Found`}
         </h2>
       </div>
       
@@ -143,65 +145,78 @@ export default function JobList({
         {jobs.map((job) => (
           <div
             key={job.id}
-            className={`job-card px-5 py-4 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 ${
-              selectedJobId === job.id ? "selected" : ""
+            className={`job-card px-6 py-5 border-b hover:bg-blue-50/30 cursor-pointer transition-all duration-200 border-l-4 ${
+              selectedJobId === job.id 
+                ? "bg-blue-50 border-l-blue-500 shadow-sm" 
+                : "border-l-transparent hover:border-l-blue-300"
             }`}
             onClick={() => onJobSelect(job)}
           >
-            <div className="relative">
+            <div className="space-y-4">
+              {/* Header: Job Title and Bookmark */}
               <div className="flex justify-between items-start">
                 <div className="flex-1 pr-4">
-                  {/* Job Title */}
-                  <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2.5">
+                  <h3 className="font-semibold text-lg text-gray-900 line-clamp-2 mb-1">
                     {job.title || 'Job Title'}
                   </h3>
-                  
-                  {/* Tags in Middle */}
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
-                      {formatJobType(job.job_type)}
-                    </span>
-                    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
-                      {formatWorkplaceType(job.workplace_type)}
-                    </span>
-                    {(job as any).minimum_education_level && (
-                      <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-md">
-                        {(job as any).minimum_education_level}
-                      </span>
-                    )}
-                  </div>
-                  
-                  {/* Company at Bottom Left */}
-                  <div className="flex items-center space-x-2">
-                    <div className="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">
-                      {job.organization?.logo ? (
-                        <img
-                          src={job.organization.logo}
-                          alt={job.organization.display_name || job.organization.name || 'Company'}
-                          className="w-5 h-5 rounded object-cover"
-                        />
-                      ) : (
-                        <Building className="w-3 h-3 text-gray-400" />
-                      )}
-                    </div>
-                    <p className="font-medium text-gray-900 text-xs truncate max-w-20">
-                      {job.organization?.display_name || job.organization?.name || 'Unknown'}
-                    </p>
-                  </div>
+                  <p className="text-sm text-gray-600 mb-2">
+                    {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
+                  </p>
                 </div>
                 
-                {/* Salary on Top Right */}
-                <div className="text-right flex-shrink-0">
-                  <span className="text-sm font-medium text-primary whitespace-nowrap">
-                    {formatSalary(job)}
-                  </span>
-                </div>
+                <button
+                  onClick={(e) => handleBookmark(e, job.id, job.is_bookmarked || false)}
+                  className="p-1.5 hover:bg-blue-100 rounded-lg transition-colors"
+                >
+                  <Bookmark 
+                    className={`w-5 h-5 transition-colors ${
+                      job.is_bookmarked 
+                        ? "fill-blue-500 text-blue-500" 
+                        : "text-gray-400 hover:text-blue-500"
+                    }`} 
+                  />
+                </button>
               </div>
-              
-              {/* Location at Bottom Right */}
-              <div className="absolute bottom-0 right-0 text-xs text-gray-500 flex items-center">
-                <MapPin className="w-3 h-3 mr-1" />
-                <span className="whitespace-nowrap">{job.location?.name || 'Unknown'}</span>
+
+              {/* Salary Badge */}
+              <div className="flex items-center justify-between">
+                <div className="inline-flex items-center px-3 py-1.5 bg-green-100 text-green-800 text-sm font-medium rounded-full">
+                  <DollarSign className="w-4 h-4 mr-1" />
+                  {formatSalary(job)}
+                </div>
+                
+                {job.my_application_id && (
+                  <span className="inline-flex items-center px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                    Applied
+                  </span>
+                )}
+              </div>
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-2">
+                <Badge variant="secondary" className="text-xs px-2 py-1">
+                  {formatJobType(job.job_type)}
+                </Badge>
+                <Badge variant="secondary" className="text-xs px-2 py-1">
+                  {formatWorkplaceType(job.workplace_type)}
+                </Badge>
+                {job.skills && job.skills.slice(0, 2).map((skill, idx) => (
+                  <Badge key={idx} variant="outline" className="text-xs px-2 py-1">
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+
+              {/* Footer: Location and Time */}
+              <div className="flex items-center justify-between text-xs text-gray-500">
+                <div className="flex items-center">
+                  <MapPin className="w-4 h-4 mr-1" />
+                  <span>{job.location?.name || 'Unknown'}</span>
+                </div>
+                <div className="flex items-center">
+                  <Clock className="w-4 h-4 mr-1" />
+                  <span>{job.created_at ? getTimeAgo(job.created_at) : 'Recently'}</span>
+                </div>
               </div>
             </div>
           </div>
