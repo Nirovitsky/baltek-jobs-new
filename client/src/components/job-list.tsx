@@ -139,20 +139,20 @@ export default function JobList({
         {jobs.map((job) => (
           <div
             key={job.id}
-            className={`job-card p-3 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 ${
+            className={`job-card px-4 py-3.5 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 ${
               selectedJobId === job.id ? "selected" : ""
             }`}
             onClick={() => onJobSelect(job)}
           >
             <div className="flex justify-between items-start">
-              <div className="flex-1 pr-3">
+              <div className="flex-1 pr-4">
                 {/* Job Title */}
-                <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2">
+                <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2.5">
                   {job.title || 'Job Title'}
                 </h3>
                 
                 {/* Company Details */}
-                <div className="flex items-center space-x-2 mb-1">
+                <div className="flex items-center space-x-2.5 mb-1.5">
                   <div className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center">
                     {job.organization?.logo ? (
                       <img
