@@ -328,6 +328,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     mutationFn: (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
+      // Add required title field (use filename without extension)
+      const title = file.name.replace(/\.[^/.]+$/, "");
+      formData.append("title", title);
       return ApiClient.uploadResume(formData);
     },
     onSuccess: () => {
