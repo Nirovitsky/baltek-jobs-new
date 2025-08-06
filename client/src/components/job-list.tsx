@@ -127,7 +127,25 @@ export default function JobList({
   if (isLoading) {
     return (
       <Card className="h-full flex flex-col w-full">
-        <div className="flex-1 flex items-center justify-center">
+        <div className="p-4 border-b flex-shrink-0 space-y-3">
+          <h2 className="text-lg font-semibold text-gray-900">Loading Jobs...</h2>
+          
+          {/* Search Bar - disabled during loading */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <Input
+              type="text"
+              placeholder="Search jobs, companies, skills..."
+              value=""
+              disabled
+              className="pl-10 pr-3 py-2 bg-gray-50"
+            />
+          </div>
+        </div>
+        
+        <div className="flex-1 flex items-center justify-center min-h-0">
           <div className="flex flex-col items-center space-y-3">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
             <span className="text-sm text-gray-600">Loading jobs...</span>
@@ -140,12 +158,32 @@ export default function JobList({
   if (jobs.length === 0) {
     return (
       <Card className="h-full flex flex-col w-full">
-        <CardContent className="flex-1 flex items-center justify-center">
+        <div className="p-4 border-b flex-shrink-0 space-y-3">
+          <h2 className="text-lg font-semibold text-gray-900">0 Jobs Found</h2>
+          
+          {/* Search Bar */}
+          <form onSubmit={onSearchSubmit}>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-4 w-4 text-gray-400" />
+              </div>
+              <Input
+                type="text"
+                placeholder="Search jobs, companies, skills..."
+                value={searchQuery}
+                onChange={onSearchChange}
+                className="pl-10 pr-3 py-2"
+              />
+            </div>
+          </form>
+        </div>
+        
+        <div className="flex-1 flex items-center justify-center min-h-0">
           <div className="text-center">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No jobs found</h3>
             <p className="text-gray-600">Try adjusting your filters or search terms</p>
           </div>
-        </CardContent>
+        </div>
       </Card>
     );
   }
