@@ -139,75 +139,53 @@ export default function JobList({
         {jobs.map((job) => (
           <div
             key={job.id}
-            className={`job-card p-4 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 ${
+            className={`job-card p-3 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 ${
               selectedJobId === job.id ? "selected" : ""
             }`}
             onClick={() => onJobSelect(job)}
           >
             <div className="flex justify-between items-start">
-              <div className="flex-1 pr-4">
+              <div className="flex-1 pr-3">
                 {/* Job Title */}
-                <h3 className="font-semibold text-lg text-gray-900 line-clamp-1 mb-3">
+                <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2">
                   {job.title || 'Job Title'}
                 </h3>
                 
-                {/* Job Type */}
-                <div className="mb-3">
-                  <span className="text-sm text-gray-500">
-                    {formatJobType(job.job_type)}
-                  </span>
-                </div>
-                
-                {/* Skills Tags */}
-                <div className="flex items-center space-x-2 mb-4">
-                  {job.skills && job.skills.length > 0 ? (
-                    <>
-                      {job.skills.slice(0, 4).map((skill, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {skill}
-                        </Badge>
-                      ))}
-                      {job.skills.length > 4 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{job.skills.length - 4} more
-                        </Badge>
-                      )}
-                    </>
-                  ) : (
-                    <Badge variant="outline" className="text-xs text-gray-500">
-                      No skills listed
-                    </Badge>
-                  )}
-                </div>
-                
-                {/* Company Details at Bottom */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                {/* Company Details */}
+                <div className="flex items-center space-x-2 mb-1">
+                  <div className="w-6 h-6 bg-gray-200 rounded flex items-center justify-center">
                     {job.organization?.logo ? (
                       <img
                         src={job.organization.logo}
                         alt={job.organization.display_name || job.organization.name || 'Company'}
-                        className="w-10 h-10 rounded-lg object-cover"
+                        className="w-6 h-6 rounded object-cover"
                       />
                     ) : (
-                      <Building className="w-5 h-5 text-gray-400" />
+                      <Building className="w-3 h-3 text-gray-400" />
                     )}
                   </div>
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-900 text-sm">
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900 text-xs truncate">
                       {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
                     </p>
-                    <p className="text-sm text-gray-500 flex items-center">
-                      <MapPin className="w-3 h-3 mr-1" />
-                      {job.location?.name || 'Unknown'}, {job.location?.country || 'Unknown'}
-                    </p>
                   </div>
+                </div>
+                
+                {/* Location and Job Type */}
+                <div className="space-y-1">
+                  <p className="text-xs text-gray-500 flex items-center">
+                    <MapPin className="w-3 h-3 mr-1" />
+                    {job.location?.name || 'Unknown'}
+                  </p>
+                  <p className="text-xs text-gray-500">
+                    {formatJobType(job.job_type)}
+                  </p>
                 </div>
               </div>
               
               {/* Salary on Top Right */}
               <div className="text-right">
-                <span className="text-lg font-medium text-primary">
+                <span className="text-sm font-medium text-primary">
                   {formatSalary(job)}
                 </span>
               </div>
