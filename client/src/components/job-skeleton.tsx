@@ -9,7 +9,7 @@ export default function JobSkeleton({ count = 10 }: JobSkeletonProps) {
   return (
     <Card className="h-full flex flex-col">
       <div className="p-4 border-b flex-shrink-0">
-        <Skeleton className="h-6 w-32" />
+        <Skeleton className="h-6 w-24" />
       </div>
       
       <div className="space-y-0 flex-1 overflow-y-auto">
