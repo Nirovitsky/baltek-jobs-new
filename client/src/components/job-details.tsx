@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import type { Job } from "@shared/schema";
-import JobDetailsSkeleton from "@/components/job-details-skeleton";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -92,9 +92,13 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   // Conditional rendering after all hooks
   if (isLoading) {
     return (
-      <div className="h-full">
-        <JobDetailsSkeleton />
-      </div>
+      <Card className="h-full">
+        <CardContent className="p-6 flex items-center justify-center h-full">
+          <div className="text-center">
+            <h3 className="text-lg font-medium text-gray-900">Loading job details...</h3>
+          </div>
+        </CardContent>
+      </Card>
     );
   }
 
