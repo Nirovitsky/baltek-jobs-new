@@ -40,13 +40,23 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   }) as { data: Job | undefined; isLoading: boolean; error: any };
 
   // Fetch user's applications to check if already applied
-  const { data: applications } = useQuery({
+  const { data: applications, isError: applicationsError } = useQuery({
     queryKey: ["applications"],
     queryFn: () => ApiClient.getMyApplications(),
+    retry: false, // Don't retry on auth errors
   });
 
+  // Debug logging
+  console.log("Applications data:", applications);
+  console.log("Applications error:", applicationsError);
+
   // Check if user has already applied to this job
-  const hasApplied = (applications as any)?.results?.some((app: any) => app.job.id === jobId) || false;
+  const hasApplied = (applications as any)?.results?.some((app: any) => {
+    console.log("Checking application:", app);
+    return app.job?.id === jobId || app.job === jobId;
+  }) || false;
+
+  console.log("Has applied to job", jobId, ":", hasApplied);
 
   const bookmarkMutation = useMutation({
     mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 
