@@ -163,15 +163,15 @@ export default function JobList({
                   <span className="px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded-md">
                     {formatWorkplaceType(job.workplace_type)}
                   </span>
-                  {job.minimum_education_level && (
+                  {(job as any).minimum_education_level && (
                     <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-md">
-                      {job.minimum_education_level}
+                      {(job as any).minimum_education_level}
                     </span>
                   )}
                 </div>
                 
                 {/* Bottom Row: Company Left, Location Right */}
-                <div className="flex justify-between items-center">
+                <div className="flex items-center">
                   <div className="flex items-center space-x-2">
                     <div className="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">
                       {job.organization?.logo ? (
@@ -188,6 +188,8 @@ export default function JobList({
                       {job.organization?.display_name || job.organization?.name || 'Unknown'}
                     </p>
                   </div>
+                  
+                  <div className="flex-1"></div>
                   
                   <p className="text-xs text-gray-500 flex items-center">
                     <MapPin className="w-3 h-3 mr-1" />
