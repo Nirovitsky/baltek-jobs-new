@@ -24,18 +24,25 @@ export default function Jobs() {
     error,
   } = useInfiniteQuery({
     queryKey: ["jobs", filters, searchQuery],
-    queryFn: async ({ pageParam = 1 }) => {
+    queryFn: async ({ pageParam = 0 }) => {
       const params = {
-        page: pageParam,
+        offset: pageParam,
+        limit: 20,
         search: searchQuery || undefined,
         ...filters,
       };
       return ApiClient.getJobs(params);
     },
     getNextPageParam: (lastPage: any) => {
-      return lastPage?.next ? (lastPage.page || 1) + 1 : undefined;
+      // Check if there's a next page URL, extract offset from it
+      if (lastPage?.next) {
+        const url = new URL(lastPage.next);
+        const nextOffset = url.searchParams.get('offset');
+        return nextOffset ? parseInt(nextOffset) : undefined;
+      }
+      return undefined;
     },
-    initialPageParam: 1,
+    initialPageParam: 0,
   });
 
   const jobs = data?.pages.flatMap((page: any) => page?.results || []) || [];
