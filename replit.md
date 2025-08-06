@@ -44,6 +44,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **LinkedIn-Style Profile Layout**: Redesigned experience, education, and projects sections to match LinkedIn's professional presentation format. Added colored section icons, improved typography hierarchy, proper date formatting with duration calculations, technology badges for projects, and clickable external links. Enhanced visual layout with card-based design and proper spacing for professional appearance
 - **Complete API Integration**: Fixed profile data fetching to use correct API response structure (experiences, educations, projects). Added profession display, date of birth, gender information, and enhanced profile completion calculation. Profile now displays all real user data from the Baltek API endpoint /users/{id} including comprehensive professional information
 - **Experience & Education Data Mapping**: Updated experience and education sections to properly map API response fields - using 'position' and 'organization_name' for experiences, 'level' and university location for educations. Fixed date parsing for DD.MM.YYYY format and duration calculations
+- **Profile Privacy Update**: Removed date of birth and gender information display from profile for privacy and cleaner interface
 
 ## User Preferences
 

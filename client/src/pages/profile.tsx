@@ -138,24 +138,7 @@ export default function Profile() {
                 )}
               </div>
 
-              {/* Additional Profile Information */}
-              {(displayProfile.date_of_birth || displayProfile.gender) && (
-                <>
-                  <Separator className="my-4" />
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {displayProfile.date_of_birth && (
-                      <div className="text-sm text-gray-600">
-                        <span className="font-medium">Date of Birth:</span> {new Date(displayProfile.date_of_birth).toLocaleDateString()}
-                      </div>
-                    )}
-                    {displayProfile.gender && (
-                      <div className="text-sm text-gray-600">
-                        <span className="font-medium">Gender:</span> {displayProfile.gender}
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
+
 
               {/* Professional Links */}
               {(displayProfile.linkedin_url || displayProfile.github_url || displayProfile.portfolio_url) && (
