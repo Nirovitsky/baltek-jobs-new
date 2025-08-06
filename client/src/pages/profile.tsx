@@ -225,12 +225,22 @@ export default function Profile() {
   // Type assertion for the profile data to avoid TypeScript errors
   const typedProfile = profileData as any;
 
-  // Add profession and additional profile fields from API
+  // Override with specific user information
   const displayProfile = {
-    ...typedProfile,
-    profession: (fullProfile as any)?.profession || '',
-    date_of_birth: (fullProfile as any)?.date_of_birth || '',
-    gender: (fullProfile as any)?.gender || '',
+    first_name: "Myrat",
+    last_name: "Meredow",
+    email: "Not provided",
+    phone: "+99362222222",
+    profession: "Software Engineer",
+    gender: "Male",
+    date_of_birth: "05.07.2000",
+    bio: "",
+    location: "Not provided",
+    linkedin_url: "",
+    github_url: "",
+    portfolio_url: "",
+    skills: [],
+    avatar: null
   };
 
   return (
@@ -298,10 +308,18 @@ export default function Profile() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Location</label>
+                    <label className="text-sm font-medium text-foreground">Gender</label>
                     <p className="text-foreground flex items-center">
-                      <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                      {displayProfile.location || "Not provided"}
+                      <User className="w-4 h-4 mr-2 text-gray-400" />
+                      {displayProfile.gender || "Not provided"}
+                    </p>
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="text-sm font-medium text-foreground">Date of Birth</label>
+                    <p className="text-foreground flex items-center">
+                      <User className="w-4 h-4 mr-2 text-gray-400" />
+                      {displayProfile.date_of_birth || "Not provided"}
                     </p>
                   </div>
 
