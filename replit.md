@@ -38,6 +38,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Individual Job Details Fetching**: Implemented API calls to fetch complete job details when a job is clicked, providing fresh detailed information including full job descriptions and requirements
 - **Currency Filter Fix**: Fixed currency filtering functionality by implementing client-side filtering as workaround for non-functional API currency parameter. Now TMT/USD filter correctly shows only matching jobs with proper job selection handling after filtering
 - **Simplified Job Application**: Streamlined application form to focus only on essential fields - cover letter and CV/resume upload. Removed optional fields like expected salary and availability for cleaner user experience. Both fields are now required with proper validation
+- **Clickable Company Elements**: Removed "Company Profile" button and made company name and logo clickable throughout job details page. Users can now click company name or logo to open company profile in new tab, providing cleaner UI with better user experience
 
 ## User Preferences
 

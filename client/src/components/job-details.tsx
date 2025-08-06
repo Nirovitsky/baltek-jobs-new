@@ -161,7 +161,11 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <div className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+                <button
+                  onClick={() => job.organization?.id && window.open(`/company/${job.organization.id}`, '_blank')}
+                  className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+                  disabled={!job.organization?.id}
+                >
                   {job.organization?.logo ? (
                     <img
                       src={job.organization.logo}
@@ -171,10 +175,16 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   ) : (
                     <Building className="w-8 h-8 text-gray-400" />
                   )}
-                </div>
+                </button>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">{job.title || 'Job Title'}</h1>
-                  <p className="text-lg text-gray-600">{job.organization?.display_name || job.organization?.name || 'Unknown Company'}</p>
+                  <button
+                    onClick={() => job.organization?.id && window.open(`/company/${job.organization.id}`, '_blank')}
+                    className="text-lg text-gray-600 hover:text-blue-600 transition-colors text-left cursor-pointer"
+                    disabled={!job.organization?.id}
+                  >
+                    {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
+                  </button>
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
                     <span className="flex items-center">
                       <MapPin className="w-4 h-4 mr-1" />
@@ -274,7 +284,11 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             <h3 className="font-semibold text-gray-900 mb-3">About {job.organization?.display_name || job.organization?.name || 'this company'}</h3>
             <div className="bg-gray-50 p-4 rounded-lg">
               <div className="flex items-center space-x-3 mb-2">
-                <div className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center">
+                <button
+                  onClick={() => job.organization?.id && window.open(`/company/${job.organization.id}`, '_blank')}
+                  className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+                  disabled={!job.organization?.id}
+                >
                   {job.organization?.logo ? (
                     <img
                       src={job.organization.logo}
@@ -284,9 +298,15 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   ) : (
                     <Building className="w-5 h-5 text-gray-400" />
                   )}
-                </div>
+                </button>
                 <div>
-                  <p className="font-medium text-gray-900">{job.organization?.display_name || job.organization?.name || 'Unknown Company'}</p>
+                  <button
+                    onClick={() => job.organization?.id && window.open(`/company/${job.organization.id}`, '_blank')}
+                    className="font-medium text-gray-900 hover:text-blue-600 transition-colors text-left cursor-pointer"
+                    disabled={!job.organization?.id}
+                  >
+                    {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
+                  </button>
                   <div className="flex items-center text-sm text-gray-500">
                     <Users className="w-4 h-4 mr-1" />
                     <span>{job.category?.name || 'Uncategorized'}</span>
@@ -322,10 +342,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                 </>
               )}
             </Button>
-            <Button variant="outline" size="lg">
-              <Building className="w-4 h-4 mr-2" />
-              Company Profile
-            </Button>
+
           </div>
             </CardContent>
           </div>
