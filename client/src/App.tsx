@@ -1,9 +1,11 @@
 import { Switch, Route, Redirect } from "wouter";
+import { useState } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
+import Navbar from "@/components/navbar";
 import Login from "@/pages/login";
 import Register from "@/pages/register";
 import Jobs from "@/pages/jobs";
@@ -48,6 +50,18 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 function Router() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const { isAuthenticated } = useAuth();
+
+  const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
+    <div className="min-h-screen bg-gray-50">
+      <Navbar onSearch={setSearchQuery} searchQuery={searchQuery} />
+      <main className="pt-16">
+        {children}
+      </main>
+    </div>
+  );
+
   return (
     <Switch>
       <Route path="/login">
@@ -62,17 +76,23 @@ function Router() {
       </Route>
       <Route path="/profile">
         <ProtectedRoute>
-          <Profile />
+          <ProtectedLayout>
+            <Profile />
+          </ProtectedLayout>
         </ProtectedRoute>
       </Route>
       <Route path="/applications">
         <ProtectedRoute>
-          <Applications />
+          <ProtectedLayout>
+            <Applications />
+          </ProtectedLayout>
         </ProtectedRoute>
       </Route>
       <Route path="/">
         <ProtectedRoute>
-          <Jobs />
+          <ProtectedLayout>
+            <Jobs searchQuery={searchQuery} />
+          </ProtectedLayout>
         </ProtectedRoute>
       </Route>
       <Route component={NotFound} />

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
-import { Briefcase, Calendar, MapPin, Building2, FileText, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Briefcase, Calendar, MapPin, Building2, FileText, Clock, CheckCircle, XCircle, AlertCircle, DollarSign } from "lucide-react";
 
 export default function ApplicationsPage() {
   const { user } = useAuth();
@@ -115,94 +115,131 @@ export default function ApplicationsPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Applications</h1>
-            <p className="text-gray-600 mt-2">You have submitted {appliedJobs.length} job applications</p>
-          </div>
-          
-          <div className="text-right">
-            <p className="text-sm text-gray-500">Total Applications</p>
-            <p className="text-2xl font-bold text-primary">{appliedJobs.length}</p>
+    <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="space-y-8">
+        {/* Modern Header */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">My Applications</h1>
+              <p className="text-lg text-gray-600">Track your job application progress</p>
+            </div>
+            
+            <div className="text-right">
+              <div className="bg-white rounded-xl px-6 py-4 shadow-sm border border-blue-200">
+                <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Total Applications</p>
+                <p className="text-3xl font-bold text-primary mt-1">{appliedJobs.length}</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="space-y-4">
+        {/* Modern Application Cards */}
+        <div className="grid gap-6">
           {appliedJobs.map((job: any) => (
-            <Card key={job.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <h3 className="text-xl font-semibold text-gray-900">
-                        {job.title}
-                      </h3>
-                      <Badge className="bg-green-100 text-green-800">
-                        <span className="flex items-center gap-1">
-                          <CheckCircle className="w-4 h-4" />
-                          APPLIED
-                        </span>
-                      </Badge>
-                    </div>
+            <Card key={job.id} className="hover:shadow-lg transition-all duration-200 border-0 shadow-md bg-white rounded-2xl overflow-hidden">
+              <CardContent className="p-0">
+                <div className="p-8">
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <h3 className="text-2xl font-bold text-gray-900">
+                          {job.title}
+                        </h3>
+                        <Badge className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200 px-3 py-1 rounded-full font-medium">
+                          <span className="flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4" />
+                            Application Submitted
+                          </span>
+                        </Badge>
+                      </div>
                     
-                    <div className="flex items-center gap-4 text-gray-600 mb-3">
-                      {job.organization && (
-                        <div className="flex items-center gap-1">
-                          <Building2 className="w-4 h-4" />
-                          <span>{job.organization.display_name || job.organization.name}</span>
-                        </div>
-                      )}
-                      
-                      {job.location && (
-                        <div className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          <span>{job.location.name}</span>
-                        </div>
-                      )}
-                      
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        <span>Applied Recently</span>
-                      </div>
-                    </div>
-
-                    {(job.payment_from || job.payment_to) && (
-                      <div className="text-sm text-gray-600 mb-3">
-                        Salary: {job.payment_from && job.payment_to 
-                          ? `${job.currency || '$'}${job.payment_from.toLocaleString()} - ${job.currency || '$'}${job.payment_to.toLocaleString()}`
-                          : job.payment_from 
-                            ? `${job.currency || '$'}${job.payment_from.toLocaleString()}+`
-                            : 'Not specified'
-                        } {job.payment_frequency && `(${job.payment_frequency})`}
-                      </div>
-                    )}
-
-                    <div className="bg-blue-50 p-3 rounded-lg mb-3">
-                      <p className="text-sm text-blue-600 font-medium mb-1 flex items-center gap-1">
-                        <FileText className="w-4 h-4" />
-                        Application ID: {job.my_application_id}
-                      </p>
-                      <p className="text-sm text-blue-800">
-                        Your application has been successfully submitted and is being reviewed.
-                      </p>
-                    </div>
-
-                    {job.skills && job.skills.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {job.skills.slice(0, 5).map((skill: string, index: number) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {skill}
-                          </Badge>
-                        ))}
-                        {job.skills.length > 5 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{job.skills.length - 5} more
-                          </Badge>
+                      {/* Company and Location Info */}
+                      <div className="flex items-center gap-6 text-gray-600 mb-4">
+                        {job.organization && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <Building2 className="w-4 h-4" />
+                            </div>
+                            <span className="font-medium">{job.organization.display_name || job.organization.name}</span>
+                          </div>
                         )}
+                        
+                        {job.location && (
+                          <div className="flex items-center gap-2">
+                            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <MapPin className="w-4 h-4" />
+                            </div>
+                            <span>{job.location.name}</span>
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                            <Calendar className="w-4 h-4" />
+                          </div>
+                          <span>Applied Recently</span>
+                        </div>
                       </div>
-                    )}
+
+                      {/* Salary Information */}
+                      {(job.payment_from || job.payment_to) && (
+                        <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                          <div className="flex items-center gap-2 mb-1">
+                            <DollarSign className="w-4 h-4 text-gray-500" />
+                            <span className="text-sm font-medium text-gray-500 uppercase tracking-wide">Salary Range</span>
+                          </div>
+                          <p className="text-lg font-semibold text-gray-900">
+                            {job.payment_from && job.payment_to 
+                              ? `${job.currency || '$'}${job.payment_from.toLocaleString()} - ${job.currency || '$'}${job.payment_to.toLocaleString()}`
+                              : job.payment_from 
+                                ? `${job.currency || '$'}${job.payment_from.toLocaleString()}+`
+                                : 'Not specified'
+                            }
+                            {job.payment_frequency && (
+                              <span className="text-sm text-gray-500 font-normal ml-2">
+                                per {job.payment_frequency.toLowerCase()}
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Application Status */}
+                      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl mb-6 border border-green-200">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                            <CheckCircle className="w-6 h-6 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="text-lg font-semibold text-green-800">Application Under Review</p>
+                            <p className="text-sm text-green-600">Status updated recently</p>
+                          </div>
+                        </div>
+                        <p className="text-green-700 ml-13">
+                          Your application has been successfully submitted and is being reviewed by the hiring team. You'll be notified of any updates.
+                        </p>
+                      </div>
+
+                      {/* Skills Tags */}
+                      {job.skills && job.skills.length > 0 && (
+                        <div>
+                          <p className="text-sm font-medium text-gray-500 uppercase tracking-wide mb-3">Required Skills</p>
+                          <div className="flex flex-wrap gap-2">
+                            {job.skills.slice(0, 5).map((skill: string, index: number) => (
+                              <Badge key={index} variant="secondary" className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-medium">
+                                {skill}
+                              </Badge>
+                            ))}
+                            {job.skills.length > 5 && (
+                              <Badge variant="secondary" className="px-3 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200 font-medium">
+                                +{job.skills.length - 5} more
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </CardContent>

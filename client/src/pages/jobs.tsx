@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import type { Job, JobFilters } from "@shared/schema";
-import Navbar from "@/components/navbar";
+
 import JobFiltersComponent from "@/components/job-filters";
 import JobList from "@/components/job-list";
 import JobDetails from "@/components/job-details";
@@ -11,10 +11,13 @@ import ChatWidget from "@/components/chat-widget";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle } from "lucide-react";
 
-export default function Jobs() {
+interface JobsProps {
+  searchQuery?: string;
+}
+
+export default function Jobs({ searchQuery = "" }: JobsProps) {
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const [filters, setFilters] = useState<JobFilters>({});
-  const [searchQuery, setSearchQuery] = useState("");
 
   const {
     data,
@@ -62,10 +65,7 @@ export default function Jobs() {
     setSelectedJobId(job.id);
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setSelectedJobId(null);
-  };
+
 
   const handleFiltersChange = (newFilters: JobFilters) => {
     setFilters(newFilters);
@@ -87,9 +87,7 @@ export default function Jobs() {
   }
 
   return (
-    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
-      <Navbar onSearch={handleSearch} searchQuery={searchQuery} />
-      
+    <div className="h-screen flex flex-col overflow-hidden">
       <JobFiltersComponent filters={filters} onFiltersChange={handleFiltersChange} />
       
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
