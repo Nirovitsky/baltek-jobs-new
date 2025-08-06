@@ -135,7 +135,7 @@ export default function ApplicationsPage() {
         </div>
 
         {/* Modern Application Cards */}
-        <div className="grid gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {appliedJobs.map((job: any) => (
             <Card key={job.id} className="hover:shadow-md transition-all duration-200 border-0 shadow-sm bg-white rounded-xl overflow-hidden">
               <CardContent className="p-0">
@@ -155,24 +155,26 @@ export default function ApplicationsPage() {
                       </div>
                     
                       {/* Company and Location Info */}
-                      <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+                      <div className="space-y-1 mb-3">
                         {job.organization && (
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1 text-sm text-gray-600">
                             <Building2 className="w-4 h-4" />
-                            <span className="font-medium">{job.organization.display_name || job.organization.name}</span>
+                            <span className="font-medium truncate">{job.organization.display_name || job.organization.name}</span>
                           </div>
                         )}
                         
-                        {job.location && (
+                        <div className="flex items-center justify-between text-xs text-gray-500">
+                          {job.location && (
+                            <div className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              <span>{job.location.name}</span>
+                            </div>
+                          )}
+                          
                           <div className="flex items-center gap-1">
-                            <MapPin className="w-4 h-4" />
-                            <span>{job.location.name}</span>
+                            <Calendar className="w-3 h-3" />
+                            <span>Applied</span>
                           </div>
-                        )}
-                        
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>Applied Recently</span>
                         </div>
                       </div>
 
@@ -197,14 +199,11 @@ export default function ApplicationsPage() {
                       )}
 
                       {/* Application Status */}
-                      <div className="bg-green-50 p-3 rounded-lg mb-3 border border-green-100">
+                      <div className="bg-green-50 p-2 rounded-lg mb-3 border border-green-100">
                         <div className="flex items-center gap-2">
                           <CheckCircle className="w-4 h-4 text-green-600" />
                           <span className="text-sm font-medium text-green-800">Under Review</span>
                         </div>
-                        <p className="text-xs text-green-600 mt-1">
-                          Your application is being reviewed by the hiring team.
-                        </p>
                       </div>
 
                       {/* Skills Tags */}
