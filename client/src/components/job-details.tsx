@@ -91,7 +91,11 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
   // Conditional rendering after all hooks
   if (isLoading) {
-    return <JobDetailsSkeleton />;
+    return (
+      <div className="h-full">
+        <JobDetailsSkeleton />
+      </div>
+    );
   }
 
   if (error) {

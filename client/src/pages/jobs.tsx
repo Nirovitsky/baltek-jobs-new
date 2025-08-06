@@ -120,8 +120,15 @@ export default function Jobs({}: JobsProps) {
           <div className="w-[70%] h-full">
             {currentSelectedJobId ? (
               <JobDetails jobId={currentSelectedJobId} />
-            ) : isLoading ? (
+            ) : jobs.length === 0 && isLoading ? (
               <JobDetailsSkeleton />
+            ) : jobs.length > 0 ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">Select a job to view details</h3>
+                  <p className="text-gray-600">Choose a job from the list to see more information</p>
+                </div>
+              </div>
             ) : null}
           </div>
         </div>
