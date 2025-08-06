@@ -8,6 +8,7 @@ import Login from "@/pages/login";
 import Register from "@/pages/register";
 import Jobs from "@/pages/jobs";
 import Profile from "@/pages/profile";
+import Applications from "@/pages/applications";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -62,6 +63,11 @@ function Router() {
       <Route path="/profile">
         <ProtectedRoute>
           <Profile />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/applications">
+        <ProtectedRoute>
+          <Applications />
         </ProtectedRoute>
       </Route>
       <Route path="/">

@@ -130,9 +130,11 @@ export default function Navbar({ onSearch, searchQuery }: NavbarProps) {
                   <Heart className="mr-2 h-4 w-4" />
                   <span>Bookmarked Jobs</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>My Applications</span>
+                <DropdownMenuItem asChild>
+                  <Link href="/applications" className="flex items-center">
+                    <FileText className="mr-2 h-4 w-4" />
+                    <span>My Applications</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
