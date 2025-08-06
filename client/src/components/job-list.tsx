@@ -126,7 +126,7 @@ export default function JobList({
 
   if (isLoading) {
     return (
-      <Card className="h-full flex flex-col w-full">
+      <Card className="h-full flex flex-col w-[400px]">
         <div className="p-4 border-b flex-shrink-0 space-y-3">
           <h2 className="text-lg font-semibold text-gray-900">Loading Jobs...</h2>
           
@@ -157,7 +157,7 @@ export default function JobList({
 
   if (jobs.length === 0) {
     return (
-      <Card className="h-full flex flex-col w-full">
+      <Card className="h-full flex flex-col w-[400px]">
         <div className="p-4 border-b flex-shrink-0 space-y-3">
           <h2 className="text-lg font-semibold text-gray-900">0 Jobs Found</h2>
           
@@ -189,7 +189,7 @@ export default function JobList({
   }
 
   return (
-    <Card className="h-full flex flex-col w-full">
+    <Card className="h-full flex flex-col w-[400px]">
       <div className="p-4 border-b flex-shrink-0 space-y-3">
         <h2 className="text-lg font-semibold text-gray-900">
           {totalCount !== undefined ? `${totalCount} Job${totalCount !== 1 ? "s" : ""} Found` : `${jobs.length} Job${jobs.length !== 1 ? "s" : ""} Found`}
