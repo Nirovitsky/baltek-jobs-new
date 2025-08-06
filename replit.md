@@ -40,6 +40,8 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Job Application**: Streamlined form for cover letter and CV/resume upload (both required).
 - **User Profile**: Comprehensive profile management with integration for professional links, education, experience, and projects. Real-time stats and profile completion percentage. Profile editing is fully integrated with CRUD operations.
 - **Resume Management**: Upload up to 3 resumes (PDF, DOC, DOCX, max 10MB) with drag-and-drop, validation, listing, view/download, and delete functionality.
+- **Settings Management**: Comprehensive settings page with profile configuration, notification preferences, privacy controls, and account management including password changes and data export.
+- **Chat System**: Real-time messaging interface with conversation management, recruiter communication, message history, and professional networking capabilities.
 
 ## External Dependencies
 

@@ -89,9 +89,11 @@ export default function Navbar({ onSearch, searchQuery }: NavbarProps) {
             </Button>
 
             {/* Messages */}
-            <Button variant="ghost" size="sm">
-              <MessageCircle className="h-5 w-5" />
-            </Button>
+            <Link href="/chat">
+              <Button variant="ghost" size="sm" data-testid="nav-messages">
+                <MessageCircle className="h-5 w-5" />
+              </Button>
+            </Link>
 
             {/* User Menu */}
             <DropdownMenu>

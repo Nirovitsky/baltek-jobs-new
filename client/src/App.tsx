@@ -12,6 +12,7 @@ import Jobs from "@/pages/jobs";
 import Profile from "@/pages/profile";
 import Applications from "@/pages/applications";
 import Settings from "@/pages/settings";
+import Chat from "@/pages/chat";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -93,6 +94,13 @@ function Router() {
         <ProtectedRoute>
           <ProtectedLayout>
             <Settings />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/chat">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <Chat />
           </ProtectedLayout>
         </ProtectedRoute>
       </Route>
