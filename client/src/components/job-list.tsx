@@ -45,6 +45,8 @@ export default function JobList({
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
+    jobs,
+    prefetchThreshold: 3, // Start prefetching when user has scrolled through 12 of 15 jobs
   });
 
   const bookmarkMutation = useMutation({

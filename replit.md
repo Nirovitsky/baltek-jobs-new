@@ -31,6 +31,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Currency Filter Integration**: Updated currency filter to show both TMT and USD currencies matching the backend CurrencyEnum (even though current job data primarily uses TMT)
 - **Filter UI Improvements**: Fixed dropdown behavior to use click instead of hover, removed blue focus colors, increased field widths for better text display, and removed grey highlighting on job card clicks
 - **Infinite Scroll Fix**: Fixed pagination implementation to use proper offset-based pagination (offset/limit) instead of page-based, enabling infinite scroll to load all available jobs from the API
+- **Smart Pagination UX**: Improved pagination performance by reducing initial load to 15 jobs and implementing smart prefetching that triggers when user scrolls through 12 jobs (3 remaining), eliminating wait times during browsing
 
 ## User Preferences
 
