@@ -143,7 +143,7 @@ export default function JobList({
         {jobs.map((job) => (
           <div
             key={job.id}
-            className={`job-card px-4 py-3.5 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 ${
+            className={`job-card px-5 py-4 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 ${
               selectedJobId === job.id ? "selected" : ""
             }`}
             onClick={() => onJobSelect(job)}
