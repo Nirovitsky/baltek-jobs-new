@@ -53,8 +53,10 @@ export class ApiClient {
 
       // Don't set Content-Type for FormData - let browser handle it
       if (options.body instanceof FormData) {
-        const { "Content-Type": _, ...headersCopy } = headers;
-        headers = headersCopy;
+        const filteredHeaders = Object.fromEntries(
+          Object.entries(headers).filter(([key]) => key !== "Content-Type")
+        );
+        headers = filteredHeaders as typeof headers;
       }
 
       const response = await fetch(url, {

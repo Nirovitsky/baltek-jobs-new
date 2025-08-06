@@ -160,10 +160,10 @@ export default function JobList({
                   
                   {/* Tags in Middle */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                    <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                       {formatJobType(job.job_type)}
                     </span>
-                    <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                    <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                       {formatWorkplaceType(job.workplace_type)}
                     </span>
                     {(job as any).minimum_education_level && (
@@ -194,7 +194,7 @@ export default function JobList({
                 
                 {/* Salary on Top Right */}
                 <div className="text-right flex-shrink-0">
-                  <span className="text-sm font-semibold text-primary whitespace-nowrap bg-blue-50 px-3 py-1 rounded-full">
+                  <span className="text-sm font-semibold text-primary whitespace-nowrap">
                     {formatSalary(job)}
                   </span>
                 </div>
