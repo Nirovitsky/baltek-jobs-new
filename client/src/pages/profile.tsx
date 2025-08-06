@@ -15,11 +15,14 @@ export default function Profile() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   // Fetch complete user profile from API
-  const { data: fullProfile, isLoading: profileLoading } = useQuery({
+  const { data: fullProfile, isLoading: profileLoading, error: profileError } = useQuery({
     queryKey: ["user", "profile", user?.id],
     queryFn: () => ApiClient.getProfile(user!.id),
     enabled: !!user?.id,
   });
+
+  // Log the profile data for debugging
+  console.log("Full Profile Data:", fullProfile);
 
   // Fetch user applications for stats
   const { data: applications } = useQuery({
@@ -51,6 +54,10 @@ export default function Profile() {
         </div>
       </div>
     );
+  }
+
+  if (profileError) {
+    console.error("Profile loading error:", profileError);
   }
 
   // Use API data if available, fallback to user data from auth
@@ -236,8 +243,28 @@ export default function Profile() {
             </Card>
           </div>
 
+          {/* Debug Info */}
+          {user && (
+            <Card className="bg-yellow-50 border-yellow-200">
+              <CardHeader>
+                <CardTitle className="text-sm text-yellow-800">Debug Information</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-xs text-yellow-700">User ID: {user.id}</p>
+                <p className="text-xs text-yellow-700">Profile Loading: {profileLoading ? 'Yes' : 'No'}</p>
+                <p className="text-xs text-yellow-700">Profile Error: {profileError ? 'Yes' : 'No'}</p>
+                <p className="text-xs text-yellow-700">Profile Data Available: {fullProfile ? 'Yes' : 'No'}</p>
+                {fullProfile && (
+                  <p className="text-xs text-yellow-700">
+                    Profile Keys: {Object.keys(fullProfile).join(', ')}
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
+
           {/* Experience Section */}
-          {fullProfile?.experience && fullProfile.experience.length > 0 && (
+          {(fullProfile as any)?.experience && (fullProfile as any).experience.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
@@ -246,7 +273,7 @@ export default function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {fullProfile.experience.map((exp: any, index: number) => (
+                {(fullProfile as any).experience.map((exp: any, index: number) => (
                   <div key={index} className="flex gap-4 pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
@@ -314,7 +341,7 @@ export default function Profile() {
           )}
 
           {/* Education Section */}
-          {fullProfile?.education && fullProfile.education.length > 0 && (
+          {(fullProfile as any)?.education && (fullProfile as any).education.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
@@ -323,7 +350,7 @@ export default function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {fullProfile.education.map((edu: any, index: number) => (
+                {(fullProfile as any).education.map((edu: any, index: number) => (
                   <div key={index} className="flex gap-4 pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center">
@@ -372,7 +399,7 @@ export default function Profile() {
           )}
 
           {/* Projects Section */}
-          {fullProfile?.projects && fullProfile.projects.length > 0 && (
+          {(fullProfile as any)?.projects && (fullProfile as any).projects.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center text-xl">
@@ -381,7 +408,7 @@ export default function Profile() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {fullProfile.projects.map((project: any, index: number) => (
+                {(fullProfile as any).projects.map((project: any, index: number) => (
                   <div key={index} className="flex gap-4 pb-6 border-b border-gray-100 last:border-b-0 last:pb-0">
                     <div className="flex-shrink-0">
                       <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center">
