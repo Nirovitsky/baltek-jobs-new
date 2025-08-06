@@ -83,16 +83,8 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
       console.log("Resume file:", uploadedFile);
       console.log("Selected resume ID:", selectedResumeId);
       
-      // Pass the file directly to API if new file uploaded
-      if (uploadedFile) {
-        return ApiClient.applyToJob(applicationData, uploadedFile);
-      } else {
-        // Handle existing resume selection or no resume case
-        return ApiClient.applyToJob({
-          ...applicationData,
-          resume: selectedResumeId || undefined,
-        });
-      }
+      // Pass the file to API (could be undefined if no file selected)
+      return ApiClient.applyToJob(applicationData, uploadedFile);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["applications"] });

@@ -45,7 +45,7 @@ export class ApiClient {
       const url = `${API_BASE}${endpoint}`;
       const token = AuthService.getToken();
 
-      const headers = {
+      let headers = {
         "Content-Type": "application/json",
         ...AuthService.getAuthHeaders(),
         ...options.headers,
@@ -53,6 +53,7 @@ export class ApiClient {
 
       // Don't set Content-Type for FormData - let browser handle it
       if (options.body instanceof FormData) {
+        headers = { ...headers };
         delete headers["Content-Type"];
       }
 
@@ -141,25 +142,21 @@ export class ApiClient {
 
   // Applications API
   static async applyToJob(data: any, resumeFile?: File) {
-    // If there's a resume file, use FormData for multipart upload
+    // Always use FormData since API expects multipart form
+    const formData = new FormData();
+    formData.append("job", data.job.toString());
+    formData.append("cover_letter", data.cover_letter || "");
+    
+    // Only append resume if file is provided
     if (resumeFile) {
-      const formData = new FormData();
-      formData.append("job", data.job.toString());
-      formData.append("cover_letter", data.cover_letter || "");
       formData.append("resume", resumeFile);
-
-      return this.makeRequest("/jobs/applications/", {
-        method: "POST",
-        body: formData,
-        headers: {}, // Let browser set multipart headers
-      });
-    } else {
-      // If only cover letter, send as JSON
-      return this.makeRequest("/jobs/applications/", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
     }
+
+    return this.makeRequest("/jobs/applications/", {
+      method: "POST",
+      body: formData,
+      headers: {}, // Let browser set multipart headers automatically
+    });
   }
 
   static async getMyApplications() {
