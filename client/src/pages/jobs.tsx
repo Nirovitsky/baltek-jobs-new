@@ -101,7 +101,7 @@ export default function Jobs({}: JobsProps) {
       
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
         <div className="flex gap-6 h-full">
-          <div className="w-[30%] h-full">
+          <div className="w-[30%] h-full flex-shrink-0">
             <JobList
               jobs={jobs}
               selectedJobId={currentSelectedJobId}
@@ -117,7 +117,7 @@ export default function Jobs({}: JobsProps) {
             />
           </div>
           
-          <div className="w-[70%] h-full">
+          <div className="w-[70%] h-full flex-shrink-0">
             {currentSelectedJobId ? (
               <JobDetails jobId={currentSelectedJobId} />
             ) : jobs.length === 0 && isLoading ? (

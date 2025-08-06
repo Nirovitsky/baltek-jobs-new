@@ -142,7 +142,7 @@ export default function JobList({
   }
 
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col w-full">
       <div className="p-4 border-b flex-shrink-0 space-y-3">
         <h2 className="text-lg font-semibold text-gray-900">
           {totalCount !== undefined ? `${totalCount} Job${totalCount !== 1 ? "s" : ""} Found` : `${jobs.length} Job${jobs.length !== 1 ? "s" : ""} Found`}
@@ -165,7 +165,7 @@ export default function JobList({
         </form>
       </div>
       
-      <div className="infinite-scroll flex-1 overflow-y-auto">
+      <div className="infinite-scroll flex-1 overflow-y-auto min-h-0">
         {jobs.map((job) => (
           <div
             key={job.id}
@@ -233,9 +233,14 @@ export default function JobList({
           </div>
         ))}
         
-        {/* Loading more jobs skeleton */}
+        {/* Loading more jobs indicator */}
         {isFetchingNextPage && (
-          <JobLoadingSkeleton count={3} />
+          <div className="p-4 flex items-center justify-center">
+            <div className="flex items-center space-x-2 text-gray-600">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+              <span className="text-sm">Loading more jobs...</span>
+            </div>
+          </div>
         )}
         
         {/* Infinite scroll trigger */}
