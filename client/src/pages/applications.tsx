@@ -88,8 +88,13 @@ export default function ApplicationsPage() {
 
   const applicationsData = applications as any;
   const applicationsList = applicationsData?.results || [];
+  
+  // Filter jobs that have my_application_id (meaning user has applied)
+  const appliedJobs = applicationsList.filter((job: any) => 
+    job.my_application_id !== null && job.my_application_id !== undefined
+  );
 
-  if (applicationsList.length === 0) {
+  if (appliedJobs.length === 0) {
     return (
       <div className="container mx-auto px-4 py-6">
         <div className="space-y-6">
@@ -115,100 +120,91 @@ export default function ApplicationsPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">My Applications</h1>
-            <p className="text-gray-600 mt-2">You have submitted {applicationsList.length} job applications</p>
+            <p className="text-gray-600 mt-2">You have submitted {appliedJobs.length} job applications</p>
           </div>
           
           <div className="text-right">
             <p className="text-sm text-gray-500">Total Applications</p>
-            <p className="text-2xl font-bold text-primary">{applicationsList.length}</p>
+            <p className="text-2xl font-bold text-primary">{appliedJobs.length}</p>
           </div>
         </div>
 
         <div className="space-y-4">
-          {applicationsList.map((application: any) => (
-            <Card key={application.id} className="hover:shadow-md transition-shadow">
+          {appliedJobs.map((job: any) => (
+            <Card key={job.id} className="hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
                       <h3 className="text-xl font-semibold text-gray-900">
-                        {application.job?.title || "Job Application"}
+                        {job.title}
                       </h3>
-                      {application.status && (
-                        <Badge className={getStatusColor(application.status)}>
-                          <span className="flex items-center gap-1">
-                            {getStatusIcon(application.status)}
-                            {application.status.replace('_', ' ').toUpperCase()}
-                          </span>
-                        </Badge>
-                      )}
+                      <Badge className="bg-green-100 text-green-800">
+                        <span className="flex items-center gap-1">
+                          <CheckCircle className="w-4 h-4" />
+                          APPLIED
+                        </span>
+                      </Badge>
                     </div>
                     
                     <div className="flex items-center gap-4 text-gray-600 mb-3">
-                      {application.job?.organization && (
+                      {job.organization && (
                         <div className="flex items-center gap-1">
                           <Building2 className="w-4 h-4" />
-                          <span>{application.job.organization.display_name || application.job.organization.name}</span>
+                          <span>{job.organization.display_name || job.organization.name}</span>
                         </div>
                       )}
                       
-                      {application.job?.location && (
+                      {job.location && (
                         <div className="flex items-center gap-1">
                           <MapPin className="w-4 h-4" />
-                          <span>{application.job.location.name}</span>
+                          <span>{job.location.name}</span>
                         </div>
                       )}
                       
-                      {application.created_at && (
-                        <div className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          <span>Applied {new Date(application.created_at).toLocaleDateString()}</span>
-                        </div>
-                      )}
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        <span>Applied Recently</span>
+                      </div>
                     </div>
 
-                    {application.job?.salary_range && (
+                    {(job.payment_from || job.payment_to) && (
                       <div className="text-sm text-gray-600 mb-3">
-                        Salary: {application.job.salary_range}
+                        Salary: {job.payment_from && job.payment_to 
+                          ? `${job.currency || '$'}${job.payment_from.toLocaleString()} - ${job.currency || '$'}${job.payment_to.toLocaleString()}`
+                          : job.payment_from 
+                            ? `${job.currency || '$'}${job.payment_from.toLocaleString()}+`
+                            : 'Not specified'
+                        } {job.payment_frequency && `(${job.payment_frequency})`}
                       </div>
                     )}
 
-                    {application.cover_letter && (
-                      <div className="bg-gray-50 p-3 rounded-lg mb-3">
-                        <p className="text-sm text-gray-600 font-medium mb-1 flex items-center gap-1">
-                          <FileText className="w-4 h-4" />
-                          Cover Letter
-                        </p>
-                        <p className="text-sm text-gray-800 line-clamp-3">
-                          {application.cover_letter}
-                        </p>
-                      </div>
-                    )}
+                    <div className="bg-blue-50 p-3 rounded-lg mb-3">
+                      <p className="text-sm text-blue-600 font-medium mb-1 flex items-center gap-1">
+                        <FileText className="w-4 h-4" />
+                        Application ID: {job.my_application_id}
+                      </p>
+                      <p className="text-sm text-blue-800">
+                        Your application has been successfully submitted and is being reviewed.
+                      </p>
+                    </div>
 
-                    {application.job?.required_skills && application.job.required_skills.length > 0 && (
+                    {job.skills && job.skills.length > 0 && (
                       <div className="flex flex-wrap gap-1">
-                        {application.job.required_skills.slice(0, 5).map((skill: string, index: number) => (
+                        {job.skills.slice(0, 5).map((skill: string, index: number) => (
                           <Badge key={index} variant="secondary" className="text-xs">
                             {skill}
                           </Badge>
                         ))}
-                        {application.job.required_skills.length > 5 && (
+                        {job.skills.length > 5 && (
                           <Badge variant="secondary" className="text-xs">
-                            +{application.job.required_skills.length - 5} more
+                            +{job.skills.length - 5} more
                           </Badge>
                         )}
                       </div>
                     )}
                   </div>
                 </div>
-
-                {application.updated_at && application.updated_at !== application.created_at && (
-                  <div className="pt-3 border-t border-gray-100">
-                    <p className="text-xs text-gray-500">
-                      Last updated: {new Date(application.updated_at).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
               </CardContent>
             </Card>
           ))}

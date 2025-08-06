@@ -86,7 +86,8 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
     onSuccess: () => {
       // Invalidate job details query to refresh the my_application_id field
       queryClient.invalidateQueries({ queryKey: ["job", job.id] });
-      queryClient.invalidateQueries({ queryKey: ["applications"] });
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "applications"] });
       toast({
         title: "Application submitted",
         description: "Your application has been sent successfully!",
