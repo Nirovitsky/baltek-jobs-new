@@ -89,11 +89,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     enabled: isOpen,
   });
 
-  // Fetch complete user profile
+  // Use cached profile data from the profile page (avoids duplicate API call)
   const { data: fullProfile } = useQuery({
     queryKey: ["user", "profile", user?.id],
-    queryFn: () => ApiClient.getProfile(user!.id),
-    enabled: isOpen && !!user?.id,
+    enabled: false, // Don't fetch - use cached data from profile page
   });
 
   const userEducation = (fullProfile as any)?.educations || [];
@@ -107,7 +106,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     enabled: isOpen && !!user?.id,
   });
 
-  // Personal info form - use full profile data if available, fallback to user
+  // Personal info form - use cached profile data if available, fallback to user
   const profileData = fullProfile || user;
   const personalForm = useForm<any>({
     defaultValues: {
