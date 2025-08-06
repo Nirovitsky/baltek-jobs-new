@@ -139,7 +139,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const experienceForm = useForm<any>({
     defaultValues: {
       organization: 0,
-      custom_organization: "",
+      organization_name: "",
       position: "",
       date_started: "",
       date_finished: "",
@@ -407,13 +407,11 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       date_finished: formatDateForAPI(data.date_finished),
     };
 
-    // Use custom organization name if provided, otherwise use selected organization
-    if (data.custom_organization && data.custom_organization.trim()) {
-      formattedData.organization_name = data.custom_organization.trim();
+    // If organization ID is set (user selected from suggestions), use it
+    // If not, send organization_name for custom entry
+    if (!data.organization || data.organization === 0) {
+      formattedData.organization_name = data.organization_name;
       delete formattedData.organization;
-      delete formattedData.custom_organization;
-    } else {
-      delete formattedData.custom_organization;
     }
     
     if (editingExperience) {
@@ -482,7 +480,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     setEditingExperience(exp);
     experienceForm.reset({
       organization: exp.organization?.id || 0,
-      custom_organization: exp.organization_name && !exp.organization?.id ? exp.organization_name : "",
+      organization_name: exp.organization_name || (exp.organization?.official_name || exp.organization?.display_name) || "",
       position: exp.position || "",
       date_started: formatDateForForm(exp.date_started || ""),
       date_finished: formatDateForForm(exp.date_finished || ""),
@@ -882,36 +880,51 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     <form onSubmit={experienceForm.handleSubmit(handleExperienceSubmit)} className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="organization">Organization</Label>
-                        <div className="space-y-2">
-                          <Select
-                            value={experienceForm.watch("organization")?.toString() || ""}
-                            onValueChange={(value) => {
-                              experienceForm.setValue("organization", parseInt(value));
-                              experienceForm.setValue("custom_organization", "");
-                            }}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select from existing organizations" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {!organizationsLoading && (organizations as any)?.results?.map((org: any) => (
-                                <SelectItem key={org.id} value={org.id.toString()}>
-                                  {org.official_name || org.display_name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <div className="text-center text-sm text-gray-500">OR</div>
+                        <div className="relative">
                           <Input
-                            placeholder="Type custom company name"
-                            value={experienceForm.watch("custom_organization") || ""}
+                            placeholder="Type organization name (select from suggestions or add new)"
+                            value={experienceForm.watch("organization_name") || ""}
                             onChange={(e) => {
-                              experienceForm.setValue("custom_organization", e.target.value);
-                              if (e.target.value) {
-                                experienceForm.setValue("organization", 0);
+                              const value = e.target.value;
+                              experienceForm.setValue("organization_name", value);
+                              experienceForm.setValue("organization", 0);
+                              
+                              // Find matching organization
+                              const matchingOrg = (organizations as any)?.results?.find((org: any) => 
+                                (org.official_name || org.display_name).toLowerCase() === value.toLowerCase()
+                              );
+                              if (matchingOrg) {
+                                experienceForm.setValue("organization", matchingOrg.id);
                               }
                             }}
                           />
+                          
+                          {/* Show suggestions when typing */}
+                          {experienceForm.watch("organization_name") && 
+                           experienceForm.watch("organization_name").length > 0 && 
+                           !organizationsLoading && (
+                            <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10 max-h-40 overflow-y-auto">
+                              {(organizations as any)?.results
+                                ?.filter((org: any) => 
+                                  (org.official_name || org.display_name)
+                                    .toLowerCase()
+                                    .includes(experienceForm.watch("organization_name").toLowerCase())
+                                )
+                                ?.slice(0, 5)
+                                ?.map((org: any) => (
+                                  <div
+                                    key={org.id}
+                                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                    onClick={() => {
+                                      experienceForm.setValue("organization_name", org.official_name || org.display_name);
+                                      experienceForm.setValue("organization", org.id);
+                                    }}
+                                  >
+                                    {org.official_name || org.display_name}
+                                  </div>
+                                ))}
+                            </div>
+                          )}
                         </div>
                       </div>
 
