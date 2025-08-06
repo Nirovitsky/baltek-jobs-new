@@ -562,50 +562,7 @@ export default function Profile() {
             </Card>
           )}
 
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Applications Sent</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{(applications as any)?.results?.length || 0}</div>
-                <p className="text-xs text-gray-500">Total job applications</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Resumes</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{(resumes as any)?.results?.length || 0}</div>
-                <p className="text-xs text-gray-500">Uploaded documents</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">Profile Completion</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  {Math.round(
-                    ((displayProfile.first_name ? 1 : 0) +
-                    (displayProfile.last_name ? 1 : 0) +
-                    (displayProfile.email ? 1 : 0) +
-                    (displayProfile.phone ? 1 : 0) +
-                    (displayProfile.bio ? 1 : 0) +
-                    (displayProfile.location ? 1 : 0) +
-                    (displayProfile.profession ? 1 : 0) +
-                    (displayProfile.skills && displayProfile.skills.length > 0 ? 1 : 0) +
-                    (displayProfile.linkedin_url || displayProfile.github_url || displayProfile.portfolio_url ? 1 : 0)) / 9 * 100
-                  )}%
-                </div>
-                <p className="text-xs text-gray-500">Complete your profile</p>
-              </CardContent>
-            </Card>
-          </div>
+
         </div>
       </div>
 
