@@ -261,6 +261,12 @@ export class ApiClient {
     return response.json();
   }
 
+  static async deleteResume(id: number) {
+    return this.makeRequest(`/users/resumes/${id}/`, {
+      method: "DELETE",
+    });
+  }
+
   // Chat API
   static async getChatRooms() {
     return this.makeRequest("/chat/rooms/");

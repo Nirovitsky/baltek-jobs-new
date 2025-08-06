@@ -47,6 +47,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Profile Privacy Update**: Removed date of birth and gender information display from profile for privacy and cleaner interface
 - **Edit Profile Integration**: Fully integrated profile editing modal with Baltek API endpoints. Updated all forms (personal info, education, experience, projects) to use correct API field names and data structures. Added proper form population when editing existing records and comprehensive CRUD operations with real-time cache invalidation
 - **Date Format Fix**: Fixed date format compatibility issue between HTML date inputs (YYYY-MM-DD) and Baltek API requirements (DD.MM.YYYY). Added automatic date format conversion functions for all experience, education, and project forms to ensure seamless data submission and editing
+- **Resume Management System**: Added comprehensive resume upload functionality allowing users to upload up to 3 resumes (PDF, DOC, DOCX, max 10MB each). Features include drag-and-drop upload, file validation, resume listing with metadata, view/download capabilities, delete functionality, and proper upload limit enforcement. Integrated with existing file upload component and Baltek API endpoints
 
 ## User Preferences
 

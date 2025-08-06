@@ -36,6 +36,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import FileUpload from "@/components/file-upload";
 import { 
   User, 
   X, 
@@ -46,7 +47,10 @@ import {
   Briefcase,
   Code,
   Save,
-  Camera
+  Camera,
+  FileText,
+  Upload,
+  Download
 } from "lucide-react";
 
 interface ProfileModalProps {
@@ -66,10 +70,11 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<"personal" | "education" | "experience" | "projects">("personal");
+  const [activeTab, setActiveTab] = useState<"personal" | "education" | "experience" | "projects" | "resumes">("personal");
   const [editingEducation, setEditingEducation] = useState<any>(null);
   const [editingExperience, setEditingExperience] = useState<any>(null);
   const [editingProject, setEditingProject] = useState<any>(null);
+  const [uploadingResume, setUploadingResume] = useState<File | null>(null);
 
   // Fetch additional data
   const { data: universities, isLoading: universitiesLoading } = useQuery({
@@ -94,6 +99,13 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const userEducation = (fullProfile as any)?.educations || [];
   const userExperience = (fullProfile as any)?.experiences || [];
   const userProjects = (fullProfile as any)?.projects || [];
+
+  // Fetch user resumes
+  const { data: userResumes, isLoading: resumesLoading } = useQuery({
+    queryKey: ["user", "resumes", user?.id],
+    queryFn: () => ApiClient.getResumes(),
+    enabled: isOpen && !!user?.id,
+  });
 
   // Personal info form - use full profile data if available, fallback to user
   const profileData = fullProfile || user;
@@ -312,6 +324,42 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     },
   });
 
+  // Resume mutations
+  const uploadResumeMutation = useMutation({
+    mutationFn: (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+      return ApiClient.uploadResume(formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", "resumes", user?.id] });
+      setUploadingResume(null);
+      toast({ title: "Resume uploaded", description: "Resume uploaded successfully" });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to upload resume",
+        description: error instanceof Error ? error.message : "Failed to upload resume",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteResumeMutation = useMutation({
+    mutationFn: (id: number) => ApiClient.deleteResume(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user", "resumes", user?.id] });
+      toast({ title: "Resume deleted", description: "Resume deleted successfully" });
+    },
+    onError: (error) => {
+      toast({
+        title: "Failed to delete resume",
+        description: error instanceof Error ? error.message : "Failed to delete resume",
+        variant: "destructive",
+      });
+    },
+  });
+
   // Form handlers
   const handlePersonalSubmit = (data: any) => {
     updateProfileMutation.mutate(data);
@@ -384,6 +432,24 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const handleTechnologiesChange = (techString: string) => {
     const technologies = techString.split(",").map(tech => tech.trim()).filter(Boolean);
     projectForm.setValue("technologies", technologies);
+  };
+
+  // Resume handlers
+  const handleResumeUpload = (file: File) => {
+    if ((userResumes?.results || []).length >= 3) {
+      toast({
+        title: "Upload limit reached",
+        description: "You can only upload up to 3 resumes",
+        variant: "destructive",
+      });
+      return;
+    }
+    setUploadingResume(file);
+    uploadResumeMutation.mutate(file);
+  };
+
+  const handleResumeDelete = (resumeId: number) => {
+    deleteResumeMutation.mutate(resumeId);
   };
 
   // Handle form population when editing
@@ -473,6 +539,14 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
             >
               <Code className="w-4 h-4 mr-2" />
               Projects
+            </Button>
+            <Button
+              variant={activeTab === "resumes" ? "default" : "ghost"}
+              className="w-full justify-start"
+              onClick={() => setActiveTab("resumes")}
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              Resumes ({(userResumes?.results || []).length}/3)
             </Button>
           </div>
 
@@ -1091,6 +1165,99 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     </CardContent>
                   </Card>
                 ))}
+              </div>
+            )}
+
+            {/* Resumes Tab */}
+            {activeTab === "resumes" && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <FileText className="w-5 h-5" />
+                      Upload Resume
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {(userResumes?.results || []).length < 3 ? (
+                      <FileUpload
+                        onFileSelect={handleResumeUpload}
+                        accept=".pdf,.doc,.docx"
+                        maxSize={10 * 1024 * 1024} // 10MB
+                        selectedFile={uploadingResume}
+                      />
+                    ) : (
+                      <div className="text-center p-6 bg-gray-50 rounded-lg">
+                        <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                        <p className="text-gray-600 font-medium">Resume limit reached</p>
+                        <p className="text-sm text-gray-500">You can upload up to 3 resumes. Delete one to upload another.</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Resume List */}
+                {(userResumes?.results || []).length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">My Resumes</h3>
+                    {(userResumes?.results || []).map((resume: any) => (
+                      <Card key={resume.id}>
+                        <CardContent className="pt-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <FileText className="w-8 h-8 text-primary" />
+                              <div>
+                                <h4 className="font-medium">{resume.filename || resume.file}</h4>
+                                <div className="flex items-center gap-4 text-sm text-gray-500">
+                                  <span>Uploaded: {new Date(resume.created_at).toLocaleDateString()}</span>
+                                  {resume.file_size && (
+                                    <span>
+                                      Size: {Math.round(resume.file_size / 1024)} KB
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              {resume.file && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => window.open(resume.file, '_blank')}
+                                >
+                                  <Download className="w-4 h-4 mr-1" />
+                                  View
+                                </Button>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleResumeDelete(resume.id)}
+                                disabled={deleteResumeMutation.isPending}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+
+                {resumesLoading && (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">Loading resumes...</p>
+                  </div>
+                )}
+
+                {!resumesLoading && (userResumes?.results || []).length === 0 && (
+                  <div className="text-center py-8 bg-gray-50 rounded-lg">
+                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                    <p className="text-gray-600 font-medium">No resumes uploaded</p>
+                    <p className="text-sm text-gray-500">Upload your first resume to get started.</p>
+                  </div>
+                )}
               </div>
             )}
           </div>
