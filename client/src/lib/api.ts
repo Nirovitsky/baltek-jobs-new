@@ -53,8 +53,8 @@ export class ApiClient {
 
       // Don't set Content-Type for FormData - let browser handle it
       if (options.body instanceof FormData) {
-        headers = { ...headers };
-        delete headers["Content-Type"];
+        const { "Content-Type": _, ...headersCopy } = headers;
+        headers = headersCopy;
       }
 
       const response = await fetch(url, {

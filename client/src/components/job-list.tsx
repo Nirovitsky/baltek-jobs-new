@@ -145,48 +145,48 @@ export default function JobList({
         {jobs.map((job) => (
           <div
             key={job.id}
-            className={`job-card px-5 py-4 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 ${
-              selectedJobId === job.id ? "selected" : ""
+            className={`job-card w-full max-w-full px-6 py-5 border-b border-gray-100 hover:bg-gray-50/80 cursor-pointer focus:outline-none active:bg-gray-50 transition-all duration-200 hover:shadow-sm ${
+              selectedJobId === job.id ? "selected bg-blue-50 border-blue-200" : ""
             }`}
             onClick={() => onJobSelect(job)}
           >
-            <div className="relative">
-              <div className="flex justify-between items-start">
-                <div className="flex-1 pr-4">
+            <div className="relative w-full">
+              <div className="flex justify-between items-start w-full">
+                <div className="flex-1 pr-6 min-w-0">
                   {/* Job Title */}
-                  <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2.5">
+                  <h3 className="font-semibold text-base text-gray-900 line-clamp-2 mb-3 leading-tight">
                     {job.title || 'Job Title'}
                   </h3>
                   
                   {/* Tags in Middle */}
-                  <div className="flex flex-wrap gap-1.5 mb-3">
-                    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
                       {formatJobType(job.job_type)}
                     </span>
-                    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
+                    <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
                       {formatWorkplaceType(job.workplace_type)}
                     </span>
                     {(job as any).minimum_education_level && (
-                      <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-md">
+                      <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
                         {(job as any).minimum_education_level}
                       </span>
                     )}
                   </div>
                   
                   {/* Company at Bottom Left */}
-                  <div className="flex items-center space-x-2">
-                    <div className="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
                       {job.organization?.logo ? (
                         <img
                           src={job.organization.logo}
                           alt={job.organization.display_name || job.organization.name || 'Company'}
-                          className="w-5 h-5 rounded object-cover"
+                          className="w-8 h-8 rounded-lg object-cover"
                         />
                       ) : (
-                        <Building className="w-3 h-3 text-gray-400" />
+                        <Building className="w-4 h-4 text-gray-500" />
                       )}
                     </div>
-                    <p className="font-medium text-gray-900 text-xs truncate max-w-20">
+                    <p className="font-medium text-gray-900 text-sm truncate">
                       {job.organization?.display_name || job.organization?.name || 'Unknown'}
                     </p>
                   </div>
@@ -194,16 +194,16 @@ export default function JobList({
                 
                 {/* Salary on Top Right */}
                 <div className="text-right flex-shrink-0">
-                  <span className="text-sm font-medium text-primary whitespace-nowrap">
+                  <span className="text-sm font-semibold text-primary whitespace-nowrap bg-blue-50 px-3 py-1 rounded-full">
                     {formatSalary(job)}
                   </span>
                 </div>
               </div>
               
               {/* Location at Bottom Right */}
-              <div className="absolute bottom-0 right-0 text-xs text-gray-500 flex items-center">
-                <MapPin className="w-3 h-3 mr-1" />
-                <span className="whitespace-nowrap">{job.location?.name || 'Unknown'}</span>
+              <div className="absolute bottom-0 right-0 text-xs text-gray-600 flex items-center bg-gray-50 px-2 py-1 rounded-md">
+                <MapPin className="w-3 h-3 mr-1.5 text-gray-500" />
+                <span className="whitespace-nowrap font-medium">{job.location?.name || 'Unknown'}</span>
               </div>
             </div>
           </div>
