@@ -145,11 +145,8 @@ export default function JobList({
           </div>
         </div>
         
-        <div className="flex-1 flex items-center justify-center min-h-0">
-          <div className="flex flex-col items-center space-y-3">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-            <span className="text-sm text-gray-600">Loading jobs...</span>
-          </div>
+        <div className="flex-1 min-h-0">
+          {/* Empty content area - no spinner */}
         </div>
       </Card>
     );
@@ -280,13 +277,10 @@ export default function JobList({
           </div>
         ))}
         
-        {/* Loading more jobs indicator */}
+        {/* Loading more jobs - no spinner */}
         {isFetchingNextPage && (
-          <div className="p-4 flex items-center justify-center">
-            <div className="flex items-center space-x-2 text-gray-600">
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
-              <span className="text-sm">Loading more jobs...</span>
-            </div>
+          <div className="p-4 text-center">
+            <span className="text-sm text-gray-600">Loading more jobs...</span>
           </div>
         )}
         
