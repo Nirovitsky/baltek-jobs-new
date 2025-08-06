@@ -225,22 +225,12 @@ export default function Profile() {
   // Type assertion for the profile data to avoid TypeScript errors
   const typedProfile = profileData as any;
 
-  // Override with specific user information
+  // Add profession and additional profile fields from API
   const displayProfile = {
-    first_name: "Myrat",
-    last_name: "Meredow",
-    email: "Not provided",
-    phone: "+99362222222",
-    profession: "Software Engineer",
-    gender: "Male",
-    date_of_birth: "05.07.2000",
-    bio: "",
-    location: "Not provided",
-    linkedin_url: "",
-    github_url: "",
-    portfolio_url: "",
-    skills: [],
-    avatar: null
+    ...typedProfile,
+    profession: (fullProfile as any)?.profession || '',
+    date_of_birth: (fullProfile as any)?.date_of_birth || '',
+    gender: (fullProfile as any)?.gender || '',
   };
 
   return (
@@ -272,7 +262,7 @@ export default function Profile() {
                       <AvatarImage src={displayProfile.avatar} alt={`${displayProfile.first_name} ${displayProfile.last_name}`} />
                     ) : (
                       <AvatarFallback className="text-lg bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
-                        MM
+                        {(displayProfile.first_name?.[0] || "") + (displayProfile.last_name?.[0] || "")}
                       </AvatarFallback>
                     )}
                   </Avatar>
@@ -308,18 +298,10 @@ export default function Profile() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Gender</label>
+                    <label className="text-sm font-medium text-foreground">Location</label>
                     <p className="text-foreground flex items-center">
-                      <User className="w-4 h-4 mr-2 text-gray-400" />
-                      {displayProfile.gender || "Not provided"}
-                    </p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Date of Birth</label>
-                    <p className="text-foreground flex items-center">
-                      <User className="w-4 h-4 mr-2 text-gray-400" />
-                      {displayProfile.date_of_birth || "Not provided"}
+                      <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                      {displayProfile.location || "Not provided"}
                     </p>
                   </div>
 
