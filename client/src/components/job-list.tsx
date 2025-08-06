@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import JobSkeleton from "@/components/job-skeleton";
 import JobLoadingSkeleton from "@/components/job-loading-skeleton";
+import { Input } from "@/components/ui/input";
 
 import { 
   MapPin, 
@@ -16,7 +17,8 @@ import {
   Bookmark, 
   Building,
   Calendar,
-  Loader2
+  Loader2,
+  Search
 } from "lucide-react";
 import { useState } from "react";
 
@@ -29,6 +31,9 @@ interface JobListProps {
   isFetchingNextPage: boolean;
   fetchNextPage: () => void;
   totalCount?: number;
+  searchQuery: string;
+  onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchSubmit: (e: React.FormEvent) => void;
 }
 
 export default function JobList({
@@ -40,6 +45,9 @@ export default function JobList({
   isFetchingNextPage,
   fetchNextPage,
   totalCount,
+  searchQuery,
+  onSearchChange,
+  onSearchSubmit,
 }: JobListProps) {
 
   const { toast } = useToast();
@@ -135,10 +143,26 @@ export default function JobList({
 
   return (
     <Card className="h-full flex flex-col">
-      <div className="p-4 border-b flex-shrink-0">
+      <div className="p-4 border-b flex-shrink-0 space-y-3">
         <h2 className="text-lg font-semibold text-gray-900">
           {totalCount !== undefined ? `${totalCount} Job${totalCount !== 1 ? "s" : ""} Found` : `${jobs.length} Job${jobs.length !== 1 ? "s" : ""} Found`}
         </h2>
+        
+        {/* Search Bar */}
+        <form onSubmit={onSearchSubmit}>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-gray-400" />
+            </div>
+            <Input
+              type="text"
+              placeholder="Search jobs, companies, skills..."
+              value={searchQuery}
+              onChange={onSearchChange}
+              className="pl-10 pr-3 py-2"
+            />
+          </div>
+        </form>
       </div>
       
       <div className="infinite-scroll flex-1 overflow-y-auto">

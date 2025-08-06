@@ -9,8 +9,7 @@ import JobDetails from "@/components/job-details";
 import JobDetailsSkeleton from "@/components/job-details-skeleton";
 import ChatWidget from "@/components/chat-widget";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Input } from "@/components/ui/input";
-import { AlertTriangle, Search } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 
 interface JobsProps {}
 
@@ -101,24 +100,6 @@ export default function Jobs({}: JobsProps) {
       <JobFiltersComponent filters={filters} onFiltersChange={handleFiltersChange} />
       
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
-        {/* Search Bar */}
-        <div className="mb-4">
-          <form onSubmit={handleSearchSubmit}>
-            <div className="relative max-w-md">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-4 w-4 text-gray-400" />
-              </div>
-              <Input
-                type="text"
-                placeholder="Search jobs, companies, skills..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="pl-10 pr-3 py-2"
-              />
-            </div>
-          </form>
-        </div>
-        {/* Job List Layout */}
         <div className="flex gap-6 h-full">
           <div className="w-[30%] h-full">
             <JobList
@@ -130,6 +111,9 @@ export default function Jobs({}: JobsProps) {
               isFetchingNextPage={isFetchingNextPage}
               fetchNextPage={fetchNextPage}
               totalCount={totalCount}
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              onSearchSubmit={handleSearchSubmit}
             />
           </div>
           
