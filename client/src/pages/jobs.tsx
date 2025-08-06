@@ -84,7 +84,7 @@ export default function Jobs() {
       
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
         <div className="flex gap-6 h-full">
-          <div className="w-1/4 h-full">
+          <div className="w-[30%] h-full">
             <JobList
               jobs={jobs}
               selectedJobId={currentSelectedJobId}
@@ -96,7 +96,7 @@ export default function Jobs() {
             />
           </div>
           
-          <div className="w-3/4 h-full">
+          <div className="w-[70%] h-full">
             {currentSelectedJobId ? (
               <JobDetails jobId={currentSelectedJobId} />
             ) : isLoading ? (
