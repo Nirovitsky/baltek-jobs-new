@@ -140,6 +140,24 @@
     @apply overflow-y-auto;
   }
   
+  /* LinkedIn-style profile sections */
+  .profile-section-icon {
+    @apply transition-all duration-200;
+  }
+  
+  .profile-experience-item:hover,
+  .profile-education-item:hover,
+  .profile-project-item:hover {
+    @apply bg-gray-50/50;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
   .navbar-sticky {
     @apply sticky top-0 z-50 bg-white shadow-sm border-b;
   }
