@@ -296,32 +296,26 @@ export default function Profile() {
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                         <div className="flex-1">
                           <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
-                            {exp.title}
+                            {exp.position}
                           </h3>
                           <p className="text-primary font-medium mt-1">
-                            {exp.company}
+                            {exp.organization_name}
                           </p>
-                          {exp.location && (
-                            <p className="text-sm text-gray-600 mt-1 flex items-center">
-                              <MapPin className="w-3 h-3 mr-1" />
-                              {exp.location}
-                            </p>
-                          )}
                         </div>
                         <div className="flex-shrink-0 text-right">
                           <p className="text-sm font-medium text-gray-700">
-                            {new Date(exp.start_date).toLocaleDateString('en-US', { 
-                              month: 'short', 
-                              year: 'numeric' 
-                            })} - {exp.is_current || !exp.end_date ? 'Present' : new Date(exp.end_date).toLocaleDateString('en-US', { 
-                              month: 'short', 
-                              year: 'numeric' 
-                            })}
+                            {exp.date_started} - {exp.date_finished || 'Present'}
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
                             {(() => {
-                              const startDate = new Date(exp.start_date);
-                              const endDate = exp.is_current || !exp.end_date ? new Date() : new Date(exp.end_date);
+                              // Parse DD.MM.YYYY format
+                              const parseDate = (dateStr: string) => {
+                                const [day, month, year] = dateStr.split('.');
+                                return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                              };
+                              
+                              const startDate = parseDate(exp.date_started);
+                              const endDate = exp.date_finished ? parseDate(exp.date_finished) : new Date();
                               const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
                               const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30.44));
                               const years = Math.floor(diffMonths / 12);
@@ -375,24 +369,40 @@ export default function Profile() {
                           <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">
                             {edu.university?.name || 'University'}
                           </h3>
-                          <p className="text-primary font-medium mt-1">
-                            {edu.degree} in {edu.field_of_study}
+                          <p className="text-primary font-medium mt-1 capitalize">
+                            {edu.level}
                           </p>
-                          {edu.grade && (
-                            <p className="text-sm text-gray-600 mt-1">
-                              Grade: {edu.grade}
+                          {edu.university?.location?.name && (
+                            <p className="text-sm text-gray-600 mt-1 flex items-center">
+                              <MapPin className="w-3 h-3 mr-1" />
+                              {edu.university.location.name}
                             </p>
                           )}
                         </div>
                         <div className="flex-shrink-0 text-right">
                           <p className="text-sm font-medium text-gray-700">
-                            {new Date(edu.start_date).toLocaleDateString('en-US', { 
-                              month: 'short', 
-                              year: 'numeric' 
-                            })} - {edu.end_date ? new Date(edu.end_date).toLocaleDateString('en-US', { 
-                              month: 'short', 
-                              year: 'numeric' 
-                            }) : 'Present'}
+                            {edu.date_started} - {edu.date_finished || 'Present'}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {(() => {
+                              // Parse DD.MM.YYYY format  
+                              const parseDate = (dateStr: string) => {
+                                const [day, month, year] = dateStr.split('.');
+                                return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                              };
+                              
+                              const startDate = parseDate(edu.date_started);
+                              const endDate = edu.date_finished ? parseDate(edu.date_finished) : new Date();
+                              const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+                              const diffMonths = Math.ceil(diffTime / (1000 * 60 * 60 * 24 * 30.44));
+                              const years = Math.floor(diffMonths / 12);
+                              
+                              if (years > 0) {
+                                return `${years} year${years > 1 ? 's' : ''}`;
+                              } else {
+                                return `${diffMonths} month${diffMonths > 1 ? 's' : ''}`;
+                              }
+                            })()}
                           </p>
                         </div>
                       </div>
