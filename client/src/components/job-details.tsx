@@ -38,27 +38,6 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     enabled: !!jobId,
   });
 
-  if (isLoading) {
-    return <JobDetailsSkeleton />;
-  }
-
-  if (error) {
-    return (
-      <Card className="h-full">
-        <CardContent className="p-6 text-center">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to load job details</h3>
-          <p className="text-gray-600">
-            {error instanceof Error ? error.message : "Something went wrong"}
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (!job) {
-    return null;
-  }
-
   const bookmarkMutation = useMutation({
     mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 
       ApiClient.bookmarkJob(jobId, isBookmarked),
@@ -79,10 +58,12 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   });
 
   const handleBookmark = () => {
+    if (!job) return;
     bookmarkMutation.mutate({ jobId: job.id, isBookmarked: job.is_bookmarked || false });
   };
 
   const handleShare = () => {
+    if (!job) return;
     if (navigator.share) {
       navigator.share({
         title: job.title,
@@ -97,6 +78,28 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
       });
     }
   };
+
+  // Conditional rendering after all hooks
+  if (isLoading) {
+    return <JobDetailsSkeleton />;
+  }
+
+  if (error) {
+    return (
+      <Card className="h-full">
+        <CardContent className="p-6 text-center">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to load job details</h3>
+          <p className="text-gray-600">
+            {error instanceof Error ? error.message : "Something went wrong"}
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!job) {
+    return null;
+  }
 
   const formatSalary = (job: Job) => {
     // Support both new API structure (payment_from/payment_to) and legacy (salary_min/salary_max)
