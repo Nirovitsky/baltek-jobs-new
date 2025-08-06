@@ -59,6 +59,16 @@
   * {
     @apply border-border;
   }
+  
+  /* Remove default focus styles globally for better UX */
+  *:focus {
+    outline: none !important;
+  }
+  
+  *:focus-visible {
+    outline: 2px solid hsl(var(--primary)) !important;
+    outline-offset: 2px;
+  }
 
   html, body {
     overscroll-behavior: none;
@@ -89,6 +99,13 @@
   .job-card:active,
   .job-card:focus {
     @apply outline-none;
+    box-shadow: none !important;
+    border: none !important;
+  }
+  
+  .job-card:focus-visible {
+    @apply outline-none;
+    box-shadow: none !important;
   }
   
   .job-card.selected {

@@ -145,8 +145,8 @@ export default function JobList({
         {jobs.map((job) => (
           <div
             key={job.id}
-            className={`job-card w-full max-w-full px-6 py-5 border-b border-gray-100 hover:bg-gray-50/80 cursor-pointer focus:outline-none active:bg-gray-50 transition-all duration-200 hover:shadow-sm ${
-              selectedJobId === job.id ? "selected bg-blue-50 border-blue-200" : ""
+            className={`job-card w-full max-w-full px-6 py-5 border-b border-gray-100 hover:bg-gray-50/80 cursor-pointer focus:outline-none focus:ring-0 active:bg-gray-50 transition-all duration-200 hover:shadow-sm ${
+              selectedJobId === job.id ? "selected bg-blue-50 border-l-4 border-l-blue-500 border-b-gray-100" : ""
             }`}
             onClick={() => onJobSelect(job)}
           >
