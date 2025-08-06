@@ -1,14 +1,18 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
-import { Briefcase, Calendar, MapPin, Building2, FileText, Clock, CheckCircle, XCircle, AlertCircle, DollarSign } from "lucide-react";
+import { Briefcase, Calendar, MapPin, Building2, FileText, Clock, CheckCircle, XCircle, AlertCircle, DollarSign, X } from "lucide-react";
+import JobDetails from "@/components/job-details";
 
 export default function ApplicationsPage() {
   const { user } = useAuth();
+  const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
 
   const { data: applications, isLoading, error } = useQuery({
     queryKey: ["user", "applications"],
@@ -137,7 +141,11 @@ export default function ApplicationsPage() {
         {/* Modern Application Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {appliedJobs.map((job: any) => (
-            <Card key={job.id} className="hover:shadow-md transition-all duration-200 border-0 shadow-sm bg-white rounded-xl overflow-hidden">
+            <Card 
+              key={job.id} 
+              className="hover:shadow-md transition-all duration-200 border-0 shadow-sm bg-white rounded-xl overflow-hidden cursor-pointer"
+              onClick={() => setSelectedJobId(job.id)}
+            >
               <CardContent className="p-0">
                 <div className="p-5">
                   <div className="flex items-start justify-between mb-4">
@@ -149,7 +157,7 @@ export default function ApplicationsPage() {
                         <Badge className="bg-green-50 text-green-700 border border-green-200 px-2 py-1 rounded-lg text-xs font-medium">
                           <span className="flex items-center gap-1">
                             <CheckCircle className="w-3 h-3" />
-                            Applied
+                            Under Review
                           </span>
                         </Badge>
                       </div>
@@ -173,7 +181,7 @@ export default function ApplicationsPage() {
                           
                           <div className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            <span>Applied</span>
+                            <span>Recently</span>
                           </div>
                         </div>
                       </div>
@@ -198,13 +206,7 @@ export default function ApplicationsPage() {
                         </div>
                       )}
 
-                      {/* Application Status */}
-                      <div className="bg-green-50 p-2 rounded-lg mb-3 border border-green-100">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle className="w-4 h-4 text-green-600" />
-                          <span className="text-sm font-medium text-green-800">Under Review</span>
-                        </div>
-                      </div>
+
 
                       {/* Skills Tags */}
                       {job.skills && job.skills.length > 0 && (
@@ -235,6 +237,18 @@ export default function ApplicationsPage() {
           </div>
         )}
       </div>
+
+      {/* Job Details Modal */}
+      <Dialog open={!!selectedJobId} onOpenChange={() => setSelectedJobId(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle>Job Details</DialogTitle>
+          </DialogHeader>
+          <div className="px-6 pb-6">
+            {selectedJobId && <JobDetails jobId={selectedJobId} />}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
