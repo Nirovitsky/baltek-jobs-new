@@ -12,9 +12,9 @@ export default function JobSkeleton({ count = 10 }: JobSkeletonProps) {
         <Skeleton className="h-6 w-28" />
       </div>
       
-      <div className="space-y-0 flex-1 overflow-y-auto">
+      <div className="space-y-0 flex-1 overflow-y-auto infinite-scroll">
         {Array.from({ length: count }).map((_, index) => (
-          <div key={index} className="px-5 py-4 border-b hover:bg-gray-50 transition-all duration-200 ease-in-out">
+          <div key={index} className="job-card px-5 py-4 border-b hover:bg-gray-50 cursor-pointer focus:outline-none active:bg-gray-50 transition-all duration-200 ease-in-out">
             <div className="relative min-h-[80px]">
               <div className="flex justify-between items-start">
                 <div className="flex-1 pr-4">

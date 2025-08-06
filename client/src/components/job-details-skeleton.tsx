@@ -42,7 +42,7 @@ export default function JobDetailsSkeleton() {
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto job-description-scroll">
           <CardContent className="p-6">
             {/* Skills */}
             <div className="mb-6">
