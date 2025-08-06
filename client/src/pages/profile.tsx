@@ -272,7 +272,7 @@ export default function Profile() {
                       <AvatarImage src={displayProfile.avatar} alt={`${displayProfile.first_name} ${displayProfile.last_name}`} />
                     ) : (
                       <AvatarFallback className="text-lg bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
-                        {(displayProfile.first_name?.[0] || "") + (displayProfile.last_name?.[0] || "")}
+                        MM
                       </AvatarFallback>
                     )}
                   </Avatar>
