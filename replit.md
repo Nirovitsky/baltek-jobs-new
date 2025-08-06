@@ -32,7 +32,9 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Filter UI Improvements**: Fixed dropdown behavior to use click instead of hover, removed blue focus colors, increased field widths for better text display, and removed grey highlighting on job card clicks
 - **Infinite Scroll Fix**: Fixed pagination implementation to use proper offset-based pagination (offset/limit) instead of page-based, enabling infinite scroll to load all available jobs from the API
 - **Smart Pagination UX**: Optimized pagination performance by loading 10 jobs initially and implementing smart prefetching that triggers when user scrolls to the 6th job (4 remaining), providing seamless browsing without wait times
-- **Skeleton Loading States**: Replaced generic loading indicators with detailed skeleton components that mirror the actual job card layout, providing smooth visual feedback during initial page loads
+- **Skeleton Loading States**: Replaced generic loading indicators with detailed skeleton components that mirror the actual job card layout, providing smooth visual feedback during initial page loads and infinite scroll loading
+- **Hidden Scrollbar UX**: Implemented invisible scrollbar for cleaner visual appearance while maintaining full scrolling functionality
+- **Progressive Loading Skeletons**: Added dedicated skeleton components for both initial page load and infinite scroll states to maintain consistent visual feedback
 
 ## User Preferences
 

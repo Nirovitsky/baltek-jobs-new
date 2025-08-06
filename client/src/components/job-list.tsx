@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import JobSkeleton from "@/components/job-skeleton";
+import JobLoadingSkeleton from "@/components/job-loading-skeleton";
 
 import { 
   MapPin, 
@@ -214,16 +215,17 @@ export default function JobList({
           </div>
         ))}
         
+        {/* Loading more jobs skeleton */}
+        {isFetchingNextPage && (
+          <JobLoadingSkeleton count={3} />
+        )}
+        
         {/* Infinite scroll trigger */}
-        <div ref={loadMoreRef} className="p-4 text-center">
-          {isFetchingNextPage && (
-            <div className="inline-flex items-center space-x-2 text-gray-500">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              <span className="text-sm">Loading more jobs...</span>
-            </div>
-          )}
+        <div ref={loadMoreRef} className="h-1">
           {!hasNextPage && jobs.length > 0 && (
-            <p className="text-sm text-gray-500">No more jobs to load</p>
+            <div className="p-4 text-center">
+              <p className="text-sm text-gray-500">No more jobs to load</p>
+            </div>
           )}
         </div>
       </div>
