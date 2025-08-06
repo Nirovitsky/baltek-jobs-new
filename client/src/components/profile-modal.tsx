@@ -139,6 +139,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const experienceForm = useForm<any>({
     defaultValues: {
       organization: 0,
+      custom_organization: "",
       position: "",
       date_started: "",
       date_finished: "",
@@ -334,7 +335,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       return ApiClient.uploadResume(formData);
     },
     onSuccess: () => {
+      // Invalidate and refetch resumes immediately
       queryClient.invalidateQueries({ queryKey: ["user", "resumes", user?.id] });
+      queryClient.refetchQueries({ queryKey: ["user", "resumes", user?.id] });
       setUploadingResume(null);
       toast({ title: "Resume uploaded", description: "Resume uploaded successfully" });
     },
@@ -403,6 +406,15 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       date_started: formatDateForAPI(data.date_started),
       date_finished: formatDateForAPI(data.date_finished),
     };
+
+    // Use custom organization name if provided, otherwise use selected organization
+    if (data.custom_organization && data.custom_organization.trim()) {
+      formattedData.organization_name = data.custom_organization.trim();
+      delete formattedData.organization;
+      delete formattedData.custom_organization;
+    } else {
+      delete formattedData.custom_organization;
+    }
     
     if (editingExperience) {
       updateExperienceMutation.mutate({ id: editingExperience.id, data: formattedData });
@@ -470,6 +482,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     setEditingExperience(exp);
     experienceForm.reset({
       organization: exp.organization?.id || 0,
+      custom_organization: exp.organization_name && !exp.organization?.id ? exp.organization_name : "",
       position: exp.position || "",
       date_started: formatDateForForm(exp.date_started || ""),
       date_finished: formatDateForForm(exp.date_finished || ""),
@@ -869,21 +882,37 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     <form onSubmit={experienceForm.handleSubmit(handleExperienceSubmit)} className="space-y-4">
                       <div className="space-y-2">
                         <Label htmlFor="organization">Organization</Label>
-                        <Select
-                          value={experienceForm.watch("organization")?.toString() || ""}
-                          onValueChange={(value) => experienceForm.setValue("organization", parseInt(value))}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select organization" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {!organizationsLoading && (organizations as any)?.results?.map((org: any) => (
-                              <SelectItem key={org.id} value={org.id.toString()}>
-                                {org.official_name || org.display_name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="space-y-2">
+                          <Select
+                            value={experienceForm.watch("organization")?.toString() || ""}
+                            onValueChange={(value) => {
+                              experienceForm.setValue("organization", parseInt(value));
+                              experienceForm.setValue("custom_organization", "");
+                            }}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select from existing organizations" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {!organizationsLoading && (organizations as any)?.results?.map((org: any) => (
+                                <SelectItem key={org.id} value={org.id.toString()}>
+                                  {org.official_name || org.display_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <div className="text-center text-sm text-gray-500">OR</div>
+                          <Input
+                            placeholder="Type custom company name"
+                            value={experienceForm.watch("custom_organization") || ""}
+                            onChange={(e) => {
+                              experienceForm.setValue("custom_organization", e.target.value);
+                              if (e.target.value) {
+                                experienceForm.setValue("organization", 0);
+                              }
+                            }}
+                          />
+                        </div>
                       </div>
 
                       <div className="space-y-2">
