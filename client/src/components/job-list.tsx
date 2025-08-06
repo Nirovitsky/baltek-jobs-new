@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import JobSkeleton from "@/components/job-skeleton";
 
 import { 
   MapPin, 
@@ -111,16 +112,7 @@ export default function JobList({
   };
 
   if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="ml-2">Loading jobs...</span>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <JobSkeleton count={15} />;
   }
 
   if (jobs.length === 0) {
