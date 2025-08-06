@@ -157,10 +157,10 @@ export default function JobList({
                 
                 {/* Tags in Middle */}
                 <div className="flex flex-wrap gap-1.5 mb-3">
-                  <span className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-md">
+                  <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
                     {formatJobType(job.job_type)}
                   </span>
-                  <span className="px-2 py-0.5 bg-green-100 text-green-800 text-xs rounded-md">
+                  <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
                     {formatWorkplaceType(job.workplace_type)}
                   </span>
                   {(job as any).minimum_education_level && (
@@ -184,12 +184,12 @@ export default function JobList({
                         <Building className="w-3 h-3 text-gray-400" />
                       )}
                     </div>
-                    <p className="font-medium text-gray-900 text-xs truncate max-w-24">
+                    <p className="font-medium text-gray-900 text-xs truncate max-w-20">
                       {job.organization?.display_name || job.organization?.name || 'Unknown'}
                     </p>
                   </div>
                   
-                  <div className="flex-1"></div>
+                  <div className="flex-1 min-w-8"></div>
                   
                   <p className="text-xs text-gray-500 flex items-center">
                     <MapPin className="w-3 h-3 mr-1" />
