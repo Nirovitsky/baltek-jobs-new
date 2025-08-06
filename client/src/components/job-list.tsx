@@ -134,40 +134,40 @@ export default function JobList({
   }
 
   return (
-    <Card className="h-full flex flex-col bg-gradient-to-b from-gray-50 to-white">
-      <div className="p-6 border-b border-gray-200 flex-shrink-0 bg-white">
-        <h2 className="text-xl font-bold text-gray-900">
+    <Card className="h-full flex flex-col">
+      <div className="p-4 border-b flex-shrink-0">
+        <h2 className="text-lg font-semibold text-gray-900">
           {totalCount !== undefined ? `${totalCount} Job${totalCount !== 1 ? "s" : ""} Found` : `${jobs.length} Job${jobs.length !== 1 ? "s" : ""} Found`}
         </h2>
       </div>
       
-      <div className="infinite-scroll flex-1 overflow-y-auto py-2">
+      <div className="infinite-scroll flex-1 overflow-y-auto">
         {jobs.map((job) => (
           <div
             key={job.id}
-            className={`job-card relative w-full max-w-full mx-4 my-3 p-6 bg-white rounded-xl border border-gray-200 hover:border-gray-300 cursor-pointer focus:outline-none focus:ring-0 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
-              selectedJobId === job.id ? "selected ring-2 ring-blue-500 ring-opacity-50 shadow-lg border-blue-300 bg-blue-50/30" : "shadow-sm"
+            className={`job-card w-full max-w-full px-6 py-5 border-b border-gray-100 hover:bg-gray-50/80 cursor-pointer focus:outline-none focus:ring-0 active:bg-gray-50 transition-all duration-200 hover:shadow-sm ${
+              selectedJobId === job.id ? "selected bg-blue-50 border-l-4 border-l-blue-500 border-b-gray-100" : ""
             }`}
             onClick={() => onJobSelect(job)}
           >
             <div className="relative w-full">
-              <div className="flex justify-between items-start w-full mb-4">
+              <div className="flex justify-between items-start w-full">
                 <div className="flex-1 pr-6 min-w-0">
                   {/* Job Title */}
-                  <h3 className="font-bold text-lg text-gray-900 line-clamp-2 mb-3 leading-tight">
+                  <h3 className="font-semibold text-base text-gray-900 line-clamp-2 mb-3 leading-tight">
                     {job.title || 'Job Title'}
                   </h3>
                   
                   {/* Tags in Middle */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border">
+                    <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                       {formatJobType(job.job_type)}
                     </span>
-                    <span className="px-3 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-lg border">
+                    <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                       {formatWorkplaceType(job.workplace_type)}
                     </span>
                     {(job as any).minimum_education_level && (
-                      <span className="px-3 py-1.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-lg border border-purple-200">
+                      <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
                         {(job as any).minimum_education_level}
                       </span>
                     )}
@@ -175,37 +175,35 @@ export default function JobList({
                   
                   {/* Company at Bottom Left */}
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl flex items-center justify-center border border-gray-200 shadow-sm">
+                    <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
                       {job.organization?.logo ? (
                         <img
                           src={job.organization.logo}
                           alt={job.organization.display_name || job.organization.name || 'Company'}
-                          className="w-10 h-10 rounded-xl object-cover"
+                          className="w-8 h-8 rounded-lg object-cover"
                         />
                       ) : (
-                        <Building className="w-5 h-5 text-gray-500" />
+                        <Building className="w-4 h-4 text-gray-500" />
                       )}
                     </div>
-                    <div>
-                      <p className="font-semibold text-gray-900 text-sm truncate">
-                        {job.organization?.display_name || job.organization?.name || 'Unknown'}
-                      </p>
-                      <div className="flex items-center text-xs text-gray-600 mt-0.5">
-                        <MapPin className="w-3 h-3 mr-1 text-gray-500" />
-                        <span className="truncate">{job.location?.name || 'Unknown'}</span>
-                      </div>
-                    </div>
+                    <p className="font-medium text-gray-900 text-sm truncate">
+                      {job.organization?.display_name || job.organization?.name || 'Unknown'}
+                    </p>
                   </div>
                 </div>
                 
                 {/* Salary on Top Right */}
                 <div className="text-right flex-shrink-0">
-                  <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-2 rounded-lg shadow-sm">
-                    <span className="text-sm font-bold whitespace-nowrap">
-                      {formatSalary(job)}
-                    </span>
-                  </div>
+                  <span className="text-sm font-semibold text-primary whitespace-nowrap">
+                    {formatSalary(job)}
+                  </span>
                 </div>
+              </div>
+              
+              {/* Location at Bottom Right */}
+              <div className="absolute bottom-0 right-0 text-xs text-gray-600 flex items-center bg-gray-50 px-2 py-1 rounded-md">
+                <MapPin className="w-3 h-3 mr-1.5 text-gray-500" />
+                <span className="whitespace-nowrap font-medium">{job.location?.name || 'Unknown'}</span>
               </div>
             </div>
           </div>

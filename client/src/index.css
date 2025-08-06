@@ -82,7 +82,7 @@
 
 @layer components {
   .job-card {
-    @apply transition-all duration-300 ease-in-out;
+    @apply transition-all duration-200 ease-in-out;
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -90,12 +90,10 @@
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    backdrop-filter: blur(10px);
   }
   
   .job-card:hover {
-    @apply transform -translate-y-1 shadow-xl;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    @apply transform -translate-y-0.5 shadow-md;
   }
   
   .job-card:active,
@@ -111,8 +109,7 @@
   }
   
   .job-card.selected {
-    @apply bg-gradient-to-br from-blue-50 to-blue-100 border-blue-400;
-    box-shadow: 0 0 0 3px rgb(59 130 246 / 0.1);
+    @apply bg-blue-50 border-primary;
   }
   
   .infinite-scroll {
