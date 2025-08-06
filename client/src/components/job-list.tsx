@@ -128,14 +128,14 @@ export default function JobList({
   }
 
   return (
-    <Card>
-      <div className="p-4 border-b">
+    <Card className="h-full flex flex-col">
+      <div className="p-4 border-b flex-shrink-0">
         <h2 className="text-lg font-semibold text-gray-900">
           {jobs.length} Job{jobs.length !== 1 ? "s" : ""} Found
         </h2>
       </div>
       
-      <div className="infinite-scroll">
+      <div className="infinite-scroll flex-1 overflow-y-auto">
         {jobs.map((job) => (
           <div
             key={job.id}

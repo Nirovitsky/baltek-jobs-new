@@ -77,14 +77,14 @@ export default function Jobs() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       <Navbar onSearch={handleSearch} searchQuery={searchQuery} />
       
       <JobFiltersComponent filters={filters} onFiltersChange={handleFiltersChange} />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="flex gap-6">
-          <div className="w-1/2">
+      <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
+        <div className="flex gap-6 h-full">
+          <div className="w-1/2 h-full">
             <JobList
               jobs={jobs}
               selectedJobId={currentSelectedJobId}
@@ -96,7 +96,7 @@ export default function Jobs() {
             />
           </div>
           
-          <div className="w-1/2">
+          <div className="w-1/2 h-full">
             {currentSelectedJobId ? (
               <JobDetails jobId={currentSelectedJobId} />
             ) : isLoading ? (

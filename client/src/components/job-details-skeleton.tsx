@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function JobDetailsSkeleton() {
   return (
-    <Card className="h-full">
+    <Card className="h-full flex flex-col">
       <CardHeader className="border-b">
         {/* Job Title */}
         <Skeleton className="h-8 w-3/4 mb-2" />
