@@ -112,6 +112,8 @@ export class ApiClient {
     });
     
     const query = searchParams.toString();
+    console.log('API Request params:', params);
+    console.log('Query string:', query);
     return this.makeRequest(`/jobs/${query ? `?${query}` : ""}`);
   }
 
