@@ -84,18 +84,8 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
       return result;
     },
     onSuccess: () => {
-      // Store applied job ID locally as workaround for API issue
-      try {
-        const stored = localStorage.getItem('applied_jobs');
-        const appliedJobs = stored ? JSON.parse(stored) : [];
-        if (!appliedJobs.includes(job.id)) {
-          appliedJobs.push(job.id);
-          localStorage.setItem('applied_jobs', JSON.stringify(appliedJobs));
-        }
-      } catch (error) {
-        console.warn('Failed to update local application tracking:', error);
-      }
-
+      // Invalidate job details query to refresh the my_application_id field
+      queryClient.invalidateQueries({ queryKey: ["job", job.id] });
       queryClient.invalidateQueries({ queryKey: ["applications"] });
       toast({
         title: "Application submitted",
