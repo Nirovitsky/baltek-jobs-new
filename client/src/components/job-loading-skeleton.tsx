@@ -8,8 +8,8 @@ export default function JobLoadingSkeleton({ count = 3 }: JobLoadingSkeletonProp
   return (
     <div className="space-y-0">
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="px-5 py-4 border-b">
-          <div className="relative">
+        <div key={index} className="px-5 py-4 border-b hover:bg-gray-50 transition-all duration-200 ease-in-out">
+          <div className="relative min-h-[80px]">
             <div className="flex justify-between items-start">
               <div className="flex-1 pr-4">
                 {/* Job Title */}
@@ -31,7 +31,7 @@ export default function JobLoadingSkeleton({ count = 3 }: JobLoadingSkeletonProp
               
               {/* Salary on Top Right */}
               <div className="text-right flex-shrink-0">
-                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-4 w-20" />
               </div>
             </div>
             

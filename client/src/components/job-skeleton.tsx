@@ -9,13 +9,13 @@ export default function JobSkeleton({ count = 10 }: JobSkeletonProps) {
   return (
     <Card className="h-full flex flex-col">
       <div className="p-4 border-b flex-shrink-0">
-        <Skeleton className="h-6 w-24" />
+        <Skeleton className="h-6 w-28" />
       </div>
       
       <div className="space-y-0 flex-1 overflow-y-auto">
         {Array.from({ length: count }).map((_, index) => (
-          <div key={index} className="px-5 py-4 border-b">
-            <div className="relative">
+          <div key={index} className="px-5 py-4 border-b hover:bg-gray-50 transition-all duration-200 ease-in-out">
+            <div className="relative min-h-[80px]">
               <div className="flex justify-between items-start">
                 <div className="flex-1 pr-4">
                   {/* Job Title */}
@@ -37,7 +37,7 @@ export default function JobSkeleton({ count = 10 }: JobSkeletonProps) {
                 
                 {/* Salary on Top Right */}
                 <div className="text-right flex-shrink-0">
-                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-4 w-20" />
                 </div>
               </div>
               

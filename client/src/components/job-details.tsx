@@ -36,7 +36,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     queryKey: ["job", jobId],
     queryFn: () => ApiClient.getJob(jobId),
     enabled: !!jobId,
-  });
+  }) as { data: Job | undefined; isLoading: boolean; error: any };
 
   const bookmarkMutation = useMutation({
     mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 
