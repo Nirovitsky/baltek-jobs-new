@@ -46,6 +46,7 @@ The application features a modern two-column job browsing interface, comprehensi
 - **Experience & Education Data Mapping**: Updated experience and education sections to properly map API response fields - using 'position' and 'organization_name' for experiences, 'level' and university location for educations. Fixed date parsing for DD.MM.YYYY format and duration calculations
 - **Profile Privacy Update**: Removed date of birth and gender information display from profile for privacy and cleaner interface
 - **Edit Profile Integration**: Fully integrated profile editing modal with Baltek API endpoints. Updated all forms (personal info, education, experience, projects) to use correct API field names and data structures. Added proper form population when editing existing records and comprehensive CRUD operations with real-time cache invalidation
+- **Date Format Fix**: Fixed date format compatibility issue between HTML date inputs (YYYY-MM-DD) and Baltek API requirements (DD.MM.YYYY). Added automatic date format conversion functions for all experience, education, and project forms to ensure seamless data submission and editing
 
 ## User Preferences
 

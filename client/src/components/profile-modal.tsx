@@ -318,26 +318,61 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   };
 
   const handleEducationSubmit = (data: any) => {
+    // Convert date format for API
+    const formattedData = {
+      ...data,
+      date_started: formatDateForAPI(data.date_started),
+      date_finished: formatDateForAPI(data.date_finished),
+    };
+    
     if (editingEducation) {
-      updateEducationMutation.mutate({ id: editingEducation.id, data });
+      updateEducationMutation.mutate({ id: editingEducation.id, data: formattedData });
     } else {
-      addEducationMutation.mutate(data);
+      addEducationMutation.mutate(formattedData);
     }
   };
 
+  const formatDateForAPI = (dateString: string) => {
+    if (!dateString) return "";
+    // Convert from YYYY-MM-DD to DD.MM.YYYY
+    const [year, month, day] = dateString.split("-");
+    return `${day}.${month}.${year}`;
+  };
+
+  const formatDateForForm = (dateString: string) => {
+    if (!dateString) return "";
+    // Convert from DD.MM.YYYY to YYYY-MM-DD
+    const [day, month, year] = dateString.split(".");
+    return `${year}-${month}-${day}`;
+  };
+
   const handleExperienceSubmit = (data: any) => {
+    // Convert date format for API
+    const formattedData = {
+      ...data,
+      date_started: formatDateForAPI(data.date_started),
+      date_finished: formatDateForAPI(data.date_finished),
+    };
+    
     if (editingExperience) {
-      updateExperienceMutation.mutate({ id: editingExperience.id, data });
+      updateExperienceMutation.mutate({ id: editingExperience.id, data: formattedData });
     } else {
-      addExperienceMutation.mutate(data);
+      addExperienceMutation.mutate(formattedData);
     }
   };
 
   const handleProjectSubmit = (data: any) => {
+    // Convert date format for API
+    const formattedData = {
+      ...data,
+      date_started: formatDateForAPI(data.date_started),
+      date_finished: formatDateForAPI(data.date_finished),
+    };
+    
     if (editingProject) {
-      updateProjectMutation.mutate({ id: editingProject.id, data });
+      updateProjectMutation.mutate({ id: editingProject.id, data: formattedData });
     } else {
-      addProjectMutation.mutate(data);
+      addProjectMutation.mutate(formattedData);
     }
   };
 
@@ -357,8 +392,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     educationForm.reset({
       university: edu.university?.id || 0,
       level: edu.level || "",
-      date_started: edu.date_started || "",
-      date_finished: edu.date_finished || "",
+      date_started: formatDateForForm(edu.date_started || ""),
+      date_finished: formatDateForForm(edu.date_finished || ""),
       description: edu.description || "",
     });
   };
@@ -368,8 +403,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     experienceForm.reset({
       organization: exp.organization?.id || 0,
       position: exp.position || "",
-      date_started: exp.date_started || "",
-      date_finished: exp.date_finished || "",
+      date_started: formatDateForForm(exp.date_started || ""),
+      date_finished: formatDateForForm(exp.date_finished || ""),
       description: exp.description || "",
     });
   };
@@ -382,8 +417,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       technologies: project.technologies || [],
       url: project.url || "",
       github_url: project.github_url || "",
-      date_started: project.date_started || "",
-      date_finished: project.date_finished || "",
+      date_started: formatDateForForm(project.date_started || ""),
+      date_finished: formatDateForForm(project.date_finished || ""),
     });
   };
 
