@@ -47,7 +47,7 @@ export default function JobList({
     isFetchingNextPage,
     fetchNextPage,
     jobs,
-    prefetchThreshold: 3, // Start prefetching when user has scrolled through 12 of 15 jobs
+    prefetchThreshold: 4, // Start prefetching when user has scrolled through 6 of 10 jobs
   });
 
   const bookmarkMutation = useMutation({
@@ -112,7 +112,7 @@ export default function JobList({
   };
 
   if (isLoading) {
-    return <JobSkeleton count={15} />;
+    return <JobSkeleton count={10} />;
   }
 
   if (jobs.length === 0) {

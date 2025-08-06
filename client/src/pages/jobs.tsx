@@ -27,7 +27,7 @@ export default function Jobs() {
     queryFn: async ({ pageParam = 0 }) => {
       const params = {
         offset: pageParam,
-        limit: 15, // Reduced from 20 to 15 for better UX
+        limit: 10, // Load 10 jobs initially for optimal UX
         search: searchQuery || undefined,
         ...filters,
       };

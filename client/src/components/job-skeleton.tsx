@@ -5,7 +5,7 @@ interface JobSkeletonProps {
   count?: number;
 }
 
-export default function JobSkeleton({ count = 5 }: JobSkeletonProps) {
+export default function JobSkeleton({ count = 10 }: JobSkeletonProps) {
   return (
     <Card>
       <div className="p-4 border-b">
