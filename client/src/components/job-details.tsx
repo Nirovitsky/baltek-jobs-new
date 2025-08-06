@@ -92,7 +92,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   // Conditional rendering after all hooks
   if (isLoading) {
     return (
-      <Card className="h-full">
+      <Card className="h-full w-full">
         <CardContent className="p-6 flex items-center justify-center h-full">
           <div className="text-center">
             <h3 className="text-lg font-medium text-gray-900">Loading job details...</h3>
@@ -104,7 +104,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
   if (error) {
     return (
-      <Card className="h-full">
+      <Card className="h-full w-full">
         <CardContent className="p-6 text-center">
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to load job details</h3>
           <p className="text-gray-600">
@@ -162,8 +162,8 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
   return (
     <>
-      <div className="flex flex-col h-full">
-        <Card className="flex-1 flex flex-col h-full">
+      <div className="flex flex-col h-full w-full">
+        <Card className="flex-1 flex flex-col h-full w-full">
           {/* Fixed Header */}
           <div className="p-6 border-b bg-white">
             {/* Header */}

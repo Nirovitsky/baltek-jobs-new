@@ -117,23 +117,25 @@ export default function Jobs({}: JobsProps) {
             />
           </div>
           
-          <div className="w-[calc(100%-424px)] h-full flex-shrink-0">
-            {currentSelectedJobId ? (
-              <JobDetails jobId={currentSelectedJobId} />
-            ) : jobs.length === 0 && isLoading ? (
-              <div className="h-full flex items-center justify-center">
-                <div className="text-center">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Loading...</h3>
+          <div className="w-[calc(100%-424px)] h-full flex-shrink-0 min-w-0">
+            <div className="h-full w-full">
+              {currentSelectedJobId ? (
+                <JobDetails jobId={currentSelectedJobId} />
+              ) : jobs.length === 0 && isLoading ? (
+                <div className="h-full w-full flex items-center justify-center">
+                  <div className="text-center">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Loading...</h3>
+                  </div>
                 </div>
-              </div>
-            ) : jobs.length > 0 ? (
-              <div className="h-full flex items-center justify-center">
-                <div className="text-center">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">Select a job to view details</h3>
-                  <p className="text-gray-600">Choose a job from the list to see more information</p>
+              ) : jobs.length > 0 ? (
+                <div className="h-full w-full flex items-center justify-center">
+                  <div className="text-center">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">Select a job to view details</h3>
+                    <p className="text-gray-600">Choose a job from the list to see more information</p>
+                  </div>
                 </div>
-              </div>
-            ) : null}
+              ) : null}
+            </div>
           </div>
         </div>
       </div>
