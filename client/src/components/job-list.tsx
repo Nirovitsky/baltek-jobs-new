@@ -148,31 +148,31 @@ export default function JobList({
             }`}
             onClick={() => onJobSelect(job)}
           >
-            <div className="flex justify-between items-start">
-              <div className="flex-1 pr-4">
-                {/* Job Title */}
-                <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2.5">
-                  {job.title || 'Job Title'}
-                </h3>
-                
-                {/* Tags in Middle */}
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
-                    {formatJobType(job.job_type)}
-                  </span>
-                  <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
-                    {formatWorkplaceType(job.workplace_type)}
-                  </span>
-                  {(job as any).minimum_education_level && (
-                    <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-md">
-                      {(job as any).minimum_education_level}
+            <div className="relative">
+              <div className="flex justify-between items-start">
+                <div className="flex-1 pr-4">
+                  {/* Job Title */}
+                  <h3 className="font-semibold text-sm text-gray-900 line-clamp-2 mb-2.5">
+                    {job.title || 'Job Title'}
+                  </h3>
+                  
+                  {/* Tags in Middle */}
+                  <div className="flex flex-wrap gap-1.5 mb-3">
+                    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
+                      {formatJobType(job.job_type)}
                     </span>
-                  )}
-                </div>
-                
-                {/* Bottom Row: Company Left, Location Right */}
-                <div className="flex justify-between items-center w-full">
-                  <div className="flex items-center space-x-2 flex-shrink-0">
+                    <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded-md">
+                      {formatWorkplaceType(job.workplace_type)}
+                    </span>
+                    {(job as any).minimum_education_level && (
+                      <span className="px-2 py-0.5 bg-purple-100 text-purple-800 text-xs rounded-md">
+                        {(job as any).minimum_education_level}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Company at Bottom Left */}
+                  <div className="flex items-center space-x-2">
                     <div className="w-5 h-5 bg-gray-200 rounded flex items-center justify-center">
                       {job.organization?.logo ? (
                         <img
@@ -188,19 +188,20 @@ export default function JobList({
                       {job.organization?.display_name || job.organization?.name || 'Unknown'}
                     </p>
                   </div>
-                  
-                  <div className="text-xs text-gray-500 flex items-center flex-shrink-0 ml-4">
-                    <MapPin className="w-3 h-3 mr-1" />
-                    <span className="whitespace-nowrap">{job.location?.name || 'Unknown'}</span>
-                  </div>
+                </div>
+                
+                {/* Salary on Top Right */}
+                <div className="text-right flex-shrink-0">
+                  <span className="text-sm font-medium text-primary whitespace-nowrap">
+                    {formatSalary(job)}
+                  </span>
                 </div>
               </div>
               
-              {/* Salary on Top Right */}
-              <div className="text-right flex-shrink-0">
-                <span className="text-sm font-medium text-primary whitespace-nowrap">
-                  {formatSalary(job)}
-                </span>
+              {/* Location at Bottom Right */}
+              <div className="absolute bottom-0 right-0 text-xs text-gray-500 flex items-center">
+                <MapPin className="w-3 h-3 mr-1" />
+                <span className="whitespace-nowrap">{job.location?.name || 'Unknown'}</span>
               </div>
             </div>
           </div>
