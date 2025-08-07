@@ -128,15 +128,17 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
               
               {/* Company at Bottom Left */}
               <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
+                <div className="w-8 h-8 flex items-center justify-center">
                   {job.organization?.logo ? (
                     <img
                       src={job.organization.logo}
                       alt={job.organization.display_name || job.organization.name || 'Company'}
-                      className="w-8 h-8 rounded-full object-cover"
+                      className="w-8 h-8 object-contain"
                     />
                   ) : (
-                    <Building className="w-4 h-4 text-gray-500" />
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
+                      <Building className="w-4 h-4 text-gray-500" />
+                    </div>
                   )}
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
