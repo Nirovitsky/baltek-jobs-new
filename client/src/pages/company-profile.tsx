@@ -370,7 +370,7 @@ export default function CompanyProfile() {
               ) : (
                 <div className="text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400 italic">
-                    No company description available.
+                    No company description available. Stay tuned for updates!
                   </p>
                 </div>
               )}
@@ -421,7 +421,7 @@ export default function CompanyProfile() {
               ) : (
                 <div className="text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400 italic">
-                    No projects available.
+                    No projects available yet. Check back soon!
                   </p>
                 </div>
               )}
