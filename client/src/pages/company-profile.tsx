@@ -95,11 +95,7 @@ export default function CompanyProfile() {
     enabled: !!companyId,
   });
 
-  const { data: jobsData, isLoading: jobsLoading } = useQuery({
-    queryKey: ["/api/organizations", companyId, "jobs"],
-    queryFn: () => fetch(`/api/organizations/${companyId}/jobs`).then(res => res.json()),
-    enabled: !!companyId,
-  });
+
 
   if (companyLoading) {
     return <CompanyProfileSkeleton />;
@@ -127,7 +123,6 @@ export default function CompanyProfile() {
   }
 
   const organizationData = company as Organization;
-  const companyJobs = jobsData?.results || [];
 
   // Get company initials for avatar fallback
   const getCompanyInitials = (name?: string) => {
@@ -164,15 +159,7 @@ export default function CompanyProfile() {
       )}
       
       <div className="container mx-auto px-4 py-8">
-        {/* Back button */}
-        <div className="mb-6">
-          <Link href="/jobs">
-            <Button variant="outline" size="sm">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Jobs
-            </Button>
-          </Link>
-        </div>
+
 
         {/* Company Profile - Single Card Layout */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 mb-8 -mt-32 relative z-10" style={organizationData?.banner_image ? {} : { marginTop: '0' }}>
@@ -371,10 +358,9 @@ export default function CompanyProfile() {
               </div>
             </div>
 
-            {/* Main Content Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* About Section */}
-              <div className="lg:col-span-2">
+            {/* About Section */}
+            <div className="border-t dark:border-gray-700 pt-6">
+              <div>
                 <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">About {organizationData?.display_name}</h2>
                 
                 {(organizationData?.description || organizationData?.about_us) ? (
@@ -465,195 +451,18 @@ export default function CompanyProfile() {
                   </div>
                 )}
               </div>
-
-              {/* Company Details Sidebar */}
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Company Details</h3>
-                <div className="space-y-4">
-                  {organizationData?.company_type && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Company Type</dt>
-                      <dd className="text-sm text-gray-900 dark:text-gray-100">{organizationData.company_type}</dd>
-                    </div>
-                  )}
-                  
-                  {(organizationData?.industry || organizationData?.category?.name) && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Industry</dt>
-                      <dd className="text-sm text-gray-900 dark:text-gray-100">{organizationData.industry || organizationData.category?.name}</dd>
-                    </div>
-                  )}
-
-                  {(organizationData?.size_min && organizationData?.size_max) && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Company Size</dt>
-                      <dd className="text-sm text-gray-900 dark:text-gray-100">
-                        {organizationData.size_min.toLocaleString()} - {organizationData.size_max.toLocaleString()} employees
-                      </dd>
-                    </div>
-                  )}
-
-                  {(organizationData?.address || organizationData?.location?.name) && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Location</dt>
-                      <dd className="text-sm text-gray-900 dark:text-gray-100">
-                        {organizationData.address || organizationData.location?.name}
-                        {organizationData.postal_code && `, ${organizationData.postal_code}`}
-                      </dd>
-                    </div>
-                  )}
-                  
-                  {organizationData?.phone && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Phone</dt>
-                      <dd className="text-sm text-gray-900 dark:text-gray-100">
-                        <a href={`tel:${organizationData.phone}`} className="text-primary hover:text-primary/80">
-                          {organizationData.phone}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
-                  
-                  {organizationData?.email && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Email</dt>
-                      <dd className="text-sm text-gray-900 dark:text-gray-100">
-                        <a href={`mailto:${organizationData.email}`} className="text-primary hover:text-primary/80">
-                          {organizationData.email}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
-                  
-                  {organizationData?.website && (
-                    <div>
-                      <dt className="text-sm font-medium text-gray-500">Website</dt>
-                      <dd className="text-sm text-gray-900 dark:text-gray-100">
-                        <a 
-                          href={organizationData.website.startsWith('http') ? organizationData.website : `https://${organizationData.website}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:text-primary/80"
-                        >
-                          {organizationData.website}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Open Positions */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700">
-          <div className="p-6 border-b dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                  <Briefcase className="h-5 w-5" />
-                  Open Positions
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                  Current job openings at {organizationData?.display_name}
-                </p>
-              </div>
-              {companyJobs.length > 0 && (
-                <Link href={`/jobs?organization=${companyId}`}>
-                  <Button variant="outline" size="sm">
-                    View All Jobs
-                  </Button>
-                </Link>
-              )}
-            </div>
-          </div>
-          
-          <div className="p-6">
-            {jobsLoading ? (
-              <div className="space-y-4">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="border rounded-lg p-4 space-y-2">
-                    <Skeleton className="h-6 w-64" />
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-4 w-32" />
-                  </div>
-                ))}
-              </div>
-            ) : companyJobs.length > 0 ? (
-              <div className="space-y-4">
-                {companyJobs.slice(0, 5).map((job: Job) => (
-                  <Link key={job.id} href={`/jobs/${job.id}`}>
-                    <div className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
-                            {job.title}
-                          </h3>
-                          
-                          <div className="flex flex-wrap items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            {job.location && (
-                              <div className="flex items-center gap-1">
-                                <MapPin className="h-3 w-3" />
-                                <span>{job.location.name}</span>
-                              </div>
-                            )}
-                            
-                            <Badge variant="outline" className="text-xs">
-                              {job.job_type}
-                            </Badge>
-                            
-                            <Badge variant="outline" className="text-xs">
-                              {job.workplace_type}
-                            </Badge>
-                          </div>
-                          
-                          {(job.payment_from || job.payment_to) && (
-                            <div className="text-sm font-medium text-primary">
-                              {job.payment_from && job.payment_to
-                                ? `${job.currency || '$'} ${job.payment_from.toLocaleString()} - ${job.payment_to.toLocaleString()}`
-                                : job.payment_from
-                                ? `${job.currency || '$'} ${job.payment_from.toLocaleString()}+`
-                                : job.payment_to
-                                ? `Up to ${job.currency || '$'} ${job.payment_to.toLocaleString()}`
-                                : null}
-                              {job.payment_frequency && ` ${job.payment_frequency}`}
-                            </div>
-                          )}
-                        </div>
-                        
-                        {job.my_application_id && (
-                          <Badge variant="secondary" className="ml-2">
-                            Applied
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-                
-                {companyJobs.length > 5 && (
-                  <div className="text-center pt-4">
-                    <Link href={`/jobs?organization=${companyId}`}>
-                      <Button variant="outline">
-                        View {companyJobs.length - 5} More Jobs
-                      </Button>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-8">
-                <Briefcase className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                  No Open Positions
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400">
-                  {organizationData?.display_name} doesn't have any open positions at the moment.
-                </p>
-              </div>
-            )}
-          </div>
+        {/* Open Positions Button */}
+        <div className="text-center">
+          <Link href={`/jobs?organization=${companyId}`}>
+            <Button className="px-8 py-3 text-lg">
+              <Briefcase className="h-5 w-5 mr-2" />
+              Open Positions
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
