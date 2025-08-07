@@ -286,8 +286,8 @@ export default function CompanyProfile() {
                       {organizationData?.display_name || organizationData?.official_name}
                     </h1>
                     <Link href={`/jobs?organization=${companyId}`}>
-                      <Button className="ml-4">
-                        <Briefcase className="h-4 w-4 mr-2" />
+                      <Button size="sm" className="ml-4">
+                        <Briefcase className="h-3 w-3 mr-1.5" />
                         Open Positions
                       </Button>
                     </Link>
