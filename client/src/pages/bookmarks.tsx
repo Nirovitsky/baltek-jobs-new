@@ -52,7 +52,7 @@ export default function Bookmarks({}: BookmarksProps) {
           <div className="w-[400px] h-full flex-shrink-0">
             {isLoading ? (
               <div className="h-full flex flex-col w-[400px]">
-                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 flex-shrink-0 space-y-4">
+                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-lg flex-shrink-0 space-y-4">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
                     <div>
@@ -84,7 +84,7 @@ export default function Bookmarks({}: BookmarksProps) {
               </div>
             ) : jobs.length === 0 ? (
               <div className="h-full flex flex-col w-[400px]">
-                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 flex-shrink-0 space-y-4">
+                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-lg flex-shrink-0 space-y-4">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                       <Bookmark className="h-4 w-4 text-gray-500" />
@@ -106,26 +106,19 @@ export default function Bookmarks({}: BookmarksProps) {
               </div>
             ) : (
               <div className="h-full flex flex-col w-[400px]">
-                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 flex-shrink-0 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                        <Bookmark className="h-4 w-4 text-primary" />
-                      </div>
-                      <div>
-                        <h2 className="text-lg font-semibold text-gray-900">
-                          {totalCount.toLocaleString()}
-                        </h2>
-                        <p className="text-sm text-gray-600 -mt-1">
-                          Bookmarked Job{totalCount !== 1 ? "s" : ""}
-                        </p>
-                      </div>
+                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 rounded-t-lg flex-shrink-0 space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                      <Bookmark className="h-4 w-4 text-primary" />
                     </div>
-                    {totalCount > 0 && (
-                      <div className="bg-primary/10 px-3 py-1 rounded-full">
-                        <span className="text-sm font-medium text-primary">Saved</span>
-                      </div>
-                    )}
+                    <div>
+                      <h2 className="text-lg font-semibold text-gray-900">
+                        {totalCount.toLocaleString()}
+                      </h2>
+                      <p className="text-sm text-gray-600 -mt-1">
+                        Bookmarked Job{totalCount !== 1 ? "s" : ""}
+                      </p>
+                    </div>
                   </div>
                 </div>
                 

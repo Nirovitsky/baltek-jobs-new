@@ -47,21 +47,19 @@ export default function JobList({
   if (isLoading) {
     return (
       <div className="h-full flex flex-col w-[400px]">
-        <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 flex-shrink-0 space-y-4">
+        <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg flex-shrink-0 space-y-4">
           {/* Loading job count */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
-              <div>
-                <div className="h-5 bg-gray-200 rounded animate-pulse w-16 mb-1"></div>
-                <div className="h-4 bg-gray-100 rounded animate-pulse w-20"></div>
-              </div>
+          <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+            <div>
+              <div className="h-5 bg-gray-200 rounded animate-pulse w-16 mb-1"></div>
+              <div className="h-4 bg-gray-100 rounded animate-pulse w-20"></div>
             </div>
           </div>
           
           {/* Search Bar skeleton */}
           <div className="relative">
-            <div className="h-12 bg-white rounded-xl border animate-pulse"></div>
+            <div className="h-12 bg-white rounded-lg border animate-pulse"></div>
           </div>
         </div>
         
@@ -92,7 +90,7 @@ export default function JobList({
   if (jobs.length === 0) {
     return (
       <div className="h-full flex flex-col w-[400px]">
-        <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 flex-shrink-0 space-y-4">
+        <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg flex-shrink-0 space-y-4">
           {/* No Jobs Count */}
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
@@ -115,7 +113,7 @@ export default function JobList({
                 placeholder="Search jobs, companies, skills..."
                 value={searchQuery}
                 onChange={onSearchChange}
-                className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-gray-500"
+                className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-gray-500"
               />
               {searchQuery && (
                 <button
@@ -142,27 +140,20 @@ export default function JobList({
 
   return (
     <div className="h-full flex flex-col w-[400px]">
-      <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 flex-shrink-0 space-y-4">
+      <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg flex-shrink-0 space-y-4">
         {/* Job Count with Icon */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-              <Search className="h-4 w-4 text-primary" />
-            </div>
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">
-                {totalCount !== undefined ? totalCount.toLocaleString() : jobs.length.toLocaleString()}
-              </h2>
-              <p className="text-sm text-gray-600 -mt-1">
-                Job{(totalCount !== undefined ? totalCount : jobs.length) !== 1 ? "s" : ""} Found
-              </p>
-            </div>
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+            <Search className="h-4 w-4 text-primary" />
           </div>
-          {totalCount !== undefined && totalCount > 0 && (
-            <div className="bg-primary/10 px-3 py-1 rounded-full">
-              <span className="text-sm font-medium text-primary">Live</span>
-            </div>
-          )}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {totalCount !== undefined ? totalCount.toLocaleString() : jobs.length.toLocaleString()}
+            </h2>
+            <p className="text-sm text-gray-600 -mt-1">
+              Job{(totalCount !== undefined ? totalCount : jobs.length) !== 1 ? "s" : ""} Found
+            </p>
+          </div>
         </div>
         
         {/* Enhanced Search Bar */}
@@ -176,7 +167,7 @@ export default function JobList({
               placeholder="Search jobs, companies, skills..."
               value={searchQuery}
               onChange={onSearchChange}
-              className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-xl shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-gray-500"
+              className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-gray-500"
             />
             {searchQuery && (
               <button
