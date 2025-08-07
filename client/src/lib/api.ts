@@ -274,12 +274,13 @@ export class ApiClient {
   }
 
   // Chat API
-  static async getConversations() {
-    return this.makeRequest("/conversations");
+  static async getChatRooms() {
+    return this.makeRequest("/chat/rooms");
   }
 
-  static async getConversationMessages(conversationId: number, params: Record<string, any> = {}) {
+  static async getChatMessages(roomId: number, params: Record<string, any> = {}) {
     const searchParams = new URLSearchParams();
+    searchParams.append("room", roomId.toString());
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
         searchParams.append(key, value.toString());
@@ -287,13 +288,13 @@ export class ApiClient {
     });
     
     const query = searchParams.toString();
-    return this.makeRequest(`/conversations/${conversationId}/messages${query ? `?${query}` : ""}`);
+    return this.makeRequest(`/chat/messages?${query}`);
   }
 
-  static async sendMessage(conversationId: number, content: string) {
-    return this.makeRequest(`/conversations/${conversationId}/messages`, {
+  static async sendMessage(roomId: number, content: string) {
+    return this.makeRequest("/chat/messages", {
       method: "POST",
-      body: JSON.stringify({ content }),
+      body: JSON.stringify({ room: roomId, content }),
     });
   }
 

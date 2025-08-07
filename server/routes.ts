@@ -77,7 +77,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Chat API endpoints - fetch rooms for current user
-  app.get("/api/conversations", async (req, res) => {
+  app.get("/api/chat/rooms", async (req, res) => {
     try {
       const response = await fetch("https://api.baltek.net/api/chat/rooms/", {
         headers: {
@@ -107,10 +107,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/conversations/:id/messages", async (req, res) => {
+  app.get("/api/chat/messages", async (req, res) => {
     try {
-      const { id } = req.params;
-      const response = await fetch(`https://api.baltek.net/api/chat/messages/?room=${id}`, {
+      const { room } = req.query;
+      const response = await fetch(`https://api.baltek.net/api/chat/messages/?room=${room}`, {
         headers: {
           Authorization: req.headers.authorization || "",
         },
@@ -128,10 +128,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/conversations/:id/messages", async (req, res) => {
+  app.post("/api/chat/messages", async (req, res) => {
     try {
-      const { id } = req.params;
-      const { content } = req.body;
+      const { room, content } = req.body;
       
       const response = await fetch(`https://api.baltek.net/api/chat/messages/`, {
         method: "POST",
@@ -140,7 +139,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           Authorization: req.headers.authorization || "",
         },
         body: JSON.stringify({
-          room: parseInt(id),
+          room: parseInt(room),
           content,
         }),
       });
@@ -158,7 +157,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify({
               type: "new_message",
-              conversation_id: parseInt(id),
+              conversation_id: parseInt(room),
               message: data
             }));
           }

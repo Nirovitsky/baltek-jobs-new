@@ -72,17 +72,17 @@ export default function ChatPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Fetch conversations
-  const { data: conversations, isLoading: conversationsLoading } = useQuery({
-    queryKey: ['conversations'],
-    queryFn: () => ApiClient.getConversations(),
+  // Fetch chat rooms
+  const { data: chatRooms, isLoading: roomsLoading } = useQuery({
+    queryKey: ['chat', 'rooms'],
+    queryFn: () => ApiClient.getChatRooms(),
     refetchInterval: 30000, // Poll every 30 seconds
   });
 
-  // Fetch messages for selected conversation
+  // Fetch messages for selected room
   const { data: messages, isLoading: messagesLoading } = useQuery({
-    queryKey: ['conversations', selectedConversation, 'messages'],
-    queryFn: () => ApiClient.getConversationMessages(selectedConversation!),
+    queryKey: ['chat', 'messages', selectedConversation],
+    queryFn: () => ApiClient.getChatMessages(selectedConversation!),
     enabled: !!selectedConversation,
     refetchInterval: 5000, // Poll more frequently for active conversation
   });
@@ -97,8 +97,8 @@ export default function ChatPage() {
     },
     onSuccess: () => {
       setMessageInput("");
-      queryClient.invalidateQueries({ queryKey: ['conversations'] });
-      queryClient.invalidateQueries({ queryKey: ['conversations', selectedConversation, 'messages'] });
+      queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
+      queryClient.invalidateQueries({ queryKey: ['chat', 'messages', selectedConversation] });
       scrollToBottom();
     },
     onError: () => {
@@ -117,7 +117,7 @@ export default function ChatPage() {
       return Promise.resolve({ success: true });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
     },
   });
 
@@ -141,8 +141,8 @@ export default function ChatPage() {
         const data = JSON.parse(event.data);
         if (data.type === 'new_message') {
           // Invalidate queries to refresh message list
-          queryClient.invalidateQueries({ queryKey: ['conversations'] });
-          queryClient.invalidateQueries({ queryKey: ['conversations', data.conversation_id, 'messages'] });
+          queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
+          queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.conversation_id] });
         }
       } catch (error) {
         console.error('WebSocket message error:', error);
@@ -198,7 +198,7 @@ export default function ChatPage() {
     }
   };
 
-  const filteredConversations = conversationsLoading ? [] : ((conversations as any)?.results || []).filter((conversation: Conversation) => {
+  const filteredConversations = roomsLoading ? [] : ((chatRooms as any)?.results || []).filter((conversation: Conversation) => {
     const conversationName = conversation.name?.toLowerCase() || '';
     const participantName = `${conversation.participant.first_name} ${conversation.participant.last_name}`.toLowerCase();
     const company = conversation.participant.company?.toLowerCase() || '';
@@ -265,7 +265,7 @@ export default function ChatPage() {
           
           <CardContent className="p-0">
             <ScrollArea className="h-[calc(100vh-340px)]">
-              {conversationsLoading ? (
+              {roomsLoading ? (
                 <div className="p-4 space-y-4">
                   {[...Array(5)].map((_, i) => (
                     <div key={i} className="flex items-center space-x-3">

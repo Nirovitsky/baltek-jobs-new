@@ -15,9 +15,9 @@ import {
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: conversations, isLoading } = useQuery({
-    queryKey: ["conversations"],
-    queryFn: () => ApiClient.getConversations(),
+  const { data: chatRooms, isLoading } = useQuery({
+    queryKey: ["chat", "rooms"],
+    queryFn: () => ApiClient.getChatRooms(),
     enabled: isOpen,
   });
 
@@ -42,12 +42,12 @@ export default function ChatWidget() {
         size="lg"
       >
         <MessageCircle className="w-6 h-6" />
-        {(conversations as any)?.results?.length > 0 && (
+        {(chatRooms as any)?.results?.length > 0 && (
           <Badge
             variant="destructive"
             className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
           >
-            {(conversations as any)?.results?.length}
+            {(chatRooms as any)?.results?.length}
           </Badge>
         )}
       </Button>
@@ -77,14 +77,14 @@ export default function ChatWidget() {
               <div className="p-4 text-center text-gray-500">
                 Loading conversations...
               </div>
-            ) : (conversations as any)?.results?.length === 0 ? (
+            ) : (chatRooms as any)?.results?.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
                 <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>No messages yet</p>
                 <p className="text-xs">Start applying to jobs to chat with employers</p>
               </div>
             ) : (
-              (conversations as any)?.results?.map((room: ChatRoom) => (
+              (chatRooms as any)?.results?.map((room: ChatRoom) => (
                 <div
                   key={room.id}
                   className="p-3 border-b hover:bg-gray-50 cursor-pointer transition-colors"
