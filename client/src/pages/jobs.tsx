@@ -145,12 +145,12 @@ export default function Jobs({}: JobsProps) {
             />
           </div>
           
-          <div className="w-[calc(100%-424px)] h-full flex-shrink-0 min-w-0">
-            <div className="h-full w-full">
+          <div className="w-[calc(100%-424px)] flex-shrink-0 min-w-0">
+            <div className="w-full">
               {currentSelectedJobId ? (
                 <JobDetails jobId={currentSelectedJobId} />
               ) : jobs.length === 0 && isLoading ? (
-                <Card className="h-full w-full">
+                <Card className="w-full">
                   <div className="p-6 border-b">
                     <div className="h-8 bg-gray-200 rounded animate-pulse w-48 mb-4"></div>
                     <div className="h-4 bg-gray-100 rounded animate-pulse w-64"></div>
@@ -164,7 +164,7 @@ export default function Jobs({}: JobsProps) {
                   </CardContent>
                 </Card>
               ) : jobs.length > 0 ? (
-                <div className="h-full w-full flex items-center justify-center">
+                <div className="w-full flex items-center justify-center py-20">
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Select a job to view details</h3>
                     <p className="text-gray-600">Choose a job from the list to see more information</p>
