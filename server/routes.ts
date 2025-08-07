@@ -86,53 +86,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       if (!response.ok) {
-        // Return mock data for development if API is not available
-        const mockConversations = {
-          results: [
-            {
-              id: 1,
-              participant: {
-                id: 2,
-                first_name: "Sarah",
-                last_name: "Johnson",
-                avatar: "/api/placeholder/32/32",
-                role: "Senior Recruiter",
-                company: "TechCorp Solutions"
-              },
-              last_message: {
-                id: 1,
-                content: "Hi! I saw your profile and think you'd be a great fit for our Senior Developer role. Are you interested in discussing this opportunity?",
-                sender: { id: 2, first_name: "Sarah", last_name: "Johnson" },
-                created_at: new Date(Date.now() - 3600000).toISOString(),
-                read: false
-              },
-              unread_count: 2,
-              updated_at: new Date(Date.now() - 3600000).toISOString()
-            },
-            {
-              id: 2,
-              participant: {
-                id: 3,
-                first_name: "Michael",
-                last_name: "Chen",
-                avatar: "/api/placeholder/32/32",
-                role: "Hiring Manager",
-                company: "StartupXYZ"
-              },
-              last_message: {
-                id: 2,
-                content: "Thanks for your application! We'd like to schedule an interview. When would be a good time for you?",
-                sender: { id: 3, first_name: "Michael", last_name: "Chen" },
-                created_at: new Date(Date.now() - 86400000).toISOString(),
-                read: true
-              },
-              unread_count: 0,
-              updated_at: new Date(Date.now() - 86400000).toISOString()
-            }
-          ]
-        };
-        res.json(mockConversations);
-        return;
+        throw new Error(`Chat API error: ${response.status}`);
       }
       
       const data = await response.json();
@@ -153,42 +107,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       if (!response.ok) {
-        // Return mock messages for development
-        const mockMessages = {
-          results: id === "1" ? [
-            {
-              id: 1,
-              content: "Hi! I saw your profile and think you'd be a great fit for our Senior Developer role. Are you interested in discussing this opportunity?",
-              sender: { id: 2, first_name: "Sarah", last_name: "Johnson" },
-              created_at: new Date(Date.now() - 7200000).toISOString(),
-              read: true
-            },
-            {
-              id: 2,
-              content: "Yes, I'd be very interested! Could you tell me more about the role and the company?",
-              sender: { id: 1, first_name: "You", last_name: "" },
-              created_at: new Date(Date.now() - 3600000).toISOString(),
-              read: true
-            },
-            {
-              id: 3,
-              content: "Absolutely! It's a Senior React Developer position focusing on building scalable web applications. The team is very collaborative and we offer competitive compensation plus remote work options.",
-              sender: { id: 2, first_name: "Sarah", last_name: "Johnson" },
-              created_at: new Date(Date.now() - 1800000).toISOString(),
-              read: false
-            }
-          ] : [
-            {
-              id: 4,
-              content: "Thanks for your application! We'd like to schedule an interview. When would be a good time for you?",
-              sender: { id: 3, first_name: "Michael", last_name: "Chen" },
-              created_at: new Date(Date.now() - 86400000).toISOString(),
-              read: true
-            }
-          ]
-        };
-        res.json(mockMessages);
-        return;
+        throw new Error(`Chat messages API error: ${response.status}`);
       }
       
       const data = await response.json();
@@ -217,34 +136,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       if (!response.ok) {
-        // Mock successful response for development
-        const mockMessage = {
-          id: Date.now(),
-          content,
-          sender: { id: 1, first_name: "You", last_name: "" },
-          created_at: new Date().toISOString(),
-          read: false
-        };
-        
-        // Broadcast to WebSocket clients (will be available after server setup)
-        const wss = (app as any).wss;
-        if (wss) {
-          wss.clients.forEach((client: any) => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
-                type: "new_message",
-                conversation_id: parseInt(id),
-                message: mockMessage
-              }));
-            }
-          });
-        }
-        
-        res.json(mockMessage);
-        return;
+        throw new Error(`Send message API error: ${response.status}`);
       }
       
       const data = await response.json();
+      
+      // Broadcast to WebSocket clients
+      const wss = (app as any).wss;
+      if (wss) {
+        wss.clients.forEach((client: any) => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({
+              type: "new_message",
+              conversation_id: parseInt(id),
+              message: data
+            }));
+          }
+        });
+      }
+      
       res.json(data);
     } catch (error) {
       console.error("Error sending message:", error);

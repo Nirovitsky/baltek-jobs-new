@@ -73,13 +73,15 @@ export default function ChatPage() {
 
   // Fetch conversations
   const { data: conversations, isLoading: conversationsLoading } = useQuery({
-    queryKey: ['/api/conversations'],
+    queryKey: ['conversations'],
+    queryFn: () => ApiClient.getConversations(),
     refetchInterval: 30000, // Poll every 30 seconds
   });
 
   // Fetch messages for selected conversation
   const { data: messages, isLoading: messagesLoading } = useQuery({
-    queryKey: ['/api/conversations', selectedConversation, 'messages'],
+    queryKey: ['conversations', selectedConversation, 'messages'],
+    queryFn: () => ApiClient.getConversationMessages(selectedConversation!),
     enabled: !!selectedConversation,
     refetchInterval: 5000, // Poll more frequently for active conversation
   });
@@ -90,24 +92,12 @@ export default function ChatPage() {
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (data: { content: string }) => {
-      const response = await fetch(`/api/conversations/${selectedConversation}/messages`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ content: data.content }),
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to send message");
-      }
-      
-      return response.json();
+      return ApiClient.sendMessage(selectedConversation!, data.content);
     },
     onSuccess: () => {
       setMessageInput("");
-      queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/conversations', selectedConversation, 'messages'] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      queryClient.invalidateQueries({ queryKey: ['conversations', selectedConversation, 'messages'] });
       scrollToBottom();
     },
     onError: () => {
@@ -126,7 +116,7 @@ export default function ChatPage() {
       return Promise.resolve({ success: true });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
     },
   });
 
@@ -150,8 +140,8 @@ export default function ChatPage() {
         const data = JSON.parse(event.data);
         if (data.type === 'new_message') {
           // Invalidate queries to refresh message list
-          queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
-          queryClient.invalidateQueries({ queryKey: ['/api/conversations', data.conversation_id, 'messages'] });
+          queryClient.invalidateQueries({ queryKey: ['conversations'] });
+          queryClient.invalidateQueries({ queryKey: ['conversations', data.conversation_id, 'messages'] });
         }
       } catch (error) {
         console.error('WebSocket message error:', error);

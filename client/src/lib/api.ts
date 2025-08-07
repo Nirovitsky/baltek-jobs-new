@@ -274,11 +274,11 @@ export class ApiClient {
   }
 
   // Chat API
-  static async getChatRooms() {
-    return this.makeRequest("/chat/rooms/");
+  static async getConversations() {
+    return this.makeRequest("/conversations");
   }
 
-  static async getChatMessages(roomId: number, params: Record<string, any> = {}) {
+  static async getConversationMessages(conversationId: number, params: Record<string, any> = {}) {
     const searchParams = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined && value !== null) {
@@ -287,7 +287,14 @@ export class ApiClient {
     });
     
     const query = searchParams.toString();
-    return this.makeRequest(`/chat/messages/?room=${roomId}${query ? `&${query}` : ""}`);
+    return this.makeRequest(`/conversations/${conversationId}/messages${query ? `?${query}` : ""}`);
+  }
+
+  static async sendMessage(conversationId: number, content: string) {
+    return this.makeRequest(`/conversations/${conversationId}/messages`, {
+      method: "POST",
+      body: JSON.stringify({ content }),
+    });
   }
 
   // Organizations API
