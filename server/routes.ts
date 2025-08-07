@@ -19,6 +19,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         throw new Error(`Failed to fetch organization: ${response.status}`);
       }
       const data = await response.json();
+      console.log(`Organization ${id} data:`, JSON.stringify(data, null, 2));
       res.json(data);
     } catch (error) {
       console.error("Error fetching organization:", error);
