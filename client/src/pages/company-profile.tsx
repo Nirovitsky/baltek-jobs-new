@@ -42,65 +42,77 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
       </h3>
       
       {isLoading ? (
-        <div className="space-y-3">
+        <div className="space-y-0">
           {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-12 w-12 rounded-full" />
-                <div className="flex-1">
-                  <Skeleton className="h-4 w-32 mb-2" />
-                  <Skeleton className="h-3 w-20 mb-1" />
-                  <Skeleton className="h-3 w-24" />
+            <div key={i}>
+              <div className="py-3 px-2">
+                <div className="flex items-center gap-3">
+                  <Skeleton className="h-10 w-10 rounded-full" />
+                  <div className="flex-1">
+                    <Skeleton className="h-4 w-32 mb-2" />
+                    <div className="flex gap-4">
+                      <Skeleton className="h-3 w-16" />
+                      <Skeleton className="h-3 w-20" />
+                    </div>
+                  </div>
                 </div>
               </div>
+              {i < 9 && <hr className="border-gray-200 dark:border-gray-700" />}
             </div>
           ))}
         </div>
       ) : (
-        <div className="space-y-3">
-          {suggestions.map((company: Organization) => (
-            <Link key={company.id} href={`/company/${company.id}`}>
-              <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md hover:border-primary/30 dark:hover:border-primary/30 transition-all duration-200 cursor-pointer group">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-700 group-hover:ring-primary/20">
-                    <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
-                    <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
-                      {(company.display_name || company.official_name || 'CO')
-                        .split(' ')
-                        .map(word => word.charAt(0))
-                        .join('')
-                        .toUpperCase()
-                        .slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors">
-                      {company.display_name || company.official_name}
-                    </p>
-                    {company.category?.name && (
-                      <div className="flex items-center gap-1 mt-1">
-                        <Building2 className="h-3 w-3 text-blue-500" />
-                        <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
-                          {company.category.name}
-                        </p>
+        <div className="space-y-0">
+          {suggestions.map((company: Organization, index: number) => (
+            <div key={company.id}>
+              <Link href={`/company/${company.id}`}>
+                <div className="py-3 px-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-10 w-10 group-hover:scale-105 transition-transform">
+                      <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
+                      <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
+                        {(company.display_name || company.official_name || 'CO')
+                          .split(' ')
+                          .map(word => word.charAt(0))
+                          .join('')
+                          .toUpperCase()
+                          .slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors">
+                        {company.display_name || company.official_name}
+                      </p>
+                      <div className="flex items-center gap-4 mt-1">
+                        {company.category?.name && (
+                          <div className="flex items-center gap-1">
+                            <Building2 className="h-3 w-3 text-blue-500" />
+                            <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                              {company.category.name}
+                            </p>
+                          </div>
+                        )}
+                        {company.location?.name && (
+                          <div className="flex items-center gap-1">
+                            <MapPin className="h-3 w-3 text-gray-400" />
+                            <p className="text-xs text-gray-400 truncate">
+                              {company.location.name}
+                            </p>
+                          </div>
+                        )}
                       </div>
-                    )}
-                    {company.location?.name && (
-                      <div className="flex items-center gap-1 mt-1">
-                        <MapPin className="h-3 w-3 text-gray-400" />
-                        <p className="text-xs text-gray-400 truncate">
-                          {company.location.name}
-                        </p>
-                      </div>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+              {index < suggestions.length - 1 && (
+                <hr className="border-gray-200 dark:border-gray-700" />
+              )}
+            </div>
           ))}
           
           {suggestions.length === 0 && (
-            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-6 text-center">
+            <div className="py-6 text-center">
               <Building2 className="h-8 w-8 text-gray-400 mx-auto mb-2" />
               <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
                 No other companies available
