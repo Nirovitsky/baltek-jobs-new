@@ -282,7 +282,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   size="sm"
                   onClick={handleBookmark}
                   disabled={bookmarkMutation.isPending}
-                  className={job.is_bookmarked ? "text-primary border-primary/20 hover:text-primary" : "text-gray-400 hover:text-gray-600"}
+                  className={job.is_bookmarked ? "text-primary border-primary/20 hover:text-primary" : ""}
                 >
                   <Bookmark className={`w-4 h-4 ${job.is_bookmarked ? "fill-current" : ""}`} />
                 </Button>
