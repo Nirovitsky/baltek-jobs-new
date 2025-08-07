@@ -309,7 +309,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto job-description-scroll">
-            <CardContent className="p-6 pb-4">
+            <CardContent className="p-6 pb-2">
 
 
           {/* Skills */}
@@ -356,50 +356,8 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             </div>
           )}
 
-          {/* Company Info */}
-          <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">About {job.organization?.display_name || job.organization?.name || 'this company'}</h3>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <div className="flex items-center space-x-3 mb-2">
-                <button
-                  onClick={() => job.organization?.id && window.open(`/company/${job.organization.id}`, '_blank')}
-                  className="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
-                  disabled={!job.organization?.id}
-                >
-                  {job.organization?.logo ? (
-                    <img
-                      src={job.organization.logo}
-                      alt={job.organization.display_name || job.organization.name || 'Company'}
-                      className="w-10 h-10 rounded-lg object-cover"
-                    />
-                  ) : (
-                    <Building className="w-5 h-5 text-gray-400" />
-                  )}
-                </button>
-                <div>
-                  <button
-                    onClick={() => job.organization?.id && window.open(`/company/${job.organization.id}`, '_blank')}
-                    className="font-medium text-gray-900 hover:text-blue-600 transition-colors text-left cursor-pointer"
-                    disabled={!job.organization?.id}
-                  >
-                    {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
-                  </button>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <Users className="w-4 h-4 mr-1" />
-                    <span>{job.category?.name || 'Uncategorized'}</span>
-                  </div>
-                </div>
-              </div>
-              {job.organization?.description && (
-                <p className="text-sm text-gray-700">{job.organization.description}</p>
-              )}
-            </div>
-          </div>
-
-          <Separator className="my-4" />
-
           {/* Action Buttons */}
-          <div className="flex space-x-3 mb-0">
+          <div className="flex space-x-3">
             <Button
               onClick={hasApplied ? undefined : () => setIsApplicationModalOpen(true)}
               className="flex-1"
