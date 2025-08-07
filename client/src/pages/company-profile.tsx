@@ -105,7 +105,8 @@ export default function CompanyProfile() {
   const companyJobs = (Array.isArray(jobsData) ? jobsData : (jobsData as any)?.results || []) as Job[];
 
   // Get company initials for avatar fallback
-  const getCompanyInitials = (name: string) => {
+  const getCompanyInitials = (name?: string) => {
+    if (!name) return 'CO';
     return name
       .split(' ')
       .map(word => word.charAt(0))
@@ -137,13 +138,13 @@ export default function CompanyProfile() {
                   alt={`${organizationData.name} logo`}
                 />
                 <AvatarFallback className="text-lg font-semibold bg-primary/10 text-primary">
-                  {getCompanyInitials(organizationData.name)}
+                  {getCompanyInitials(organizationData?.name || organizationData?.official_name || organizationData?.display_name)}
                 </AvatarFallback>
               </Avatar>
               
               <div className="flex-1 min-w-0">
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                  {organizationData.name}
+                  {organizationData?.official_name || organizationData?.display_name || organizationData?.name || 'Company Name'}
                 </h1>
                 
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
@@ -196,7 +197,7 @@ export default function CompanyProfile() {
           {organizationData.description && (
             <CardContent>
               <div className="prose max-w-none dark:prose-invert">
-                <h3 className="text-lg font-semibold mb-3">About {organizationData.name}</h3>
+                <h3 className="text-lg font-semibold mb-3">About {organizationData?.official_name || organizationData?.display_name || organizationData?.name || 'Company'}</h3>
                 <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
                   {organizationData.description}
                 </p>
@@ -268,7 +269,7 @@ export default function CompanyProfile() {
               )}
             </CardTitle>
             <CardDescription>
-              Current job openings at {organizationData.name}
+              Current job openings at {organizationData?.official_name || organizationData?.display_name || organizationData?.name || 'this company'}
             </CardDescription>
           </CardHeader>
           
@@ -352,7 +353,7 @@ export default function CompanyProfile() {
                   No Open Positions
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400">
-                  {organizationData.name} doesn't have any open positions at the moment.
+                  {organizationData?.official_name || organizationData?.display_name || organizationData?.name || 'This company'} doesn't have any open positions at the moment.
                 </p>
               </div>
             )}
