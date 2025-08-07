@@ -173,10 +173,11 @@ export default function CompanyProfile() {
           </Link>
         </div>
 
-        {/* Company Header */}
-        <Card className="mb-8 -mt-32 relative z-10" style={organizationData?.banner_image ? {} : { marginTop: '0' }}>
-          <CardHeader className="pb-6">
-            <div className="flex items-start gap-6">
+        {/* Company Profile - Single Card Layout */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 mb-8 -mt-32 relative z-10" style={organizationData?.banner_image ? {} : { marginTop: '0' }}>
+          {/* Company Header */}
+          <div className="p-8 pb-6">
+            <div className="flex items-start gap-6 mb-6">
               <Avatar className="h-32 w-32 border-4 border-white shadow-lg">
                 <AvatarImage 
                   src={organizationData.logo} 
@@ -307,105 +308,159 @@ export default function CompanyProfile() {
                 )}
               </div>
             </div>
-          </CardHeader>
-        </Card>
 
-        {/* Company Statistics */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-          <Card className="p-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary mb-1">
-                {companyJobs.length}
-              </div>
-              <div className="text-xs text-gray-600 dark:text-gray-400">
-                Open Jobs
-              </div>
-            </div>
-          </Card>
-          
-          {organizationData?.employee_count && (
-            <Card className="p-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {organizationData.employee_count.toLocaleString()}
+            {/* Company Statistics */}
+            <div className="border-t dark:border-gray-700 pt-6 mb-6">
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div className="text-2xl font-bold text-primary mb-1">
+                    {companyJobs.length}
+                  </div>
+                  <div className="text-xs text-gray-600 dark:text-gray-400">
+                    Open Jobs
+                  </div>
                 </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Employees
-                </div>
-              </div>
-            </Card>
-          )}
-          
-          {organizationData?.founded_year && (
-            <Card className="p-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {new Date().getFullYear() - organizationData.founded_year}+
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Years
-                </div>
-              </div>
-            </Card>
-          )}
-          
-          {organizationData?.rating && (
-            <Card className="p-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {organizationData.rating}/5
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Rating
-                </div>
-              </div>
-            </Card>
-          )}
-          
-          {organizationData?.active_jobs_count && (
-            <Card className="p-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary mb-1">
-                  {organizationData.active_jobs_count}
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Total Jobs
-                </div>
-              </div>
-            </Card>
-          )}
-          
-          {organizationData?.revenue && (
-            <Card className="p-4">
-              <div className="text-center">
-                <div className="text-lg font-bold text-primary mb-1">
-                  {organizationData.revenue}
-                </div>
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                  Revenue
-                </div>
-              </div>
-            </Card>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-          {/* About Section */}
-          <div className="lg:col-span-2">
-            <Card className="h-fit">
-              <CardHeader>
-                <CardTitle>About {organizationData?.display_name}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {(organizationData?.description || organizationData?.about_us) && (
-                  <div>
-                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-                      {organizationData.description || organizationData.about_us}
-                    </p>
+                
+                {organizationData?.employee_count && (
+                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="text-2xl font-bold text-primary mb-1">
+                      {organizationData.employee_count.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      Employees
+                    </div>
                   </div>
                 )}
                 
-                {!(organizationData?.description || organizationData?.about_us) && (
+                {organizationData?.founded_year && (
+                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="text-2xl font-bold text-primary mb-1">
+                      {new Date().getFullYear() - organizationData.founded_year}+
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      Years
+                    </div>
+                  </div>
+                )}
+                
+                {organizationData?.rating && (
+                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="text-2xl font-bold text-primary mb-1">
+                      {organizationData.rating}/5
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      Rating
+                    </div>
+                  </div>
+                )}
+                
+                {organizationData?.active_jobs_count && (
+                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="text-2xl font-bold text-primary mb-1">
+                      {organizationData.active_jobs_count}
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      Total Jobs
+                    </div>
+                  </div>
+                )}
+                
+                {organizationData?.revenue && (
+                  <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div className="text-lg font-bold text-primary mb-1">
+                      {organizationData.revenue}
+                    </div>
+                    <div className="text-xs text-gray-600 dark:text-gray-400">
+                      Revenue
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* About Section */}
+              <div className="lg:col-span-2">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4">About {organizationData?.display_name}</h2>
+                
+                {(organizationData?.description || organizationData?.about_us) ? (
+                  <div className="space-y-6">
+                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
+                      {organizationData.description || organizationData.about_us}
+                    </p>
+
+                    {/* Mission, Vision, Culture */}
+                    {(organizationData?.mission || organizationData?.vision || organizationData?.culture) && (
+                      <div className="space-y-4">
+                        {organizationData?.mission && (
+                          <div>
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                              <Target className="h-4 w-4" />
+                              Mission
+                            </h4>
+                            <p className="text-gray-700 dark:text-gray-300">{organizationData.mission}</p>
+                          </div>
+                        )}
+                        
+                        {organizationData?.vision && (
+                          <div>
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                              <Eye className="h-4 w-4" />
+                              Vision
+                            </h4>
+                            <p className="text-gray-700 dark:text-gray-300">{organizationData.vision}</p>
+                          </div>
+                        )}
+                        
+                        {organizationData?.culture && (
+                          <div>
+                            <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                              <Heart className="h-4 w-4" />
+                              Culture
+                            </h4>
+                            <p className="text-gray-700 dark:text-gray-300">{organizationData.culture}</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Company Values */}
+                    {organizationData?.values && organizationData.values.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                          <Award className="h-4 w-4" />
+                          Our Values
+                        </h4>
+                        <div className="grid grid-cols-2 gap-2">
+                          {organizationData.values.map((value, index) => (
+                            <Badge key={index} variant="secondary" className="justify-center py-2">
+                              {value}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Benefits */}
+                    {organizationData?.benefits && organizationData.benefits.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
+                          <TrendingUp className="h-4 w-4" />
+                          Benefits & Perks
+                        </h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {organizationData.benefits.map((benefit, index) => (
+                            <div key={index} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                              <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                              <span>{benefit}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
                   <div className="text-center py-8">
                     <Building className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
@@ -416,171 +471,101 @@ export default function CompanyProfile() {
                     </p>
                   </div>
                 )}
+              </div>
 
-                {/* Mission, Vision, Culture */}
-                {(organizationData?.mission || organizationData?.vision || organizationData?.culture) && (
-                  <div className="space-y-4">
-                    {organizationData?.mission && (
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                          <Target className="h-4 w-4" />
-                          Mission
-                        </h4>
-                        <p className="text-gray-700 dark:text-gray-300">{organizationData.mission}</p>
-                      </div>
-                    )}
-                    
-                    {organizationData?.vision && (
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                          <Eye className="h-4 w-4" />
-                          Vision
-                        </h4>
-                        <p className="text-gray-700 dark:text-gray-300">{organizationData.vision}</p>
-                      </div>
-                    )}
-                    
-                    {organizationData?.culture && (
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
-                          <Heart className="h-4 w-4" />
-                          Culture
-                        </h4>
-                        <p className="text-gray-700 dark:text-gray-300">{organizationData.culture}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Company Values */}
-                {organizationData?.values && organizationData.values.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                      <Award className="h-4 w-4" />
-                      Our Values
-                    </h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {organizationData.values.map((value, index) => (
-                        <Badge key={index} variant="secondary" className="justify-center py-2">
-                          {value}
-                        </Badge>
-                      ))}
+              {/* Company Details Sidebar */}
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Company Details</h3>
+                <div className="space-y-4">
+                  {organizationData?.company_type && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500">Company Type</dt>
+                      <dd className="text-sm text-gray-900 dark:text-gray-100">{organizationData.company_type}</dd>
                     </div>
-                  </div>
-                )}
-
-                {/* Benefits */}
-                {organizationData?.benefits && organizationData.benefits.length > 0 && (
-                  <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-3 flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4" />
-                      Benefits & Perks
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                      {organizationData.benefits.map((benefit, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                          <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                          <span>{benefit}</span>
-                        </div>
-                      ))}
+                  )}
+                  
+                  {(organizationData?.industry || organizationData?.category?.name) && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500">Industry</dt>
+                      <dd className="text-sm text-gray-900 dark:text-gray-100">{organizationData.industry || organizationData.category?.name}</dd>
                     </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                  )}
 
-          {/* Company Information Sidebar */}
-          <div className="space-y-6">
-            {/* Company Details */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Company Details</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {organizationData?.company_type && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Company Type</dt>
-                    <dd className="text-sm text-gray-900 dark:text-gray-100">{organizationData.company_type}</dd>
-                  </div>
-                )}
-                
-                {(organizationData?.industry || organizationData?.category?.name) && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Industry</dt>
-                    <dd className="text-sm text-gray-900 dark:text-gray-100">{organizationData.industry || organizationData.category?.name}</dd>
-                  </div>
-                )}
+                  {(organizationData?.size_min && organizationData?.size_max) && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500">Company Size</dt>
+                      <dd className="text-sm text-gray-900 dark:text-gray-100">
+                        {organizationData.size_min.toLocaleString()} - {organizationData.size_max.toLocaleString()} employees
+                      </dd>
+                    </div>
+                  )}
 
-                {(organizationData?.size_min && organizationData?.size_max) && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Company Size</dt>
-                    <dd className="text-sm text-gray-900 dark:text-gray-100">
-                      {organizationData.size_min.toLocaleString()} - {organizationData.size_max.toLocaleString()} employees
-                    </dd>
-                  </div>
-                )}
-
-                {(organizationData?.address || organizationData?.location?.name) && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Location</dt>
-                    <dd className="text-sm text-gray-900 dark:text-gray-100">
-                      {organizationData.address || organizationData.location?.name}
-                      {organizationData.postal_code && `, ${organizationData.postal_code}`}
-                    </dd>
-                  </div>
-                )}
-                
-                {organizationData?.phone && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Phone</dt>
-                    <dd className="text-sm text-gray-900 dark:text-gray-100">
-                      <a href={`tel:${organizationData.phone}`} className="text-primary hover:text-primary/80">
-                        {organizationData.phone}
-                      </a>
-                    </dd>
-                  </div>
-                )}
-                
-                {organizationData?.email && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Email</dt>
-                    <dd className="text-sm text-gray-900 dark:text-gray-100">
-                      <a href={`mailto:${organizationData.email}`} className="text-primary hover:text-primary/80">
-                        {organizationData.email}
-                      </a>
-                    </dd>
-                  </div>
-                )}
-                
-                {organizationData?.website && (
-                  <div>
-                    <dt className="text-sm font-medium text-gray-500">Website</dt>
-                    <dd className="text-sm text-gray-900 dark:text-gray-100">
-                      <a 
-                        href={organizationData.website.startsWith('http') ? organizationData.website : `https://${organizationData.website}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:text-primary/80"
-                      >
-                        {organizationData.website}
-                      </a>
-                    </dd>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  {(organizationData?.address || organizationData?.location?.name) && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500">Location</dt>
+                      <dd className="text-sm text-gray-900 dark:text-gray-100">
+                        {organizationData.address || organizationData.location?.name}
+                        {organizationData.postal_code && `, ${organizationData.postal_code}`}
+                      </dd>
+                    </div>
+                  )}
+                  
+                  {organizationData?.phone && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500">Phone</dt>
+                      <dd className="text-sm text-gray-900 dark:text-gray-100">
+                        <a href={`tel:${organizationData.phone}`} className="text-primary hover:text-primary/80">
+                          {organizationData.phone}
+                        </a>
+                      </dd>
+                    </div>
+                  )}
+                  
+                  {organizationData?.email && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500">Email</dt>
+                      <dd className="text-sm text-gray-900 dark:text-gray-100">
+                        <a href={`mailto:${organizationData.email}`} className="text-primary hover:text-primary/80">
+                          {organizationData.email}
+                        </a>
+                      </dd>
+                    </div>
+                  )}
+                  
+                  {organizationData?.website && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500">Website</dt>
+                      <dd className="text-sm text-gray-900 dark:text-gray-100">
+                        <a 
+                          href={organizationData.website.startsWith('http') ? organizationData.website : `https://${organizationData.website}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:text-primary/80"
+                        >
+                          {organizationData.website}
+                        </a>
+                      </dd>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Open Positions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Briefcase className="h-5 w-5" />
-                Open Positions ({companyJobs.length})
-              </span>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700">
+          <div className="p-6 border-b dark:border-gray-700">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                  <Briefcase className="h-5 w-5" />
+                  Open Positions ({companyJobs.length})
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Current job openings at {organizationData?.display_name}
+                </p>
+              </div>
               {companyJobs.length > 0 && (
                 <Link href={`/jobs?organization=${companyId}`}>
                   <Button variant="outline" size="sm">
@@ -588,13 +573,10 @@ export default function CompanyProfile() {
                   </Button>
                 </Link>
               )}
-            </CardTitle>
-            <CardDescription>
-              Current job openings at {organizationData?.display_name}
-            </CardDescription>
-          </CardHeader>
+            </div>
+          </div>
           
-          <CardContent>
+          <div className="p-6">
             {jobsLoading ? (
               <div className="space-y-4">
                 {Array.from({ length: 3 }).map((_, i) => (
@@ -609,7 +591,7 @@ export default function CompanyProfile() {
               <div className="space-y-4">
                 {companyJobs.slice(0, 5).map((job) => (
                   <Link key={job.id} href={`/jobs/${job.id}`}>
-                    <div className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer">
+                    <div className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">
@@ -678,8 +660,8 @@ export default function CompanyProfile() {
                 </p>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
