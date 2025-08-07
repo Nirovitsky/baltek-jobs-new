@@ -405,15 +405,16 @@ export default function ChatPage() {
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {messagesData?.results?.map((message: Message) => (
+                      {messagesData?.results?.filter((message: Message) => message && message.id && message.sender)
+                        .map((message: Message) => (
                         <div
                           key={message.id}
-                          className={`flex ${message.sender.id === user?.id ? 'justify-end' : 'justify-start'}`}
+                          className={`flex ${message.sender?.id === user?.id ? 'justify-end' : 'justify-start'}`}
                         >
                           <div className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${
-                            message.sender.id === user?.id ? 'flex-row-reverse space-x-reverse' : ''
+                            message.sender?.id === user?.id ? 'flex-row-reverse space-x-reverse' : ''
                           }`}>
-                            {message.sender.id !== user?.id && (
+                            {message.sender?.id !== user?.id && (
                               <Avatar className="w-8 h-8">
                                 <AvatarImage src={message.sender?.avatar} />
                                 <AvatarFallback>
@@ -423,18 +424,18 @@ export default function ChatPage() {
                             )}
                             
                             <div className={`rounded-lg p-3 ${
-                              message.sender.id === user?.id
+                              message.sender?.id === user?.id
                                 ? 'bg-primary text-white'
                                 : 'bg-gray-100 text-gray-900'
                             }`}>
                               <p className="text-sm">{message.content}</p>
                               <div className="flex items-center justify-end gap-1 mt-1">
                                 <span className={`text-xs ${
-                                  message.sender.id === user?.id ? 'text-white/70' : 'text-gray-500'
+                                  message.sender?.id === user?.id ? 'text-white/70' : 'text-gray-500'
                                 }`}>
                                   {formatTime(message.created_at)}
                                 </span>
-                                {message.sender.id === user?.id && (
+                                {message.sender?.id === user?.id && (
                                   <div className="text-white/70">
                                     {message.read ? <CheckCheck className="w-3 h-3" /> : <Check className="w-3 h-3" />}
                                   </div>
