@@ -146,6 +146,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add missing proxy routes for user-related endpoints
+  app.get("/api/users/resumes/?", async (req, res) => {
+    try {
+      const queryString = new URLSearchParams(req.query as Record<string, string>).toString();
+      const response = await fetch(`https://api.baltek.net/api/users/resumes/?${queryString}`, {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user resumes: ${response.status}`);
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching user resumes:", error);
+      res.status(500).json({ error: "Failed to fetch user resumes" });
+    }
+  });
+
+  app.get("/api/locations/?", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/locations/");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch locations: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+      res.status(500).json({ error: "Failed to fetch locations" });
+    }
+  });
+
+  app.get("/api/categories/?", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/categories/");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch categories: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  app.get("/api/jobs/:id/?", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const response = await fetch(`https://api.baltek.net/api/jobs/${id}/`, {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch job: ${response.status}`);
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching job:", error);
+      res.status(500).json({ error: "Failed to fetch job" });
+    }
+  });
+
   // Proxy routes to Baltek API
   app.get("/api/organizations/:id", async (req, res) => {
     try {
