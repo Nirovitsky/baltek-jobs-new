@@ -117,12 +117,12 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                 <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                   {formatWorkplaceType(job.workplace_type)}
                 </span>
-                <div className="text-xs text-gray-600 flex items-center bg-gray-50 px-2 py-1 rounded-md">
-                  <MapPin className="w-3 h-3 mr-1.5 text-gray-500" />
-                  <span className="whitespace-nowrap font-medium">{job.location?.name || 'Unknown'}</span>
-                </div>
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex items-center">
+                  <MapPin className="w-3 h-3 mr-1.5" />
+                  {job.location?.name || 'Unknown'}
+                </span>
                 {(job as any).minimum_education_level && (
-                  <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
+                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                     {(job as any).minimum_education_level}
                   </span>
                 )}
