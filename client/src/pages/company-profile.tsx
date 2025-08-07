@@ -76,63 +76,69 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
       </div>
       
       {isLoading ? (
-        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+        <div>
           {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4 p-4">
-              <Skeleton className="h-12 w-12 rounded-full ring-2 ring-gray-100" />
-              <div className="flex-1">
-                <Skeleton className="h-4 w-32 mb-2" />
-                <Skeleton className="h-3 w-24 mb-2" />
-                <Skeleton className="h-3 w-20" />
+            <div key={i}>
+              <div className="flex items-center gap-4 p-4">
+                <Skeleton className="h-12 w-12 rounded-full ring-2 ring-gray-100" />
+                <div className="flex-1">
+                  <Skeleton className="h-4 w-32 mb-2" />
+                  <Skeleton className="h-3 w-24 mb-2" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <Skeleton className="h-4 w-4" />
               </div>
-              <Skeleton className="h-4 w-4" />
+              <hr className="border-gray-200 dark:border-gray-700" />
             </div>
           ))}
         </div>
       ) : (
-        <div className="divide-y divide-gray-200 dark:divide-gray-700">
+        <div>
           {suggestions.map((company: Organization, index: number) => (
-            <Link key={company.id} href={`/company/${company.id}`}>
-              <div className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group">
-                <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
-                  <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
-                  <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/20 text-primary text-sm font-bold border border-primary/20">
-                    {(company.display_name || company.official_name || 'CO')
-                      .split(' ')
-                      .map(word => word.charAt(0))
-                      .join('')
-                      .toUpperCase()
-                      .slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors text-sm">
-                    {company.display_name || company.official_name}
-                  </h4>
+            <div key={company.id}>
+              <Link href={`/company/${company.id}`}>
+                <div className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group">
+                  <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
+                    <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
+                    <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/20 text-primary text-sm font-bold border border-primary/20">
+                      {(company.display_name || company.official_name || 'CO')
+                        .split(' ')
+                        .map(word => word.charAt(0))
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
                   
-                  <div className="flex items-center gap-1 mt-1">
-                    <Building2 className="h-3 w-3 text-gray-500" />
-                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                      {(company as any).mockCategory}
-                    </span>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors text-sm">
+                      {company.display_name || company.official_name}
+                    </h4>
+                    
+                    <div className="flex items-center gap-1 mt-1">
+                      <Building2 className="h-3 w-3 text-gray-500" />
+                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                        {(company as any).mockCategory}
+                      </span>
+                    </div>
+                    
+                    {company.location?.name && (
+                      <div className="flex items-center gap-1 mt-2">
+                        <MapPin className="h-3 w-3 text-gray-400" />
+                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                          {company.location.name}
+                        </p>
+                      </div>
+                    )}
                   </div>
                   
-                  {company.location?.name && (
-                    <div className="flex items-center gap-1 mt-2">
-                      <MapPin className="h-3 w-3 text-gray-400" />
-                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                        {company.location.name}
-                      </p>
-                    </div>
-                  )}
+                  <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
+                  </div>
                 </div>
-                
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
-                </div>
-              </div>
-            </Link>
+              </Link>
+              <hr className="border-gray-200 dark:border-gray-700" />
+            </div>
           ))}
           
           {suggestions.length === 0 && (
