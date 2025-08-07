@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import type { Job, JobFilters } from "@shared/schema";
@@ -24,6 +24,16 @@ export default function Jobs({}: JobsProps) {
     organizationParam ? { organization: parseInt(organizationParam) } : {}
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+  // Debounce search query
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 500); // Wait 500ms after user stops typing
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   const {
     data,
@@ -33,12 +43,12 @@ export default function Jobs({}: JobsProps) {
     isLoading,
     error,
   } = useInfiniteQuery({
-    queryKey: ["jobs", filters, searchQuery],
+    queryKey: ["jobs", filters, debouncedSearchQuery],
     queryFn: async ({ pageParam = 0 }) => {
       const params = {
         offset: pageParam,
         limit: 10, // Load 10 jobs initially for optimal UX
-        search: searchQuery || undefined,
+        search: debouncedSearchQuery || undefined,
         ...filters,
       };
       return ApiClient.getJobs(params);
