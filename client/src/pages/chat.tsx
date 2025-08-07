@@ -49,6 +49,7 @@ interface Message {
 
 interface Conversation {
   id: number;
+  name?: string; // Company name or participant name
   participant: {
     id: number;
     first_name: string;
@@ -197,17 +198,19 @@ export default function ChatPage() {
     }
   };
 
-  const filteredConversations = conversationsLoading ? [] : (conversations?.results || []).filter((conversation: Conversation) => {
+  const filteredConversations = conversationsLoading ? [] : ((conversations as any)?.results || []).filter((conversation: Conversation) => {
+    const conversationName = conversation.name?.toLowerCase() || '';
     const participantName = `${conversation.participant.first_name} ${conversation.participant.last_name}`.toLowerCase();
     const company = conversation.participant.company?.toLowerCase() || '';
-    return participantName.includes(searchQuery.toLowerCase()) || 
+    return conversationName.includes(searchQuery.toLowerCase()) || 
+           participantName.includes(searchQuery.toLowerCase()) || 
            company.includes(searchQuery.toLowerCase());
   });
 
   const selectedConversationData = filteredConversations.find((c: Conversation) => c.id === selectedConversation);
 
   // Use actual messages data from API
-  const messagesData = messages || { results: [] };
+  const messagesData = (messages as any) || { results: [] };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8" data-testid="chat-page">
@@ -309,18 +312,18 @@ export default function ChatPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <h3 className="font-medium text-gray-900 truncate">
-                              {conversation.participant.first_name} {conversation.participant.last_name}
+                              {conversation.name || `${conversation.participant.first_name} ${conversation.participant.last_name}`}
                             </h3>
                             <span className="text-xs text-gray-500">
                               {formatTime(conversation.updated_at)}
                             </span>
                           </div>
                           
-                          {conversation.participant.company && (
+                          {conversation.participant.role && (
                             <div className="flex items-center gap-1 mb-1">
-                              <Building2 className="w-3 h-3 text-gray-400" />
+                              <User className="w-3 h-3 text-gray-400" />
                               <span className="text-xs text-gray-500 truncate">
-                                {conversation.participant.company}
+                                {conversation.participant.role}
                               </span>
                             </div>
                           )}
@@ -355,15 +358,12 @@ export default function ChatPage() {
                     </Avatar>
                     <div>
                       <h3 className="font-semibold text-gray-900">
-                        {selectedConversationData?.participant.first_name} {selectedConversationData?.participant.last_name}
+                        {selectedConversationData?.name || `${selectedConversationData?.participant.first_name} ${selectedConversationData?.participant.last_name}`}
                       </h3>
-                      {selectedConversationData?.participant.company && (
-                        <div className="flex items-center gap-1">
-                          <Building2 className="w-3 h-3 text-gray-400" />
-                          <span className="text-sm text-gray-500">
-                            {selectedConversationData.participant.company}
-                          </span>
-                        </div>
+                      {selectedConversationData?.participant.role && (
+                        <p className="text-sm text-gray-500">
+                          {selectedConversationData.participant.first_name} {selectedConversationData.participant.last_name} - {selectedConversationData.participant.role}
+                        </p>
                       )}
                     </div>
                   </div>

@@ -76,12 +76,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Chat API endpoints
+  // Chat API endpoints - fetch rooms for current user
   app.get("/api/conversations", async (req, res) => {
     try {
       const response = await fetch("https://api.baltek.net/api/chat/rooms/", {
         headers: {
           Authorization: req.headers.authorization || "",
+          "Content-Type": "application/json",
         },
       });
       
@@ -90,6 +91,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const data = await response.json();
+      
+      // Transform the data to use company names as conversation names
+      if (data.results) {
+        data.results = data.results.map((room: any) => ({
+          ...room,
+          name: room.participant?.company || `${room.participant?.first_name || ''} ${room.participant?.last_name || ''}`.trim() || 'Unknown'
+        }));
+      }
+      
       res.json(data);
     } catch (error) {
       console.error("Error fetching conversations:", error);
@@ -196,12 +206,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Handle different message types
         switch (data.type) {
           case 'join_conversation':
-            ws.conversationId = data.conversation_id;
+            (ws as any).conversationId = data.conversation_id;
             break;
           case 'send_message':
             // Broadcast message to all clients in the same conversation
             wss.clients.forEach((client) => {
-              if (client.readyState === WebSocket.OPEN && client.conversationId === data.conversation_id) {
+              if (client.readyState === WebSocket.OPEN && (client as any).conversationId === data.conversation_id) {
                 client.send(JSON.stringify({
                   type: 'new_message',
                   conversation_id: data.conversation_id,
