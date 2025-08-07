@@ -152,7 +152,7 @@ export default function CompanyProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="bg-gray-50 dark:bg-gray-900">
       {/* Hero Section with Banner */}
       {organizationData?.banner_image && (
         <div 
@@ -582,7 +582,7 @@ export default function CompanyProfile() {
               </div>
             ) : companyJobs.length > 0 ? (
               <div className="space-y-4">
-                {companyJobs.slice(0, 5).map((job) => (
+                {companyJobs.slice(0, 5).map((job: Job) => (
                   <Link key={job.id} href={`/jobs/${job.id}`}>
                     <div className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer">
                       <div className="flex items-start justify-between">
