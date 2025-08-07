@@ -226,9 +226,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   };
 
   return (
-    <>
-      <div className="flex flex-col h-full w-full">
-        <Card className="flex-1 flex flex-col h-full w-full">
+    <Card className="h-full flex flex-col w-full overflow-hidden">
           {/* Fixed Header */}
           <div className="p-6 border-b bg-white">
             {/* Header */}
@@ -421,11 +419,8 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                 </>
               )}
             </Button>
-
           </div>
-            </CardContent>
-          </div>
-        </Card>
+        </CardContent>
       </div>
 
       <ApplicationModal
@@ -433,6 +428,6 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
         isOpen={isApplicationModalOpen}
         onClose={() => setIsApplicationModalOpen(false)}
       />
-    </>
+    </Card>
   );
 }

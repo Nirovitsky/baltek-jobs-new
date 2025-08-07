@@ -46,8 +46,8 @@ export default function JobList({
 
   if (isLoading) {
     return (
-      <Card className="h-full flex flex-col w-[400px]">
-        <div className="p-4 border-b flex-shrink-0 space-y-3">
+      <div className="h-full flex flex-col w-[400px]">
+        <div className="p-4 border-b bg-white flex-shrink-0 space-y-3">
           <div className="h-6 bg-gray-200 rounded animate-pulse w-32"></div>
           
           {/* Search Bar skeleton */}
@@ -76,14 +76,14 @@ export default function JobList({
             </Card>
           ))}
         </div>
-      </Card>
+      </div>
     );
   }
 
   if (jobs.length === 0) {
     return (
-      <Card className="h-full flex flex-col w-[400px]">
-        <div className="p-4 border-b flex-shrink-0 space-y-3">
+      <div className="h-full flex flex-col w-[400px]">
+        <div className="p-4 border-b bg-white flex-shrink-0 space-y-3">
           <h2 className="text-lg font-semibold text-gray-900">0 Jobs Found</h2>
           
           {/* Search Bar */}
@@ -109,13 +109,13 @@ export default function JobList({
             <p className="text-gray-600">Try adjusting your filters or search terms</p>
           </div>
         </div>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card className="h-full flex flex-col w-[400px]">
-      <div className="p-4 border-b flex-shrink-0 space-y-3">
+    <div className="h-full flex flex-col w-[400px]">
+      <div className="p-4 border-b bg-white flex-shrink-0 space-y-3">
         <h2 className="text-lg font-semibold text-gray-900">
           {totalCount !== undefined ? `${totalCount} Job${totalCount !== 1 ? "s" : ""} Found` : `${jobs.length} Job${jobs.length !== 1 ? "s" : ""} Found`}
         </h2>
@@ -176,6 +176,6 @@ export default function JobList({
           )}
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

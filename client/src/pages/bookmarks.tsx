@@ -46,7 +46,7 @@ export default function Bookmarks({}: BookmarksProps) {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-[calc(100vh-64px)] flex flex-col overflow-hidden">
       <div className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
         <div className="flex gap-6 h-full">
           <div className="w-[400px] h-full flex-shrink-0">
@@ -77,8 +77,8 @@ export default function Bookmarks({}: BookmarksProps) {
                 </div>
               </Card>
             ) : jobs.length === 0 ? (
-              <Card className="h-full flex flex-col w-[400px]">
-                <div className="p-4 border-b flex-shrink-0">
+              <div className="h-full flex flex-col w-[400px]">
+                <div className="p-4 border-b bg-white flex-shrink-0">
                   <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <Bookmark className="h-5 w-5" />
                     Bookmarked Jobs ({totalCount})
@@ -92,15 +92,15 @@ export default function Bookmarks({}: BookmarksProps) {
                     <p className="text-gray-600">Jobs you bookmark will appear here for easy access.</p>
                   </div>
                 </div>
-              </Card>
+              </div>
             ) : (
-              <Card className="h-full flex flex-col w-[400px]">
-                <CardHeader className="p-4 border-b flex-shrink-0">
-                  <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+              <div className="h-full flex flex-col w-[400px]">
+                <div className="p-4 border-b bg-white flex-shrink-0">
+                  <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                     <Bookmark className="h-5 w-5" />
                     Bookmarked Jobs ({totalCount})
-                  </CardTitle>
-                </CardHeader>
+                  </h2>
+                </div>
                 
                 <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
                   {jobs.map((job: Job) => (
@@ -113,7 +113,7 @@ export default function Bookmarks({}: BookmarksProps) {
                     />
                   ))}
                 </div>
-              </Card>
+              </div>
             )}
           </div>
           
