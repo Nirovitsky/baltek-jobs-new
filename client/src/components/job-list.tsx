@@ -97,7 +97,7 @@ export default function JobList({
               <Search className="h-4 w-4 text-gray-500" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">0</h2>
+              <h2 className="text-lg font-semibold text-primary">0</h2>
               <p className="text-sm text-gray-600 -mt-1">Jobs Found</p>
             </div>
           </div>
@@ -143,11 +143,11 @@ export default function JobList({
       <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg flex-shrink-0 space-y-4">
         {/* Job Count with Icon */}
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-            <Search className="h-4 w-4 text-primary" />
+          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+            <Search className="h-4 w-4 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold text-primary">
               {totalCount !== undefined ? totalCount.toLocaleString() : jobs.length.toLocaleString()}
             </h2>
             <p className="text-sm text-gray-600 -mt-1">
