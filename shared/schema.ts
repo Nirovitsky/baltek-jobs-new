@@ -175,7 +175,9 @@ export const savedFilterSchema = z.object({
 // Organization schema
 export const organizationSchema = z.object({
   id: z.number(),
-  name: z.string(),
+  name: z.string().optional(),
+  official_name: z.string().optional(),
+  display_name: z.string().optional(),
   description: z.string().optional(),
   logo: z.string().optional(),
   website: z.string().optional(),

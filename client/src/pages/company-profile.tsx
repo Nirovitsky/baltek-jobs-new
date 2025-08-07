@@ -151,7 +151,7 @@ export default function CompanyProfile() {
                   {organizationData.location && (
                     <div className="flex items-center gap-1">
                       <MapPin className="h-4 w-4" />
-                      <span>{organizationData.location}</span>
+                      <span>{typeof organizationData.location === 'string' ? organizationData.location : 'Location'}</span>
                     </div>
                   )}
                   
@@ -227,7 +227,7 @@ export default function CompanyProfile() {
               
               <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {organizationData.industry || "N/A"}
+                  {typeof organizationData?.industry === 'string' ? organizationData.industry : "N/A"}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   Industry
@@ -236,7 +236,7 @@ export default function CompanyProfile() {
               
               <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {organizationData.size || "N/A"}
+                  {typeof organizationData?.size === 'string' ? organizationData.size : "N/A"}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   Company Size
@@ -245,7 +245,7 @@ export default function CompanyProfile() {
               
               <div className="text-center p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="text-2xl font-bold text-primary">
-                  {organizationData.founded || "N/A"}
+                  {typeof organizationData?.founded === 'number' ? organizationData.founded : "N/A"}
                 </div>
                 <div className="text-sm text-gray-600 dark:text-gray-400">
                   Founded
