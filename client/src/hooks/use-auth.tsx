@@ -15,10 +15,15 @@ export function useAuth() {
         return null;
       }
       try {
-        // Use the /api/auth/me endpoint which automatically extracts user ID from JWT token
-        return await ApiClient.getCurrentUser() as UserProfile;
+        // Get current user ID from token payload
+        const token = AuthService.getToken();
+        if (!token) return null;
+        
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const userId = payload.user_id;
+        
+        return await ApiClient.getProfile(userId) as UserProfile;
       } catch (error) {
-        console.error('Error fetching current user:', error);
         AuthService.clearTokens();
         return null;
       }

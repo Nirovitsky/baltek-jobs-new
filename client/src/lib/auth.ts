@@ -1,7 +1,7 @@
 import { apiRequest } from "./queryClient";
 import type { LoginRequest, RegisterRequest, UserProfile } from "@shared/schema";
 
-const API_BASE = "/api";
+const API_BASE = "https://api.baltek.net/api";
 
 export class AuthService {
   private static TOKEN_KEY = "baltek_access_token";
@@ -31,7 +31,7 @@ export class AuthService {
 
   static async login(credentials: LoginRequest): Promise<{ access: string; refresh: string }> {
     try {
-      const response = await fetch(`${API_BASE}/auth/login`, {
+      const response = await fetch(`${API_BASE}/token/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -45,16 +45,8 @@ export class AuthService {
       }
 
       const tokens = await response.json();
-      // Handle both access_token and access fields from the server
-      const accessToken = tokens.access_token || tokens.access;
-      const refreshToken = tokens.refresh_token || tokens.refresh;
-      
-      if (!accessToken) {
-        throw new Error("No access token received from server");
-      }
-      
-      this.setTokens(accessToken, refreshToken);
-      return { access: accessToken, refresh: refreshToken };
+      this.setTokens(tokens.access, tokens.refresh);
+      return tokens;
     } catch (error) {
       console.warn('External API unavailable, using demo login:', error);
       // Demo login for when API is unavailable
