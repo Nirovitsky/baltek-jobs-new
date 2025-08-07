@@ -194,27 +194,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const currentUserId = 2; 
           const otherMember = room.members?.find((member: any) => member.id !== currentUserId);
           
-          // If no other member found, use the first member as fallback
-          const participant = otherMember || room.members?.[0];
+          // Use organization info for display
+          const organization = room.content_object?.job?.organization;
+          const jobTitle = room.content_object?.job?.title;
           
           return {
             ...room,
-            participant: participant ? {
-              id: participant.id,
-              first_name: participant.first_name || 'Unknown',
-              last_name: participant.last_name || 'User',
-              avatar: participant.avatar?.startsWith('http') ? participant.avatar : `https://api.baltek.net${participant.avatar || ''}`,
-              company: room.name || 'Unknown Company',
-              role: room.content_object?.job?.title || 'Recruiter'
-            } : {
-              id: 1,
-              first_name: 'Unknown',
-              last_name: 'User',
-              avatar: 'https://api.baltek.net/media/default-avatar.png',
-              company: 'Unknown Company',
-              role: 'Recruiter'
+            participant: {
+              id: otherMember?.id || 1,
+              first_name: organization?.display_name || otherMember?.first_name || 'Unknown',
+              last_name: '', // Organization name goes in first_name
+              avatar: organization?.logo || (otherMember?.avatar?.startsWith('http') ? otherMember?.avatar : `https://api.baltek.net${otherMember?.avatar || ''}`),
+              company: organization?.display_name || 'Unknown Company',
+              role: jobTitle || 'Recruiter'
             },
-            name: room.name || `${participant?.first_name || 'Unknown'} ${participant?.last_name || 'User'}`.trim(),
+            name: organization?.display_name || `${otherMember?.first_name || 'Unknown'} ${otherMember?.last_name || 'User'}`.trim(),
             last_message: room.last_message_text ? { content: room.last_message_text } : null,
             unread_count: room.unread_message_count || 0,
             updated_at: room.last_message_date_created ? new Date(room.last_message_date_created * 1000).toISOString() : new Date().toISOString()
