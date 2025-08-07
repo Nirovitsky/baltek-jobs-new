@@ -1163,9 +1163,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                           <p className="text-sm text-gray-700 mt-1">{project.description}</p>
                           {project.technologies && project.technologies.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2">
-                              {project.technologies.map((tech: string, index: number) => (
+                              {project.technologies.map((tech: any, index: number) => (
                                 <Badge key={index} variant="outline" className="text-xs">
-                                  {tech}
+                                  {typeof tech === 'string' ? tech : tech.name || tech}
                                 </Badge>
                               ))}
                             </div>
