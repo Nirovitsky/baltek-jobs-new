@@ -298,7 +298,9 @@ export default function Profile() {
                     <label className="text-sm font-medium text-foreground">Location</label>
                     <p className="text-foreground flex items-center">
                       <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                      {displayProfile.location || "Not provided"}
+                      {typeof displayProfile.location === 'string' 
+                        ? displayProfile.location 
+                        : displayProfile.location?.name || displayProfile.location || "Not provided"}
                     </p>
                   </div>
 

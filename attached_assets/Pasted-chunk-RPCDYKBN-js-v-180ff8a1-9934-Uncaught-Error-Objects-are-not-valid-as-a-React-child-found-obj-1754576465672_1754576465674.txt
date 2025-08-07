@@ -1,0 +1,63 @@
+chunk-RPCDYKBN.js?v=180ff8a1:9934 Uncaught Error: Objects are not valid as a React child (found: object with keys {id, name}). If you meant to render a collection of children, use an array instead.
+    at throwOnInvalidObjectType (chunk-RPCDYKBN.js?v=180ff8a1:9934:17)
+    at createChild (chunk-RPCDYKBN.js?v=180ff8a1:10110:15)
+    at reconcileChildrenArray (chunk-RPCDYKBN.js?v=180ff8a1:10282:33)
+    at reconcileChildFibers2 (chunk-RPCDYKBN.js?v=180ff8a1:10559:24)
+    at reconcileChildren (chunk-RPCDYKBN.js?v=180ff8a1:14290:37)
+    at updateHostComponent (chunk-RPCDYKBN.js?v=180ff8a1:14807:11)
+    at beginWork (chunk-RPCDYKBN.js?v=180ff8a1:15935:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=180ff8a1:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=180ff8a1:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=180ff8a1:3733:39)
+
+chunk-RPCDYKBN.js?v=180ff8a1:9934 Uncaught Error: Objects are not valid as a React child (found: object with keys {id, name}). If you meant to render a collection of children, use an array instead.
+    at throwOnInvalidObjectType (chunk-RPCDYKBN.js?v=180ff8a1:9934:17)
+    at createChild (chunk-RPCDYKBN.js?v=180ff8a1:10110:15)
+    at reconcileChildrenArray (chunk-RPCDYKBN.js?v=180ff8a1:10282:33)
+    at reconcileChildFibers2 (chunk-RPCDYKBN.js?v=180ff8a1:10559:24)
+    at reconcileChildren (chunk-RPCDYKBN.js?v=180ff8a1:14290:37)
+    at updateHostComponent (chunk-RPCDYKBN.js?v=180ff8a1:14807:11)
+    at beginWork (chunk-RPCDYKBN.js?v=180ff8a1:15935:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=180ff8a1:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=180ff8a1:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=180ff8a1:3733:39)
+chunk-RPCDYKBN.js?v=180ff8a1:14032 The above error occurred in the <p> component:
+
+    at p
+    at div
+    at div
+    at div
+    at div
+    at _c9 (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit.dev/src/components/ui/card.tsx:114:12)
+    at div
+    at _c (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit.dev/src/components/ui/card.tsx:20:11)
+    at div
+    at div
+    at div
+    at Profile (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit.dev/src/pages/profile.tsx?t=1754576392090:31:20)
+    at main
+    at div
+    at ProtectedLayout (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit.dev/src/App.tsx?t=1754576392090&v=mR093pGlARtIj2sI1flbv:101:30)
+    at ProtectedRoute (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit.dev/src/App.tsx?t=1754576392090&v=mR093pGlARtIj2sI1flbv:36:27)
+    at Route (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=180ff8a1:323:16)
+    at Switch (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=180ff8a1:379:17)
+    at Router (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit.dev/src/App.tsx?t=1754576392090&v=mR093pGlARtIj2sI1flbv:100:31)
+    at Provider (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit…unner/workspace/node_modules/.vite/deps/chunk-E7IAXTU4.js?v=180ff8a1:38:15)
+    at TooltipProvider (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit…rkspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=180ff8a1:63:5)
+    at QueryClientProvider (https://8571679a-0ab1-4a9b-b89a-5e559bdd90cf-00-34m1mw4ulc7ay.picard.replit…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=180ff8a1:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-RPCDYKBN.js?v=180ff8a1:9934 Uncaught Error: Objects are not valid as a React child (found: object with keys {id, name}). If you meant to render a collection of children, use an array instead.
+    at throwOnInvalidObjectType (chunk-RPCDYKBN.js?v=180ff8a1:9934:17)
+    at createChild (chunk-RPCDYKBN.js?v=180ff8a1:10110:15)
+    at reconcileChildrenArray (chunk-RPCDYKBN.js?v=180ff8a1:10282:33)
+    at reconcileChildFibers2 (chunk-RPCDYKBN.js?v=180ff8a1:10559:24)
+    at reconcileChildren (chunk-RPCDYKBN.js?v=180ff8a1:14290:37)
+    at updateHostComponent (chunk-RPCDYKBN.js?v=180ff8a1:14807:11)
+    at beginWork (chunk-RPCDYKBN.js?v=180ff8a1:15935:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=180ff8a1:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=180ff8a1:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=180ff8a1:19137:13)
+﻿
