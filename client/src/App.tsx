@@ -11,6 +11,7 @@ import Register from "@/pages/register";
 import Jobs from "@/pages/jobs";
 import Profile from "@/pages/profile";
 import Applications from "@/pages/applications";
+import Bookmarks from "@/pages/bookmarks";
 import Settings from "@/pages/settings";
 import Chat from "@/pages/chat";
 import Notifications from "@/pages/notifications";
@@ -87,6 +88,13 @@ function Router() {
         <ProtectedRoute>
           <ProtectedLayout>
             <Applications />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/bookmarks">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <Bookmarks />
           </ProtectedLayout>
         </ProtectedRoute>
       </Route>

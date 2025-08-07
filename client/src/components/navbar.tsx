@@ -101,9 +101,11 @@ export default function Navbar({}: NavbarProps) {
                     <span>Profile</span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Heart className="mr-2 h-4 w-4" />
-                  <span>Bookmarked Jobs</span>
+                <DropdownMenuItem asChild>
+                  <Link href="/bookmarks" className="flex items-center">
+                    <Heart className="mr-2 h-4 w-4" />
+                    <span>Bookmarked Jobs</span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/applications" className="flex items-center">
