@@ -275,9 +275,17 @@ export default function CompanyProfile() {
                 </Avatar>
                 
                 <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
-                    {organizationData?.display_name || organizationData?.official_name}
-                  </h1>
+                  <div className="flex items-start justify-between mb-2">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                      {organizationData?.display_name || organizationData?.official_name}
+                    </h1>
+                    <Link href={`/jobs?organization=${companyId}`}>
+                      <Button className="ml-4">
+                        <Briefcase className="h-4 w-4 mr-2" />
+                        Open Positions
+                      </Button>
+                    </Link>
+                  </div>
                   
                   {organizationData?.official_name && organizationData?.display_name && 
                    organizationData?.official_name !== organizationData?.display_name && (
@@ -421,15 +429,7 @@ export default function CompanyProfile() {
               )}
             </div>
 
-            {/* Open Positions Button */}
-            <div className="text-center">
-              <Link href={`/jobs?organization=${companyId}`}>
-                <Button className="px-8 py-3 text-lg">
-                  <Briefcase className="h-5 w-5 mr-2" />
-                  Open Positions
-                </Button>
-              </Link>
-            </div>
+
           </div>
 
           {/* Right Column - Suggested Companies */}
