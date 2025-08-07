@@ -65,8 +65,19 @@ export default function Jobs({}: JobsProps) {
     initialPageParam: 0,
   });
 
+  // Flatten and deduplicate jobs to prevent duplicate keys
   let jobs = data?.pages.flatMap((page: any) => page?.results || []) || [];
   const totalCount = (data?.pages?.[0] as any)?.count; // Get count from the first page response
+  
+  // Deduplicate jobs by ID to prevent React key conflicts
+  const seenIds = new Set<number>();
+  jobs = jobs.filter((job: Job) => {
+    if (seenIds.has(job.id)) {
+      return false;
+    }
+    seenIds.add(job.id);
+    return true;
+  });
   
   // Client-side currency filtering as API currency filter appears to be non-functional
   if (filters.currency) {
