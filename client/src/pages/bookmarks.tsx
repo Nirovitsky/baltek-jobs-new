@@ -4,10 +4,10 @@ import { ApiClient } from "@/lib/api";
 import type { Job, JobsListResponse } from "@shared/schema";
 
 import JobDetails from "@/components/job-details";
+import JobCard from "@/components/job-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, Bookmark, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { AlertTriangle, Bookmark } from "lucide-react";
 
 interface BookmarksProps {}
 
@@ -25,28 +25,8 @@ export default function Bookmarks({}: BookmarksProps) {
     },
   });
 
-  const handleJobSelect = (jobId: number) => {
-    setSelectedJobId(jobId);
-  };
-
-  const formatSalary = (job: Job) => {
-    // Support both new API structure (payment_from/payment_to) and legacy (salary_min/salary_max)
-    const min = job.payment_from || job.salary_min;
-    const max = job.payment_to || job.salary_max;
-    const currency = job.currency || "TMT";
-    
-    if (!min && !max) return "Salary not specified";
-    
-    const currencySymbol = currency === "EUR" ? "€" : 
-                           currency === "GBP" ? "£" : 
-                           currency === "USD" ? "$" : 
-                           currency === "TMT" ? "TMT" : 
-                           currency;
-    
-    if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
-    if (min) return `From ${currencySymbol}${min.toLocaleString()}`;
-    if (max) return `Up to ${currencySymbol}${max.toLocaleString()}`;
-    return "Salary not specified";
+  const handleJobSelect = (job: Job) => {
+    setSelectedJobId(job.id);
   };
 
   const jobs = bookmarkedJobs?.results || [];
@@ -76,9 +56,9 @@ export default function Bookmarks({}: BookmarksProps) {
                   <div className="h-6 bg-gray-200 rounded animate-pulse w-40"></div>
                 </div>
                 
-                <div className="flex-1 min-h-0 overflow-y-auto">
+                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="px-6 py-5 border-b border-gray-100">
+                    <Card key={i} className="p-4">
                       <div className="space-y-3">
                         <div className="h-5 bg-gray-200 rounded animate-pulse w-3/4"></div>
                         <div className="h-4 bg-gray-100 rounded animate-pulse w-1/2"></div>
@@ -92,7 +72,7 @@ export default function Bookmarks({}: BookmarksProps) {
                           <div className="h-6 bg-gray-100 rounded animate-pulse w-20"></div>
                         </div>
                       </div>
-                    </div>
+                    </Card>
                   ))}
                 </div>
               </Card>
@@ -122,39 +102,15 @@ export default function Bookmarks({}: BookmarksProps) {
                   </CardTitle>
                 </CardHeader>
                 
-                <div className="flex-1 min-h-0 overflow-y-auto">
+                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
                   {jobs.map((job: Job) => (
-                    <div
+                    <JobCard
                       key={job.id}
-                      className={`px-6 py-5 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
-                        selectedJobId === job.id ? "bg-blue-50 border-blue-200" : ""
-                      }`}
-                      onClick={() => handleJobSelect(job.id)}
-                    >
-                      <div className="space-y-3">
-                        <h3 className="text-lg font-semibold text-gray-900 leading-tight">
-                          {job.title}
-                        </h3>
-                        <p className="text-gray-600 text-sm">
-                          {job.organization?.name || "Unknown Company"}
-                        </p>
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <span>{formatSalary(job)}</span>
-                        </div>
-                        <div className="flex gap-2">
-                          {job.job_type && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                              {job.job_type}
-                            </span>
-                          )}
-                          {job.workplace_type && (
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                              {job.workplace_type}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+                      job={job}
+                      isSelected={selectedJobId === job.id}
+                      onSelect={handleJobSelect}
+                      showBookmark={false}
+                    />
                   ))}
                 </div>
               </Card>
