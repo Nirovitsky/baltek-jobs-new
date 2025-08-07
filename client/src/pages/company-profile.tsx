@@ -28,7 +28,11 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
     queryFn: () => fetch("/api/organizations?limit=5").then(res => res.json()),
   });
 
-  const suggestions = companiesData?.results?.filter((org: Organization) => 
+  console.log("Companies data:", companiesData);
+
+  // Handle both array and paginated response formats
+  const allCompanies = Array.isArray(companiesData) ? companiesData : (companiesData?.results || []);
+  const suggestions = allCompanies.filter((org: Organization) => 
     org.id.toString() !== currentCompanyId
   ).slice(0, 4) || [];
 
