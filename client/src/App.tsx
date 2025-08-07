@@ -127,6 +127,13 @@ function Router() {
           </ProtectedLayout>
         </ProtectedRoute>
       </Route>
+      <Route path="/jobs">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <Jobs />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
       <Route path="/">
         <ProtectedRoute>
           <ProtectedLayout>

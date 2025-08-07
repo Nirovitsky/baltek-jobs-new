@@ -15,8 +15,14 @@ import { AlertTriangle } from "lucide-react";
 interface JobsProps {}
 
 export default function Jobs({}: JobsProps) {
+  // Get URL parameters
+  const urlParams = new URLSearchParams(window.location.search);
+  const organizationParam = urlParams.get('organization');
+  
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
-  const [filters, setFilters] = useState<JobFilters>({});
+  const [filters, setFilters] = useState<JobFilters>(
+    organizationParam ? { organization: parseInt(organizationParam) } : {}
+  );
   const [searchQuery, setSearchQuery] = useState("");
 
   const {
