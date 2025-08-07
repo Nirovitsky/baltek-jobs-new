@@ -117,8 +117,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                 <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                   {formatWorkplaceType(job.workplace_type)}
                 </span>
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex items-center">
-                  <MapPin className="w-3 h-3 mr-1.5" />
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                   {job.location?.name || 'Unknown'}
                 </span>
                 {(job as any).minimum_education_level && (
