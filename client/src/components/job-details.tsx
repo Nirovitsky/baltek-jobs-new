@@ -226,7 +226,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   };
 
   return (
-    <Card className="flex flex-col w-full overflow-hidden">
+    <Card className="h-full flex flex-col w-full overflow-hidden">
           {/* Fixed Header */}
           <div className="p-6 border-b bg-white">
             {/* Header */}
@@ -308,8 +308,8 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
           </div>
 
           {/* Scrollable Content */}
-          <div className="overflow-y-auto job-description-scroll">
-            <CardContent className="p-6 pb-2">
+          <div className="flex-1 overflow-y-auto job-description-scroll">
+            <CardContent className="p-6">
 
 
           {/* Skills */}
