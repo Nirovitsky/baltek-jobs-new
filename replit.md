@@ -41,7 +41,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **User Profile**: Comprehensive profile management with integration for professional links, education, experience, and projects. Real-time stats and profile completion percentage. Profile editing is fully integrated with CRUD operations.
 - **Resume Management**: Upload up to 3 resumes (PDF, DOC, DOCX, max 10MB) with drag-and-drop, validation, listing, view/download, and delete functionality.
 - **Settings Management**: Comprehensive settings page with profile configuration, notification preferences, privacy controls, and account management including password changes and data export.
-- **Chat System**: Real-time messaging interface fully integrated with Baltek API. Features WebSocket connectivity for instant message delivery, conversation management, recruiter communication, and message history. No mock data - all functionality uses authentic API endpoints.
+- **Chat System**: Real-time messaging interface fully integrated with Baltek API. Features WebSocket connectivity for instant message delivery, conversation management, recruiter communication, and message history. Authentication via `/api/token/` endpoint, chat rooms fetched from `/api/chat/rooms/` with company name transformation, messages via `/api/chat/messages/`. All functionality uses authentic API endpoints with proper JWT token authentication. Test credentials: phone +99362222222, password adminadmin.
 - **Company Profile Pages**: Dedicated company profile pages with organization details, statistics, open positions, and comprehensive company information. Accessible via clickable company links in job listings and job details.
 
 ## External Dependencies

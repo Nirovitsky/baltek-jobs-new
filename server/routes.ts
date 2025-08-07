@@ -14,7 +14,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication endpoints - proxy to Baltek API
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const response = await fetch("https://api.baltek.net/api/auth/login/", {
+      const response = await fetch("https://api.baltek.net/api/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,7 +29,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const data = await response.json();
-      res.json(data);
+      // Transform response to match expected format
+      res.json({
+        access_token: data.access,
+        refresh_token: data.refresh,
+        ...data
+      });
     } catch (error) {
       console.error("Error during login:", error);
       res.status(500).json({ error: "Internal server error" });
@@ -86,7 +91,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/auth/me", async (req, res) => {
     try {
-      const response = await fetch("https://api.baltek.net/api/auth/me/", {
+      // Extract user ID from JWT token
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ error: "No authorization header" });
+      }
+
+      const token = authHeader.replace('Bearer ', '');
+      const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+      const userId = payload.user_id;
+
+      // Fetch user profile from Baltek API using /users/{id}/ endpoint
+      const response = await fetch(`https://api.baltek.net/api/users/${userId}/`, {
         headers: {
           Authorization: req.headers.authorization || "",
         },
@@ -102,7 +118,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(data);
     } catch (error) {
       console.error("Error getting user info:", error);
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: "Failed to get user info" });
     }
   });
 
@@ -187,12 +203,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const data = await response.json();
       
-      // Transform the data to use company names as conversation names
+      // Transform the data to match frontend expectations
       if (data.results) {
-        data.results = data.results.map((room: any) => ({
-          ...room,
-          name: room.participant?.company || `${room.participant?.first_name || ''} ${room.participant?.last_name || ''}`.trim() || 'Unknown'
-        }));
+        data.results = data.results.map((room: any) => {
+          // Find the other participant (not the current user)
+          const currentUserId = 2; // From token payload, current user ID is 2
+          const otherParticipant = room.members?.find((m: any) => m.id !== currentUserId) || room.members?.[0];
+          const companyName = room.content_object?.job?.organization?.display_name || room.content_object?.job?.organization?.official_name;
+          
+          return {
+            ...room,
+            name: companyName || 'Unknown Company',
+            participant: {
+              id: otherParticipant?.id || null,
+              first_name: otherParticipant?.first_name || '',
+              last_name: otherParticipant?.last_name || '',
+              avatar: otherParticipant?.avatar || null,
+              company: companyName || null,
+              role: room.content_object?.job?.title || null,
+            },
+            last_message: {
+              content: room.last_message_text || 'No messages yet',
+            },
+            unread_count: room.unread_message_count || 0,
+            updated_at: room.last_message_date_created ? new Date(room.last_message_date_created * 1000).toISOString() : new Date().toISOString(),
+          };
+        });
       }
       
       res.json(data);
