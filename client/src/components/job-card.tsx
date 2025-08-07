@@ -103,32 +103,29 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
       <CardContent className="p-4">
         <div className="relative w-full">
           <div className="flex justify-between items-start w-full">
-            <div className="flex-1 pr-6 min-w-0">
+            <div className="flex-1 pr-4 min-w-0">
               {/* Job Title */}
               <h3 className="font-semibold text-base text-gray-900 line-clamp-2 mb-3 leading-tight">
                 {job.title || 'Job Title'}
               </h3>
               
               {/* Tags in Middle */}
-              <div className="flex items-center gap-2 mb-4 overflow-hidden">
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
                   {formatJobType(job.job_type)}
                 </span>
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
                   {formatWorkplaceType(job.workplace_type)}
                 </span>
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
                   {job.location?.name || 'Unknown'}
                 </span>
                 {(job as any).minimum_education_level && (
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
+                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
                     {(job as any).minimum_education_level}
                   </span>
                 )}
               </div>
-              
-              {/* Separator */}
-              <div className="border-t border-gray-200 mb-4"></div>
               
               {/* Company at Bottom Left */}
               <div className="flex items-center space-x-3">
