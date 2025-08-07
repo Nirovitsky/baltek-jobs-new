@@ -84,13 +84,25 @@ export default function ChatPage() {
     refetchInterval: 5000, // Poll more frequently for active conversation
   });
 
+  // WebSocket connection
+  const [socket, setSocket] = useState<WebSocket | null>(null);
+
   // Send message mutation
   const sendMessageMutation = useMutation({
-    mutationFn: async (data: { recipient_id: number; content: string }) => {
-      // Mock implementation for now - would integrate with Baltek API when available
-      return new Promise(resolve => {
-        setTimeout(() => resolve({ success: true }), 500);
+    mutationFn: async (data: { content: string }) => {
+      const response = await fetch(`/api/conversations/${selectedConversation}/messages`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ content: data.content }),
       });
+      
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+      
+      return response.json();
     },
     onSuccess: () => {
       setMessageInput("");
@@ -110,10 +122,8 @@ export default function ChatPage() {
   // Mark conversation as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: async (conversationId: number) => {
-      // Mock implementation for now - would integrate with Baltek API when available
-      return new Promise(resolve => {
-        setTimeout(() => resolve({ success: true }), 200);
-      });
+      // This would be implemented when the API supports read receipts
+      return Promise.resolve({ success: true });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
@@ -124,6 +134,40 @@ export default function ChatPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  // Initialize WebSocket connection
+  useEffect(() => {
+    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+    const wsUrl = `${protocol}//${window.location.host}/ws`;
+    const ws = new WebSocket(wsUrl);
+    
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+      setSocket(ws);
+    };
+    
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'new_message') {
+          // Invalidate queries to refresh message list
+          queryClient.invalidateQueries({ queryKey: ['/api/conversations'] });
+          queryClient.invalidateQueries({ queryKey: ['/api/conversations', data.conversation_id, 'messages'] });
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    };
+    
+    ws.onclose = () => {
+      console.log('WebSocket disconnected');
+      setSocket(null);
+    };
+    
+    return () => {
+      ws.close();
+    };
+  }, []);
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -131,18 +175,22 @@ export default function ChatPage() {
   useEffect(() => {
     if (selectedConversation) {
       markAsReadMutation.mutate(selectedConversation);
+      
+      // Join conversation room via WebSocket
+      if (socket) {
+        socket.send(JSON.stringify({
+          type: 'join_conversation',
+          conversation_id: selectedConversation
+        }));
+      }
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, socket]);
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!messageInput.trim() || !selectedConversation) return;
 
-    const conversation = filteredConversations.find((c: Conversation) => c.id === selectedConversation);
-    if (!conversation) return;
-
     sendMessageMutation.mutate({
-      recipient_id: conversation.participant.id,
       content: messageInput.trim(),
     });
   };
@@ -159,53 +207,7 @@ export default function ChatPage() {
     }
   };
 
-  // Mock conversation data for demonstration
-  const mockConversations: Conversation[] = [
-    {
-      id: 1,
-      participant: {
-        id: 2,
-        first_name: "Sarah",
-        last_name: "Johnson",
-        avatar: "/api/placeholder/32/32",
-        role: "Senior Recruiter",
-        company: "TechCorp Solutions"
-      },
-      last_message: {
-        id: 1,
-        content: "Hi! I saw your profile and think you'd be a great fit for our Senior Developer role. Are you interested in discussing this opportunity?",
-        sender: { id: 2, first_name: "Sarah", last_name: "Johnson" },
-        recipient: { id: user?.id || 1, first_name: "You", last_name: "" },
-        created_at: new Date(Date.now() - 3600000).toISOString(),
-        read: false
-      },
-      unread_count: 2,
-      updated_at: new Date(Date.now() - 3600000).toISOString()
-    },
-    {
-      id: 2,
-      participant: {
-        id: 3,
-        first_name: "Michael",
-        last_name: "Chen",
-        avatar: "/api/placeholder/32/32",
-        role: "Hiring Manager",
-        company: "StartupXYZ"
-      },
-      last_message: {
-        id: 2,
-        content: "Thanks for your application! We'd like to schedule an interview. When would be a good time for you?",
-        sender: { id: 3, first_name: "Michael", last_name: "Chen" },
-        recipient: { id: user?.id || 1, first_name: "You", last_name: "" },
-        created_at: new Date(Date.now() - 86400000).toISOString(),
-        read: true
-      },
-      unread_count: 0,
-      updated_at: new Date(Date.now() - 86400000).toISOString()
-    }
-  ];
-
-  const filteredConversations = conversationsLoading ? [] : mockConversations.filter((conversation: Conversation) => {
+  const filteredConversations = conversationsLoading ? [] : (conversations?.results || []).filter((conversation: Conversation) => {
     const participantName = `${conversation.participant.first_name} ${conversation.participant.last_name}`.toLowerCase();
     const company = conversation.participant.company?.toLowerCase() || '';
     return participantName.includes(searchQuery.toLowerCase()) || 
@@ -214,45 +216,8 @@ export default function ChatPage() {
 
   const selectedConversationData = filteredConversations.find((c: Conversation) => c.id === selectedConversation);
 
-  // Mock messages for selected conversation
-  const mockMessages: Message[] = selectedConversation === 1 ? [
-    {
-      id: 1,
-      content: "Hi! I saw your profile and think you'd be a great fit for our Senior Developer role. Are you interested in discussing this opportunity?",
-      sender: { id: 2, first_name: "Sarah", last_name: "Johnson" },
-      recipient: { id: user?.id || 1, first_name: "You", last_name: "" },
-      created_at: new Date(Date.now() - 7200000).toISOString(),
-      read: true
-    },
-    {
-      id: 2,
-      content: "Yes, I'd be very interested! Could you tell me more about the role and the company?",
-      sender: { id: user?.id || 1, first_name: "You", last_name: "" },
-      recipient: { id: 2, first_name: "Sarah", last_name: "Johnson" },
-      created_at: new Date(Date.now() - 3600000).toISOString(),
-      read: true
-    },
-    {
-      id: 3,
-      content: "Absolutely! It's a Senior React Developer position focusing on building scalable web applications. The team is very collaborative and we offer competitive compensation plus remote work options.",
-      sender: { id: 2, first_name: "Sarah", last_name: "Johnson" },
-      recipient: { id: user?.id || 1, first_name: "You", last_name: "" },
-      created_at: new Date(Date.now() - 1800000).toISOString(),
-      read: false
-    }
-  ] : selectedConversation === 2 ? [
-    {
-      id: 4,
-      content: "Thanks for your application! We'd like to schedule an interview. When would be a good time for you?",
-      sender: { id: 3, first_name: "Michael", last_name: "Chen" },
-      recipient: { id: user?.id || 1, first_name: "You", last_name: "" },
-      created_at: new Date(Date.now() - 86400000).toISOString(),
-      read: true
-    }
-  ] : [];
-
-  // Override messages query data with mock data
-  const messagesData = { results: mockMessages };
+  // Use actual messages data from API
+  const messagesData = messages || { results: [] };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8" data-testid="chat-page">
