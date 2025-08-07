@@ -19,11 +19,23 @@ export function useAuth() {
         const token = AuthService.getToken();
         if (!token) return null;
         
+        console.log('Decoding token for user profile fetch...');
         const payload = JSON.parse(atob(token.split('.')[1]));
-        const userId = payload.user_id;
+        console.log('JWT payload:', payload);
         
+        // Try different possible user ID fields in the JWT payload
+        const userId = payload.user_id || payload.sub || payload.id;
+        
+        if (!userId) {
+          console.error('No user ID found in JWT payload:', payload);
+          AuthService.clearTokens();
+          return null;
+        }
+        
+        console.log('Fetching profile for user ID:', userId);
         return await ApiClient.getProfile(userId) as UserProfile;
       } catch (error) {
+        console.error('Error in user auth query:', error);
         AuthService.clearTokens();
         return null;
       }
