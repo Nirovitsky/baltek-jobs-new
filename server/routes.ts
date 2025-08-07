@@ -122,6 +122,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User profile endpoint - proxy to Baltek API (handle both with and without trailing slash)
+  app.get("/api/users/:id/?", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const response = await fetch(`https://api.baltek.net/api/users/${id}/`, {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Get user profile failed:", response.status, errorData);
+        return res.status(response.status).json({ error: "Failed to get user profile" });
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      res.status(500).json({ error: "Failed to fetch user profile" });
+    }
+  });
+
   // Proxy routes to Baltek API
   app.get("/api/organizations/:id", async (req, res) => {
     try {

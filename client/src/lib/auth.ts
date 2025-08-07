@@ -45,20 +45,15 @@ export class AuthService {
       }
 
       const tokens = await response.json();
-      console.log('Login response tokens:', tokens);
-      
       // Handle both access_token and access fields from the server
       const accessToken = tokens.access_token || tokens.access;
       const refreshToken = tokens.refresh_token || tokens.refresh;
-      
-      console.log('Extracted tokens - access:', !!accessToken, 'refresh:', !!refreshToken);
       
       if (!accessToken) {
         throw new Error("No access token received from server");
       }
       
       this.setTokens(accessToken, refreshToken);
-      console.log('Tokens stored successfully');
       return { access: accessToken, refresh: refreshToken };
     } catch (error) {
       console.warn('External API unavailable, using demo login:', error);

@@ -178,6 +178,10 @@ export class ApiClient {
     return this.makeRequest(`/users/${id}/`);
   }
 
+  static async getCurrentUser() {
+    return this.makeRequest("/auth/me");
+  }
+
   static async updateProfile(id: number, data: any) {
     return this.makeRequest(`/users/${id}/`, {
       method: "PATCH",
