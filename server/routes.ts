@@ -226,18 +226,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/chat/messages", async (req, res) => {
     try {
       const { room } = req.query;
-      const response = await fetch(`https://api.baltek.net/api/chat/messages/?room=${room}`, {
+      
+      // Get messages
+      const messagesResponse = await fetch(`https://api.baltek.net/api/chat/messages/?room=${room}`, {
         headers: {
           Authorization: req.headers.authorization || "",
         },
       });
       
-      if (!response.ok) {
-        throw new Error(`Chat messages API error: ${response.status}`);
+      if (!messagesResponse.ok) {
+        throw new Error(`Chat messages API error: ${messagesResponse.status}`);
       }
       
-      const data = await response.json();
-      res.json(data);
+      const messagesData = await messagesResponse.json();
+      
+      // Get room details to get member information
+      const roomsResponse = await fetch("https://api.baltek.net/api/chat/rooms/", {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      
+      let roomData = null;
+      if (roomsResponse.ok) {
+        const roomsData = await roomsResponse.json();
+        roomData = roomsData.results?.find((r: any) => r.id === parseInt(room as string));
+      }
+      
+      // Transform messages to match frontend interface
+      if (messagesData.results) {
+        messagesData.results = messagesData.results.map((message: any) => {
+          // Find sender info from room members
+          const sender = roomData?.members?.find((member: any) => member.id === message.owner);
+          
+          return {
+            id: message.id,
+            content: message.text,
+            sender: {
+              id: message.owner,
+              first_name: sender?.first_name || 'Unknown',
+              last_name: sender?.last_name || '',
+              avatar: sender?.avatar?.startsWith('http') ? sender?.avatar : `https://api.baltek.net${sender?.avatar || ''}`
+            },
+            recipient: {
+              id: roomData?.members?.find((m: any) => m.id !== message.owner)?.id || 0,
+              first_name: '',
+              last_name: '',
+              avatar: ''
+            },
+            created_at: new Date(message.date_created * 1000).toISOString(),
+            read: message.status === 'read'
+          };
+        });
+      }
+      
+      res.json(messagesData);
     } catch (error) {
       console.error("Error fetching messages:", error);
       res.status(500).json({ error: "Failed to fetch messages" });
