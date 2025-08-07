@@ -172,20 +172,34 @@ export const savedFilterSchema = z.object({
   filters: jobFiltersSchema,
 });
 
-// Organization schema - comprehensive schema for all possible fields
+// Organization schema - based on actual API response structure
 export const organizationSchema = z.object({
   id: z.number(),
-  name: z.string().optional(),
   official_name: z.string().optional(),
   display_name: z.string().optional(),
+  category: z.object({
+    id: z.number(),
+    name: z.string(),
+    parent: z.object({
+      name: z.string().optional(),
+    }).optional(),
+  }).optional(),
+  logo: z.string().optional(),
+  phone: z.string().optional(),
+  email: z.string().optional(),
+  website: z.string().optional(),
+  about_us: z.string().optional(),
+  location: z.object({
+    id: z.number(),
+    name: z.string(),
+  }).optional(),
+  is_public: z.boolean().optional(),
+  projects: z.array(z.any()).optional(),
+  // Additional fields that might be present
+  name: z.string().optional(),
   short_description: z.string().optional(),
   description: z.string().optional(),
-  logo: z.string().optional(),
   banner_image: z.string().optional(),
-  website: z.string().optional(),
-  email: z.string().optional(),
-  phone: z.string().optional(),
-  location: z.string().optional(),
   address: z.string().optional(),
   city: z.string().optional(),
   country: z.string().optional(),

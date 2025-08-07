@@ -208,17 +208,17 @@ export default function CompanyProfile() {
                 )}
                 
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  {organizationData?.industry && (
+                  {(organizationData?.industry || organizationData?.category?.name) && (
                     <div className="flex items-center gap-1">
                       <Building className="h-4 w-4" />
-                      <span>{organizationData.industry}</span>
+                      <span>{organizationData.industry || organizationData.category?.name}</span>
                     </div>
                   )}
                   
-                  {(organizationData?.location || organizationData?.city) && (
+                  {(organizationData?.location?.name || organizationData?.city) && (
                     <div className="flex items-center gap-1">
                       <LocationIcon className="h-4 w-4" />
-                      <span>{organizationData.location || `${organizationData.city}${organizationData.country ? `, ${organizationData.country}` : ''}`}</span>
+                      <span>{organizationData.location?.name || `${organizationData.city}${organizationData.country ? `, ${organizationData.country}` : ''}`}</span>
                     </div>
                   )}
                   
@@ -397,10 +397,22 @@ export default function CompanyProfile() {
                 <CardTitle>About {organizationData?.display_name}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
-                {organizationData?.description && (
+                {(organizationData?.description || organizationData?.about_us) && (
                   <div>
                     <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">
-                      {organizationData.description}
+                      {organizationData.description || organizationData.about_us}
+                    </p>
+                  </div>
+                )}
+                
+                {!(organizationData?.description || organizationData?.about_us) && (
+                  <div className="text-center py-8">
+                    <Building className="h-12 w-12 mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                      Company Information
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {organizationData?.display_name} is a professional organization in the {organizationData?.category?.name || 'business'} sector.
                     </p>
                   </div>
                 )}
@@ -493,10 +505,10 @@ export default function CompanyProfile() {
                   </div>
                 )}
                 
-                {organizationData?.industry && (
+                {(organizationData?.industry || organizationData?.category?.name) && (
                   <div>
                     <dt className="text-sm font-medium text-gray-500">Industry</dt>
-                    <dd className="text-sm text-gray-900 dark:text-gray-100">{organizationData.industry}</dd>
+                    <dd className="text-sm text-gray-900 dark:text-gray-100">{organizationData.industry || organizationData.category?.name}</dd>
                   </div>
                 )}
 
@@ -509,12 +521,50 @@ export default function CompanyProfile() {
                   </div>
                 )}
 
-                {organizationData?.address && (
+                {(organizationData?.address || organizationData?.location?.name) && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Address</dt>
+                    <dt className="text-sm font-medium text-gray-500">Location</dt>
                     <dd className="text-sm text-gray-900 dark:text-gray-100">
-                      {organizationData.address}
+                      {organizationData.address || organizationData.location?.name}
                       {organizationData.postal_code && `, ${organizationData.postal_code}`}
+                    </dd>
+                  </div>
+                )}
+                
+                {organizationData?.phone && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">Phone</dt>
+                    <dd className="text-sm text-gray-900 dark:text-gray-100">
+                      <a href={`tel:${organizationData.phone}`} className="text-primary hover:text-primary/80">
+                        {organizationData.phone}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+                
+                {organizationData?.email && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">Email</dt>
+                    <dd className="text-sm text-gray-900 dark:text-gray-100">
+                      <a href={`mailto:${organizationData.email}`} className="text-primary hover:text-primary/80">
+                        {organizationData.email}
+                      </a>
+                    </dd>
+                  </div>
+                )}
+                
+                {organizationData?.website && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">Website</dt>
+                    <dd className="text-sm text-gray-900 dark:text-gray-100">
+                      <a 
+                        href={organizationData.website.startsWith('http') ? organizationData.website : `https://${organizationData.website}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:text-primary/80"
+                      >
+                        {organizationData.website}
+                      </a>
                     </dd>
                   </div>
                 )}
