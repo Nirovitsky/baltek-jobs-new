@@ -27,6 +27,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Fetch jobs for a specific organization
+  app.get("/api/organizations/:id/jobs", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { page = "1", limit = "20" } = req.query;
+      const response = await fetch(`https://api.baltek.net/api/jobs/?organization=${id}&page=${page}&limit=${limit}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch organization jobs: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching organization jobs:", error);
+      res.status(500).json({ error: "Failed to fetch organization jobs" });
+    }
+  });
+
   app.get("/api/jobs", async (req, res) => {
     try {
       const queryString = new URLSearchParams(req.query as Record<string, string>).toString();

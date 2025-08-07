@@ -96,7 +96,8 @@ export default function CompanyProfile() {
   });
 
   const { data: jobsData, isLoading: jobsLoading } = useQuery({
-    queryKey: ["/api/jobs", { organization: companyId }],
+    queryKey: ["/api/organizations", companyId, "jobs"],
+    queryFn: () => fetch(`/api/organizations/${companyId}/jobs`).then(res => res.json()),
     enabled: !!companyId,
   });
 
@@ -126,7 +127,7 @@ export default function CompanyProfile() {
   }
 
   const organizationData = company as Organization;
-  const companyJobs = (Array.isArray(jobsData) ? jobsData : (jobsData as any)?.results || []) as Job[];
+  const companyJobs = jobsData?.results || [];
 
   // Get company initials for avatar fallback
   const getCompanyInitials = (name?: string) => {
@@ -195,10 +196,10 @@ export default function CompanyProfile() {
                     {organizationData?.display_name || 'Company Name'}
                   </h1>
                   {organizationData?.is_verified && (
-                    <CheckCircle className="h-6 w-6 text-blue-500" title="Verified Company" />
+                    <CheckCircle className="h-6 w-6 text-blue-500" />
                   )}
                   {organizationData?.is_featured && (
-                    <Star className="h-6 w-6 text-yellow-500" title="Featured Company" />
+                    <Star className="h-6 w-6 text-yellow-500" />
                   )}
                 </div>
                 
@@ -312,14 +313,6 @@ export default function CompanyProfile() {
             {/* Company Statistics */}
             <div className="border-t dark:border-gray-700 pt-6 mb-6">
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="text-2xl font-bold text-primary mb-1">
-                    {companyJobs.length}
-                  </div>
-                  <div className="text-xs text-gray-600 dark:text-gray-400">
-                    Open Jobs
-                  </div>
-                </div>
                 
                 {organizationData?.employee_count && (
                   <div className="text-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
@@ -560,7 +553,7 @@ export default function CompanyProfile() {
               <div>
                 <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                   <Briefcase className="h-5 w-5" />
-                  Open Positions ({companyJobs.length})
+                  Open Positions
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                   Current job openings at {organizationData?.display_name}
