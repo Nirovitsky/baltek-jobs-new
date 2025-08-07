@@ -11,6 +11,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
+  // Authentication endpoints - proxy to Baltek API
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/auth/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Login failed:", response.status, errorData);
+        return res.status(response.status).json({ error: "Login failed" });
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/auth/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Registration failed:", response.status, errorData);
+        return res.status(response.status).json({ error: "Registration failed" });
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error during registration:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.post("/api/auth/refresh", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/auth/refresh/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Token refresh failed:", response.status, errorData);
+        return res.status(response.status).json({ error: "Token refresh failed" });
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error during token refresh:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  app.get("/api/auth/me", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/auth/me/", {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Get user info failed:", response.status, errorData);
+        return res.status(response.status).json({ error: "Failed to get user info" });
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error getting user info:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   // Proxy routes to Baltek API
   app.get("/api/organizations/:id", async (req, res) => {
     try {
