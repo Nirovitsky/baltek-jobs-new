@@ -13,8 +13,7 @@ import {
   Bookmark, 
   Building,
   Calendar,
-  Loader2,
-  ExternalLink
+  Loader2
 } from "lucide-react";
 
 interface JobCardProps {
@@ -141,20 +140,9 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                   )}
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
-                  <Link
-                    href={`/company/${job.organization?.id}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="font-medium text-gray-900 text-sm truncate hover:text-primary transition-colors cursor-pointer"
-                  >
+                  <span className="font-medium text-gray-900 text-sm truncate">
                     {job.organization?.display_name || job.organization?.name || 'Unknown'}
-                  </Link>
-                  <Link
-                    href={`/company/${job.organization?.id}`}
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-gray-400 hover:text-primary transition-colors"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                  </Link>
+                  </span>
                 </div>
               </div>
             </div>
