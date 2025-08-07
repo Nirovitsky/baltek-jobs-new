@@ -14,7 +14,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication endpoints - proxy to Baltek API
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const response = await fetch("https://api.baltek.net/api/auth/login/", {
+      const response = await fetch("https://api.baltek.net/api/token/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +62,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/auth/refresh", async (req, res) => {
     try {
-      const response = await fetch("https://api.baltek.net/api/auth/refresh/", {
+      const response = await fetch("https://api.baltek.net/api/token/refresh/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
