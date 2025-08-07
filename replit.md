@@ -42,6 +42,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Resume Management**: Upload up to 3 resumes (PDF, DOC, DOCX, max 10MB) with drag-and-drop, validation, listing, view/download, and delete functionality.
 - **Settings Management**: Comprehensive settings page with profile configuration, notification preferences, privacy controls, and account management including password changes and data export.
 - **Chat System**: Real-time messaging interface with conversation management, recruiter communication, message history, and professional networking capabilities.
+- **Company Profile Pages**: Dedicated company profile pages with organization details, statistics, open positions, and comprehensive company information. Accessible via clickable company links in job listings and job details.
 
 ## External Dependencies
 

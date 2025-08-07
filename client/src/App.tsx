@@ -15,6 +15,7 @@ import Bookmarks from "@/pages/bookmarks";
 import Settings from "@/pages/settings";
 import Chat from "@/pages/chat";
 import Notifications from "@/pages/notifications";
+import CompanyProfile from "@/pages/company-profile";
 import NotFound from "@/pages/not-found";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -116,6 +117,13 @@ function Router() {
         <ProtectedRoute>
           <ProtectedLayout>
             <Notifications />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/company/:id">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <CompanyProfile />
           </ProtectedLayout>
         </ProtectedRoute>
       </Route>

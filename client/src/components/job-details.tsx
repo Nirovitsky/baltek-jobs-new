@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import type { Job } from "@shared/schema";
+import { Link } from "wouter";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,8 @@ import {
   Calendar,
   Users,
   Globe,
-  CheckCircle
+  CheckCircle,
+  ExternalLink
 } from "lucide-react";
 
 interface JobDetailsProps {
@@ -232,10 +234,9 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             {/* Header */}
             <div className="flex items-start justify-between mb-6">
               <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => job.organization?.id && window.open(`/company/${job.organization.id}`, '_blank')}
+                <Link
+                  href={`/company/${job.organization?.id}`}
                   className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
-                  disabled={!job.organization?.id}
                 >
                   {job.organization?.logo ? (
                     <img
@@ -246,16 +247,23 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   ) : (
                     <Building className="w-8 h-8 text-gray-400" />
                   )}
-                </button>
+                </Link>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">{job.title || 'Job Title'}</h1>
-                  <button
-                    onClick={() => job.organization?.id && window.open(`/company/${job.organization.id}`, '_blank')}
-                    className="text-lg text-gray-600 hover:text-blue-600 transition-colors text-left cursor-pointer"
-                    disabled={!job.organization?.id}
-                  >
-                    {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/company/${job.organization?.id}`}
+                      className="text-lg text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+                    >
+                      {job.organization?.display_name || job.organization?.name || 'Unknown Company'}
+                    </Link>
+                    <Link
+                      href={`/company/${job.organization?.id}`}
+                      className="text-gray-400 hover:text-primary transition-colors"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </Link>
+                  </div>
                   <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
                     <span className="flex items-center">
                       <MapPin className="w-4 h-4 mr-1" />

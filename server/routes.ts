@@ -10,6 +10,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
   });
 
+  // Proxy routes to Baltek API
+  app.get("/api/organizations/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const response = await fetch(`https://api.baltek.net/api/organizations/${id}/`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch organization: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching organization:", error);
+      res.status(500).json({ error: "Failed to fetch organization" });
+    }
+  });
+
+  app.get("/api/jobs", async (req, res) => {
+    try {
+      const queryString = new URLSearchParams(req.query as Record<string, string>).toString();
+      const response = await fetch(`https://api.baltek.net/api/jobs/?${queryString}`);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch jobs: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      res.status(500).json({ error: "Failed to fetch jobs" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
