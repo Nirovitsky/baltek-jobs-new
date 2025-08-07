@@ -247,11 +247,20 @@ export const categorySchema = z.object({
   name: z.string(),
 });
 
+// API Response schemas
+export const jobsListResponseSchema = z.object({
+  count: z.number(),
+  next: z.string().nullable(),
+  previous: z.string().nullable(),
+  results: z.array(jobSchema),
+});
+
 // Type exports
 export type LoginRequest = z.infer<typeof loginSchema>;
 export type RegisterRequest = z.infer<typeof registerSchema>;
 export type UserProfile = z.infer<typeof userProfileSchema>;
 export type Job = z.infer<typeof jobSchema>;
+export type JobsListResponse = z.infer<typeof jobsListResponseSchema>;
 export type JobApplication = z.infer<typeof jobApplicationSchema>;
 export type Education = z.infer<typeof educationSchema>;
 export type Experience = z.infer<typeof experienceSchema>;

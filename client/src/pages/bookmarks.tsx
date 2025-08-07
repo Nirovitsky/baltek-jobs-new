@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
-import type { Job } from "@shared/schema";
+import type { Job, JobsListResponse } from "@shared/schema";
 
 import JobDetails from "@/components/job-details";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -21,12 +21,32 @@ export default function Bookmarks({}: BookmarksProps) {
   } = useQuery({
     queryKey: ["bookmarked-jobs"],
     queryFn: async () => {
-      return ApiClient.getBookmarkedJobs();
+      return ApiClient.getBookmarkedJobs() as Promise<JobsListResponse>;
     },
   });
 
   const handleJobSelect = (jobId: number) => {
     setSelectedJobId(jobId);
+  };
+
+  const formatSalary = (job: Job) => {
+    // Support both new API structure (payment_from/payment_to) and legacy (salary_min/salary_max)
+    const min = job.payment_from || job.salary_min;
+    const max = job.payment_to || job.salary_max;
+    const currency = job.currency || "TMT";
+    
+    if (!min && !max) return "Salary not specified";
+    
+    const currencySymbol = currency === "EUR" ? "€" : 
+                           currency === "GBP" ? "£" : 
+                           currency === "USD" ? "$" : 
+                           currency === "TMT" ? "TMT" : 
+                           currency;
+    
+    if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
+    if (min) return `From ${currencySymbol}${min.toLocaleString()}`;
+    if (max) return `Up to ${currencySymbol}${max.toLocaleString()}`;
+    return "Salary not specified";
   };
 
   const jobs = bookmarkedJobs?.results || [];
@@ -103,7 +123,7 @@ export default function Bookmarks({}: BookmarksProps) {
                 </CardHeader>
                 
                 <div className="flex-1 min-h-0 overflow-y-auto">
-                  {jobs.map((job) => (
+                  {jobs.map((job: Job) => (
                     <div
                       key={job.id}
                       className={`px-6 py-5 border-b border-gray-100 cursor-pointer hover:bg-gray-50 ${
@@ -119,7 +139,7 @@ export default function Bookmarks({}: BookmarksProps) {
                           {job.organization?.name || "Unknown Company"}
                         </p>
                         <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <span>{job.salary_min && job.salary_max ? `$${job.salary_min.toLocaleString()} - $${job.salary_max.toLocaleString()}` : "Salary not specified"}</span>
+                          <span>{formatSalary(job)}</span>
                         </div>
                         <div className="flex gap-2">
                           {job.job_type && (
