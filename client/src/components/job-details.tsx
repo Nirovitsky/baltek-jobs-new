@@ -56,7 +56,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     onSuccess: (_, { isBookmarked }) => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       toast({
-        title: isBookmarked ? "Job unbookmarked" : "Job bookmarked",
+        title: isBookmarked ? "Bookmark removed" : "Job bookmarked",
         description: isBookmarked ? "Job removed from your bookmarks" : "Job added to your bookmarks",
       });
     },
@@ -282,9 +282,9 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   size="sm"
                   onClick={handleBookmark}
                   disabled={bookmarkMutation.isPending}
-                  className={job.is_bookmarked ? "text-primary border-primary/20 hover:text-primary" : ""}
+                  className={job.is_bookmarked ? "text-primary border-primary/20 hover:text-primary bg-primary/5" : ""}
                 >
-                  <Bookmark className={`w-4 h-4 ${job.is_bookmarked ? "fill-current" : ""}`} />
+                  <Bookmark className={`w-4 h-4 ${job.is_bookmarked ? "fill-primary" : ""}`} />
                 </Button>
                 <Button variant="outline" size="sm" onClick={handleShare}>
                   <Share className="w-4 h-4" />
