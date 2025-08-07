@@ -199,14 +199,19 @@ export default function ChatPage() {
   };
 
   const filteredConversations = roomsLoading ? [] : ((chatRooms as any)?.results || []).filter((conversation: Conversation) => {
-    if (!conversation?.participant) return false;
+    if (!conversation) return false;
     
     const conversationName = conversation.name?.toLowerCase() || '';
-    const participantName = `${conversation.participant.first_name || ''} ${conversation.participant.last_name || ''}`.toLowerCase();
-    const company = conversation.participant.company?.toLowerCase() || '';
-    return conversationName.includes(searchQuery.toLowerCase()) || 
-           participantName.includes(searchQuery.toLowerCase()) || 
-           company.includes(searchQuery.toLowerCase());
+    const participantName = conversation.participant ? 
+      `${conversation.participant.first_name || ''} ${conversation.participant.last_name || ''}`.toLowerCase().trim() : '';
+    const company = conversation.participant?.company?.toLowerCase() || '';
+    const role = conversation.participant?.role?.toLowerCase() || '';
+    
+    const query = searchQuery.toLowerCase();
+    return conversationName.includes(query) || 
+           participantName.includes(query) || 
+           company.includes(query) ||
+           role.includes(query);
   });
 
   const selectedConversationData = filteredConversations.find((c: Conversation) => c.id === selectedConversation);
@@ -301,7 +306,7 @@ export default function ChatPage() {
                           <Avatar className="w-12 h-12">
                             <AvatarImage src={conversation.participant?.avatar} />
                             <AvatarFallback>
-                              {conversation.participant?.first_name?.[0] || ''}{conversation.participant?.last_name?.[0] || ''}
+                              {conversation.name?.[0]?.toUpperCase() || conversation.participant?.first_name?.[0] || 'C'}
                             </AvatarFallback>
                           </Avatar>
                           {conversation.unread_count > 0 && (
@@ -314,7 +319,7 @@ export default function ChatPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <h3 className="font-medium text-gray-900 truncate">
-                              {conversation.name || `${conversation.participant?.first_name || ''} ${conversation.participant?.last_name || ''}`.trim() || 'Unknown'}
+                              {conversation.name || conversation.participant?.first_name || 'Unknown Conversation'}
                             </h3>
                             <span className="text-xs text-gray-500">
                               {formatTime(conversation.updated_at)}
@@ -352,19 +357,18 @@ export default function ChatPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-10 h-10">
-                      <AvatarImage src={selectedConversationData?.participant.avatar} />
+                      <AvatarImage src={selectedConversationData?.participant?.avatar} />
                       <AvatarFallback>
-                        {selectedConversationData?.participant?.first_name?.[0] || ''}
-                        {selectedConversationData?.participant?.last_name?.[0] || ''}
+                        {selectedConversationData?.name?.[0]?.toUpperCase() || selectedConversationData?.participant?.first_name?.[0] || 'C'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <h3 className="font-semibold text-gray-900">
-                        {selectedConversationData?.name || `${selectedConversationData?.participant?.first_name || ''} ${selectedConversationData?.participant?.last_name || ''}`.trim() || 'Unknown'}
+                        {selectedConversationData?.name || selectedConversationData?.participant?.first_name || 'Unknown Conversation'}
                       </h3>
                       {selectedConversationData?.participant?.role && (
                         <p className="text-sm text-gray-500">
-                          {selectedConversationData.participant.first_name} {selectedConversationData.participant.last_name} - {selectedConversationData.participant.role}
+                          {selectedConversationData.participant.role}
                         </p>
                       )}
                     </div>
