@@ -93,9 +93,72 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   if (isLoading) {
     return (
       <Card className="h-full w-full">
-        <CardContent className="p-6 flex items-center justify-center h-full">
-          <div className="text-center">
-            <h3 className="text-lg font-medium text-gray-900">Loading job details...</h3>
+        <div className="p-6 border-b">
+          {/* Header skeleton */}
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-gray-200 rounded-lg animate-pulse"></div>
+              <div>
+                <div className="h-8 bg-gray-200 rounded animate-pulse w-64 mb-2"></div>
+                <div className="h-6 bg-gray-100 rounded animate-pulse w-48 mb-2"></div>
+                <div className="flex items-center space-x-4">
+                  <div className="h-4 bg-gray-100 rounded animate-pulse w-32"></div>
+                  <div className="h-4 bg-gray-100 rounded animate-pulse w-24"></div>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <div className="h-10 w-24 bg-gray-100 rounded animate-pulse"></div>
+              <div className="h-10 w-10 bg-gray-100 rounded animate-pulse"></div>
+            </div>
+          </div>
+          
+          {/* Stats skeleton */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="text-center p-3 bg-gray-50 rounded-lg">
+                <div className="h-6 bg-gray-200 rounded animate-pulse w-12 mx-auto mb-1"></div>
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-16 mx-auto"></div>
+              </div>
+            ))}
+          </div>
+          
+          {/* Action buttons skeleton */}
+          <div className="flex gap-3">
+            <div className="h-12 flex-1 bg-gray-200 rounded animate-pulse"></div>
+            <div className="h-12 w-12 bg-gray-100 rounded animate-pulse"></div>
+            <div className="h-12 w-12 bg-gray-100 rounded animate-pulse"></div>
+          </div>
+        </div>
+        
+        <CardContent className="flex-1 p-6 overflow-y-auto">
+          {/* Content skeleton */}
+          <div className="space-y-6">
+            <div>
+              <div className="h-6 bg-gray-200 rounded animate-pulse w-32 mb-3"></div>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-full"></div>
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-5/6"></div>
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-4/5"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div className="h-6 bg-gray-200 rounded animate-pulse w-40 mb-3"></div>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-full"></div>
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-3/4"></div>
+              </div>
+            </div>
+            
+            <div>
+              <div className="h-6 bg-gray-200 rounded animate-pulse w-36 mb-3"></div>
+              <div className="flex flex-wrap gap-2">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="h-6 bg-gray-100 rounded animate-pulse w-20"></div>
+                ))}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

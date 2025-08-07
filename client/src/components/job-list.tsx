@@ -128,25 +128,33 @@ export default function JobList({
     return (
       <Card className="h-full flex flex-col w-[400px]">
         <div className="p-4 border-b flex-shrink-0 space-y-3">
-          <h2 className="text-lg font-semibold text-gray-900">Loading Jobs...</h2>
+          <div className="h-6 bg-gray-200 rounded animate-pulse w-32"></div>
           
-          {/* Search Bar - disabled during loading */}
+          {/* Search Bar skeleton */}
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-4 w-4 text-gray-400" />
-            </div>
-            <Input
-              type="text"
-              placeholder="Search jobs, companies, skills..."
-              value=""
-              disabled
-              className="pl-10 pr-3 py-2 bg-gray-50"
-            />
+            <div className="h-10 bg-gray-100 rounded border animate-pulse"></div>
           </div>
         </div>
         
-        <div className="flex-1 min-h-0">
-          {/* Empty content area - no spinner */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          {/* Job cards skeleton */}
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="px-6 py-5 border-b border-gray-100">
+              <div className="space-y-3">
+                <div className="h-5 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-1/2"></div>
+                <div className="flex items-center gap-2">
+                  <div className="h-4 bg-gray-100 rounded animate-pulse w-20"></div>
+                  <div className="h-4 bg-gray-100 rounded animate-pulse w-16"></div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="h-6 bg-gray-100 rounded animate-pulse w-16"></div>
+                  <div className="h-6 bg-gray-100 rounded animate-pulse w-12"></div>
+                  <div className="h-6 bg-gray-100 rounded animate-pulse w-20"></div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </Card>
     );
@@ -277,10 +285,22 @@ export default function JobList({
           </div>
         ))}
         
-        {/* Loading more jobs - no spinner */}
+        {/* Loading more jobs skeleton */}
         {isFetchingNextPage && (
-          <div className="p-4 text-center">
-            <span className="text-sm text-gray-600">Loading more jobs...</span>
+          <div className="px-6 py-5 border-b border-gray-100">
+            <div className="space-y-3">
+              <div className="h-5 bg-gray-200 rounded animate-pulse w-3/4"></div>
+              <div className="h-4 bg-gray-100 rounded animate-pulse w-1/2"></div>
+              <div className="flex items-center gap-2">
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-20"></div>
+                <div className="h-4 bg-gray-100 rounded animate-pulse w-16"></div>
+              </div>
+              <div className="flex gap-2">
+                <div className="h-6 bg-gray-100 rounded animate-pulse w-16"></div>
+                <div className="h-6 bg-gray-100 rounded animate-pulse w-12"></div>
+                <div className="h-6 bg-gray-100 rounded animate-pulse w-20"></div>
+              </div>
+            </div>
           </div>
         )}
         

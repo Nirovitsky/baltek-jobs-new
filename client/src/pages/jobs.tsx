@@ -122,11 +122,19 @@ export default function Jobs({}: JobsProps) {
               {currentSelectedJobId ? (
                 <JobDetails jobId={currentSelectedJobId} />
               ) : jobs.length === 0 && isLoading ? (
-                <div className="h-full w-full flex items-center justify-center">
-                  <div className="text-center">
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">Loading...</h3>
+                <Card className="h-full w-full">
+                  <div className="p-6 border-b">
+                    <div className="h-8 bg-gray-200 rounded animate-pulse w-48 mb-4"></div>
+                    <div className="h-4 bg-gray-100 rounded animate-pulse w-64"></div>
                   </div>
-                </div>
+                  <CardContent className="flex-1 p-6">
+                    <div className="space-y-4">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="h-4 bg-gray-100 rounded animate-pulse w-full"></div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               ) : jobs.length > 0 ? (
                 <div className="h-full w-full flex items-center justify-center">
                   <div className="text-center">
