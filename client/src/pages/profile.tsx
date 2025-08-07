@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiClient } from "@/lib/api";
-import Navbar from "@/components/navbar";
+
 import ProfileModal from "@/components/profile-modal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -45,8 +45,7 @@ export default function Profile() {
 
   if (profileLoading) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar onSearch={() => {}} searchQuery="" />
+      <div className="h-full overflow-y-auto">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="space-y-6">
             {/* Profile Header Skeleton */}
@@ -234,9 +233,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Navbar onSearch={() => {}} searchQuery="" />
-      
+    <div className="h-full overflow-y-auto">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-6">
           {/* Personal Information Card */}
