@@ -368,13 +368,19 @@ export default function CompanyProfile() {
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-6">
-                    <Clock className="h-8 w-8 mx-auto text-gray-400 dark:text-gray-500 mb-2" />
-                    <p className="text-gray-600 dark:text-gray-400 font-medium">Coming Soon</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                      Company information will be available soon.
-                    </p>
+                <div className="text-center py-12">
+                  <div className="max-w-sm mx-auto">
+                    <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-600">
+                      <div className="bg-primary/10 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <Building2 className="h-8 w-8 text-primary" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                        About This Company
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                        This company hasn't shared their story yet. Check back later to learn more about their mission, values, and what makes them unique.
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
@@ -423,13 +429,19 @@ export default function CompanyProfile() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-6">
-                    <Clock className="h-8 w-8 mx-auto text-gray-400 dark:text-gray-500 mb-2" />
-                    <p className="text-gray-600 dark:text-gray-400 font-medium">Coming Soon</p>
-                    <p className="text-sm text-gray-500 dark:text-gray-500 mt-1">
-                      Project portfolio will be available soon.
-                    </p>
+                <div className="text-center py-12">
+                  <div className="max-w-sm mx-auto">
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-8 border border-blue-200 dark:border-blue-800">
+                      <div className="bg-blue-100 dark:bg-blue-800 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                        <FolderOpen className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                        Project Portfolio
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                        This company hasn't showcased their projects yet. When available, you'll see their work, achievements, and portfolio here.
+                      </p>
+                    </div>
                   </div>
                 </div>
               )}
