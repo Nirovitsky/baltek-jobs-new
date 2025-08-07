@@ -9,6 +9,7 @@ import JobDetails from "@/components/job-details";
 
 import ChatWidget from "@/components/chat-widget";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Card, CardContent } from "@/components/ui/card";
 import { AlertTriangle } from "lucide-react";
 
 interface JobsProps {}
