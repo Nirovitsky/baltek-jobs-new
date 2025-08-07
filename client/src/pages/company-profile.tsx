@@ -25,14 +25,14 @@ import {
 function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | undefined }) {
   const { data: companiesData, isLoading } = useQuery({
     queryKey: ["/api/organizations"],
-    queryFn: () => fetch("/api/organizations?limit=5").then(res => res.json()),
+    queryFn: () => fetch("/api/organizations?limit=15").then(res => res.json()),
   });
 
   // Handle both array and paginated response formats
   const allCompanies = Array.isArray(companiesData) ? companiesData : (companiesData?.results || []);
   const suggestions = allCompanies.filter((org: Organization) => 
     org.id.toString() !== currentCompanyId
-  ).slice(0, 4) || [];
+  ).slice(0, 10) || [];
 
   return (
     <div className="bg-gray-50 dark:bg-gray-900 rounded-lg border dark:border-gray-700 p-6">
@@ -43,7 +43,7 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
       
       {isLoading ? (
         <div className="space-y-3">
-          {Array.from({ length: 4 }).map((_, i) => (
+          {Array.from({ length: 10 }).map((_, i) => (
             <div key={i} className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4">
               <div className="flex items-center gap-4">
                 <Skeleton className="h-12 w-12 rounded-full" />
