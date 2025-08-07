@@ -47,7 +47,7 @@ export default function JobList({
   if (isLoading) {
     return (
       <div className="h-full flex flex-col w-[400px]">
-        <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg flex-shrink-0 space-y-4">
+        <div className="p-6 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
           {/* Loading job count */}
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
@@ -90,7 +90,7 @@ export default function JobList({
   if (jobs.length === 0) {
     return (
       <div className="h-full flex flex-col w-[400px]">
-        <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg flex-shrink-0 space-y-4">
+        <div className="p-6 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
           {/* No Jobs Count */}
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
@@ -140,7 +140,7 @@ export default function JobList({
 
   return (
     <div className="h-full flex flex-col w-[400px]">
-      <div className="p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg flex-shrink-0 space-y-4">
+      <div className="p-6 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
         {/* Job Count with Icon */}
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">

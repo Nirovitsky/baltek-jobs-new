@@ -117,6 +117,10 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                 <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
                   {formatWorkplaceType(job.workplace_type)}
                 </span>
+                <div className="text-xs text-gray-600 flex items-center bg-gray-50 px-2 py-1 rounded-md">
+                  <MapPin className="w-3 h-3 mr-1.5 text-gray-500" />
+                  <span className="whitespace-nowrap font-medium">{job.location?.name || 'Unknown'}</span>
+                </div>
                 {(job as any).minimum_education_level && (
                   <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full">
                     {(job as any).minimum_education_level}
@@ -157,49 +161,11 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
             </div>
             
             {/* Right side content */}
-            <div className="text-right flex-shrink-0 flex flex-col items-end space-y-2">
+            <div className="text-right flex-shrink-0">
               {/* Salary on Top Right */}
               <span className="text-sm font-semibold text-primary whitespace-nowrap">
                 {formatSalary(job)}
               </span>
-              
-              {/* Bookmark button */}
-              {showBookmark && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => handleBookmark(e, job.id, job.is_bookmarked || false)}
-                  disabled={bookmarkMutation.isPending}
-                  className="h-8 w-8 p-0 hover:bg-gray-100"
-                >
-                  {bookmarkMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Bookmark 
-                      className={`h-4 w-4 ${
-                        job.is_bookmarked 
-                          ? "text-primary fill-current" 
-                          : "text-gray-400 hover:text-primary"
-                      }`} 
-                    />
-                  )}
-                </Button>
-              )}
-            </div>
-          </div>
-          
-          {/* Bottom row */}
-          <div className="flex justify-between items-center mt-3">
-            {/* Time posted on bottom left */}
-            <div className="flex items-center text-xs text-gray-600">
-              <Clock className="w-3 h-3 mr-1.5 text-gray-500" />
-              <span>{job.created_at ? getTimeAgo(job.created_at) : "Unknown"}</span>
-            </div>
-            
-            {/* Location on bottom right */}
-            <div className="text-xs text-gray-600 flex items-center bg-gray-50 px-2 py-1 rounded-md">
-              <MapPin className="w-3 h-3 mr-1.5 text-gray-500" />
-              <span className="whitespace-nowrap font-medium">{job.location?.name || 'Unknown'}</span>
             </div>
           </div>
         </div>
