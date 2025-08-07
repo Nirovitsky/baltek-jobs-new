@@ -67,87 +67,83 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
   ).slice(0, 10) || [];
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-900 rounded-lg border dark:border-gray-700 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-5 flex items-center gap-2">
-        <Building2 className="h-5 w-5 text-primary" />
-        Other Companies
-      </h3>
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <Building2 className="h-5 w-5 text-primary" />
+          Other Companies
+        </h3>
+      </div>
       
       {isLoading ? (
-        <div className="space-y-0">
+        <div className="p-2 space-y-1">
           {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i}>
-              <div className="py-3 px-2">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="h-10 w-10 rounded-full" />
-                  <div className="flex-1">
-                    <Skeleton className="h-4 w-32 mb-2" />
-                    <div className="flex gap-4">
-                      <Skeleton className="h-3 w-16" />
-                      <Skeleton className="h-3 w-20" />
-                    </div>
-                  </div>
-                </div>
+            <div key={i} className="flex items-center gap-4 p-3 rounded-lg">
+              <Skeleton className="h-12 w-12 rounded-full ring-2 ring-gray-100" />
+              <div className="flex-1">
+                <Skeleton className="h-4 w-32 mb-2" />
+                <Skeleton className="h-5 w-24 rounded-full mb-2" />
+                <Skeleton className="h-3 w-20" />
               </div>
-              {i < 9 && <hr className="border-gray-200 dark:border-gray-700" />}
+              <Skeleton className="h-4 w-4" />
             </div>
           ))}
         </div>
       ) : (
-        <div className="space-y-0">
+        <div className="p-2">
           {suggestions.map((company: Organization, index: number) => (
-            <div key={company.id}>
-              <Link href={`/company/${company.id}`}>
-                <div className="py-3 px-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer group">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10 group-hover:scale-105 transition-transform">
-                      <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-sm font-semibold">
-                        {(company.display_name || company.official_name || 'CO')
-                          .split(' ')
-                          .map(word => word.charAt(0))
-                          .join('')
-                          .toUpperCase()
-                          .slice(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors">
-                        {company.display_name || company.official_name}
-                      </p>
-                      <div className="flex items-center gap-4 mt-1">
-                        <div className="flex items-center gap-1">
-                          <Building2 className="h-3 w-3 text-blue-500" />
-                          <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
-                            {(company as any).mockCategory}
-                          </p>
-                        </div>
-                        {company.location?.name && (
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3 text-gray-400" />
-                            <p className="text-xs text-gray-400 truncate">
-                              {company.location.name}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+            <Link key={company.id} href={`/company/${company.id}`}>
+              <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group border border-transparent hover:border-primary/20">
+                <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
+                  <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
+                  <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/20 text-primary text-sm font-bold border border-primary/20">
+                    {(company.display_name || company.official_name || 'CO')
+                      .split(' ')
+                      .map(word => word.charAt(0))
+                      .join('')
+                      .toUpperCase()
+                      .slice(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors text-sm">
+                    {company.display_name || company.official_name}
+                  </h4>
+                  
+                  <div className="flex items-center gap-1 mt-1">
+                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium">
+                      <Building2 className="h-3 w-3" />
+                      {(company as any).mockCategory}
+                    </span>
                   </div>
+                  
+                  {company.location?.name && (
+                    <div className="flex items-center gap-1 mt-2">
+                      <MapPin className="h-3 w-3 text-gray-400" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {company.location.name}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </Link>
-              {index < suggestions.length - 1 && (
-                <hr className="border-gray-200 dark:border-gray-700" />
-              )}
-            </div>
+                
+                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
+                </div>
+              </div>
+            </Link>
           ))}
           
           {suggestions.length === 0 && (
-            <div className="py-6 text-center">
-              <Building2 className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+            <div className="p-8 text-center">
+              <div className="bg-gray-100 dark:bg-gray-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                <Building2 className="h-8 w-8 text-gray-400" />
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-1">
                 No other companies available
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-500 dark:text-gray-500">
                 Check back later for more companies
               </p>
             </div>
