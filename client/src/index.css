@@ -73,12 +73,10 @@
   html, body {
     overscroll-behavior: none;
     height: 100%;
-    overflow: hidden;
   }
   
   #root {
     height: 100%;
-    overflow: hidden;
   }
 
   body {
