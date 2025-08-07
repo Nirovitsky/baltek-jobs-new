@@ -77,9 +77,12 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
                     <p className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors">
                       {company.display_name || company.official_name}
                     </p>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                      {company.category?.name || 'Company'}
-                    </p>
+                    <div className="flex items-center gap-1 mt-1">
+                      <Building2 className="h-3 w-3 text-blue-500" />
+                      <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">
+                        {company.category?.name || 'Company'}
+                      </p>
+                    </div>
                     {company.location?.name && (
                       <div className="flex items-center gap-1 mt-1">
                         <MapPin className="h-3 w-3 text-gray-400" />
