@@ -110,22 +110,25 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
               </h3>
               
               {/* Tags in Middle */}
-              <div className="flex flex-wrap gap-2 mb-4">
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+              <div className="flex items-center gap-2 mb-4 overflow-hidden">
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
                   {formatJobType(job.job_type)}
                 </span>
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
                   {formatWorkplaceType(job.workplace_type)}
                 </span>
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
                   {job.location?.name || 'Unknown'}
                 </span>
                 {(job as any).minimum_education_level && (
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full whitespace-nowrap">
                     {(job as any).minimum_education_level}
                   </span>
                 )}
               </div>
+              
+              {/* Separator */}
+              <div className="border-t border-gray-200 mb-4"></div>
               
               {/* Company at Bottom Left */}
               <div className="flex items-center space-x-3">
