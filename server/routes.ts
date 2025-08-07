@@ -187,12 +187,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const data = await response.json();
       
-      // Transform the data to use company names as conversation names
+      // Transform the data to match frontend interface
       if (data.results) {
-        data.results = data.results.map((room: any) => ({
-          ...room,
-          name: room.participant?.company || `${room.participant?.first_name || ''} ${room.participant?.last_name || ''}`.trim() || 'Unknown'
-        }));
+        data.results = data.results.map((room: any) => {
+          // Find the other participant (assuming current user is user ID 2)
+          const currentUserId = 2; 
+          const otherMember = room.members?.find((member: any) => member.id !== currentUserId);
+          
+          // If no other member found, use the first member as fallback
+          const participant = otherMember || room.members?.[0];
+          
+          return {
+            ...room,
+            participant: participant ? {
+              id: participant.id,
+              first_name: participant.first_name || 'Unknown',
+              last_name: participant.last_name || 'User',
+              avatar: participant.avatar?.startsWith('http') ? participant.avatar : `https://api.baltek.net${participant.avatar || ''}`,
+              company: room.name || 'Unknown Company',
+              role: room.content_object?.job?.title || 'Recruiter'
+            } : {
+              id: 1,
+              first_name: 'Unknown',
+              last_name: 'User',
+              avatar: 'https://api.baltek.net/media/default-avatar.png',
+              company: 'Unknown Company',
+              role: 'Recruiter'
+            },
+            name: room.name || `${participant?.first_name || 'Unknown'} ${participant?.last_name || 'User'}`.trim(),
+            last_message: room.last_message_text ? { content: room.last_message_text } : null,
+            unread_count: room.unread_message_count || 0,
+            updated_at: room.last_message_date_created ? new Date(room.last_message_date_created * 1000).toISOString() : new Date().toISOString()
+          };
+        });
       }
       
       res.json(data);
