@@ -199,8 +199,10 @@ export default function ChatPage() {
   };
 
   const filteredConversations = roomsLoading ? [] : ((chatRooms as any)?.results || []).filter((conversation: Conversation) => {
+    if (!conversation?.participant) return false;
+    
     const conversationName = conversation.name?.toLowerCase() || '';
-    const participantName = `${conversation.participant.first_name} ${conversation.participant.last_name}`.toLowerCase();
+    const participantName = `${conversation.participant.first_name || ''} ${conversation.participant.last_name || ''}`.toLowerCase();
     const company = conversation.participant.company?.toLowerCase() || '';
     return conversationName.includes(searchQuery.toLowerCase()) || 
            participantName.includes(searchQuery.toLowerCase()) || 
@@ -297,9 +299,9 @@ export default function ChatPage() {
                       <div className="flex items-start space-x-3">
                         <div className="relative">
                           <Avatar className="w-12 h-12">
-                            <AvatarImage src={conversation.participant.avatar} />
+                            <AvatarImage src={conversation.participant?.avatar} />
                             <AvatarFallback>
-                              {conversation.participant.first_name[0]}{conversation.participant.last_name[0]}
+                              {conversation.participant?.first_name?.[0] || ''}{conversation.participant?.last_name?.[0] || ''}
                             </AvatarFallback>
                           </Avatar>
                           {conversation.unread_count > 0 && (
@@ -312,14 +314,14 @@ export default function ChatPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <h3 className="font-medium text-gray-900 truncate">
-                              {conversation.name || `${conversation.participant.first_name} ${conversation.participant.last_name}`}
+                              {conversation.name || `${conversation.participant?.first_name || ''} ${conversation.participant?.last_name || ''}`.trim() || 'Unknown'}
                             </h3>
                             <span className="text-xs text-gray-500">
                               {formatTime(conversation.updated_at)}
                             </span>
                           </div>
                           
-                          {conversation.participant.role && (
+                          {conversation.participant?.role && (
                             <div className="flex items-center gap-1 mb-1">
                               <User className="w-3 h-3 text-gray-400" />
                               <span className="text-xs text-gray-500 truncate">
@@ -329,7 +331,7 @@ export default function ChatPage() {
                           )}
                           
                           <p className="text-sm text-gray-600 truncate">
-                            {conversation.last_message.content}
+                            {conversation.last_message?.content || 'No messages yet'}
                           </p>
                         </div>
                       </div>
@@ -352,15 +354,15 @@ export default function ChatPage() {
                     <Avatar className="w-10 h-10">
                       <AvatarImage src={selectedConversationData?.participant.avatar} />
                       <AvatarFallback>
-                        {selectedConversationData?.participant.first_name[0]}
-                        {selectedConversationData?.participant.last_name[0]}
+                        {selectedConversationData?.participant?.first_name?.[0] || ''}
+                        {selectedConversationData?.participant?.last_name?.[0] || ''}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <h3 className="font-semibold text-gray-900">
-                        {selectedConversationData?.name || `${selectedConversationData?.participant.first_name} ${selectedConversationData?.participant.last_name}`}
+                        {selectedConversationData?.name || `${selectedConversationData?.participant?.first_name || ''} ${selectedConversationData?.participant?.last_name || ''}`.trim() || 'Unknown'}
                       </h3>
-                      {selectedConversationData?.participant.role && (
+                      {selectedConversationData?.participant?.role && (
                         <p className="text-sm text-gray-500">
                           {selectedConversationData.participant.first_name} {selectedConversationData.participant.last_name} - {selectedConversationData.participant.role}
                         </p>
@@ -409,9 +411,9 @@ export default function ChatPage() {
                           }`}>
                             {message.sender.id !== user?.id && (
                               <Avatar className="w-8 h-8">
-                                <AvatarImage src={message.sender.avatar} />
+                                <AvatarImage src={message.sender?.avatar} />
                                 <AvatarFallback>
-                                  {message.sender.first_name[0]}{message.sender.last_name[0]}
+                                  {message.sender?.first_name?.[0] || ''}{message.sender?.last_name?.[0] || ''}
                                 </AvatarFallback>
                               </Avatar>
                             )}
