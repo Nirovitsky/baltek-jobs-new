@@ -51,9 +51,15 @@ export default function Bookmarks({}: BookmarksProps) {
         <div className="flex gap-6 h-full">
           <div className="w-[400px] h-full flex-shrink-0">
             {isLoading ? (
-              <Card className="h-full flex flex-col w-[400px]">
-                <div className="p-4 border-b flex-shrink-0 space-y-3">
-                  <div className="h-6 bg-gray-200 rounded animate-pulse w-40"></div>
+              <div className="h-full flex flex-col w-[400px]">
+                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 flex-shrink-0 space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                    <div>
+                      <div className="h-5 bg-gray-200 rounded animate-pulse w-16 mb-1"></div>
+                      <div className="h-4 bg-gray-100 rounded animate-pulse w-24"></div>
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
@@ -75,14 +81,19 @@ export default function Bookmarks({}: BookmarksProps) {
                     </Card>
                   ))}
                 </div>
-              </Card>
+              </div>
             ) : jobs.length === 0 ? (
               <div className="h-full flex flex-col w-[400px]">
-                <div className="p-4 border-b bg-white flex-shrink-0">
-                  <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <Bookmark className="h-5 w-5" />
-                    Bookmarked Jobs ({totalCount})
-                  </h2>
+                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 flex-shrink-0 space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                      <Bookmark className="h-4 w-4 text-gray-500" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold text-gray-900">0</h2>
+                      <p className="text-sm text-gray-600 -mt-1">Bookmarked Jobs</p>
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="flex-1 min-h-0 flex items-center justify-center">
@@ -95,11 +106,27 @@ export default function Bookmarks({}: BookmarksProps) {
               </div>
             ) : (
               <div className="h-full flex flex-col w-[400px]">
-                <div className="p-4 border-b bg-white flex-shrink-0">
-                  <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <Bookmark className="h-5 w-5" />
-                    Bookmarked Jobs ({totalCount})
-                  </h2>
+                <div className="p-6 border-b bg-gradient-to-r from-purple-50 to-pink-50 flex-shrink-0 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                        <Bookmark className="h-4 w-4 text-primary" />
+                      </div>
+                      <div>
+                        <h2 className="text-lg font-semibold text-gray-900">
+                          {totalCount.toLocaleString()}
+                        </h2>
+                        <p className="text-sm text-gray-600 -mt-1">
+                          Bookmarked Job{totalCount !== 1 ? "s" : ""}
+                        </p>
+                      </div>
+                    </div>
+                    {totalCount > 0 && (
+                      <div className="bg-primary/10 px-3 py-1 rounded-full">
+                        <span className="text-sm font-medium text-primary">Saved</span>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
