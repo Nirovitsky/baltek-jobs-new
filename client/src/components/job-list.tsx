@@ -253,12 +253,12 @@ export default function JobList({
                   
                   {/* Company at Bottom Left */}
                   <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
                       {job.organization?.logo ? (
                         <img
                           src={job.organization.logo}
                           alt={job.organization.display_name || job.organization.name || 'Company'}
-                          className="w-8 h-8 rounded-lg object-cover"
+                          className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (
                         <Building className="w-4 h-4 text-gray-500" />

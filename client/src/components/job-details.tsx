@@ -236,13 +236,13 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               <div className="flex items-center space-x-4">
                 <Link
                   href={`/company/${job.organization?.id}`}
-                  className="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+                  className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
                 >
                   {job.organization?.logo ? (
                     <img
                       src={job.organization.logo}
                       alt={job.organization.display_name || job.organization.name || 'Company'}
-                      className="w-16 h-16 rounded-lg object-cover"
+                      className="w-16 h-16 rounded-full object-cover"
                     />
                   ) : (
                     <Building className="w-8 h-8 text-gray-400" />
