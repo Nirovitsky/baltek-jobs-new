@@ -2,6 +2,31 @@ import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import type { Organization } from "@shared/schema";
 
+// Mock categories for companies since API doesn't provide category data
+const MOCK_CATEGORIES = {
+  1: "IT & Technology",
+  21: "Healthcare",
+  22: "Marketing & Advertising", 
+  23: "Finance & Banking",
+  24: "Education",
+  25: "Manufacturing",
+  26: "Retail & E-commerce",
+  27: "Construction",
+  28: "Transportation",
+  29: "Food & Beverage",
+  30: "Media & Entertainment",
+  31: "Real Estate",
+  32: "Consulting",
+  33: "Energy & Utilities",
+  34: "Telecommunications",
+  35: "Automotive",
+  36: "Pharmaceutical",
+  37: "Legal Services",
+  38: "Tourism & Hospitality",
+  39: "Agriculture",
+  40: "Fashion & Apparel"
+} as const;
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -30,7 +55,14 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
 
   // Handle both array and paginated response formats
   const allCompanies = Array.isArray(companiesData) ? companiesData : (companiesData?.results || []);
-  const suggestions = allCompanies.filter((org: Organization) => 
+  
+  // Add mock categories to companies
+  const companiesWithCategories = allCompanies.map((company: Organization) => ({
+    ...company,
+    mockCategory: MOCK_CATEGORIES[company.id as keyof typeof MOCK_CATEGORIES] || "Business Services"
+  }));
+  
+  const suggestions = companiesWithCategories.filter((org: Organization) => 
     org.id.toString() !== currentCompanyId
   ).slice(0, 10) || [];
 
@@ -84,14 +116,12 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
                         {company.display_name || company.official_name}
                       </p>
                       <div className="flex items-center gap-4 mt-1">
-                        {company.category?.name && (
-                          <div className="flex items-center gap-1">
-                            <Building2 className="h-3 w-3 text-blue-500" />
-                            <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
-                              {company.category.name}
-                            </p>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-1">
+                          <Building2 className="h-3 w-3 text-blue-500" />
+                          <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                            {(company as any).mockCategory}
+                          </p>
+                        </div>
                         {company.location?.name && (
                           <div className="flex items-center gap-1">
                             <MapPin className="h-3 w-3 text-gray-400" />
