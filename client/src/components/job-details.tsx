@@ -309,7 +309,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
           {/* Scrollable Content */}
           <div className="flex-1 overflow-y-auto job-description-scroll">
-            <CardContent className="p-6">
+            <CardContent className="p-6 pb-4">
 
 
           {/* Skills */}
@@ -396,10 +396,10 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             </div>
           </div>
 
-          <Separator className="my-6" />
+          <Separator className="my-4" />
 
           {/* Action Buttons */}
-          <div className="flex space-x-3">
+          <div className="flex space-x-3 mb-0">
             <Button
               onClick={hasApplied ? undefined : () => setIsApplicationModalOpen(true)}
               className="flex-1"
