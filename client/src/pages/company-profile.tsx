@@ -67,7 +67,7 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
   ).slice(0, 10) || [];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden w-full">
       <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" />
@@ -76,13 +76,13 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
       </div>
       
       {isLoading ? (
-        <div className="p-2 space-y-1">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-4 p-3 rounded-lg">
+            <div key={i} className="flex items-center gap-4 p-4">
               <Skeleton className="h-12 w-12 rounded-full ring-2 ring-gray-100" />
               <div className="flex-1">
                 <Skeleton className="h-4 w-32 mb-2" />
-                <Skeleton className="h-5 w-24 rounded-full mb-2" />
+                <Skeleton className="h-3 w-24 mb-2" />
                 <Skeleton className="h-3 w-20" />
               </div>
               <Skeleton className="h-4 w-4" />
@@ -90,10 +90,10 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
           ))}
         </div>
       ) : (
-        <div className="p-2">
+        <div className="divide-y divide-gray-200 dark:divide-gray-700">
           {suggestions.map((company: Organization, index: number) => (
             <Link key={company.id} href={`/company/${company.id}`}>
-              <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group border border-transparent hover:border-primary/20">
+              <div className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group">
                 <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
                   <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
                   <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/20 text-primary text-sm font-bold border border-primary/20">
@@ -112,8 +112,8 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
                   </h4>
                   
                   <div className="flex items-center gap-1 mt-1">
-                    <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-medium">
-                      <Building2 className="h-3 w-3" />
+                    <Building2 className="h-3 w-3 text-gray-500" />
+                    <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                       {(company as any).mockCategory}
                     </span>
                   </div>
@@ -433,7 +433,7 @@ export default function CompanyProfile() {
           </div>
 
           {/* Right Column - Suggested Companies */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 lg:min-w-[400px]">
             <CompanySuggestions currentCompanyId={companyId} />
           </div>
         </div>
