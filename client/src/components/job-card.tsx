@@ -104,9 +104,9 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                            currency === "TMT" ? "TMT" : 
                            currency;
     
-    if (min && max) return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
-    if (min) return `From ${currencySymbol}${min.toLocaleString()}`;
-    if (max) return `Up to ${currencySymbol}${max.toLocaleString()}`;
+    if (min && max) return `${currencySymbol}${min.toLocaleString('de-DE')} - ${currencySymbol}${max.toLocaleString('de-DE')}`;
+    if (min) return `From ${currencySymbol}${min.toLocaleString('de-DE')}`;
+    if (max) return `Up to ${currencySymbol}${max.toLocaleString('de-DE')}`;
     return "Salary not specified";
   };
 

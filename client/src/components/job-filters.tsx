@@ -181,7 +181,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               <SelectItem value="all">Location</SelectItem>
               {!locationsLoading && (locations as any)?.results?.map((location: Location) => (
                 <SelectItem key={location.id} value={location.id.toString()}>
-                  {location.name}, {location.country}
+                  {location.name} {location.country}
                 </SelectItem>
               ))}
             </SelectContent>

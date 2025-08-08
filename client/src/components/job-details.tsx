@@ -207,9 +207,9 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               : currency;
 
     if (min && max)
-      return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
-    if (min) return `From ${currencySymbol}${min.toLocaleString()}`;
-    if (max) return `Up to ${currencySymbol}${max.toLocaleString()}`;
+      return `${currencySymbol}${min.toLocaleString('de-DE')} - ${currencySymbol}${max.toLocaleString('de-DE')}`;
+    if (min) return `From ${currencySymbol}${min.toLocaleString('de-DE')}`;
+    if (max) return `Up to ${currencySymbol}${max.toLocaleString('de-DE')}`;
     return "Salary not specified";
   };
 
