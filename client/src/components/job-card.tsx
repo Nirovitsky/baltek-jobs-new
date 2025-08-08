@@ -15,9 +15,9 @@ import {
   Bookmark, 
   Building,
   Calendar,
-  Loader2,
-  CheckCircle
+  Loader2
 } from "lucide-react";
+import applyIcon from "@/assets/apply-icon.svg";
 
 interface JobCardProps {
   job: Job;
@@ -164,7 +164,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
             <div className="flex items-center gap-2 flex-shrink-0">
               {job.my_application_id && (
                 <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
-                  <CheckCircle className="w-3 h-3" />
+                  <img src={applyIcon} alt="Applied" className="w-3 h-3" />
                   <span>Applied</span>
                 </div>
               )}

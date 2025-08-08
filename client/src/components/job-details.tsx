@@ -17,14 +17,13 @@ import {
   DollarSign,
   Bookmark,
   Share,
-  Send,
   Building,
   Calendar,
   Users,
   Globe,
-  CheckCircle,
   ExternalLink,
 } from "lucide-react";
+import applyIcon from "@/assets/apply-icon.svg";
 
 interface JobDetailsProps {
   jobId: number;
@@ -409,12 +408,12 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             >
               {hasApplied ? (
                 <>
-                  <CheckCircle className="w-4 h-4 mr-2" />
+                  <img src={applyIcon} alt="Applied" className="w-4 h-4 mr-2" />
                   Applied
                 </>
               ) : (
                 <>
-                  <Send className="w-4 h-4 mr-2" />
+                  <img src={applyIcon} alt="Apply" className="w-4 h-4 mr-2" />
                   Apply Now
                 </>
               )}
