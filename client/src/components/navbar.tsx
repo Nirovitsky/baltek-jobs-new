@@ -86,15 +86,15 @@ export default function Navbar({}: NavbarProps) {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex flex-col items-center py-3 px-2 h-auto">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                  <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
                     {user?.avatar ? (
                       <img
                         src={user.avatar}
                         alt={`${user.first_name} ${user.last_name}`}
-                        className="w-8 h-8 rounded-full object-cover"
+                        className="w-5 h-5 rounded-full object-cover"
                       />
                     ) : (
-                      <User className="w-4 h-4 text-white" />
+                      <User className="w-3 h-3 text-white" />
                     )}
                   </div>
                   <span className="text-xs mt-1">
