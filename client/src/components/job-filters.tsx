@@ -146,7 +146,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   };
 
   const handleLoadSavedFilter = (savedFilter: SavedFilter) => {
-    onFiltersChange(savedFilter.filters);
+    // API might return filters in 'data' field instead of 'filters'
+    const filtersToApply = (savedFilter as any).data || savedFilter.filters || {};
+    onFiltersChange(filtersToApply);
     toast({
       title: "Filter loaded",
       description: `Loaded filter: ${savedFilter.name}`,
@@ -315,24 +317,24 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                 </SelectTrigger>
                 <SelectContent>
                   {(savedFilters as any).results.map((savedFilter: SavedFilter) => (
-                    <div key={savedFilter.id} className="flex items-center justify-between group">
-                      <SelectItem value={savedFilter.id.toString()} className="flex-1 pr-8">
-                        {savedFilter.name}
-                      </SelectItem>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          handleDeleteSavedFilter(savedFilter.id);
-                        }}
-                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 absolute right-1"
-                        disabled={deleteFilterMutation.isPending}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
-                    </div>
+                    <SelectItem key={savedFilter.id} value={savedFilter.id.toString()}>
+                      <div className="flex items-center justify-between w-full group">
+                        <span className="flex-1">{savedFilter.name}</span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDeleteSavedFilter(savedFilter.id);
+                          }}
+                          className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 ml-2"
+                          disabled={deleteFilterMutation.isPending}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>

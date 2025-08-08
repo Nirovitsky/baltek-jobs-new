@@ -170,7 +170,8 @@ export const jobFiltersSchema = z.object({
 export const savedFilterSchema = z.object({
   id: z.number(),
   name: z.string(),
-  filters: jobFiltersSchema,
+  data: jobFiltersSchema.optional(), // API returns filters in 'data' field
+  filters: jobFiltersSchema.optional(), // Keep for backward compatibility
   created_at: z.string().optional(),
   updated_at: z.string().optional(),
 });

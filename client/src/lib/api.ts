@@ -387,7 +387,10 @@ export class ApiClient {
   static async saveFilter(data: any) {
     return this.makeRequest("/jobs/saved_filters/", {
       method: "POST",
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        name: data.name,
+        data: data.filters, // API expects filters to be in 'data' field
+      }),
     });
   }
 
