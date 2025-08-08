@@ -49,37 +49,41 @@ export default function Navbar({}: NavbarProps) {
           <div className="flex items-center space-x-4">
             {/* Applications */}
             <Link href="/applications">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="flex flex-col items-center py-1 px-2 h-auto">
                 <FileText className="h-5 w-5" />
+                <span className="text-xs mt-1">Applications</span>
               </Button>
             </Link>
 
             {/* Bookmarks */}
             <Link href="/bookmarks">
-              <Button variant="ghost" size="sm">
+              <Button variant="ghost" size="sm" className="flex flex-col items-center py-1 px-2 h-auto">
                 <Bookmark className="h-5 w-5" />
-              </Button>
-            </Link>
-
-            {/* Notifications */}
-            <Link href="/notifications">
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-5 w-5" />
-                {notificationCount > 0 && (
-                  <Badge
-                    variant="destructive"
-                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                  >
-                    {notificationCount}
-                  </Badge>
-                )}
+                <span className="text-xs mt-1">Bookmarks</span>
               </Button>
             </Link>
 
             {/* Messages */}
             <Link href="/chat">
-              <Button variant="ghost" size="sm" data-testid="nav-messages">
+              <Button variant="ghost" size="sm" className="flex flex-col items-center py-1 px-2 h-auto" data-testid="nav-messages">
                 <MessageCircle className="h-5 w-5" />
+                <span className="text-xs mt-1">Chat</span>
+              </Button>
+            </Link>
+
+            {/* Notifications */}
+            <Link href="/notifications">
+              <Button variant="ghost" size="sm" className="relative flex flex-col items-center py-1 px-2 h-auto">
+                <Bell className="h-5 w-5" />
+                <span className="text-xs mt-1">Notifications</span>
+                {notificationCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs"
+                  >
+                    {notificationCount}
+                  </Badge>
+                )}
               </Button>
             </Link>
 
