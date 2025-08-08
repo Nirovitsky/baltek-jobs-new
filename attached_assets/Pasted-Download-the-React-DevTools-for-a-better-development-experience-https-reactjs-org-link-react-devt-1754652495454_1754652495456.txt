@@ -1,0 +1,84 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+applications.tsx:115 Warning: React has detected a change in the order of Hooks called by ApplicationsPage. This will lead to bugs and errors if not fixed. For more information, read the Rules of Hooks: https://reactjs.org/link/rules-of-hooks
+
+   Previous render            Next render
+   ------------------------------------------------------
+1. useContext                 useContext
+2. useSyncExternalStore       useSyncExternalStore
+3. useRef                     useRef
+4. useInsertionEffect         useInsertionEffect
+5. useContext                 useContext
+6. useContext                 useContext
+7. useContext                 useContext
+8. useContext                 useContext
+9. useEffect                  useEffect
+10. useState                  useState
+11. useCallback               useCallback
+12. useSyncExternalStore      useSyncExternalStore
+13. useEffect                 useEffect
+14. useContext                useContext
+15. useState                  useState
+16. useEffect                 useEffect
+17. useCallback               useCallback
+18. useSyncExternalStore      useSyncExternalStore
+19. useCallback               useCallback
+20. useContext                useContext
+21. useState                  useState
+22. useEffect                 useEffect
+23. useCallback               useCallback
+24. useSyncExternalStore      useSyncExternalStore
+25. useCallback               useCallback
+26. useContext                useContext
+27. useState                  useState
+28. useEffect                 useEffect
+29. useCallback               useCallback
+30. useSyncExternalStore      useSyncExternalStore
+31. useCallback               useCallback
+32. useState                  useState
+33. useContext                useContext
+34. useContext                useContext
+35. useContext                useContext
+36. useEffect                 useEffect
+37. useState                  useState
+38. useCallback               useCallback
+39. useSyncExternalStore      useSyncExternalStore
+40. useEffect                 useEffect
+41. undefined                 useEffect
+   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    at ApplicationsPage (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.dev/src/pages/applications.tsx:30:20)
+    at main
+    at div
+    at ProtectedLayout (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.dev/src/App.tsx?v=xZAKShifEqlYYv2igJlj9:101:30)
+    at ProtectedRoute (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.dev/src/App.tsx?v=xZAKShifEqlYYv2igJlj9:36:27)
+    at Route (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=180ff8a1:323:16)
+    at Switch (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=180ff8a1:379:17)
+    at Router (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.dev/src/App.tsx?v=xZAKShifEqlYYv2igJlj9:100:31)
+    at Provider (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…unner/workspace/node_modules/.vite/deps/chunk-E7IAXTU4.js?v=180ff8a1:38:15)
+    at TooltipProvider (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…rkspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=180ff8a1:63:5)
+    at QueryClientProvider (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=180ff8a1:2805:3)
+    at App
+
+chunk-RPCDYKBN.js?v=180ff8a1:11678 Uncaught Error: Rendered more hooks than during the previous render.
+    at ApplicationsPage (applications.tsx:115:3)
+chunk-RPCDYKBN.js?v=180ff8a1:11678 Uncaught Error: Rendered more hooks than during the previous render.
+    at ApplicationsPage (applications.tsx:115:3)
+chunk-RPCDYKBN.js?v=180ff8a1:14032 The above error occurred in the <ApplicationsPage> component:
+
+    at ApplicationsPage (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.dev/src/pages/applications.tsx:30:20)
+    at main
+    at div
+    at ProtectedLayout (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.dev/src/App.tsx?v=xZAKShifEqlYYv2igJlj9:101:30)
+    at ProtectedRoute (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.dev/src/App.tsx?v=xZAKShifEqlYYv2igJlj9:36:27)
+    at Route (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=180ff8a1:323:16)
+    at Switch (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=180ff8a1:379:17)
+    at Router (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.dev/src/App.tsx?v=xZAKShifEqlYYv2igJlj9:100:31)
+    at Provider (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…unner/workspace/node_modules/.vite/deps/chunk-E7IAXTU4.js?v=180ff8a1:38:15)
+    at TooltipProvider (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…rkspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=180ff8a1:63:5)
+    at QueryClientProvider (https://dfde276f-16d0-44d8-b34d-f915191d6bfe-00-30udjiy6iy8x7.kirk.replit.d…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=180ff8a1:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+chunk-RPCDYKBN.js?v=180ff8a1:11678 Uncaught Error: Rendered more hooks than during the previous render.
+    at ApplicationsPage (applications.tsx:115:3)

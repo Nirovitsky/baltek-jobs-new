@@ -19,6 +19,20 @@ export default function ApplicationsPage() {
     enabled: !!user?.id,
   });
 
+  // Calculate derived state (must be before useEffect)
+  const applicationsData = applications as any;
+  const applicationsList = applicationsData?.results || [];
+  const appliedJobs = applicationsList.filter((job: any) => 
+    job.my_application_id !== null && job.my_application_id !== undefined
+  );
+
+  // Auto-select first job when applications load (hook must be called consistently)
+  useEffect(() => {
+    if (appliedJobs.length > 0 && !selectedJobId) {
+      setSelectedJobId(appliedJobs[0].id);
+    }
+  }, [appliedJobs, selectedJobId]);
+
   const getStatusIcon = (status?: string) => {
     switch (status?.toLowerCase()) {
       case 'approved':
@@ -103,20 +117,6 @@ export default function ApplicationsPage() {
     );
   }
 
-  const applicationsData = applications as any;
-  const applicationsList = applicationsData?.results || [];
-  
-  // Filter jobs that have my_application_id (meaning user has applied)
-  const appliedJobs = applicationsList.filter((job: any) => 
-    job.my_application_id !== null && job.my_application_id !== undefined
-  );
-
-  // Auto-select first job when applications load
-  useEffect(() => {
-    if (appliedJobs.length > 0 && !selectedJobId) {
-      setSelectedJobId(appliedJobs[0].id);
-    }
-  }, [appliedJobs, selectedJobId]);
 
   if (appliedJobs.length === 0) {
     return (
