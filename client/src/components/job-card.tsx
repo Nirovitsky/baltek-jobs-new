@@ -135,7 +135,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
   return (
     <Card 
       className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-        isSelected ? "ring-2 ring-primary bg-primary/5" : "hover:bg-gray-50/80"
+        isSelected ? "ring-2 ring-primary bg-primary/5 opacity-60" : "hover:bg-gray-50/80"
       }`}
       onClick={() => onSelect(job)}
     >
