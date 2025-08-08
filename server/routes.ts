@@ -205,30 +205,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Transform the data to match frontend interface
       if (data.results) {
         data.results = data.results.map((room: any) => {
-          // Find the other participant (not the current user)
+          // Use organization and job info for display (no dependency on owner object)
+          const organization = room.organization;
+          const jobTitle = room.job?.title || room.content_object?.job?.title;
+          
+          // Create room name from organization + title
+          const orgName = organization?.display_name || organization?.official_name || organization?.name || 'Unknown Company';
+          const roomName = jobTitle ? `${orgName} - ${jobTitle}` : orgName;
+          
+          // Find other participant for fallback display
           const currentUserId = currentUser?.id || null;
           const otherMember = room.members?.find((member: any) => member.id !== currentUserId);
-          
-          // Use organization info for display
-          const organization = room.content_object?.job?.organization;
-          const jobTitle = room.content_object?.job?.title;
           
           return {
             ...room,
             participant: {
               id: otherMember?.id || 1,
-              first_name: organization?.display_name || otherMember?.first_name || 'Unknown',
+              first_name: orgName,
               last_name: '', // Organization name goes in first_name
-              avatar: organization?.logo || (otherMember?.avatar ? 
-                (otherMember.avatar.startsWith('http') ? otherMember.avatar : `https://api.baltek.net${otherMember.avatar}`) : 
-                null),
-              company: organization?.display_name || 'Unknown Company',
+              avatar: organization?.logo ? 
+                (organization.logo.startsWith('http') ? organization.logo : `https://api.baltek.net${organization.logo}`) : 
+                (otherMember?.avatar ? 
+                  (otherMember.avatar.startsWith('http') ? otherMember.avatar : `https://api.baltek.net${otherMember.avatar}`) : 
+                  null),
+              company: orgName,
               role: jobTitle || 'Recruiter'
             },
-            name: organization?.display_name || `${otherMember?.first_name || 'Unknown'} ${otherMember?.last_name || 'User'}`.trim(),
-            last_message: room.last_message_text ? { content: room.last_message_text } : null,
+            name: roomName,
+            last_message: room.last_message_text ? { 
+              content: room.last_message_text,
+              created_at: room.last_message_date_created ? new Date(room.last_message_date_created * 1000).toISOString() : new Date().toISOString()
+            } : null,
             unread_count: room.unread_message_count || 0,
-            updated_at: room.last_message_date_created ? new Date(room.last_message_date_created * 1000).toISOString() : new Date().toISOString()
+            updated_at: room.last_message_date_created ? new Date(room.last_message_date_created * 1000).toISOString() : new Date().toISOString(),
+            is_expired: room.is_expired || false, // Add expired status for read-only mode
+            is_active: room.is_active !== false // Default to active unless explicitly false
           };
         });
       }

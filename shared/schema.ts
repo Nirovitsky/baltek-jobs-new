@@ -133,6 +133,7 @@ export const chatRoomSchema = z.object({
   }).optional(),
   last_message: z.object({
     content: z.string(),
+    created_at: z.string().optional(),
   }).nullable().optional(),
   unread_count: z.number().optional(),
   updated_at: z.string(),
@@ -152,9 +153,21 @@ export const chatRoomSchema = z.object({
       }).optional(),
     }).optional(),
   }).optional(),
+  organization: z.object({
+    id: z.number().optional(),
+    display_name: z.string().optional(),
+    official_name: z.string().optional(),
+    name: z.string().optional(),
+    logo: z.string().optional(),
+  }).optional(),
+  job: z.object({
+    title: z.string().optional(),
+  }).optional(),
   last_message_text: z.string().optional(),
   last_message_date_created: z.number().optional(),
   unread_message_count: z.number().optional(),
+  is_expired: z.boolean().optional(),
+  is_active: z.boolean().optional(),
 });
 
 export const messageSchema = z.object({

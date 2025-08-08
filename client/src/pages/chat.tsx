@@ -58,9 +58,14 @@ interface Conversation {
     role?: string;
     company?: string;
   };
-  last_message: Message;
+  last_message: {
+    content: string;
+    created_at?: string;
+  } | null;
   unread_count: number;
   updated_at: string;
+  is_expired?: boolean;
+  is_active?: boolean;
 }
 
 export default function ChatPage() {
@@ -367,7 +372,7 @@ export default function ChatPage() {
                       onClick={() => setSelectedConversation(conversation.id)}
                       className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
                         selectedConversation === conversation.id ? 'bg-blue-50 border-r-2 border-primary' : ''
-                      }`}
+                      } ${conversation.is_expired ? 'opacity-60' : ''}`}
                       data-testid={`conversation-${conversation.id}`}
                     >
                       <div className="flex items-start space-x-3">
@@ -378,7 +383,7 @@ export default function ChatPage() {
                               {conversation.name?.[0]?.toUpperCase() || conversation.participant?.first_name?.[0] || 'C'}
                             </AvatarFallback>
                           </Avatar>
-                          {conversation.unread_count > 0 && (
+                          {conversation.unread_count > 0 && !conversation.is_expired && (
                             <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary">
                               {conversation.unread_count}
                             </Badge>
@@ -387,9 +392,16 @@ export default function ChatPage() {
                         
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-medium text-gray-900 truncate">
-                              {conversation.name || conversation.participant?.first_name || 'Unknown Conversation'}
-                            </h3>
+                            <div className="flex items-center space-x-2">
+                              <h3 className="font-medium text-gray-900 truncate">
+                                {conversation.name || conversation.participant?.first_name || 'Unknown Conversation'}
+                              </h3>
+                              {conversation.is_expired && (
+                                <Badge variant="outline" className="text-xs px-1 py-0">
+                                  Expired
+                                </Badge>
+                              )}
+                            </div>
                             <span className="text-xs text-gray-500">
                               {formatTime(conversation.updated_at)}
                             </span>
@@ -404,9 +416,20 @@ export default function ChatPage() {
                             </div>
                           )}
                           
-                          <p className="text-sm text-gray-600 truncate">
-                            {conversation.last_message?.content || 'No messages yet'}
-                          </p>
+                          {conversation.last_message ? (
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm text-gray-600 truncate flex-1">
+                                {conversation.last_message.content}
+                              </p>
+                              {conversation.last_message.created_at && (
+                                <span className="text-xs text-gray-400 ml-2 whitespace-nowrap">
+                                  {new Date(conversation.last_message.created_at).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-400 italic">No messages yet</p>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -432,12 +455,24 @@ export default function ChatPage() {
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <h3 className="font-semibold text-gray-900">
-                        {selectedConversationData?.name || selectedConversationData?.participant?.first_name || 'Unknown Conversation'}
-                      </h3>
+                      <div className="flex items-center space-x-2">
+                        <h3 className="font-semibold text-gray-900">
+                          {selectedConversationData?.name || selectedConversationData?.participant?.first_name || 'Unknown Conversation'}
+                        </h3>
+                        {selectedConversationData?.is_expired && (
+                          <Badge variant="secondary" className="text-xs">
+                            Expired
+                          </Badge>
+                        )}
+                      </div>
                       {selectedConversationData?.participant?.role && (
                         <p className="text-sm text-gray-500">
                           {selectedConversationData.participant.role}
+                        </p>
+                      )}
+                      {selectedConversationData?.is_expired && (
+                        <p className="text-xs text-yellow-600 mt-1">
+                          This conversation has expired and is now read-only.
                         </p>
                       )}
                     </div>
@@ -520,25 +555,27 @@ export default function ChatPage() {
                 </ScrollArea>
               </CardContent>
 
-              {/* Message Input */}
-              <div className="p-4 border-t">
-                <form onSubmit={handleSendMessage} className="flex space-x-2">
-                  <Input
-                    value={messageInput}
-                    onChange={(e) => setMessageInput(e.target.value)}
-                    placeholder="Type your message..."
-                    className="flex-1"
-                    data-testid="input-message"
-                  />
-                  <Button 
-                    type="submit" 
-                    disabled={!messageInput.trim() || sendMessageMutation.isPending}
-                    data-testid="button-send-message"
-                  >
-                    <Send className="w-4 h-4" />
-                  </Button>
-                </form>
-              </div>
+              {/* Message Input - Only show if not expired */}
+              {!selectedConversationData?.is_expired && (
+                <div className="p-4 border-t">
+                  <form onSubmit={handleSendMessage} className="flex space-x-2">
+                    <Input
+                      value={messageInput}
+                      onChange={(e) => setMessageInput(e.target.value)}
+                      placeholder="Type your message..."
+                      className="flex-1"
+                      data-testid="input-message"
+                    />
+                    <Button 
+                      type="submit" 
+                      disabled={!messageInput.trim() || sendMessageMutation.isPending}
+                      data-testid="button-send-message"
+                    >
+                      <Send className="w-4 h-4" />
+                    </Button>
+                  </form>
+                </div>
+              )}
             </>
           ) : (
             /* No Conversation Selected */
