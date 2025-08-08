@@ -279,7 +279,7 @@ export class ApiClient {
 
   // Chat API
   static async getChatRooms() {
-    return this.makeRequest("/chat/rooms");
+    return this.makeRequest("/chat/rooms/");
   }
 
   static async getChatMessages(roomId: number, params: Record<string, any> = {}) {

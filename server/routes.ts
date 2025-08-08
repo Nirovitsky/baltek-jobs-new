@@ -171,8 +171,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Chat API endpoints - fetch rooms for current user
-  app.get("/api/chat/rooms", async (req, res) => {
+  // Chat API endpoints - fetch rooms for current user (with and without trailing slash)
+  app.get("/api/chat/rooms/", async (req, res) => {
     try {
       const response = await fetch("https://api.baltek.net/api/chat/rooms/", {
         headers: {
@@ -186,6 +186,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const data = await response.json();
+      console.log('Raw chat rooms API response:', JSON.stringify(data, null, 2));
       
       // Get current user info from auth header
       let currentUser = null;
@@ -204,10 +205,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Transform the data to match frontend interface
       if (data.results) {
+        console.log('Sample room before transformation:', JSON.stringify(data.results[0], null, 2));
         data.results = data.results.map((room: any) => {
           // Use organization and job info for display (no dependency on owner object)
           const organization = room.organization;
           const jobTitle = room.job?.title || room.content_object?.job?.title;
+          
+          console.log('Room transformation - organization:', organization);
+          console.log('Room transformation - jobTitle:', jobTitle);
           
           // Create room name from organization + title
           const orgName = organization?.display_name || organization?.official_name || organization?.name || 'Unknown Company';
@@ -217,7 +222,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const currentUserId = currentUser?.id || null;
           const otherMember = room.members?.find((member: any) => member.id !== currentUserId);
           
-          return {
+          const transformed = {
             ...room,
             participant: {
               id: otherMember?.id || 1,
@@ -241,7 +246,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             is_expired: room.is_expired || false, // Add expired status for read-only mode
             is_active: room.is_active !== false // Default to active unless explicitly false
           };
+          
+          console.log('Transformed room:', JSON.stringify(transformed, null, 2));
+          return transformed;
         });
+        
+        console.log('Final transformed data:', JSON.stringify(data, null, 2));
       }
       
       res.json(data);
@@ -249,6 +259,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching conversations:", error);
       res.status(500).json({ error: "Failed to fetch conversations" });
     }
+  });
+
+  // Backwards compatibility route without trailing slash
+  app.get("/api/chat/rooms", (req, res) => {
+    // Redirect to the route with trailing slash
+    res.redirect(301, "/api/chat/rooms/");
   });
 
   app.get("/api/chat/messages", async (req, res) => {

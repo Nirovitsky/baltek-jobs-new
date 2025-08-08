@@ -77,11 +77,11 @@ export default function ChatPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Fetch chat rooms
+  // Fetch chat rooms only once
   const { data: chatRooms, isLoading: roomsLoading, error: roomsError } = useQuery({
     queryKey: ['chat', 'rooms'],
     queryFn: () => ApiClient.getChatRooms(),
-    refetchInterval: 30000, // Poll every 30 seconds
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
@@ -109,7 +109,7 @@ export default function ChatPage() {
     },
     onSuccess: () => {
       setMessageInput("");
-      queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
+      // Only invalidate messages, not rooms
       queryClient.invalidateQueries({ queryKey: ['chat', 'messages', selectedConversation] });
       scrollToBottom();
     },
@@ -130,7 +130,7 @@ export default function ChatPage() {
       return Promise.resolve({ success: true });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
+      // Don't refetch rooms, just mark as read locally if needed
     },
     onError: (error) => {
       console.error('Mark as read error:', error);
@@ -369,7 +369,10 @@ export default function ChatPage() {
                   {filteredConversations.map((conversation: Conversation) => (
                     <div
                       key={conversation.id}
-                      onClick={() => setSelectedConversation(conversation.id)}
+                      onClick={() => {
+                        setSelectedConversation(conversation.id);
+                        markAsReadMutation.mutate(conversation.id);
+                      }}
                       className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
                         selectedConversation === conversation.id ? 'bg-blue-50 border-r-2 border-primary' : ''
                       } ${conversation.is_expired ? 'opacity-60' : ''}`}
