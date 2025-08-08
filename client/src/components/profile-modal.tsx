@@ -106,6 +106,9 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     enabled: isOpen && !!user?.id,
   });
 
+  // Handle different API response structures - resumes might be in 'results' array or direct array
+  const resumesList = (userResumes as any)?.results || userResumes || [];
+
   // Personal info form - use cached profile data if available, fallback to user
   const profileData = fullProfile || user;
   const personalForm = useForm<any>({
@@ -448,7 +451,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
   // Resume handlers
   const handleResumeUpload = (file: File) => {
-    if ((userResumes?.results || []).length >= 3) {
+    if (resumesList.length >= 3) {
       toast({
         title: "Upload limit reached",
         description: "You can only upload up to 3 resumes",
@@ -559,7 +562,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
               onClick={() => setActiveTab("resumes")}
             >
               <FileText className="w-4 h-4 mr-2" />
-              Resumes ({(userResumes?.results || []).length}/3)
+              Resumes ({resumesList.length}/3)
             </Button>
           </div>
 
@@ -667,7 +670,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     />
                     {personalForm.watch("skills") && (
                       <div className="flex flex-wrap gap-2 mt-2">
-                        {personalForm.watch("skills")?.map((skill, index) => (
+                        {personalForm.watch("skills")?.map((skill: string, index: number) => (
                           <Badge key={index} variant="secondary">{skill}</Badge>
                         ))}
                       </div>
@@ -1084,7 +1087,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                         />
                         {projectForm.watch("technologies") && (
                           <div className="flex flex-wrap gap-2 mt-2">
-                            {projectForm.watch("technologies")?.map((tech, index) => (
+                            {projectForm.watch("technologies")?.map((tech: string, index: number) => (
                               <Badge key={index} variant="secondary">{tech}</Badge>
                             ))}
                           </div>
@@ -1223,7 +1226,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {(userResumes?.results || []).length < 3 ? (
+                    {resumesList.length < 3 ? (
                       <FileUpload
                         onFileSelect={handleResumeUpload}
                         accept=".pdf,.doc,.docx"
@@ -1241,10 +1244,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                 </Card>
 
                 {/* Resume List */}
-                {(userResumes?.results || []).length > 0 && (
+                {resumesList.length > 0 && (
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">My Resumes</h3>
-                    {(userResumes?.results || []).map((resume: any) => (
+                    {resumesList.map((resume: any) => (
                       <Card key={resume.id}>
                         <CardContent className="pt-4">
                           <div className="flex items-center justify-between">
@@ -1295,7 +1298,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                   </div>
                 )}
 
-                {!resumesLoading && (userResumes?.results || []).length === 0 && (
+                {!resumesLoading && resumesList.length === 0 && (
                   <div className="text-center py-8 bg-gray-50 rounded-lg">
                     <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                     <p className="text-gray-600 font-medium">No resumes uploaded</p>
