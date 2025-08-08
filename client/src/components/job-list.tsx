@@ -148,11 +148,8 @@ export default function JobList({
           </div>
           <div>
             <h2 className="text-lg font-semibold text-primary">
-              {totalCount !== undefined ? totalCount.toLocaleString() : jobs.length.toLocaleString()}
+              {totalCount !== undefined ? totalCount.toLocaleString() : jobs.length.toLocaleString()} Job{(totalCount !== undefined ? totalCount : jobs.length) !== 1 ? "s" : ""} Found
             </h2>
-            <p className="text-sm text-gray-600 -mt-1">
-              Job{(totalCount !== undefined ? totalCount : jobs.length) !== 1 ? "s" : ""} Found
-            </p>
           </div>
         </div>
         
