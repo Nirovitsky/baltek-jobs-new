@@ -168,9 +168,21 @@ export const jobFiltersSchema = z.object({
 });
 
 export const savedFilterSchema = z.object({
+  id: z.number(),
   name: z.string(),
   filters: jobFiltersSchema,
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
 });
+
+export type SavedFilter = z.infer<typeof savedFilterSchema>;
+
+export const createSavedFilterSchema = z.object({
+  name: z.string().min(1, "Filter name is required"),
+  filters: jobFiltersSchema,
+});
+
+export type CreateSavedFilter = z.infer<typeof createSavedFilterSchema>;
 
 // Organization schema - based on actual API response structure
 export const organizationSchema = z.object({
@@ -269,7 +281,6 @@ export type Resume = z.infer<typeof resumeSchema>;
 export type ChatRoom = z.infer<typeof chatRoomSchema>;
 export type Message = z.infer<typeof messageSchema>;
 export type JobFilters = z.infer<typeof jobFiltersSchema>;
-export type SavedFilter = z.infer<typeof savedFilterSchema>;
 export type Organization = z.infer<typeof organizationSchema>;
 export type Location = z.infer<typeof locationSchema>;
 export type Category = z.infer<typeof categorySchema>;

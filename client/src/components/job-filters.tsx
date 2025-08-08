@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
-import type { JobFilters, Location, Category } from "@shared/schema";
+import type { JobFilters, Location, Category, SavedFilter, CreateSavedFilter } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -10,9 +11,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { X } from "lucide-react";
+import { X, Save, Star, Trash2, Filter } from "lucide-react";
 
 interface JobFiltersProps {
   filters: JobFilters;
@@ -20,6 +30,16 @@ interface JobFiltersProps {
 }
 
 export default function JobFiltersComponent({ filters, onFiltersChange }: JobFiltersProps) {
+  const [saveFilterDialogOpen, setSaveFilterDialogOpen] = useState(false);
+  const [saveFilterName, setSaveFilterName] = useState("");
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch saved filters
+  const { data: savedFilters } = useQuery({
+    queryKey: ["savedFilters"],
+    queryFn: () => ApiClient.getSavedFilters(),
+  });
 
   const { data: locations, isLoading: locationsLoading } = useQuery({
     queryKey: ["locations"],
@@ -68,6 +88,74 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   };
 
   const hasActiveFilters = Object.values(filters).some(value => value !== undefined && value !== "");
+
+  // Save filter mutation
+  const saveFilterMutation = useMutation({
+    mutationFn: (data: CreateSavedFilter) => ApiClient.saveFilter(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
+      setSaveFilterDialogOpen(false);
+      setSaveFilterName("");
+      toast({
+        title: "Filter saved",
+        description: "Your filter has been saved successfully.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save filter",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete filter mutation
+  const deleteFilterMutation = useMutation({
+    mutationFn: (id: number) => ApiClient.deleteSavedFilter(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
+      toast({
+        title: "Filter deleted",
+        description: "Your saved filter has been deleted.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to delete filter",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSaveFilter = () => {
+    if (!saveFilterName.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter a filter name",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    saveFilterMutation.mutate({
+      name: saveFilterName.trim(),
+      filters,
+    });
+  };
+
+  const handleLoadSavedFilter = (savedFilter: SavedFilter) => {
+    onFiltersChange(savedFilter.filters);
+    toast({
+      title: "Filter loaded",
+      description: `Loaded filter: ${savedFilter.name}`,
+    });
+  };
+
+  const handleDeleteSavedFilter = (id: number) => {
+    deleteFilterMutation.mutate(id);
+  };
 
   return (
     <div className="filter-bar sticky top-0 z-40 bg-white shadow-sm border-b">
@@ -213,23 +301,105 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           </div>
 
           <div className="flex items-center gap-2">
-          {hasActiveFilters && (
-            <Button
-              onClick={clearFilters}
-              variant="outline"
-              className="text-gray-700 h-8 text-xs px-2"
-            >
-              <X className="h-3 w-3 mr-1" />
-              Clear
-            </Button>
-          )}
+            {/* Saved Filters Dropdown */}
+            {savedFilters && (savedFilters as any)?.results?.length > 0 && (
+              <Select onValueChange={(value) => {
+                const savedFilter = (savedFilters as any).results.find((f: SavedFilter) => f.id.toString() === value);
+                if (savedFilter) {
+                  handleLoadSavedFilter(savedFilter);
+                }
+              }}>
+                <SelectTrigger className="w-[120px] h-8 text-xs">
+                  <Star className="h-3 w-3 mr-1" />
+                  <SelectValue placeholder="Saved Filters" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(savedFilters as any).results.map((savedFilter: SavedFilter) => (
+                    <div key={savedFilter.id} className="flex items-center justify-between group">
+                      <SelectItem value={savedFilter.id.toString()} className="flex-1 pr-8">
+                        {savedFilter.name}
+                      </SelectItem>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleDeleteSavedFilter(savedFilter.id);
+                        }}
+                        className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 absolute right-1"
+                        disabled={deleteFilterMutation.isPending}
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
 
-          <Button
-            variant="default"
-            className="bg-primary hover:bg-primary/90 h-8 text-xs px-3"
-          >
-            Save
-          </Button>
+            {hasActiveFilters && (
+              <Button
+                onClick={clearFilters}
+                variant="outline"
+                className="text-gray-700 h-8 text-xs px-2"
+              >
+                <X className="h-3 w-3 mr-1" />
+                Clear
+              </Button>
+            )}
+
+            {/* Save Filter Dialog */}
+            <Dialog open={saveFilterDialogOpen} onOpenChange={setSaveFilterDialogOpen}>
+              <DialogTrigger asChild>
+                <Button
+                  variant="default"
+                  className="bg-primary hover:bg-primary/90 h-8 text-xs px-3"
+                  disabled={!hasActiveFilters}
+                >
+                  <Save className="h-3 w-3 mr-1" />
+                  Save
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Save Filter</DialogTitle>
+                  <DialogDescription>
+                    Give your filter a name to save it for later use.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="filter-name" className="text-right">
+                      Name
+                    </Label>
+                    <Input
+                      id="filter-name"
+                      value={saveFilterName}
+                      onChange={(e) => setSaveFilterName(e.target.value)}
+                      className="col-span-3"
+                      placeholder="e.g., Remote Developer Jobs"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setSaveFilterDialogOpen(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    onClick={handleSaveFilter}
+                    disabled={saveFilterMutation.isPending || !saveFilterName.trim()}
+                  >
+                    {saveFilterMutation.isPending ? "Saving..." : "Save Filter"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
