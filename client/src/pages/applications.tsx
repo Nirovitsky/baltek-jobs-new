@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
-import { Briefcase, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+import { Briefcase, Clock, CheckCircle, XCircle, AlertCircle, Building } from "lucide-react";
 import JobDetails from "@/components/job-details";
 import JobCard from "@/components/job-card";
 import JobListSkeleton from "@/components/job-list-skeleton";
@@ -155,11 +155,11 @@ export default function ApplicationsPage() {
                   className={`relative cursor-pointer transition-all duration-200 ${
                     selectedJobId === job.id 
                       ? 'ring-2 ring-blue-500 ring-opacity-50' 
-                      : 'hover:shadow-md'
+                      : ''
                   }`}
                   onClick={() => setSelectedJobId(job.id)}
                 >
-                  <div className="bg-gray-50 rounded-lg border border-gray-200 p-4 relative overflow-hidden">
+                  <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 relative">
                     {/* Status Badge */}
                     <div className="absolute top-3 right-3">
                       <div className="flex items-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2 py-1 rounded text-xs font-medium">
@@ -168,38 +168,61 @@ export default function ApplicationsPage() {
                       </div>
                     </div>
 
-                    {/* Job Title */}
-                    <div className="pr-16 mb-3">
-                      <h3 className="font-semibold text-gray-900 text-base leading-tight">
+                    {/* Job Title and Salary Row */}
+                    <div className="flex items-start justify-between mb-4">
+                      <h3 className="font-semibold text-gray-900 text-lg pr-16">
                         {job.title}
                       </h3>
+                      <span className="text-sm font-medium text-gray-900 flex-shrink-0">
+                        {job.payment_from && job.payment_to 
+                          ? `${job.currency || ''}${job.payment_from?.toLocaleString('de-DE')} - ${job.currency || ''}${job.payment_to?.toLocaleString('de-DE')}`
+                          : job.payment_from 
+                            ? `From ${job.currency || ''}${job.payment_from?.toLocaleString('de-DE')}`
+                            : job.payment_to
+                              ? `Up to ${job.currency || ''}${job.payment_to?.toLocaleString('de-DE')}`
+                              : 'Salary not specified'
+                        }
+                      </span>
                     </div>
-
-                    {/* Company Section with Gradient */}
-                    <div className="bg-gradient-to-r from-gray-50/50 to-gray-50/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-6 h-6 flex items-center justify-center">
-                            {job.organization?.logo ? (
-                              <img
-                                src={job.organization.logo}
-                                alt={job.organization.display_name || job.organization.name || 'Company'}
-                                className="w-6 h-6 object-cover rounded-full"
-                              />
-                            ) : (
-                              <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
-                                <Briefcase className="w-3 h-3 text-gray-500" />
-                              </div>
-                            )}
-                          </div>
-                          <span className="font-medium text-gray-900 text-sm truncate">
-                            {job.organization?.display_name || job.organization?.name || 'Unknown'}
-                          </span>
+                    
+                    {/* Tags Row */}
+                    <div className="flex items-center gap-2 flex-wrap mb-4">
+                      <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
+                        {job.job_type ? job.job_type.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : 'Unknown'}
+                      </span>
+                      <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
+                        {job.workplace_type ? job.workplace_type.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : 'Unknown'}
+                      </span>
+                      {job.minimum_education_level && (
+                        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
+                          {job.minimum_education_level}
+                        </span>
+                      )}
+                    </div>
+                    
+                    {/* Company Row */}
+                    <div className="flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-gray-50/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-6 h-6 flex items-center justify-center">
+                          {job.organization?.logo ? (
+                            <img
+                              src={job.organization.logo}
+                              alt={job.organization.display_name || job.organization.name || 'Company'}
+                              className="w-6 h-6 object-cover rounded-full"
+                            />
+                          ) : (
+                            <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
+                              <Briefcase className="w-3 h-3 text-gray-500" />
+                            </div>
+                          )}
                         </div>
-                        <span className="text-xs text-gray-500 flex-shrink-0">
-                          {job.location?.name || 'Remote'}
+                        <span className="font-medium text-gray-900 text-sm truncate">
+                          {job.organization?.display_name || job.organization?.name || 'Unknown'}
                         </span>
                       </div>
+                      <span className="text-xs text-gray-500 flex-shrink-0">
+                        {job.location?.name || 'Remote'}
+                      </span>
                     </div>
                   </div>
                 </div>
