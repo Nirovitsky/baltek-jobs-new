@@ -1,6 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
+import { useDebounce } from "@/hooks/use-debounce";
 import type { Job, JobFilters } from "@shared/schema";
 
 import JobFiltersComponent from "@/components/job-filters";
@@ -23,16 +24,9 @@ export default function Jobs({}: JobsProps) {
     organizationParam ? { organization: parseInt(organizationParam) } : {},
   );
   const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearchQuery(searchQuery);
-    }, 500); // Wait 500ms after user stops typing
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
+  
+  // Debounce search query with 400ms delay for optimal UX
+  const debouncedSearchQuery = useDebounce(searchQuery, 400);
 
   const {
     data,
