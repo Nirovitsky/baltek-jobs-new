@@ -353,17 +353,6 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               </Select>
             )}
 
-            {hasActiveFilters && (
-              <Button
-                onClick={clearFilters}
-                variant="ghost"
-                className="text-gray-700 hover:text-gray-900 h-8 w-8 p-0 border-0"
-                title="Clear filters"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-
             {/* Save Filter Dialog */}
             <Dialog open={saveFilterDialogOpen} onOpenChange={setSaveFilterDialogOpen}>
               <DialogTrigger asChild>
@@ -415,6 +404,17 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+
+            {hasActiveFilters && (
+              <Button
+                onClick={clearFilters}
+                variant="ghost"
+                className="text-gray-700 hover:text-gray-900 h-8 w-8 p-0 border-0"
+                title="Clear filters"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>
