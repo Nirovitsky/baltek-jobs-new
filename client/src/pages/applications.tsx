@@ -54,18 +54,18 @@ export default function ApplicationsPage() {
     return (
       <div className="h-screen flex">
         {/* Left Column - Applications List */}
-        <div className="w-1/2 border-r border-gray-200 bg-gray-50">
-          <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
-            <h1 className="text-2xl font-semibold text-gray-900">My Applications</h1>
-            <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
+        <div className="w-2/5 border-r border-gray-200 bg-gray-50">
+          <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4">
+            <h1 className="text-xl font-semibold text-gray-900">My Applications</h1>
+            <p className="text-xs text-gray-600 mt-1">Track your job applications</p>
           </div>
-          <div className="p-6">
+          <div className="p-4">
             <JobListSkeleton />
           </div>
         </div>
 
         {/* Right Column - Job Details */}
-        <div className="w-1/2 bg-white">
+        <div className="w-3/5 bg-white">
           <div className="p-6">
             <JobDetailsSkeleton />
           </div>
@@ -77,20 +77,20 @@ export default function ApplicationsPage() {
   if (error) {
     return (
       <div className="h-screen flex">
-        <div className="w-1/2 border-r border-gray-200 bg-gray-50">
-          <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
-            <h1 className="text-2xl font-semibold text-gray-900">My Applications</h1>
-            <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
+        <div className="w-2/5 border-r border-gray-200 bg-gray-50">
+          <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4">
+            <h1 className="text-xl font-semibold text-gray-900">My Applications</h1>
+            <p className="text-xs text-gray-600 mt-1">Track your job applications</p>
           </div>
-          <div className="p-6">
+          <div className="p-4">
             <div className="text-center py-12">
               <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">Unable to Load Applications</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">Unable to Load Applications</h2>
               <p className="text-gray-600 mb-4">There was an error loading your job applications.</p>
             </div>
           </div>
         </div>
-        <div className="w-1/2 bg-white"></div>
+        <div className="w-3/5 bg-white"></div>
       </div>
     );
   }
@@ -106,20 +106,20 @@ export default function ApplicationsPage() {
   if (appliedJobs.length === 0) {
     return (
       <div className="h-screen flex">
-        <div className="w-1/2 border-r border-gray-200 bg-gray-50">
-          <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
-            <h1 className="text-2xl font-semibold text-gray-900">My Applications</h1>
-            <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
+        <div className="w-2/5 border-r border-gray-200 bg-gray-50">
+          <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4">
+            <h1 className="text-xl font-semibold text-gray-900">My Applications</h1>
+            <p className="text-xs text-gray-600 mt-1">Track your job applications</p>
           </div>
-          <div className="p-6">
+          <div className="p-4">
             <div className="text-center py-12">
               <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h2 className="text-xl font-semibold text-gray-900 mb-2">No Applications Yet</h2>
+              <h2 className="text-lg font-semibold text-gray-900 mb-2">No Applications Yet</h2>
               <p className="text-gray-600 mb-6">You haven't applied to any jobs yet. Start browsing and apply to jobs that match your interests!</p>
             </div>
           </div>
         </div>
-        <div className="w-1/2 bg-white"></div>
+        <div className="w-3/5 bg-white"></div>
       </div>
     );
   }
@@ -127,52 +127,82 @@ export default function ApplicationsPage() {
   return (
     <div className="h-screen flex">
       {/* Left Column - Applications List */}
-      <div className="w-1/2 border-r border-gray-200 bg-gray-50">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+      <div className="w-2/5 border-r border-gray-200 bg-gray-50">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-gray-900">My Applications</h1>
-              <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
+              <h1 className="text-xl font-semibold text-gray-900">My Applications</h1>
+              <p className="text-xs text-gray-600 mt-1">Track your job applications</p>
             </div>
-            <div className="text-sm text-gray-500">
-              {appliedJobs.length} application{appliedJobs.length !== 1 ? 's' : ''}
+            <div className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+              {appliedJobs.length} total
             </div>
           </div>
         </div>
         
-        <div className="overflow-y-auto h-[calc(100vh-80px)]">
-          <div className="p-6 space-y-4">
-            {appliedJobs.map((job: any) => {
-              // Add application status badge to job data
-              const jobWithStatus = {
-                ...job,
-                applicationStatus: 'Under Review' // Default status since API doesn't provide specific status
-              };
-              
-              return (
-                <div key={job.id} className="relative">
-                  <JobCard
-                    job={jobWithStatus}
-                    isSelected={selectedJobId === job.id}
-                    onSelect={() => setSelectedJobId(job.id)}
-                    showBookmark={false}
-                  />
-                  {/* Application Status Overlay */}
+        <div className="overflow-y-auto h-[calc(100vh-72px)]">
+          <div className="p-4 space-y-3">
+            {appliedJobs.map((job: any) => (
+              <div 
+                key={job.id} 
+                className={`relative cursor-pointer transition-all duration-200 ${
+                  selectedJobId === job.id 
+                    ? 'ring-2 ring-blue-500 ring-opacity-50' 
+                    : 'hover:shadow-md'
+                }`}
+                onClick={() => setSelectedJobId(job.id)}
+              >
+                <div className="bg-white rounded-lg border border-gray-200 p-4 relative overflow-hidden">
+                  {/* Status Badge */}
                   <div className="absolute top-3 right-3">
                     <div className="flex items-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2 py-1 rounded text-xs font-medium">
                       <CheckCircle className="w-3 h-3" />
                       Applied
                     </div>
                   </div>
+
+                  {/* Job Title */}
+                  <div className="pr-16 mb-3">
+                    <h3 className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2">
+                      {job.title}
+                    </h3>
+                  </div>
+
+                  {/* Company Section with Gradient */}
+                  <div className="bg-gradient-to-r from-gray-50/50 to-gray-50/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-5 h-5 flex items-center justify-center">
+                          {job.organization?.logo ? (
+                            <img
+                              src={job.organization.logo}
+                              alt={job.organization.display_name || job.organization.name || 'Company'}
+                              className="w-5 h-5 object-cover rounded-full"
+                            />
+                          ) : (
+                            <div className="w-5 h-5 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
+                              <Briefcase className="w-2.5 h-2.5 text-gray-500" />
+                            </div>
+                          )}
+                        </div>
+                        <span className="font-medium text-gray-900 text-xs truncate">
+                          {job.organization?.display_name || job.organization?.name || 'Unknown'}
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-500 flex-shrink-0">
+                        {job.location?.name || 'Remote'}
+                      </span>
+                    </div>
+                  </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Right Column - Job Details */}
-      <div className="w-1/2 bg-white">
+      <div className="w-3/5 bg-white">
         {selectedJobId ? (
           <div className="h-full overflow-y-auto">
             <JobDetails jobId={selectedJobId} />
