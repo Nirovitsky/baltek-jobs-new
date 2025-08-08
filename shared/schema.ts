@@ -119,24 +119,42 @@ export const resumeSchema = z.object({
   is_primary: z.boolean().optional(),
 });
 
-// Chat schemas
+// Chat schemas - updated to match actual API responses
 export const chatRoomSchema = z.object({
   id: z.number(),
-  name: z.string(),
-  participants: z.array(z.object({
+  name: z.string().optional(),
+  participant: z.object({
     id: z.number(),
-    username: z.string(),
     first_name: z.string(),
     last_name: z.string(),
-  })),
+    avatar: z.string().optional(),
+    role: z.string().optional(),
+    company: z.string().optional(),
+  }).optional(),
   last_message: z.object({
     content: z.string(),
-    timestamp: z.string(),
-    sender: z.object({
-      id: z.number(),
-      username: z.string(),
-    }),
+  }).nullable().optional(),
+  unread_count: z.number().optional(),
+  updated_at: z.string(),
+  members: z.array(z.object({
+    id: z.number(),
+    first_name: z.string().optional(),
+    last_name: z.string().optional(),
+    avatar: z.string().optional(),
+  })).optional(),
+  content_object: z.object({
+    job: z.object({
+      title: z.string().optional(),
+      organization: z.object({
+        id: z.number(),
+        display_name: z.string().optional(),
+        logo: z.string().optional(),
+      }).optional(),
+    }).optional(),
   }).optional(),
+  last_message_text: z.string().optional(),
+  last_message_date_created: z.number().optional(),
+  unread_message_count: z.number().optional(),
 });
 
 export const messageSchema = z.object({
@@ -144,12 +162,18 @@ export const messageSchema = z.object({
   content: z.string(),
   sender: z.object({
     id: z.number(),
-    username: z.string(),
     first_name: z.string(),
     last_name: z.string(),
+    avatar: z.string().optional(),
   }),
-  timestamp: z.string(),
-  status: z.string(),
+  recipient: z.object({
+    id: z.number(),
+    first_name: z.string(),
+    last_name: z.string(),
+    avatar: z.string().optional(),
+  }).optional(),
+  created_at: z.string(),
+  read: z.boolean(),
 });
 
 // Filter schemas

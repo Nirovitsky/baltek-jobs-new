@@ -187,11 +187,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const data = await response.json();
       
+      // Get current user info from auth header
+      let currentUser = null;
+      try {
+        const authResponse = await fetch("https://api.baltek.net/api/auth/me/", {
+          headers: {
+            Authorization: req.headers.authorization || "",
+          },
+        });
+        if (authResponse.ok) {
+          currentUser = await authResponse.json();
+        }
+      } catch (error) {
+        console.error('Error getting current user for chat:', error);
+      }
+      
       // Transform the data to match frontend interface
       if (data.results) {
         data.results = data.results.map((room: any) => {
-          // Find the other participant (assuming current user is user ID 2)
-          const currentUserId = 2; 
+          // Find the other participant (not the current user)
+          const currentUserId = currentUser?.id || null;
           const otherMember = room.members?.find((member: any) => member.id !== currentUserId);
           
           // Use organization info for display
@@ -204,7 +219,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               id: otherMember?.id || 1,
               first_name: organization?.display_name || otherMember?.first_name || 'Unknown',
               last_name: '', // Organization name goes in first_name
-              avatar: organization?.logo || (otherMember?.avatar?.startsWith('http') ? otherMember?.avatar : `https://api.baltek.net${otherMember?.avatar || ''}`),
+              avatar: organization?.logo || (otherMember?.avatar ? 
+                (otherMember.avatar.startsWith('http') ? otherMember.avatar : `https://api.baltek.net${otherMember.avatar}`) : 
+                null),
               company: organization?.display_name || 'Unknown Company',
               role: jobTitle || 'Recruiter'
             },
@@ -266,7 +283,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
               id: message.owner,
               first_name: sender?.first_name || 'Unknown',
               last_name: sender?.last_name || '',
-              avatar: sender?.avatar?.startsWith('http') ? sender?.avatar : `https://api.baltek.net${sender?.avatar || ''}`
+              avatar: sender?.avatar ? 
+                (sender.avatar.startsWith('http') ? sender.avatar : `https://api.baltek.net${sender.avatar}`) : 
+                null
             },
             recipient: {
               id: roomData?.members?.find((m: any) => m.id !== message.owner)?.id || 0,

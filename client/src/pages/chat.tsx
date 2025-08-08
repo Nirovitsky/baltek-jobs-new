@@ -73,18 +73,22 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Fetch chat rooms
-  const { data: chatRooms, isLoading: roomsLoading } = useQuery({
+  const { data: chatRooms, isLoading: roomsLoading, error: roomsError } = useQuery({
     queryKey: ['chat', 'rooms'],
     queryFn: () => ApiClient.getChatRooms(),
     refetchInterval: 30000, // Poll every 30 seconds
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
   // Fetch messages for selected room
-  const { data: messages, isLoading: messagesLoading } = useQuery({
+  const { data: messages, isLoading: messagesLoading, error: messagesError } = useQuery({
     queryKey: ['chat', 'messages', selectedConversation],
     queryFn: () => ApiClient.getChatMessages(selectedConversation!),
     enabled: !!selectedConversation,
     refetchInterval: 5000, // Poll more frequently for active conversation
+    retry: 2,
+    retryDelay: 1000,
   });
 
   // WebSocket connection
@@ -93,7 +97,10 @@ export default function ChatPage() {
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (data: { content: string }) => {
-      return ApiClient.sendMessage(selectedConversation!, data.content);
+      if (!selectedConversation) {
+        throw new Error('No conversation selected');
+      }
+      return ApiClient.sendMessage(selectedConversation, data.content);
     },
     onSuccess: () => {
       setMessageInput("");
@@ -101,10 +108,11 @@ export default function ChatPage() {
       queryClient.invalidateQueries({ queryKey: ['chat', 'messages', selectedConversation] });
       scrollToBottom();
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('Send message error:', error);
       toast({
         title: "Error",
-        description: "Failed to send message. Please try again.",
+        description: error.message || "Failed to send message. Please try again.",
         variant: "destructive",
       });
     },
@@ -119,6 +127,10 @@ export default function ChatPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
     },
+    onError: (error) => {
+      console.error('Mark as read error:', error);
+      // Silent error - don't show toast for this
+    },
   });
 
   const scrollToBottom = () => {
@@ -127,37 +139,71 @@ export default function ChatPage() {
 
   // Initialize WebSocket connection
   useEffect(() => {
+    if (!user?.id) return; // Don't connect if user is not authenticated
+    
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
     const wsUrl = `${protocol}//${window.location.host}/ws`;
-    const ws = new WebSocket(wsUrl);
     
-    ws.onopen = () => {
-      console.log('WebSocket connected');
-      setSocket(ws);
-    };
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: NodeJS.Timeout;
     
-    ws.onmessage = (event) => {
+    const connectWebSocket = () => {
       try {
-        const data = JSON.parse(event.data);
-        if (data.type === 'new_message') {
-          // Invalidate queries to refresh message list
-          queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
-          queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.conversation_id] });
-        }
+        ws = new WebSocket(wsUrl);
+        
+        ws.onopen = () => {
+          console.log('WebSocket connected');
+          setSocket(ws);
+        };
+        
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === 'new_message') {
+              // Invalidate queries to refresh message list
+              queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
+              queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.conversation_id] });
+            }
+          } catch (error) {
+            console.error('WebSocket message error:', error);
+          }
+        };
+        
+        ws.onclose = (event) => {
+          console.log('WebSocket disconnected:', event.code, event.reason);
+          setSocket(null);
+          
+          // Attempt to reconnect after 3 seconds if not a manual disconnect
+          if (event.code !== 1000) {
+            reconnectTimeout = setTimeout(() => {
+              console.log('Attempting to reconnect WebSocket...');
+              connectWebSocket();
+            }, 3000);
+          }
+        };
+        
+        ws.onerror = (error) => {
+          console.error('WebSocket error:', error);
+        };
+        
       } catch (error) {
-        console.error('WebSocket message error:', error);
+        console.error('Error creating WebSocket connection:', error);
+        // Retry connection after 5 seconds
+        reconnectTimeout = setTimeout(connectWebSocket, 5000);
       }
     };
     
-    ws.onclose = () => {
-      console.log('WebSocket disconnected');
-      setSocket(null);
-    };
+    connectWebSocket();
     
     return () => {
-      ws.close();
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.close(1000, 'Component unmounting');
+      }
     };
-  }, []);
+  }, [user?.id, queryClient]);
 
   useEffect(() => {
     scrollToBottom();
@@ -198,8 +244,8 @@ export default function ChatPage() {
     }
   };
 
-  const filteredConversations = roomsLoading ? [] : ((chatRooms as any)?.results || []).filter((conversation: Conversation) => {
-    if (!conversation) return false;
+  const filteredConversations = roomsLoading || roomsError ? [] : ((chatRooms as any)?.results || []).filter((conversation: Conversation) => {
+    if (!conversation || !conversation.id) return false;
     
     const conversationName = conversation.name?.toLowerCase() || '';
     const participantName = conversation.participant ? 
@@ -218,6 +264,29 @@ export default function ChatPage() {
 
   // Use actual messages data from API
   const messagesData = (messages as any) || { results: [] };
+
+  // Add error state handling
+  if (roomsError && !roomsLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="text-center py-8">
+          <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            Unable to load conversations
+          </h3>
+          <p className="text-gray-600 mb-4">
+            {roomsError instanceof Error ? roomsError.message : "Something went wrong"}
+          </p>
+          <Button 
+            onClick={() => queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] })}
+            variant="outline"
+          >
+            Try again
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8" data-testid="chat-page">

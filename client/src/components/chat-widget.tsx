@@ -15,10 +15,12 @@ import {
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: chatRooms, isLoading } = useQuery({
+  const { data: chatRooms, isLoading, error } = useQuery({
     queryKey: ["chat", "rooms"],
     queryFn: () => ApiClient.getChatRooms(),
     enabled: isOpen,
+    retry: 2,
+    retryDelay: 1000,
   });
 
   const getTimeAgo = (dateString: string) => {
@@ -77,6 +79,12 @@ export default function ChatWidget() {
               <div className="p-4 text-center text-gray-500">
                 Loading conversations...
               </div>
+            ) : error ? (
+              <div className="p-4 text-center text-gray-500">
+                <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>Failed to load conversations</p>
+                <p className="text-xs">Please try again later</p>
+              </div>
             ) : (chatRooms as any)?.results?.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
                 <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
@@ -104,10 +112,10 @@ export default function ChatWidget() {
                       )}
                     </div>
                     <div className="flex flex-col items-end space-y-1">
-                      {room.last_message && (
+                      {room.updated_at && (
                         <div className="flex items-center text-xs text-gray-400">
                           <Clock className="w-3 h-3 mr-1" />
-                          {getTimeAgo(room.last_message.timestamp)}
+                          {getTimeAgo(room.updated_at)}
                         </div>
                       )}
                       <div className="w-2 h-2 bg-primary rounded-full"></div>
