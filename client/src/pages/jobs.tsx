@@ -6,6 +6,7 @@ import type { Job, JobFilters } from "@shared/schema";
 import JobFiltersComponent from "@/components/job-filters";
 import JobList from "@/components/job-list";
 import JobDetails from "@/components/job-details";
+import JobDetailsSkeleton from "@/components/job-details-skeleton";
 
 import ChatWidget from "@/components/chat-widget";
 import { Card, CardContent } from "@/components/ui/card";
@@ -161,7 +162,9 @@ export default function Jobs({}: JobsProps) {
 
           <div className="w-[70%] h-full flex-shrink-0 min-w-0 pl-8">
             <div className="h-full w-full">
-              {currentSelectedJobId ? (
+              {isLoading ? (
+                <JobDetailsSkeleton />
+              ) : currentSelectedJobId ? (
                 <JobDetails jobId={currentSelectedJobId} />
               ) : jobs.length > 0 ? (
                 <div className="w-[70%] h-full flex items-center justify-center">
