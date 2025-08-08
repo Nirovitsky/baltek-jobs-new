@@ -330,7 +330,9 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                   {(Array.isArray(savedFilters) ? savedFilters : (savedFilters as any)?.results || []).map((savedFilter: SavedFilter) => (
                     <SelectItem key={savedFilter.id} value={savedFilter.id.toString()}>
                       <div className="flex items-center justify-between w-full group">
-                        <span className="flex-1">{savedFilter.name}</span>
+                        <span className="flex-1 truncate pr-2" title={savedFilter.name}>
+                          {savedFilter.name}
+                        </span>
                         <Button
                           variant="ghost"
                           size="sm"
@@ -339,7 +341,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                             e.stopPropagation();
                             handleDeleteSavedFilter(savedFilter.id);
                           }}
-                          className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 ml-2"
+                          className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 flex-shrink-0"
                           disabled={deleteFilterMutation.isPending}
                         >
                           <Trash2 className="h-3 w-3" />
