@@ -208,7 +208,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.job_type || "all"}
             onValueChange={(value) => handleFilterChange("job_type", value)}
           >
-            <SelectTrigger className="w-[95px] h-8 text-xs focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[75px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Job Type" />
             </SelectTrigger>
             <SelectContent>
@@ -225,7 +225,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             value={filters.workplace_type || "all"}
             onValueChange={(value) => handleFilterChange("workplace_type", value)}
           >
-            <SelectTrigger className="w-[90px] h-8 text-xs focus:border-ring focus-visible:ring-0">
+            <SelectTrigger className="w-[75px] h-8 text-xs focus:border-ring focus-visible:ring-0">
               <SelectValue placeholder="Remote" />
             </SelectTrigger>
             <SelectContent>
