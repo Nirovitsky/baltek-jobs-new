@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import { viewedJobsCache } from "@/lib/viewed-jobs-cache";
+import { useAuth } from "@/hooks/use-auth";
 import type { Job } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,11 +29,12 @@ interface JobCardProps {
 export default function JobCard({ job, isSelected = false, onSelect, showBookmark = true }: JobCardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   
-  const isViewed = viewedJobsCache.isViewed(job.id);
+  const isViewed = viewedJobsCache.isViewed(job.id, user?.id || null);
   
   const handleJobSelect = (job: Job) => {
-    viewedJobsCache.markAsViewed(job.id);
+    viewedJobsCache.markAsViewed(job.id, user?.id || null);
     onSelect(job);
   };
 
