@@ -121,9 +121,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
       bio: (profileData as any)?.bio || "",
       location: (profileData as any)?.location || "",
       skills: (profileData as any)?.skills || [],
-      linkedin_url: (profileData as any)?.linkedin_url || "",
-      github_url: (profileData as any)?.github_url || "",
-      portfolio_url: (profileData as any)?.portfolio_url || "",
+      date_of_birth: (profileData as any)?.date_of_birth || "",
+      gender: (profileData as any)?.gender || "",
     },
   });
 
@@ -677,21 +676,31 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
                     )}
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>Professional Links</Label>
-                    <div className="grid grid-cols-1 gap-2">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="date_of_birth">Date of Birth</Label>
                       <Input
-                        {...personalForm.register("linkedin_url")}
-                        placeholder="LinkedIn URL"
+                        id="date_of_birth"
+                        type="date"
+                        {...personalForm.register("date_of_birth")}
                       />
-                      <Input
-                        {...personalForm.register("github_url")}
-                        placeholder="GitHub URL"
-                      />
-                      <Input
-                        {...personalForm.register("portfolio_url")}
-                        placeholder="Portfolio URL"
-                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="gender">Gender</Label>
+                      <Select
+                        value={personalForm.watch("gender") || ""}
+                        onValueChange={(value) => personalForm.setValue("gender", value)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select gender" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="male">Male</SelectItem>
+                          <SelectItem value="female">Female</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                          <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 

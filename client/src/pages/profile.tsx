@@ -308,53 +308,18 @@ export default function Profile() {
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">LinkedIn</label>
+                    <label className="text-sm font-medium text-foreground">Date of Birth</label>
                     <p className="text-foreground">
-                      {displayProfile.linkedin_url ? (
-                        <a 
-                          href={displayProfile.linkedin_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline flex items-center"
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          View Profile
-                        </a>
-                      ) : "Not provided"}
+                      {displayProfile.date_of_birth || "Not provided"}
                     </p>
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">GitHub</label>
+                    <label className="text-sm font-medium text-foreground">Gender</label>
                     <p className="text-foreground">
-                      {displayProfile.github_url ? (
-                        <a 
-                          href={displayProfile.github_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline flex items-center"
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          View Profile
-                        </a>
-                      ) : "Not provided"}
-                    </p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Portfolio</label>
-                    <p className="text-foreground">
-                      {displayProfile.portfolio_url ? (
-                        <a 
-                          href={displayProfile.portfolio_url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline flex items-center"
-                        >
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          View Portfolio
-                        </a>
-                      ) : "Not provided"}
+                      {displayProfile.gender ? 
+                        displayProfile.gender.charAt(0).toUpperCase() + displayProfile.gender.slice(1) 
+                        : "Not provided"}
                     </p>
                   </div>
                 </div>
