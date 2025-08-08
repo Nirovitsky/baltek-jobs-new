@@ -1,7 +1,7 @@
 import { apiRequest } from "./queryClient";
 import type { LoginRequest, RegisterRequest, UserProfile } from "@shared/schema";
 
-const API_BASE = "https://api.baltek.net/api";
+const API_BASE = "/api";
 
 export class AuthService {
   private static TOKEN_KEY = "baltek_access_token";
@@ -31,7 +31,7 @@ export class AuthService {
 
   static async login(credentials: LoginRequest): Promise<{ access: string; refresh: string }> {
     try {
-      const response = await fetch(`${API_BASE}/token/`, {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export class AuthService {
 
   static async register(userData: RegisterRequest): Promise<UserProfile> {
     try {
-      const response = await fetch(`${API_BASE}/users/`, {
+      const response = await fetch(`${API_BASE}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export class AuthService {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/token/refresh`, {
+      const response = await fetch(`${API_BASE}/auth/refresh`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

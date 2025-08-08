@@ -84,9 +84,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get current user info - extract user ID from JWT token
   app.get("/api/auth/me", async (req, res) => {
     try {
-      const response = await fetch("https://api.baltek.net/api/auth/me/", {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: "No authorization token provided" });
+      }
+
+      const token = authHeader.split(' ')[1];
+      // Simple JWT decode to get user ID (just parse the payload)
+      const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+      const userId = payload.user_id;
+
+      if (!userId) {
+        return res.status(401).json({ error: "Invalid token format" });
+      }
+
+      const response = await fetch(`https://api.baltek.net/api/users/${userId}/`, {
         headers: {
           Authorization: req.headers.authorization || "",
         },
@@ -102,6 +117,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(data);
     } catch (error) {
       console.error("Error getting user info:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Generic users endpoint
+  app.get("/api/users/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const response = await fetch(`https://api.baltek.net/api/users/${id}/`, {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Get user failed:", response.status, errorData);
+        return res.status(response.status).json({ error: "Failed to get user" });
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error getting user:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   });
