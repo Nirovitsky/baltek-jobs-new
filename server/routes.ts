@@ -463,49 +463,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Send message endpoint - mock implementation since API doesn't support POST
-  app.post("/api/chat/messages", async (req, res) => {
+  // File upload endpoint for chat attachments
+  app.post("/api/files", async (req, res) => {
     try {
-      const { room, content } = req.body;
-      
-      // Since the API doesn't support sending messages, we'll create a mock response
-      const mockMessage = {
-        id: Date.now(), // Use timestamp as ID
-        content: content,
-        sender: {
-          id: 2, // Current user ID
-          first_name: "You", 
-          last_name: "",
-          avatar: ""
+      // Forward file upload to Baltek API
+      const response = await fetch("https://api.baltek.net/api/files/", {
+        method: "POST",
+        headers: {
+          Authorization: req.headers.authorization || "",
         },
-        recipient: {
-          id: 1,
-          first_name: "Recipient",
-          last_name: "",
-          avatar: ""
-        },
-        created_at: new Date().toISOString(),
-        read: false
-      };
+        body: req.body // Forward the file data
+      });
       
-      // Broadcast to WebSocket clients
-      const wss = (app as any).wss;
-      if (wss) {
-        wss.clients.forEach((client: any) => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({
-              type: "new_message",
-              conversation_id: parseInt(room),
-              message: mockMessage
-            }));
-          }
-        });
+      if (!response.ok) {
+        throw new Error(`File upload API error: ${response.status}`);
       }
       
-      res.json(mockMessage);
+      const data = await response.json();
+      res.json(data);
     } catch (error) {
-      console.error("Error sending message:", error);
-      res.status(500).json({ error: "Failed to send message" });
+      console.error("Error uploading file:", error);
+      res.status(500).json({ error: "Failed to upload file" });
     }
   });
 
@@ -538,25 +516,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message.toString());
-        console.log('Received WebSocket message:', data);
+        console.log('Received WebSocket message:', JSON.stringify(data, null, 2));
         
         // Handle different message types
         switch (data.type) {
           case 'join_conversation':
             (ws as any).conversationId = data.conversation_id;
+            console.log(`WebSocket client joined conversation ${data.conversation_id}`);
             break;
+            
           case 'send_message':
-            // Broadcast message to all clients in the same conversation
+            console.log('Processing send_message:', JSON.stringify(data, null, 2));
+            
+            // Create message object to broadcast
+            const messageData = {
+              id: Date.now(), // Use timestamp as ID
+              content: data.data.text,
+              sender: {
+                id: 2, // Current user ID (should get from JWT token)
+                first_name: "You",
+                last_name: "",
+                avatar: ""
+              },
+              recipient: {
+                id: 1,
+                first_name: "Recipient",
+                last_name: "",
+                avatar: ""
+              },
+              created_at: new Date().toISOString(),
+              read: false,
+              attachments: data.data.attachments || []
+            };
+            
+            // Send delivered_message confirmation to sender
+            if (ws.readyState === WebSocket.OPEN) {
+              const deliveryConfirmation = {
+                type: 'delivered_message',
+                data: {
+                  room: data.data.room,
+                  message: messageData
+                }
+              };
+              console.log('Sending delivery confirmation:', JSON.stringify(deliveryConfirmation, null, 2));
+              ws.send(JSON.stringify(deliveryConfirmation));
+            }
+            
+            // Broadcast receive_message to other clients in the same conversation
             wss.clients.forEach((client) => {
-              if (client.readyState === WebSocket.OPEN && (client as any).conversationId === data.conversation_id) {
-                client.send(JSON.stringify({
-                  type: 'new_message',
-                  conversation_id: data.conversation_id,
-                  message: data.message
-                }));
+              if (client !== ws && client.readyState === WebSocket.OPEN && (client as any).conversationId === data.data.room) {
+                const receiveMessage = {
+                  type: 'receive_message',
+                  data: {
+                    room: data.data.room,
+                    message: messageData
+                  }
+                };
+                console.log('Broadcasting receive_message to other clients:', JSON.stringify(receiveMessage, null, 2));
+                client.send(JSON.stringify(receiveMessage));
               }
             });
+            
+            console.log(`Message sent to room ${data.data.room}: "${data.data.text}"`);
             break;
+            
+          default:
+            console.log('Unknown WebSocket message type:', data.type);
         }
       } catch (error) {
         console.error('WebSocket message error:', error);

@@ -99,35 +99,49 @@ export default function ChatPage() {
   // WebSocket connection
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  // Send message mutation
-  const sendMessageMutation = useMutation({
-    mutationFn: async (data: { content: string }) => {
-      if (!selectedConversation) {
-        throw new Error('No conversation selected');
-      }
-      
-      // Check if conversation is expired before sending
-      if (selectedConversationData?.is_expired) {
-        throw new Error('This conversation has expired and is read-only');
-      }
-      
-      return ApiClient.sendMessage(selectedConversation, data.content);
-    },
-    onSuccess: () => {
-      setMessageInput("");
-      // Only invalidate messages, not rooms
-      queryClient.invalidateQueries({ queryKey: ['chat', 'messages', selectedConversation] });
-      scrollToBottom();
-    },
-    onError: (error: any) => {
-      console.error('Send message error:', error);
+  // Send message via WebSocket
+  const sendMessageViaWebSocket = (content: string) => {
+    if (!selectedConversation) {
       toast({
         title: "Error",
-        description: error.message || "Failed to send message. Please try again.",
+        description: "No conversation selected",
         variant: "destructive",
       });
-    },
-  });
+      return;
+    }
+    
+    // Check if conversation is expired before sending
+    if (selectedConversationData?.is_expired) {
+      toast({
+        title: "Error",
+        description: "This conversation has expired and is read-only",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+      toast({
+        title: "Error", 
+        description: "Not connected to chat server. Please refresh the page.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const message = {
+      type: 'send_message',
+      data: {
+        room: selectedConversation,
+        text: content,
+        attachments: [] // TODO: Add file attachment support
+      }
+    };
+    
+    console.log('Sending WebSocket message:', message);
+    socket.send(JSON.stringify(message));
+    setMessageInput("");
+  };
 
   // Mark conversation as read mutation
   const markAsReadMutation = useMutation({
@@ -170,10 +184,16 @@ export default function ChatPage() {
         ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
-            if (data.type === 'new_message') {
-              // Invalidate queries to refresh message list
+            console.log('Received WebSocket message:', data);
+            
+            if (data.type === 'delivered_message') {
+              // Message was successfully sent - refresh message list
+              queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.data.room] });
               queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
-              queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.conversation_id] });
+            } else if (data.type === 'receive_message') {
+              // Received a message from someone else - refresh message list
+              queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.data.room] });
+              queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
             }
           } catch (error) {
             console.error('WebSocket message error:', error);
@@ -238,9 +258,7 @@ export default function ChatPage() {
     e.preventDefault();
     if (!messageInput.trim() || !selectedConversation) return;
 
-    sendMessageMutation.mutate({
-      content: messageInput.trim(),
-    });
+    sendMessageViaWebSocket(messageInput.trim());
   };
 
   const formatTime = (timestamp: string) => {
@@ -564,7 +582,7 @@ export default function ChatPage() {
                     />
                     <Button 
                       type="submit" 
-                      disabled={!messageInput.trim() || sendMessageMutation.isPending}
+                      disabled={!messageInput.trim() || !socket || socket.readyState !== WebSocket.OPEN}
                       data-testid="button-send-message"
                     >
                       <Send className="w-4 h-4" />
