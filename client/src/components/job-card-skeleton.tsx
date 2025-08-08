@@ -20,7 +20,7 @@ export default function JobCardSkeleton() {
           </div>
           
           {/* Company Row */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-gray-50/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
             <div className="flex items-center space-x-3">
               <Skeleton className="w-6 h-6 rounded-full" />
               <Skeleton className="h-4 w-32" />

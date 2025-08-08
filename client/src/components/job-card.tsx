@@ -166,14 +166,14 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
           </div>
           
           {/* Company Row */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-gray-50/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
             <div className="flex items-center space-x-3">
               <div className="w-6 h-6 flex items-center justify-center">
                 {job.organization?.logo ? (
                   <img
                     src={job.organization.logo}
                     alt={job.organization.display_name || job.organization.name || 'Company'}
-                    className="w-6 h-6 object-contain"
+                    className="w-6 h-6 object-cover rounded-full"
                   />
                 ) : (
                   <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
