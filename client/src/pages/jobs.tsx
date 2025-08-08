@@ -95,6 +95,7 @@ export default function Jobs({}: JobsProps) {
 
 
   const handleFiltersChange = (newFilters: JobFilters) => {
+    console.log("Filters changed to:", newFilters);
     setFilters(newFilters);
     // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
