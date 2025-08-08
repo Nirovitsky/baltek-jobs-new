@@ -35,56 +35,54 @@ export default function Navbar({}: NavbarProps) {
     <nav className="navbar-sticky">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo and Navigation Items */}
-          <div className="flex items-center flex-1 space-x-6">
+          {/* Logo */}
+          <div className="flex items-center flex-1">
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
                 <Briefcase className="h-6 w-6 text-primary" />
                 <h1 className="text-xl font-bold text-primary">Baltek Jobs</h1>
               </div>
             </Link>
-
-            {/* Navigation Items */}
-            <div className="flex items-center space-x-4">
-              {/* Applications */}
-              <Link href="/applications">
-                <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto">
-                  <FileText className="h-5 w-5" />
-                  <span className="text-xs mt-1">Applications</span>
-                </Button>
-              </Link>
-
-              {/* Bookmarks */}
-              <Link href="/bookmarks">
-                <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto">
-                  <Bookmark className="h-5 w-5" />
-                  <span className="text-xs mt-1">Bookmarks</span>
-                </Button>
-              </Link>
-
-              {/* Messages */}
-              <Link href="/chat">
-                <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto" data-testid="nav-messages">
-                  <MessageCircle className="h-5 w-5" />
-                  <span className="text-xs mt-1">Chat</span>
-                </Button>
-              </Link>
-
-              {/* Notifications */}
-              <Link href="/notifications">
-                <Button variant="ghost" size="sm" className="relative flex flex-col items-center py-3 px-2 h-auto">
-                  <Bell className="h-5 w-5" />
-                  <span className="text-xs mt-1">Notifications</span>
-                  {notificationCount > 0 && (
-                    <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full"></div>
-                  )}
-                </Button>
-              </Link>
-            </div>
           </div>
 
-          {/* User Menu */}
+          {/* Navigation Items */}
           <div className="flex items-center space-x-4">
+            {/* Applications */}
+            <Link href="/applications">
+              <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto">
+                <FileText className="h-5 w-5" />
+                <span className="text-xs mt-1">Applications</span>
+              </Button>
+            </Link>
+
+            {/* Bookmarks */}
+            <Link href="/bookmarks">
+              <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto">
+                <Bookmark className="h-5 w-5" />
+                <span className="text-xs mt-1">Bookmarks</span>
+              </Button>
+            </Link>
+
+            {/* Messages */}
+            <Link href="/chat">
+              <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto" data-testid="nav-messages">
+                <MessageCircle className="h-5 w-5" />
+                <span className="text-xs mt-1">Chat</span>
+              </Button>
+            </Link>
+
+            {/* Notifications */}
+            <Link href="/notifications">
+              <Button variant="ghost" size="sm" className="relative flex flex-col items-center py-3 px-2 h-auto">
+                <Bell className="h-5 w-5" />
+                <span className="text-xs mt-1">Notifications</span>
+                {notificationCount > 0 && (
+                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full"></div>
+                )}
+              </Button>
+            </Link>
+
+            {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-2">
