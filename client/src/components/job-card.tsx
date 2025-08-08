@@ -166,18 +166,18 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
           </div>
           
           {/* Company Row */}
-          <div className="flex items-center justify-between bg-gradient-to-r from-[#1877F2]/5 to-[#1877F2]/10 backdrop-blur-sm border-t border-[#1877F2]/10 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
+          <div className="flex items-center justify-between bg-gradient-to-br from-[#1877F2]/2 via-[#1877F2]/3 to-[#1877F2]/4 backdrop-blur-sm border-t border-[#1877F2]/8 -mx-6 -mb-6 px-6 py-4 mt-3 rounded-b-xl">
             <div className="flex items-center space-x-3">
               <div className="w-6 h-6 flex items-center justify-center">
                 {job.organization?.logo ? (
                   <img
                     src={job.organization.logo}
                     alt={job.organization.display_name || job.organization.name || 'Company'}
-                    className="w-6 h-6 object-cover rounded-full border border-white/50 shadow-sm"
+                    className="w-6 h-6 object-cover rounded-full border border-white/30 shadow-sm"
                   />
                 ) : (
-                  <div className="w-6 h-6 bg-white/80 rounded-full flex items-center justify-center border border-[#1877F2]/20 shadow-sm">
-                    <Building className="w-3 h-3 text-[#1877F2]/70" />
+                  <div className="w-6 h-6 bg-white/60 rounded-full flex items-center justify-center border border-[#1877F2]/15 shadow-sm">
+                    <Building className="w-3 h-3 text-[#1877F2]/60" />
                   </div>
                 )}
               </div>
