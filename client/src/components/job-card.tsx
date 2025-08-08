@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
+import { viewedJobsCache } from "@/lib/viewed-jobs-cache";
 import type { Job } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,13 @@ interface JobCardProps {
 export default function JobCard({ job, isSelected = false, onSelect, showBookmark = true }: JobCardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  
+  const isViewed = viewedJobsCache.isViewed(job.id);
+  
+  const handleJobSelect = (job: Job) => {
+    viewedJobsCache.markAsViewed(job.id);
+    onSelect(job);
+  };
 
   const bookmarkMutation = useMutation({
     mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 
@@ -135,9 +143,13 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
   return (
     <Card 
       className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-        isSelected ? "ring-2 ring-primary bg-primary/5 opacity-60" : "hover:bg-gray-50/80"
+        isSelected 
+          ? "ring-2 ring-primary bg-primary/5 opacity-60" 
+          : isViewed 
+          ? "opacity-60 hover:bg-gray-50/80" 
+          : "hover:bg-gray-50/80"
       }`}
-      onClick={() => onSelect(job)}
+      onClick={() => handleJobSelect(job)}
     >
       <CardContent className="p-4">
         <div className="flex flex-col space-y-3">
