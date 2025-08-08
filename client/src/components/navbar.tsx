@@ -21,8 +21,7 @@ import {
   Briefcase,
   ChevronDown,
   Heart,
-  FileText,
-  Bookmark
+  FileText
 } from "lucide-react";
 
 interface NavbarProps {}
@@ -46,60 +45,48 @@ export default function Navbar({}: NavbarProps) {
           </div>
 
           {/* Navigation Items */}
-          <div className="flex items-center space-x-2">
-            {/* Applications */}
-            <Link href="/applications">
-              <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto">
-                <FileText className="h-5 w-5" />
-                <span className="text-xs mt-1">Applications</span>
-              </Button>
-            </Link>
-
-            {/* Bookmarks */}
-            <Link href="/bookmarks">
-              <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto">
-                <Bookmark className="h-5 w-5" />
-                <span className="text-xs mt-1">Bookmarks</span>
+          <div className="flex items-center space-x-4">
+            {/* Notifications */}
+            <Link href="/notifications">
+              <Button variant="ghost" size="sm" className="relative">
+                <Bell className="h-5 w-5" />
+                {notificationCount > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
+                  >
+                    {notificationCount}
+                  </Badge>
+                )}
               </Button>
             </Link>
 
             {/* Messages */}
             <Link href="/chat">
-              <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto" data-testid="nav-messages">
+              <Button variant="ghost" size="sm" data-testid="nav-messages">
                 <MessageCircle className="h-5 w-5" />
-                <span className="text-xs mt-1">Chat</span>
-              </Button>
-            </Link>
-
-            {/* Notifications */}
-            <Link href="/notifications">
-              <Button variant="ghost" size="sm" className="relative flex flex-col items-center py-3 px-2 h-auto">
-                <Bell className="h-5 w-5" />
-                <span className="text-xs mt-1">Notifications</span>
-                {notificationCount > 0 && (
-                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-primary rounded-full"></div>
-                )}
               </Button>
             </Link>
 
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex flex-col items-center py-3 px-2 h-auto">
-                  <div className="w-5 h-5 bg-primary rounded-full flex items-center justify-center">
+                <Button variant="ghost" className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                     {user?.avatar ? (
                       <img
                         src={user.avatar}
                         alt={`${user.first_name} ${user.last_name}`}
-                        className="w-5 h-5 rounded-full object-cover"
+                        className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (
-                      <User className="w-3 h-3 text-white" />
+                      <User className="w-4 h-4 text-white" />
                     )}
                   </div>
-                  <span className="text-xs mt-1">
-                    me
+                  <span className="text-sm font-medium hidden md:inline">
+                    {user?.first_name} {user?.last_name}
                   </span>
+                  <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -112,6 +99,18 @@ export default function Navbar({}: NavbarProps) {
                   <Link href="/profile" className="flex items-center">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/bookmarks" className="flex items-center">
+                    <Heart className="mr-2 h-4 w-4" />
+                    <span>Bookmarked Jobs</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/applications" className="flex items-center">
+                    <FileText className="mr-2 h-4 w-4" />
+                    <span>My Applications</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
