@@ -36,10 +36,12 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   const queryClient = useQueryClient();
 
   // Fetch saved filters
-  const { data: savedFilters } = useQuery({
+  const { data: savedFilters, isLoading: savedFiltersLoading } = useQuery({
     queryKey: ["savedFilters"],
     queryFn: () => ApiClient.getSavedFilters(),
   });
+
+  console.log("Saved filters data:", savedFilters);
 
   const { data: locations, isLoading: locationsLoading } = useQuery({
     queryKey: ["locations"],
@@ -94,6 +96,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     mutationFn: (data: CreateSavedFilter) => ApiClient.saveFilter(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
+      queryClient.refetchQueries({ queryKey: ["savedFilters"] });
       setSaveFilterDialogOpen(false);
       setSaveFilterName("");
       toast({
@@ -102,6 +105,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
       });
     },
     onError: (error) => {
+      console.error("Save filter error:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to save filter",
@@ -115,12 +119,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     mutationFn: (id: number) => ApiClient.deleteSavedFilter(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
+      queryClient.refetchQueries({ queryKey: ["savedFilters"] });
       toast({
         title: "Filter deleted",
         description: "Your saved filter has been deleted.",
       });
     },
     onError: (error) => {
+      console.error("Delete filter error:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to delete filter",
@@ -304,9 +310,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
 
           <div className="flex items-center gap-2">
             {/* Saved Filters Dropdown */}
-            {savedFilters && (savedFilters as any)?.results?.length > 0 && (
+            {!savedFiltersLoading && savedFilters && (
+              (Array.isArray(savedFilters) && savedFilters.length > 0) || 
+              ((savedFilters as any)?.results && (savedFilters as any).results.length > 0)
+            ) && (
               <Select onValueChange={(value) => {
-                const savedFilter = (savedFilters as any).results.find((f: SavedFilter) => f.id.toString() === value);
+                // Handle both direct array and paginated response
+                const filtersArray = Array.isArray(savedFilters) ? savedFilters : (savedFilters as any)?.results || [];
+                const savedFilter = filtersArray.find((f: SavedFilter) => f.id.toString() === value);
                 if (savedFilter) {
                   handleLoadSavedFilter(savedFilter);
                 }
@@ -316,7 +327,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                   <SelectValue placeholder="Saved Filters" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(savedFilters as any).results.map((savedFilter: SavedFilter) => (
+                  {(Array.isArray(savedFilters) ? savedFilters : (savedFilters as any)?.results || []).map((savedFilter: SavedFilter) => (
                     <SelectItem key={savedFilter.id} value={savedFilter.id.toString()}>
                       <div className="flex items-center justify-between w-full group">
                         <span className="flex-1">{savedFilter.name}</span>
