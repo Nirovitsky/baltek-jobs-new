@@ -158,9 +158,6 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
             <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
               {formatWorkplaceType(job.workplace_type)}
             </span>
-            <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
-              {job.location?.name || 'Unknown'}
-            </span>
             {(job as any).minimum_education_level && (
               <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
                 {(job as any).minimum_education_level}
@@ -169,22 +166,27 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
           </div>
           
           {/* Company Row */}
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 flex items-center justify-center">
-              {job.organization?.logo ? (
-                <img
-                  src={job.organization.logo}
-                  alt={job.organization.display_name || job.organization.name || 'Company'}
-                  className="w-8 h-8 object-contain"
-                />
-              ) : (
-                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
-                  <Building className="w-4 h-4 text-gray-500" />
-                </div>
-              )}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 flex items-center justify-center">
+                {job.organization?.logo ? (
+                  <img
+                    src={job.organization.logo}
+                    alt={job.organization.display_name || job.organization.name || 'Company'}
+                    className="w-8 h-8 object-contain"
+                  />
+                ) : (
+                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
+                    <Building className="w-4 h-4 text-gray-500" />
+                  </div>
+                )}
+              </div>
+              <span className="font-medium text-gray-900 text-sm truncate">
+                {job.organization?.display_name || job.organization?.name || 'Unknown'}
+              </span>
             </div>
-            <span className="font-medium text-gray-900 text-sm truncate">
-              {job.organization?.display_name || job.organization?.name || 'Unknown'}
+            <span className="text-xs text-gray-500 flex-shrink-0">
+              {job.location?.name || 'Unknown'}
             </span>
           </div>
         </div>

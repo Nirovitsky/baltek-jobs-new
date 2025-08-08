@@ -16,14 +16,16 @@ export default function JobCardSkeleton() {
           <div className="flex items-center gap-2 flex-wrap">
             <Skeleton className="h-6 w-16 rounded-full" />
             <Skeleton className="h-6 w-20 rounded-full" />
-            <Skeleton className="h-6 w-14 rounded-full" />
             <Skeleton className="h-6 w-18 rounded-full" />
           </div>
           
           {/* Company Row */}
-          <div className="flex items-center space-x-3">
-            <Skeleton className="w-8 h-8 rounded-full" />
-            <Skeleton className="h-4 w-32" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <Skeleton className="w-8 h-8 rounded-full" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+            <Skeleton className="h-3 w-20 flex-shrink-0" />
           </div>
         </div>
       </CardContent>
