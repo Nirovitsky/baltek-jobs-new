@@ -46,7 +46,7 @@ export default function Navbar({}: NavbarProps) {
           </div>
 
           {/* Navigation Items */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2">
             {/* Applications */}
             <Link href="/applications">
               <Button variant="ghost" size="sm" className="flex flex-col items-center py-3 px-2 h-auto">
@@ -85,7 +85,7 @@ export default function Navbar({}: NavbarProps) {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="flex items-center space-x-2">
+                <Button variant="ghost" className="flex flex-col items-center py-3 px-2 h-auto">
                   <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                     {user?.avatar ? (
                       <img
@@ -97,10 +97,9 @@ export default function Navbar({}: NavbarProps) {
                       <User className="w-4 h-4 text-white" />
                     )}
                   </div>
-                  <span className="text-sm font-medium hidden md:inline">
-                    {user?.first_name} {user?.last_name}
+                  <span className="text-xs mt-1">
+                    me
                   </span>
-                  <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
