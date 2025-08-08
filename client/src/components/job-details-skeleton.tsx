@@ -3,15 +3,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function JobDetailsSkeleton() {
   return (
-    <Card className="h-full flex flex-col">
+    <Card className="h-full flex flex-col w-full overflow-hidden">
+      {/* Fixed Header - matches exact structure */}
       <div className="p-6 border-b bg-white">
+        {/* Header - matches job-details structure */}
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center space-x-4">
-            <Skeleton className="w-16 h-16 rounded-lg" />
+            <Skeleton className="w-16 h-16 rounded-full" />
             <div>
               <Skeleton className="h-8 w-64 mb-2" />
-              <Skeleton className="h-5 w-48 mb-2" />
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center gap-2">
+                <Skeleton className="h-5 w-48 mb-1" />
+                <Skeleton className="h-4 w-4" />
+              </div>
+              <div className="flex items-center space-x-4 text-sm mt-1">
                 <Skeleton className="h-4 w-32" />
                 <Skeleton className="h-4 w-24" />
               </div>
@@ -23,6 +28,7 @@ export default function JobDetailsSkeleton() {
           </div>
         </div>
 
+        {/* Quick Info Cards - matches exact grid structure */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-gray-50 p-4 rounded-lg">
             <Skeleton className="h-5 w-24 mb-2" />
@@ -37,37 +43,64 @@ export default function JobDetailsSkeleton() {
         </div>
       </div>
 
+      {/* Scrollable Content - matches exact structure */}
       <div className="flex-1 overflow-y-auto job-description-scroll">
         <CardContent className="p-6">
+          {/* Skills section */}
           <div className="mb-6">
             <Skeleton className="h-5 w-32 mb-3" />
             <div className="flex flex-wrap gap-2">
               <Skeleton className="h-6 w-16 rounded-full" />
               <Skeleton className="h-6 w-20 rounded-full" />
               <Skeleton className="h-6 w-14 rounded-full" />
+              <Skeleton className="h-6 w-18 rounded-full" />
+              <Skeleton className="h-6 w-12 rounded-full" />
             </div>
           </div>
 
+          {/* Description section */}
           <div className="mb-6">
             <Skeleton className="h-5 w-28 mb-3" />
-            <div className="space-y-3">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
+            <div className="prose max-w-none">
+              <div className="space-y-3">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
             </div>
           </div>
           
+          {/* Requirements section */}
           <div className="mb-6">
             <Skeleton className="h-5 w-24 mb-3" />
-            <div className="space-y-2">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-11/12" />
-              <Skeleton className="h-4 w-5/6" />
+            <div className="prose max-w-none">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-11/12" />
+                <Skeleton className="h-4 w-5/6" />
+                <Skeleton className="h-4 w-full" />
+              </div>
+            </div>
+          </div>
+
+          {/* Benefits section */}
+          <div className="mb-6">
+            <Skeleton className="h-5 w-20 mb-3" />
+            <div className="prose max-w-none">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-4/5" />
+                <Skeleton className="h-4 w-full" />
+              </div>
             </div>
           </div>
           
-          <div className="mt-8">
-            <Skeleton className="h-10 w-32" />
+          {/* Action Buttons - matches exact structure */}
+          <div className="flex space-x-3">
+            <Skeleton className="h-10 flex-1 rounded" />
           </div>
         </CardContent>
       </div>
