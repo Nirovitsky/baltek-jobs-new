@@ -86,7 +86,7 @@ export default function Bookmarks({}: BookmarksProps) {
                       <Bookmark className="h-4 w-4 text-gray-500" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-gray-900">0 Bookmarked Jobs</h2>
+                      <h2 className="text-lg font-semibold text-gray-900">0 Bookmarks</h2>
                     </div>
                   </div>
                 </div>
@@ -108,7 +108,7 @@ export default function Bookmarks({}: BookmarksProps) {
                     </div>
                     <div>
                       <h2 className="text-lg font-semibold text-primary">
-                        {totalCount.toLocaleString()} Bookmarked Job{totalCount !== 1 ? "s" : ""}
+                        {totalCount.toLocaleString()} Bookmark{totalCount !== 1 ? "s" : ""}
                       </h2>
                     </div>
                   </div>
