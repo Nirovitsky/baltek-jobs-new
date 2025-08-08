@@ -240,10 +240,15 @@ export default function ChatPage() {
   const formatTime = (timestamp: string) => {
     const date = new Date(timestamp);
     const now = new Date();
+    const diffInDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
     const diffInHours = Math.abs(now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
-    if (diffInHours < 24) {
+    if (diffInDays === 0) {
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } else if (diffInDays === 1) {
+      return 'Yesterday';
+    } else if (diffInDays < 7) {
+      return date.toLocaleDateString([], { weekday: 'short' });
     } else {
       return date.toLocaleDateString([], { month: 'short', day: 'numeric' });
     }
@@ -374,7 +379,7 @@ export default function ChatPage() {
                         markAsReadMutation.mutate(conversation.id);
                       }}
                       className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
-                        selectedConversation === conversation.id ? 'bg-blue-50 border-r-2 border-primary' : ''
+                        selectedConversation === conversation.id ? 'bg-primary/10 border-r-4 border-primary' : ''
                       } ${conversation.is_expired ? 'opacity-60' : ''}`}
                       data-testid={`conversation-${conversation.id}`}
                     >
@@ -406,30 +411,16 @@ export default function ChatPage() {
                               )}
                             </div>
                             <span className="text-xs text-gray-500">
-                              {formatTime(conversation.updated_at)}
+                              {formatTime(conversation.last_message?.created_at || conversation.updated_at)}
                             </span>
                           </div>
                           
-                          {conversation.participant?.role && (
-                            <div className="flex items-center gap-1 mb-1">
-                              <User className="w-3 h-3 text-gray-400" />
-                              <span className="text-xs text-gray-500 truncate">
-                                {conversation.participant.role}
-                              </span>
-                            </div>
-                          )}
+
                           
                           {conversation.last_message ? (
-                            <div className="flex items-center justify-between">
-                              <p className="text-sm text-gray-600 truncate flex-1">
-                                {conversation.last_message.content}
-                              </p>
-                              {conversation.last_message.created_at && (
-                                <span className="text-xs text-gray-400 ml-2 whitespace-nowrap">
-                                  {new Date(conversation.last_message.created_at).toLocaleDateString()}
-                                </span>
-                              )}
-                            </div>
+                            <p className="text-sm text-gray-600 truncate">
+                              {conversation.last_message.content}
+                            </p>
                           ) : (
                             <p className="text-sm text-gray-400 italic">No messages yet</p>
                           )}
@@ -468,11 +459,7 @@ export default function ChatPage() {
                           </Badge>
                         )}
                       </div>
-                      {selectedConversationData?.participant?.role && (
-                        <p className="text-sm text-gray-500">
-                          {selectedConversationData.participant.role}
-                        </p>
-                      )}
+
                       {selectedConversationData?.is_expired && (
                         <p className="text-xs text-yellow-600 mt-1">
                           This conversation has expired and is now read-only.

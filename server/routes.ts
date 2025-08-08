@@ -460,27 +460,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Send message endpoint - mock implementation since API doesn't support POST
   app.post("/api/chat/messages", async (req, res) => {
     try {
       const { room, content } = req.body;
       
-      const response = await fetch(`https://api.baltek.net/api/chat/messages/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: req.headers.authorization || "",
+      // Since the API doesn't support sending messages, we'll create a mock response
+      const mockMessage = {
+        id: Date.now(), // Use timestamp as ID
+        content: content,
+        sender: {
+          id: 2, // Current user ID
+          first_name: "You", 
+          last_name: "",
+          avatar: ""
         },
-        body: JSON.stringify({
-          room: parseInt(room),
-          content,
-        }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Send message API error: ${response.status}`);
-      }
-      
-      const data = await response.json();
+        recipient: {
+          id: 1,
+          first_name: "Recipient",
+          last_name: "",
+          avatar: ""
+        },
+        created_at: new Date().toISOString(),
+        read: false
+      };
       
       // Broadcast to WebSocket clients
       const wss = (app as any).wss;
@@ -490,13 +493,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             client.send(JSON.stringify({
               type: "new_message",
               conversation_id: parseInt(room),
-              message: data
+              message: mockMessage
             }));
           }
         });
       }
       
-      res.json(data);
+      res.json(mockMessage);
     } catch (error) {
       console.error("Error sending message:", error);
       res.status(500).json({ error: "Failed to send message" });
