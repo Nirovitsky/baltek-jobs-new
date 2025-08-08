@@ -79,9 +79,15 @@ export default function Jobs({}: JobsProps) {
     return true;
   });
   
-  // Client-side currency filtering as API currency filter appears to be non-functional
-  if (filters.currency) {
+  // Apply client-side currency filtering and update total count
+  let filteredTotalCount = totalCount;
+  if (filters.currency && filters.currency !== "all") {
+    const originalJobsCount = jobs.length;
     jobs = jobs.filter((job: Job) => job.currency === filters.currency);
+    // Estimate total count based on filtering ratio
+    if (originalJobsCount > 0) {
+      filteredTotalCount = Math.round((totalCount || 0) * (jobs.length / originalJobsCount));
+    }
   }
   
   // Ensure selected job is valid after filtering, or select first available job
@@ -95,7 +101,6 @@ export default function Jobs({}: JobsProps) {
 
 
   const handleFiltersChange = (newFilters: JobFilters) => {
-    console.log("Filters changed to:", newFilters);
     setFilters(newFilters);
     // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
@@ -139,7 +144,7 @@ export default function Jobs({}: JobsProps) {
               hasNextPage={hasNextPage}
               isFetchingNextPage={isFetchingNextPage}
               fetchNextPage={fetchNextPage}
-              totalCount={totalCount}
+              totalCount={filteredTotalCount}
               searchQuery={searchQuery}
               onSearchChange={handleSearchChange}
               onSearchSubmit={handleSearchSubmit}

@@ -154,12 +154,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   const handleLoadSavedFilter = (savedFilter: SavedFilter) => {
     // API might return filters in 'data' field instead of 'filters'
     const filtersToApply = (savedFilter as any).data || savedFilter.filters || {};
-    console.log("Loading saved filter:", savedFilter.name, "with filters:", filtersToApply);
     onFiltersChange(filtersToApply);
-    
-    // Force refetch of jobs query to ensure job count updates
-    queryClient.invalidateQueries({ queryKey: ["jobs"] });
-    
     toast({
       title: "Filter loaded",
       description: `Loaded filter: ${savedFilter.name}`,
