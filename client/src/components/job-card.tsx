@@ -189,11 +189,30 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
             </div>
             
             {/* Right side content */}
-            <div className="text-right flex-shrink-0">
+            <div className="text-right flex-shrink-0 flex flex-col items-end gap-2">
               {/* Salary on Top Right */}
               <span className="text-sm font-semibold text-primary whitespace-nowrap">
                 {formatSalary(job)}
               </span>
+              
+              {/* Bookmark Button */}
+              {showBookmark && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => handleBookmark(e, job.id, job.is_bookmarked || false)}
+                  disabled={bookmarkMutation.isPending}
+                  className={`h-8 w-8 p-0 hover:bg-gray-100 ${
+                    job.is_bookmarked ? "text-primary hover:text-primary" : "text-gray-400 hover:text-gray-600"
+                  }`}
+                >
+                  {bookmarkMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Bookmark className={`h-4 w-4 ${job.is_bookmarked ? "fill-primary" : ""}`} />
+                  )}
+                </Button>
+              )}
             </div>
           </div>
         </div>
