@@ -39,6 +39,9 @@ export default function Profile() {
     enabled: !!user?.id,
   });
 
+  // Handle different API response structures - resumes might be in 'results' array or direct array
+  const resumesList = (resumes as any)?.results || resumes || [];
+
   if (!user) {
     return null;
   }
@@ -508,31 +511,31 @@ export default function Profile() {
           )}
 
           {/* Resumes Section */}
-          {(resumes as any)?.results && (resumes as any).results.length > 0 && (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <FileText className="w-6 h-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <CardTitle>Resumes</CardTitle>
-                      <CardDescription>Uploaded resume documents</CardDescription>
-                    </div>
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-orange-600" />
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsProfileModalOpen(true)}
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
+                  <div>
+                    <CardTitle>Resumes</CardTitle>
+                    <CardDescription>Uploaded resume documents</CardDescription>
+                  </div>
                 </div>
-              </CardHeader>
-              <CardContent>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsProfileModalOpen(true)}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {resumesList.length > 0 ? (
                 <div className="space-y-3">
-                  {(resumes as any).results.map((resume: any) => (
+                  {resumesList.map((resume: any) => (
                     <div key={resume.id} className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center space-x-3">
                         <FileText className="w-8 h-8 text-primary" />
@@ -557,9 +560,23 @@ export default function Profile() {
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              ) : (
+                <div className="text-center py-8 bg-gray-50 rounded-lg">
+                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <p className="text-gray-600 font-medium">No resumes uploaded</p>
+                  <p className="text-sm text-gray-500">Upload your resume to showcase your experience to employers.</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => setIsProfileModalOpen(true)}
+                  >
+                    Upload Resume
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
 
         </div>
