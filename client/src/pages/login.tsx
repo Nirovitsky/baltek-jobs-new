@@ -9,17 +9,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "wouter";
 import { Briefcase } from "lucide-react";
+import { useState } from "react";
 
 export default function Login() {
   const { login, loginError, loginLoading } = useAuth();
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm<LoginRequest>({
     resolver: zodResolver(loginSchema),
   });
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, ""); // Remove non-digits
+    if (value.length <= 8) {
+      setPhoneNumber(value);
+      setValue("phone", "+993" + value); // Set full phone number with country code
+    }
+  };
 
   const onSubmit = (data: LoginRequest) => {
     login(data);
@@ -53,12 +64,20 @@ export default function Login() {
 
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  {...register("phone")}
-                  placeholder="Enter your phone number"
-                />
+                <div className="flex">
+                  <div className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-300 rounded-l-md text-sm text-gray-600">
+                    +993
+                  </div>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={phoneNumber}
+                    onChange={handlePhoneChange}
+                    placeholder="12345678"
+                    maxLength={8}
+                    className="rounded-l-none"
+                  />
+                </div>
                 {errors.phone && (
                   <p className="text-sm text-red-600">{errors.phone.message}</p>
                 )}
