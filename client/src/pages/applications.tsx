@@ -1,14 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
-import { Briefcase, Calendar, MapPin, Building2, FileText, Clock, CheckCircle, XCircle, AlertCircle, DollarSign, X } from "lucide-react";
+import { Briefcase, Clock, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import JobDetails from "@/components/job-details";
+import JobCard from "@/components/job-card";
+import JobListSkeleton from "@/components/job-list-skeleton";
+import JobDetailsSkeleton from "@/components/job-details-skeleton";
 
 export default function ApplicationsPage() {
   const { user } = useAuth();
@@ -54,23 +52,22 @@ export default function ApplicationsPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-6">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Applications</h1>
-            <p className="text-gray-600 mt-2">Track your job applications and their status</p>
+      <div className="h-screen flex">
+        {/* Left Column - Applications List */}
+        <div className="w-1/2 border-r border-gray-200 bg-gray-50">
+          <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+            <h1 className="text-2xl font-semibold text-gray-900">My Applications</h1>
+            <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
           </div>
-          
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
-              <Card key={i} className="animate-pulse">
-                <CardContent className="p-6">
-                  <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="p-6">
+            <JobListSkeleton />
+          </div>
+        </div>
+
+        {/* Right Column - Job Details */}
+        <div className="w-1/2 bg-white">
+          <div className="p-6">
+            <JobDetailsSkeleton />
           </div>
         </div>
       </div>
@@ -79,13 +76,21 @@ export default function ApplicationsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-6">
-        <div className="text-center py-12">
-          <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Unable to Load Applications</h2>
-          <p className="text-gray-600 mb-4">There was an error loading your job applications.</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
+      <div className="h-screen flex">
+        <div className="w-1/2 border-r border-gray-200 bg-gray-50">
+          <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+            <h1 className="text-2xl font-semibold text-gray-900">My Applications</h1>
+            <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
+          </div>
+          <div className="p-6">
+            <div className="text-center py-12">
+              <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">Unable to Load Applications</h2>
+              <p className="text-gray-600 mb-4">There was an error loading your job applications.</p>
+            </div>
+          </div>
         </div>
+        <div className="w-1/2 bg-white"></div>
       </div>
     );
   }
@@ -100,155 +105,88 @@ export default function ApplicationsPage() {
 
   if (appliedJobs.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-6">
-        <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">My Applications</h1>
-            <p className="text-gray-600 mt-2">Track your job applications and their status</p>
+      <div className="h-screen flex">
+        <div className="w-1/2 border-r border-gray-200 bg-gray-50">
+          <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+            <h1 className="text-2xl font-semibold text-gray-900">My Applications</h1>
+            <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
           </div>
-          
-          <div className="text-center py-12">
-            <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">No Applications Yet</h2>
-            <p className="text-gray-600 mb-6">You haven't applied to any jobs yet. Start browsing and apply to jobs that match your interests!</p>
-            <Button onClick={() => window.location.href = "/jobs"}>Browse Jobs</Button>
+          <div className="p-6">
+            <div className="text-center py-12">
+              <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+              <h2 className="text-xl font-semibold text-gray-900 mb-2">No Applications Yet</h2>
+              <p className="text-gray-600 mb-6">You haven't applied to any jobs yet. Start browsing and apply to jobs that match your interests!</p>
+            </div>
           </div>
         </div>
+        <div className="w-1/2 bg-white"></div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="space-y-8">
-        {/* Modern Header */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
+    <div className="h-screen flex">
+      {/* Left Column - Applications List */}
+      <div className="w-1/2 border-r border-gray-200 bg-gray-50">
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-1">My Applications</h1>
-              <p className="text-gray-600">Track your job application progress</p>
+              <h1 className="text-2xl font-semibold text-gray-900">My Applications</h1>
+              <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
             </div>
-            
-            <div className="text-right">
-              <div className="bg-white rounded-lg px-4 py-3 shadow-sm border border-blue-200">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Applications</p>
-                <p className="text-2xl font-bold text-primary mt-1">{appliedJobs.length}</p>
-              </div>
+            <div className="text-sm text-gray-500">
+              {appliedJobs.length} application{appliedJobs.length !== 1 ? 's' : ''}
             </div>
           </div>
         </div>
-
-        {/* Modern Application Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {appliedJobs.map((job: any) => (
-            <Card 
-              key={job.id} 
-              className="hover:shadow-md transition-all duration-200 border-0 shadow-sm bg-white rounded-xl overflow-hidden cursor-pointer"
-              onClick={() => setSelectedJobId(job.id)}
-            >
-              <CardContent className="p-0">
-                <div className="p-5">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h3 className="text-xl font-bold text-gray-900">
-                          {job.title}
-                        </h3>
-                        <Badge className="bg-green-50 text-green-700 border border-green-200 px-2 py-1 rounded-lg text-xs font-medium">
-                          <span className="flex items-center gap-1">
-                            <CheckCircle className="w-3 h-3" />
-                            Under Review
-                          </span>
-                        </Badge>
-                      </div>
-                    
-                      {/* Company and Location Info */}
-                      <div className="space-y-1 mb-3">
-                        {job.organization && (
-                          <div className="flex items-center gap-1 text-sm text-gray-600">
-                            <Building2 className="w-4 h-4" />
-                            <span className="font-medium truncate">{job.organization.display_name || job.organization.name}</span>
-                          </div>
-                        )}
-                        
-                        <div className="flex items-center justify-between text-xs text-gray-500">
-                          {job.location && (
-                            <div className="flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
-                              <span>{job.location.name}</span>
-                            </div>
-                          )}
-                          
-                          <div className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            <span>Recently</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Salary Information */}
-                      {(job.payment_from || job.payment_to) && (
-                        <div className="flex items-center gap-2 mb-3">
-                          <DollarSign className="w-4 h-4 text-gray-500" />
-                          <span className="font-medium text-gray-900">
-                            {job.payment_from && job.payment_to 
-                              ? `${job.currency || '$'}${job.payment_from.toLocaleString()} - ${job.currency || '$'}${job.payment_to.toLocaleString()}`
-                              : job.payment_from 
-                                ? `${job.currency || '$'}${job.payment_from.toLocaleString()}+`
-                                : 'Not specified'
-                            }
-                            {job.payment_frequency && (
-                              <span className="text-sm text-gray-500 font-normal ml-1">
-                                / {job.payment_frequency.toLowerCase()}
-                              </span>
-                            )}
-                          </span>
-                        </div>
-                      )}
-
-
-
-                      {/* Skills Tags */}
-                      {job.skills && job.skills.length > 0 && (
-                        <div className="flex flex-wrap gap-1">
-                          {job.skills.slice(0, 4).map((skill: string, index: number) => (
-                            <Badge key={index} variant="secondary" className="px-2 py-1 text-xs bg-blue-50 text-blue-700 border-0">
-                              {skill}
-                            </Badge>
-                          ))}
-                          {job.skills.length > 4 && (
-                            <Badge variant="secondary" className="px-2 py-1 text-xs bg-gray-50 text-gray-600 border-0">
-                              +{job.skills.length - 4}
-                            </Badge>
-                          )}
-                        </div>
-                      )}
+        
+        <div className="overflow-y-auto h-[calc(100vh-80px)]">
+          <div className="p-6 space-y-4">
+            {appliedJobs.map((job: any) => {
+              // Add application status badge to job data
+              const jobWithStatus = {
+                ...job,
+                applicationStatus: 'Under Review' // Default status since API doesn't provide specific status
+              };
+              
+              return (
+                <div key={job.id} className="relative">
+                  <JobCard
+                    job={jobWithStatus}
+                    isSelected={selectedJobId === job.id}
+                    onSelect={() => setSelectedJobId(job.id)}
+                    showBookmark={false}
+                  />
+                  {/* Application Status Overlay */}
+                  <div className="absolute top-3 right-3">
+                    <div className="flex items-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2 py-1 rounded text-xs font-medium">
+                      <CheckCircle className="w-3 h-3" />
+                      Applied
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              );
+            })}
+          </div>
         </div>
+      </div>
 
-        {applicationsData?.next && (
-          <div className="text-center pt-6">
-            <Button variant="outline">Load More Applications</Button>
+      {/* Right Column - Job Details */}
+      <div className="w-1/2 bg-white">
+        {selectedJobId ? (
+          <div className="h-full overflow-y-auto">
+            <JobDetails jobId={selectedJobId} />
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full p-6">
+            <div className="text-center">
+              <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Select an Application</h3>
+              <p className="text-gray-500">Choose an application from the list to view details</p>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Job Details Modal */}
-      <Dialog open={!!selectedJobId} onOpenChange={() => setSelectedJobId(null)}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
-          <DialogHeader className="p-6 pb-0">
-            <DialogTitle>Job Details</DialogTitle>
-          </DialogHeader>
-          <div className="px-6 pb-6">
-            {selectedJobId && <JobDetails jobId={selectedJobId} />}
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
