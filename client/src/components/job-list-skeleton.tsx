@@ -11,12 +11,14 @@ interface JobListSkeletonProps {
 export default function JobListSkeleton({ count = 8 }: JobListSkeletonProps) {
   return (
     <div className="h-full flex flex-col w-full">
-      <div className="p-6 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
+      <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
         {/* Job Count with Icon */}
         <div className="flex items-center space-x-2">
-          <Skeleton className="w-8 h-8 rounded-full" />
+          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+            <Search className="h-4 w-4 text-gray-400" />
+          </div>
           <div>
-            <Skeleton className="h-6 w-32" />
+            <Skeleton className="h-6 w-24" />
           </div>
         </div>
         
@@ -24,7 +26,7 @@ export default function JobListSkeleton({ count = 8 }: JobListSkeletonProps) {
         <form className="relative">
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Skeleton className="h-5 w-5 rounded" />
+              <Search className="h-5 w-5 text-gray-400" />
             </div>
             <Input
               type="text"
