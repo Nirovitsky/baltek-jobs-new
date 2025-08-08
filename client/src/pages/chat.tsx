@@ -105,6 +105,12 @@ export default function ChatPage() {
       if (!selectedConversation) {
         throw new Error('No conversation selected');
       }
+      
+      // Check if conversation is expired before sending
+      if (selectedConversationData?.is_expired) {
+        throw new Error('This conversation has expired and is read-only');
+      }
+      
       return ApiClient.sendMessage(selectedConversation, data.content);
     },
     onSuccess: () => {
@@ -546,7 +552,7 @@ export default function ChatPage() {
               </CardContent>
 
               {/* Message Input - Only show if not expired */}
-              {!selectedConversationData?.is_expired && (
+              {!selectedConversationData?.is_expired ? (
                 <div className="p-4 border-t">
                   <form onSubmit={handleSendMessage} className="flex space-x-2">
                     <Input
@@ -564,6 +570,16 @@ export default function ChatPage() {
                       <Send className="w-4 h-4" />
                     </Button>
                   </form>
+                </div>
+              ) : (
+                <div className="p-4 border-t bg-gray-50">
+                  <div className="flex items-center justify-center py-3">
+                    <div className="text-center text-gray-500">
+                      <Clock className="w-5 h-5 mx-auto mb-2 text-gray-400" />
+                      <p className="text-sm font-medium">Conversation Expired</p>
+                      <p className="text-xs">This conversation is now read-only</p>
+                    </div>
+                  </div>
                 </div>
               )}
             </>

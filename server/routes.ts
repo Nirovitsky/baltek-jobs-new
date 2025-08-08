@@ -349,6 +349,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const currentUserId = currentUser?.id || null;
           const otherMember = room.members?.find((member: any) => member.id !== currentUserId);
           
+          // Check if conversation is expired
+          const isExpired = room.is_expired || (room.content_object && room.content_object.status === 'expired');
+          
           const transformed = {
             ...room,
             participant: {
@@ -370,8 +373,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             } : null,
             unread_count: room.unread_message_count || 0,
             updated_at: room.last_message_date_created ? new Date(room.last_message_date_created * 1000).toISOString() : new Date().toISOString(),
-            is_expired: room.is_expired || false, // Add expired status for read-only mode
-            is_active: room.is_active !== false // Default to active unless explicitly false
+            is_expired: isExpired, // Add expired status for read-only mode
+            is_active: room.is_active !== false && !isExpired // Not active if expired
           };
           
           console.log('Transformed room:', JSON.stringify(transformed, null, 2));
