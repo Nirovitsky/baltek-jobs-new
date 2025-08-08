@@ -139,62 +139,53 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
       onClick={() => onSelect(job)}
     >
       <CardContent className="p-4">
-        <div className="relative w-full">
-          <div className="flex justify-between items-start w-full">
-            <div className="flex-1 pr-4 min-w-0">
-              {/* Job Title */}
-              <h3 className="font-semibold text-base text-gray-900 line-clamp-2 mb-3 leading-tight">
-                {job.title || 'Job Title'}
-              </h3>
-              
-              {/* Tags in Middle */}
-              <div className="flex items-center gap-2 mb-4">
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
-                  {formatJobType(job.job_type)}
-                </span>
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
-                  {formatWorkplaceType(job.workplace_type)}
-                </span>
-                <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
-                  {job.location?.name || 'Unknown'}
-                </span>
-                {(job as any).minimum_education_level && (
-                  <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
-                    {(job as any).minimum_education_level}
-                  </span>
-                )}
-              </div>
-              
-              {/* Company at Bottom Left */}
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 flex items-center justify-center">
-                  {job.organization?.logo ? (
-                    <img
-                      src={job.organization.logo}
-                      alt={job.organization.display_name || job.organization.name || 'Company'}
-                      className="w-8 h-8 object-contain"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
-                      <Building className="w-4 h-4 text-gray-500" />
-                    </div>
-                  )}
-                </div>
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="font-medium text-gray-900 text-sm truncate">
-                    {job.organization?.display_name || job.organization?.name || 'Unknown'}
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Right side content */}
-            <div className="text-right flex-shrink-0">
-              {/* Salary on Top Right */}
-              <span className="text-sm font-semibold text-primary whitespace-nowrap">
-                {formatSalary(job)}
+        <div className="flex flex-col space-y-3">
+          {/* Top Row: Job Title and Salary */}
+          <div className="flex justify-between items-start">
+            <h3 className="font-semibold text-base text-gray-900 line-clamp-2 leading-tight flex-1 pr-4">
+              {job.title || 'Job Title'}
+            </h3>
+            <span className="text-sm font-semibold text-primary whitespace-nowrap flex-shrink-0">
+              {formatSalary(job)}
+            </span>
+          </div>
+          
+          {/* Tags Row */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
+              {formatJobType(job.job_type)}
+            </span>
+            <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
+              {formatWorkplaceType(job.workplace_type)}
+            </span>
+            <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
+              {job.location?.name || 'Unknown'}
+            </span>
+            {(job as any).minimum_education_level && (
+              <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
+                {(job as any).minimum_education_level}
               </span>
+            )}
+          </div>
+          
+          {/* Company Row */}
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 flex items-center justify-center">
+              {job.organization?.logo ? (
+                <img
+                  src={job.organization.logo}
+                  alt={job.organization.display_name || job.organization.name || 'Company'}
+                  className="w-8 h-8 object-contain"
+                />
+              ) : (
+                <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
+                  <Building className="w-4 h-4 text-gray-500" />
+                </div>
+              )}
             </div>
+            <span className="font-medium text-gray-900 text-sm truncate">
+              {job.organization?.display_name || job.organization?.name || 'Unknown'}
+            </span>
           </div>
         </div>
       </CardContent>
