@@ -13,7 +13,8 @@ import {
   Bookmark, 
   Building,
   Calendar,
-  Loader2
+  Loader2,
+  CheckCircle
 } from "lucide-react";
 
 interface JobCardProps {
@@ -145,9 +146,17 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
             <h3 className="font-semibold text-base text-gray-900 line-clamp-2 leading-tight flex-1 pr-4">
               {job.title || 'Job Title'}
             </h3>
-            <span className="text-sm font-semibold text-primary whitespace-nowrap flex-shrink-0">
-              {formatSalary(job)}
-            </span>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {job.my_application_id && (
+                <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                  <CheckCircle className="w-3 h-3" />
+                  <span>Applied</span>
+                </div>
+              )}
+              <span className="text-sm font-semibold text-primary whitespace-nowrap">
+                {formatSalary(job)}
+              </span>
+            </div>
           </div>
           
           {/* Tags Row */}
