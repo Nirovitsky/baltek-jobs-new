@@ -21,7 +21,8 @@ import {
   Briefcase,
   ChevronDown,
   Heart,
-  FileText
+  FileText,
+  Bookmark
 } from "lucide-react";
 
 interface NavbarProps {}
@@ -46,6 +47,22 @@ export default function Navbar({}: NavbarProps) {
 
           {/* Navigation Items */}
           <div className="flex items-center space-x-4">
+            {/* Applications */}
+            <Link href="/applications">
+              <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                <FileText className="h-5 w-5" />
+                <span className="hidden md:inline">Applications</span>
+              </Button>
+            </Link>
+
+            {/* Bookmarks */}
+            <Link href="/bookmarks">
+              <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+                <Bookmark className="h-5 w-5" />
+                <span className="hidden md:inline">Bookmarks</span>
+              </Button>
+            </Link>
+
             {/* Notifications */}
             <Link href="/notifications">
               <Button variant="ghost" size="sm" className="relative">
@@ -99,18 +116,6 @@ export default function Navbar({}: NavbarProps) {
                   <Link href="/profile" className="flex items-center">
                     <User className="mr-2 h-4 w-4" />
                     <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/bookmarks" className="flex items-center">
-                    <Heart className="mr-2 h-4 w-4" />
-                    <span>Bookmarked Jobs</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/applications" className="flex items-center">
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>My Applications</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
