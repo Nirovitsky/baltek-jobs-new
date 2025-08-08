@@ -25,8 +25,8 @@ export default function Jobs({}: JobsProps) {
   );
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Debounce search query with 400ms delay for optimal UX
-  const debouncedSearchQuery = useDebounce(searchQuery, 400);
+  // Debounce search query with 1000ms delay
+  const debouncedSearchQuery = useDebounce(searchQuery, 1000);
 
   const {
     data,
