@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
@@ -110,6 +110,13 @@ export default function ApplicationsPage() {
   const appliedJobs = applicationsList.filter((job: any) => 
     job.my_application_id !== null && job.my_application_id !== undefined
   );
+
+  // Auto-select first job when applications load
+  useEffect(() => {
+    if (appliedJobs.length > 0 && !selectedJobId) {
+      setSelectedJobId(appliedJobs[0].id);
+    }
+  }, [appliedJobs, selectedJobId]);
 
   if (appliedJobs.length === 0) {
     return (
