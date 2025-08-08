@@ -9,37 +9,37 @@ const STATIC_FILTER_OPTIONS = {
     { value: "part_time", label: "Part Time" },
     { value: "contract", label: "Contract" },
     { value: "internship", label: "Internship" },
-    { value: "freelance", label: "Freelance" }
+    { value: "freelance", label: "Freelance" },
   ],
   WORKPLACE_TYPES: [
     { value: "on_site", label: "On Site" },
     { value: "remote", label: "Remote" },
-    { value: "hybrid", label: "Hybrid" }
+    { value: "hybrid", label: "Hybrid" },
   ],
   CURRENCIES: [
     { value: "TMT", label: "TMT" },
-    { value: "USD", label: "USD" }
+    { value: "USD", label: "USD" },
   ],
   PAYMENT_FREQUENCIES: [
     { value: "hourly", label: "Hourly" },
     { value: "daily", label: "Daily" },
     { value: "weekly", label: "Weekly" },
     { value: "monthly", label: "Monthly" },
-    { value: "yearly", label: "Yearly" }
+    { value: "yearly", label: "Yearly" },
   ],
   EDUCATION_LEVELS: [
     { value: "high_school", label: "High School" },
     { value: "associate", label: "Associate Degree" },
     { value: "bachelor", label: "Bachelor's Degree" },
     { value: "master", label: "Master's Degree" },
-    { value: "doctorate", label: "Doctorate" }
-  ]
+    { value: "doctorate", label: "Doctorate" },
+  ],
 };
 
 export class ApiClient {
   private static async makeRequest<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
   ): Promise<T> {
     try {
       const url = `${API_BASE}${endpoint}`;
@@ -54,7 +54,7 @@ export class ApiClient {
       // Don't set Content-Type for FormData - let browser handle it
       if (options.body instanceof FormData) {
         const filteredHeaders = Object.fromEntries(
-          Object.entries(headers).filter(([key]) => key !== "Content-Type")
+          Object.entries(headers).filter(([key]) => key !== "Content-Type"),
         );
         headers = filteredHeaders as typeof headers;
       }
@@ -65,10 +65,10 @@ export class ApiClient {
       });
 
       if (response.status === 401 && token) {
-        console.warn('Received 401, attempting token refresh...');
+        console.warn("Received 401, attempting token refresh...");
         try {
           await AuthService.refreshToken();
-          console.log('Token refresh successful, retrying request...');
+          console.log("Token refresh successful, retrying request...");
           // Retry with new token
           const retryHeaders = {
             ...headers,
@@ -78,20 +78,20 @@ export class ApiClient {
             ...options,
             headers: retryHeaders,
           });
-          
+
           if (retryResponse.status === 401) {
-            console.warn('Still unauthorized after refresh, logging out...');
+            console.warn("Still unauthorized after refresh, logging out...");
             AuthService.logout();
             throw new Error("Session expired, please login again");
           }
-          
+
           if (!retryResponse.ok) {
             throw new Error(`API Error: ${retryResponse.status}`);
           }
-          
+
           return retryResponse.json();
         } catch (error) {
-          console.warn('Token refresh failed, logging out:', error);
+          console.warn("Token refresh failed, logging out:", error);
           AuthService.logout();
           throw new Error("Session expired, please login again");
         }
@@ -108,21 +108,19 @@ export class ApiClient {
     }
   }
 
-
-
   // Jobs API
   static async getJobs(params: Record<string, any> = {}) {
     const searchParams = new URLSearchParams();
     // Temporarily exclude currency from API params as API currency filter is non-functional
     // We'll handle currency filtering on the client side
     const { currency, ...apiParams } = params;
-    
+
     Object.entries(apiParams).forEach(([key, value]) => {
       if (value !== undefined && value !== null && value !== "") {
         searchParams.append(key, value.toString());
       }
     });
-    
+
     const query = searchParams.toString();
     return this.makeRequest(`/jobs/${query ? `?${query}` : ""}`);
   }
@@ -132,9 +130,9 @@ export class ApiClient {
   }
 
   static async bookmarkJob(id: number, isBookmarked: boolean) {
-    return this.makeRequest(`/jobs/${id}/bookmark/`, { 
+    return this.makeRequest(`/jobs/${id}/bookmark/`, {
       method: "POST",
-      body: JSON.stringify({ bookmarked: !isBookmarked })
+      body: JSON.stringify({ bookmarked: !isBookmarked }),
     });
   }
 
@@ -143,12 +141,16 @@ export class ApiClient {
   }
 
   // Applications API
-  static async applyToJob(data: any, resumeFile?: File, selectedResumeId?: string) {
+  static async applyToJob(
+    data: any,
+    resumeFile?: File,
+    selectedResumeId?: string,
+  ) {
     // Always use FormData since API expects multipart form
     const formData = new FormData();
     formData.append("job", data.job.toString());
     formData.append("cover_letter", data.cover_letter || "");
-    
+
     // Handle resume submission - either file upload or existing resume ID
     if (resumeFile) {
       formData.append("resume", resumeFile);
@@ -179,7 +181,7 @@ export class ApiClient {
   }
 
   static async getCurrentUser() {
-    return this.makeRequest("/auth/me");
+    return this.makeRequest("/users/me");
   }
 
   static async updateProfile(id: number, data: any) {
@@ -282,7 +284,10 @@ export class ApiClient {
     return this.makeRequest("/chat/rooms/");
   }
 
-  static async getChatMessages(roomId: number, params: Record<string, any> = {}) {
+  static async getChatMessages(
+    roomId: number,
+    params: Record<string, any> = {},
+  ) {
     const searchParams = new URLSearchParams();
     searchParams.append("room", roomId.toString());
     Object.entries(params).forEach(([key, value]) => {
@@ -290,7 +295,7 @@ export class ApiClient {
         searchParams.append(key, value.toString());
       }
     });
-    
+
     const query = searchParams.toString();
     return this.makeRequest(`/chat/messages?${query}`);
   }
@@ -310,7 +315,7 @@ export class ApiClient {
         searchParams.append(key, value.toString());
       }
     });
-    
+
     const query = searchParams.toString();
     return this.makeRequest(`/organizations/${query ? `?${query}` : ""}`);
   }
@@ -355,8 +360,6 @@ export class ApiClient {
     return this.makeRequest("/universities/");
   }
 
-
-
   static async getLanguages() {
     return this.makeRequest("/languages/");
   }
@@ -399,6 +402,4 @@ export class ApiClient {
       method: "DELETE",
     });
   }
-
-
 }

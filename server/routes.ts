@@ -194,6 +194,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get individual job details
+  app.get("/api/jobs/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const response = await fetch(`https://api.baltek.net/api/jobs/${id}/`, {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch job ${id}: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching job:", error);
+      res.status(500).json({ error: "Failed to fetch job" });
+    }
+  });
+
+  // Get saved job filters
+  app.get("/api/jobs/saved_filters/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/jobs/saved_filters/", {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch saved filters: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching saved filters:", error);
+      res.status(500).json({ error: "Failed to fetch saved filters" });
+    }
+  });
+
+  // Get locations for filtering
+  app.get("/api/locations/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/locations/");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch locations: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching locations:", error);
+      res.status(500).json({ error: "Failed to fetch locations" });
+    }
+  });
+
+  // Get categories for filtering
+  app.get("/api/categories/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/categories/");
+      if (!response.ok) {
+        throw new Error(`Failed to fetch categories: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ error: "Failed to fetch categories" });
+    }
+  });
+
+  // Get user resumes
+  app.get("/api/users/resumes/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/users/resumes/", {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch resumes: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching resumes:", error);
+      res.status(500).json({ error: "Failed to fetch resumes" });
+    }
+  });
+
   // Fetch all organizations (for company suggestions)
   app.get("/api/organizations", async (req, res) => {
     try {
