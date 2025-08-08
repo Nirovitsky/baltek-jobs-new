@@ -166,18 +166,18 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
           </div>
           
           {/* Company Row */}
-          <div className="flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-gray-50/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
+          <div className="flex items-center justify-between bg-gradient-to-r from-[#1877F2]/5 to-[#1877F2]/10 backdrop-blur-sm border-t border-[#1877F2]/10 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
             <div className="flex items-center space-x-3">
               <div className="w-6 h-6 flex items-center justify-center">
                 {job.organization?.logo ? (
                   <img
                     src={job.organization.logo}
                     alt={job.organization.display_name || job.organization.name || 'Company'}
-                    className="w-6 h-6 object-cover rounded-full"
+                    className="w-6 h-6 object-cover rounded-full border border-white/50 shadow-sm"
                   />
                 ) : (
-                  <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
-                    <Building className="w-3 h-3 text-gray-500" />
+                  <div className="w-6 h-6 bg-white/80 rounded-full flex items-center justify-center border border-[#1877F2]/20 shadow-sm">
+                    <Building className="w-3 h-3 text-[#1877F2]/70" />
                   </div>
                 )}
               </div>
@@ -185,7 +185,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                 {job.organization?.display_name || job.organization?.name || 'Unknown'}
               </span>
             </div>
-            <span className="text-xs text-gray-500 flex-shrink-0">
+            <span className="text-xs text-gray-600 flex-shrink-0">
               {job.location?.name || 'Unknown'}
             </span>
           </div>
