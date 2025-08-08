@@ -63,7 +63,7 @@ export default function Bookmarks({}: BookmarksProps) {
           <div className="w-[30%] h-full flex-shrink-0">
             {isLoading ? (
               <div className="h-full flex flex-col w-full">
-                <div className="p-6 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
+                <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <Skeleton className="w-8 h-8 rounded-full" />
                     <div>
@@ -80,7 +80,7 @@ export default function Bookmarks({}: BookmarksProps) {
               </div>
             ) : jobs.length === 0 ? (
               <div className="h-full flex flex-col w-full">
-                <div className="p-6 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
+                <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                       <Bookmark className="h-4 w-4 text-gray-500" />
@@ -101,7 +101,7 @@ export default function Bookmarks({}: BookmarksProps) {
               </div>
             ) : (
               <div className="h-full flex flex-col w-full">
-                <div className="p-6 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
+                <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                       <Bookmark className="h-4 w-4 text-white" />
