@@ -152,14 +152,14 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
           
           {/* Tags Row */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
+            <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
               {formatJobType(job.job_type)}
             </span>
-            <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
+            <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
               {formatWorkplaceType(job.workplace_type)}
             </span>
             {(job as any).minimum_education_level && (
-              <span className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full flex-shrink-0">
+              <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
                 {(job as any).minimum_education_level}
               </span>
             )}
@@ -168,16 +168,16 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
           {/* Company Row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 flex items-center justify-center">
+              <div className="w-6 h-6 flex items-center justify-center">
                 {job.organization?.logo ? (
                   <img
                     src={job.organization.logo}
                     alt={job.organization.display_name || job.organization.name || 'Company'}
-                    className="w-8 h-8 object-contain"
+                    className="w-6 h-6 object-contain"
                   />
                 ) : (
-                  <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
-                    <Building className="w-4 h-4 text-gray-500" />
+                  <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
+                    <Building className="w-3 h-3 text-gray-500" />
                   </div>
                 )}
               </div>

@@ -14,15 +14,15 @@ export default function JobCardSkeleton() {
           
           {/* Tags Row */}
           <div className="flex items-center gap-2 flex-wrap">
-            <Skeleton className="h-6 w-16 rounded-full" />
-            <Skeleton className="h-6 w-20 rounded-full" />
-            <Skeleton className="h-6 w-18 rounded-full" />
+            <Skeleton className="h-5 w-16 rounded" />
+            <Skeleton className="h-5 w-20 rounded" />
+            <Skeleton className="h-5 w-18 rounded" />
           </div>
           
           {/* Company Row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Skeleton className="w-8 h-8 rounded-full" />
+              <Skeleton className="w-6 h-6 rounded-full" />
               <Skeleton className="h-4 w-32" />
             </div>
             <Skeleton className="h-3 w-20 flex-shrink-0" />
