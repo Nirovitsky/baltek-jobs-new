@@ -356,11 +356,11 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             {hasActiveFilters && (
               <Button
                 onClick={clearFilters}
-                variant="outline"
-                className="text-gray-700 h-8 w-8 p-0"
+                variant="ghost"
+                className="text-gray-700 hover:text-gray-900 h-8 w-8 p-0 border-0"
                 title="Clear filters"
               >
-                <X className="h-3 w-3" />
+                <X className="h-4 w-4" />
               </Button>
             )}
 
