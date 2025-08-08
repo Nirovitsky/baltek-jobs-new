@@ -357,10 +357,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               <Button
                 onClick={clearFilters}
                 variant="outline"
-                className="text-gray-700 h-8 text-xs px-2"
+                className="text-gray-700 h-8 w-8 p-0"
+                title="Clear filters"
               >
-                <X className="h-3 w-3 mr-1" />
-                Clear
+                <X className="h-3 w-3" />
               </Button>
             )}
 
