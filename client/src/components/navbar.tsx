@@ -49,17 +49,15 @@ export default function Navbar({}: NavbarProps) {
           <div className="flex items-center space-x-4">
             {/* Applications */}
             <Link href="/applications">
-              <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm">
                 <FileText className="h-5 w-5" />
-                <span className="hidden md:inline">Applications</span>
               </Button>
             </Link>
 
             {/* Bookmarks */}
             <Link href="/bookmarks">
-              <Button variant="ghost" size="sm" className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm">
                 <Bookmark className="h-5 w-5" />
-                <span className="hidden md:inline">Bookmarks</span>
               </Button>
             </Link>
 
