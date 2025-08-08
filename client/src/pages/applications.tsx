@@ -5,8 +5,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { Briefcase, Clock, CheckCircle, XCircle, AlertCircle, Building } from "lucide-react";
 import JobDetails from "@/components/job-details";
 import JobCard from "@/components/job-card";
-import JobListSkeleton from "@/components/job-list-skeleton";
+import JobCardSkeleton from "@/components/job-card-skeleton";
 import JobDetailsSkeleton from "@/components/job-details-skeleton";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ApplicationsPage() {
   const { user } = useAuth();
@@ -52,23 +53,34 @@ export default function ApplicationsPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex gap-6 h-[calc(100vh-120px)]">
-          {/* Left Column - Applications List */}
-          <div className="w-1/2 border border-gray-200 rounded-lg bg-white shadow-sm">
-            <div className="border-b border-gray-200 px-6 py-4">
-              <h1 className="text-xl font-semibold text-gray-900">My Applications</h1>
-              <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
+      <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
+          <div className="flex gap-6 h-full">
+            <div className="w-[30%] h-full flex-shrink-0">
+              <div className="h-full flex flex-col w-full">
+                <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                      <Briefcase className="h-4 w-4 text-gray-400" />
+                    </div>
+                    <div>
+                      <Skeleton className="h-6 w-32" />
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <JobCardSkeleton key={i} />
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="p-6">
-              <JobListSkeleton />
-            </div>
-          </div>
 
-          {/* Right Column - Job Details */}
-          <div className="w-1/2 border border-gray-200 rounded-lg bg-white shadow-sm">
-            <div className="p-6">
-              <JobDetailsSkeleton />
+            <div className="w-[70%] h-full flex-shrink-0 min-w-0 pl-8">
+              <div className="h-full w-full">
+                <JobDetailsSkeleton />
+              </div>
             </div>
           </div>
         </div>
@@ -78,22 +90,14 @@ export default function ApplicationsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex gap-6 h-[calc(100vh-120px)]">
-          <div className="w-1/2 border border-gray-200 rounded-lg bg-white shadow-sm">
-            <div className="border-b border-gray-200 px-6 py-4">
-              <h1 className="text-xl font-semibold text-gray-900">My Applications</h1>
-              <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
-            </div>
-            <div className="p-6">
-              <div className="text-center py-12">
-                <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                <h2 className="text-lg font-semibold text-gray-900 mb-2">Unable to Load Applications</h2>
-                <p className="text-gray-600 mb-4">There was an error loading your job applications.</p>
-              </div>
-            </div>
-          </div>
-          <div className="w-1/2 border border-gray-200 rounded-lg bg-white shadow-sm"></div>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Something went wrong
+          </h2>
+          <p className="text-gray-600">
+            {error instanceof Error ? error.message : "Failed to load applications"}
+          </p>
         </div>
       </div>
     );
@@ -109,143 +113,101 @@ export default function ApplicationsPage() {
 
   if (appliedJobs.length === 0) {
     return (
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex gap-6 h-[calc(100vh-120px)]">
-          <div className="w-1/2 border border-gray-200 rounded-lg bg-white shadow-sm">
-            <div className="border-b border-gray-200 px-6 py-4">
-              <h1 className="text-xl font-semibold text-gray-900">My Applications</h1>
-              <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
+      <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
+          <div className="flex gap-6 h-full">
+            <div className="w-[30%] h-full flex-shrink-0">
+              <div className="h-full flex flex-col w-full">
+                <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                      <Briefcase className="h-4 w-4 text-gray-500" />
+                    </div>
+                    <div>
+                      <h2 className="text-lg font-semibold text-gray-900">0 Applications</h2>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="flex-1 min-h-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <Briefcase className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No applications yet</h3>
+                    <p className="text-gray-600">Jobs you apply to will appear here for tracking.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="p-6">
-              <div className="text-center py-12">
-                <Briefcase className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                <h2 className="text-lg font-semibold text-gray-900 mb-2">No Applications Yet</h2>
-                <p className="text-gray-600 mb-6">You haven't applied to any jobs yet. Start browsing and apply to jobs that match your interests!</p>
+            
+            <div className="w-[70%] h-full flex-shrink-0 min-w-0 pl-8">
+              <div className="h-full w-full flex items-center justify-center">
+                <div className="text-center">
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    Select an application to view details
+                  </h3>
+                  <p className="text-gray-600">
+                    Choose an application from the list to see more information
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-          <div className="w-1/2 border border-gray-200 rounded-lg bg-white shadow-sm"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="flex gap-6 h-[calc(100vh-120px)]">
-        {/* Left Column - Applications List */}
-        <div className="w-1/2 border border-gray-200 rounded-lg bg-white shadow-sm flex flex-col">
-          <div className="border-b border-gray-200 px-6 py-4 flex-shrink-0">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-xl font-semibold text-gray-900">My Applications</h1>
-                <p className="text-sm text-gray-600 mt-1">Track your job applications</p>
-              </div>
-              <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                {appliedJobs.length} total
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-6 space-y-4">
-              {appliedJobs.map((job: any) => (
-                <div 
-                  key={job.id} 
-                  className={`relative cursor-pointer transition-all duration-200 ${
-                    selectedJobId === job.id 
-                      ? 'ring-2 ring-blue-500 ring-opacity-50' 
-                      : ''
-                  }`}
-                  onClick={() => setSelectedJobId(job.id)}
-                >
-                  <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200 relative">
-                    {/* Status Badge */}
-                    <div className="absolute top-3 right-3">
-                      <div className="flex items-center gap-1 bg-green-50 text-green-700 border border-green-200 px-2 py-1 rounded text-xs font-medium">
-                        <CheckCircle className="w-3 h-3" />
-                        Applied
-                      </div>
-                    </div>
-
-                    {/* Job Title and Salary Row */}
-                    <div className="flex items-start justify-between mb-4">
-                      <h3 className="font-semibold text-gray-900 text-lg pr-16">
-                        {job.title}
-                      </h3>
-                      <span className="text-sm font-medium text-gray-900 flex-shrink-0">
-                        {job.payment_from && job.payment_to 
-                          ? `${job.currency || ''}${job.payment_from?.toLocaleString('de-DE')} - ${job.currency || ''}${job.payment_to?.toLocaleString('de-DE')}`
-                          : job.payment_from 
-                            ? `From ${job.currency || ''}${job.payment_from?.toLocaleString('de-DE')}`
-                            : job.payment_to
-                              ? `Up to ${job.currency || ''}${job.payment_to?.toLocaleString('de-DE')}`
-                              : 'Salary not specified'
-                        }
-                      </span>
-                    </div>
-                    
-                    {/* Tags Row */}
-                    <div className="flex items-center gap-2 flex-wrap mb-4">
-                      <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
-                        {job.job_type ? job.job_type.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : 'Unknown'}
-                      </span>
-                      <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
-                        {job.workplace_type ? job.workplace_type.replace('_', ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) : 'Unknown'}
-                      </span>
-                      {job.minimum_education_level && (
-                        <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
-                          {job.minimum_education_level}
-                        </span>
-                      )}
-                    </div>
-                    
-                    {/* Company Row */}
-                    <div className="flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-gray-50/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-6 h-6 flex items-center justify-center">
-                          {job.organization?.logo ? (
-                            <img
-                              src={job.organization.logo}
-                              alt={job.organization.display_name || job.organization.name || 'Company'}
-                              className="w-6 h-6 object-cover rounded-full"
-                            />
-                          ) : (
-                            <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
-                              <Briefcase className="w-3 h-3 text-gray-500" />
-                            </div>
-                          )}
-                        </div>
-                        <span className="font-medium text-gray-900 text-sm truncate">
-                          {job.organization?.display_name || job.organization?.name || 'Unknown'}
-                        </span>
-                      </div>
-                      <span className="text-xs text-gray-500 flex-shrink-0">
-                        {job.location?.name || 'Remote'}
-                      </span>
-                    </div>
+    <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
+        <div className="flex gap-6 h-full">
+          <div className="w-[30%] h-full flex-shrink-0">
+            <div className="h-full flex flex-col w-full">
+              <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+                <div className="flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                    <Briefcase className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-primary">
+                      {appliedJobs.length} Application{appliedJobs.length !== 1 ? "s" : ""}
+                    </h2>
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column - Job Details */}
-        <div className="w-1/2 border border-gray-200 rounded-lg bg-white shadow-sm">
-          {selectedJobId ? (
-            <div className="h-full overflow-y-auto">
-              <JobDetails jobId={selectedJobId} />
-            </div>
-          ) : (
-            <div className="flex items-center justify-center h-full p-6">
-              <div className="text-center">
-                <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">Select an Application</h3>
-                <p className="text-gray-500">Choose an application from the list to view details</p>
+              </div>
+              
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
+                {appliedJobs.map((job: any) => (
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    isSelected={selectedJobId === job.id}
+                    onSelect={() => setSelectedJobId(job.id)}
+                    showBookmark={false}
+                  />
+                ))}
               </div>
             </div>
-          )}
+          </div>
+
+          <div className="w-[70%] h-full flex-shrink-0 min-w-0 pl-8">
+            <div className="h-full w-full">
+              {selectedJobId ? (
+                <JobDetails jobId={selectedJobId} />
+              ) : appliedJobs.length > 0 ? (
+                <div className="w-[70%] h-full flex items-center justify-center">
+                  <div className="text-center">
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                      Select an application to view details
+                    </h3>
+                    <p className="text-gray-600">
+                      Choose an application from the list to see more information
+                    </p>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
     </div>
