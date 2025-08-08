@@ -208,10 +208,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('Sample room before transformation:', JSON.stringify(data.results[0], null, 2));
         data.results = data.results.map((room: any) => {
           // Use organization and job info for display (no dependency on owner object)
-          const organization = room.organization;
+          const organization = room.organization || room.content_object?.job?.organization;
           const jobTitle = room.job?.title || room.content_object?.job?.title;
           
-          console.log('Room transformation - organization:', organization);
+          console.log('Room transformation - organization:', organization?.display_name || organization?.official_name);
           console.log('Room transformation - jobTitle:', jobTitle);
           
           // Create room name from organization + title
