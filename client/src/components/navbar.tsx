@@ -18,11 +18,11 @@ import {
   User, 
   Settings, 
   LogOut, 
-  Briefcase,
   ChevronDown,
   Heart,
   FileText
 } from "lucide-react";
+import baltekIcon from "@/assets/baltek-icon.svg";
 
 interface NavbarProps {}
 
@@ -38,8 +38,8 @@ export default function Navbar({}: NavbarProps) {
           <div className="flex items-center flex-1">
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
-                <Briefcase className="h-6 w-6 text-primary" />
-                <h1 className="text-xl font-bold text-primary">Baltek Jobs</h1>
+                <img src={baltekIcon} alt="Baltek" className="h-6 w-6" />
+                <h1 className="text-xl font-bold text-primary">baltek jobs</h1>
               </div>
             </Link>
           </div>
