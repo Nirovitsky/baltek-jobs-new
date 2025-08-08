@@ -24,9 +24,10 @@ interface JobCardProps {
   isSelected?: boolean;
   onSelect: (job: Job) => void;
   showBookmark?: boolean;
+  disableViewedOpacity?: boolean;
 }
 
-export default function JobCard({ job, isSelected = false, onSelect, showBookmark = true }: JobCardProps) {
+export default function JobCard({ job, isSelected = false, onSelect, showBookmark = true, disableViewedOpacity = false }: JobCardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -147,7 +148,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
       className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
         isSelected 
           ? "ring-2 ring-primary bg-primary/5 opacity-60" 
-          : isViewed 
+          : (isViewed && !disableViewedOpacity) 
           ? "opacity-60 hover:bg-gray-50/80" 
           : "hover:bg-gray-50/80"
       }`}

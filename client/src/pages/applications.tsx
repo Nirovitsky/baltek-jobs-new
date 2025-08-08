@@ -191,6 +191,7 @@ export default function ApplicationsPage() {
                     isSelected={selectedJobId === job.id}
                     onSelect={() => setSelectedJobId(job.id)}
                     showBookmark={false}
+                    disableViewedOpacity={true}
                   />
                 ))}
               </div>

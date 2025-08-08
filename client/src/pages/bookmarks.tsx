@@ -122,6 +122,7 @@ export default function Bookmarks({}: BookmarksProps) {
                       isSelected={selectedJobId === job.id}
                       onSelect={handleJobSelect}
                       showBookmark={false}
+                      disableViewedOpacity={true}
                     />
                   ))}
                 </div>
