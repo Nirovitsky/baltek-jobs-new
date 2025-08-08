@@ -67,8 +67,7 @@ export default function Bookmarks({}: BookmarksProps) {
                   <div className="flex items-center space-x-2">
                     <Skeleton className="w-8 h-8 rounded-full" />
                     <div>
-                      <Skeleton className="h-6 w-16 mb-1" />
-                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-6 w-32" />
                     </div>
                   </div>
                 </div>
@@ -87,8 +86,7 @@ export default function Bookmarks({}: BookmarksProps) {
                       <Bookmark className="h-4 w-4 text-gray-500" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-gray-900">0</h2>
-                      <p className="text-sm text-gray-600 -mt-1">Bookmarked Jobs</p>
+                      <h2 className="text-lg font-semibold text-gray-900">0 Bookmarked Jobs</h2>
                     </div>
                   </div>
                 </div>
@@ -110,11 +108,8 @@ export default function Bookmarks({}: BookmarksProps) {
                     </div>
                     <div>
                       <h2 className="text-lg font-semibold text-primary">
-                        {totalCount.toLocaleString()}
+                        {totalCount.toLocaleString()} Bookmarked Job{totalCount !== 1 ? "s" : ""}
                       </h2>
-                      <p className="text-sm text-gray-600 -mt-1">
-                        Bookmarked Job{totalCount !== 1 ? "s" : ""}
-                      </p>
                     </div>
                   </div>
                 </div>
