@@ -30,20 +30,59 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
   const bookmarkMutation = useMutation({
     mutationFn: ({ jobId, isBookmarked }: { jobId: number; isBookmarked: boolean }) => 
       ApiClient.bookmarkJob(jobId, isBookmarked),
-    onSuccess: (_, { isBookmarked }) => {
-      queryClient.invalidateQueries({ queryKey: ["jobs"] });
-      queryClient.invalidateQueries({ queryKey: ["bookmarked-jobs"] });
-      toast({
-        title: isBookmarked ? "Job unbookmarked" : "Job bookmarked",
-        description: isBookmarked ? "Job removed from your bookmarks" : "Job added to your bookmarks",
+    onMutate: async ({ jobId, isBookmarked }) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ["jobs"] });
+      await queryClient.cancelQueries({ queryKey: ["bookmarked-jobs"] });
+
+      // Snapshot the previous value
+      const previousJobs = queryClient.getQueryData(["jobs"]);
+      const previousBookmarkedJobs = queryClient.getQueryData(["bookmarked-jobs"]);
+
+      // Optimistically update to the new value
+      queryClient.setQueryData(["jobs"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          pages: old.pages?.map((page: any) => ({
+            ...page,
+            data: page.data?.map((job: Job) => 
+              job.id === jobId 
+                ? { ...job, is_bookmarked: !isBookmarked }
+                : job
+            )
+          }))
+        };
       });
+
+      // Return a context object with the snapshotted value
+      return { previousJobs, previousBookmarkedJobs };
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousJobs) {
+        queryClient.setQueryData(["jobs"], context.previousJobs);
+      }
+      if (context?.previousBookmarkedJobs) {
+        queryClient.setQueryData(["bookmarked-jobs"], context.previousBookmarkedJobs);
+      }
+      
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to update bookmark",
         variant: "destructive",
       });
+    },
+    onSuccess: (_, { isBookmarked }) => {
+      toast({
+        title: isBookmarked ? "Job unbookmarked" : "Job bookmarked",
+        description: isBookmarked ? "Job removed from your bookmarks" : "Job added to your bookmarks",
+      });
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure we have up-to-date data
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["bookmarked-jobs"] });
     },
   });
 
