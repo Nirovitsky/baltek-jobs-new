@@ -38,7 +38,7 @@ export default function Navbar({}: NavbarProps) {
           <div className="flex items-center flex-1">
             <Link href="/" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
-                <img src={baltekIcon} alt="Baltek" className="h-6 w-6" />
+                <img src={baltekIcon} alt="Baltek" className="h-8 w-8" />
                 <h1 className="text-xl font-bold text-primary">baltek jobs</h1>
               </div>
             </Link>
