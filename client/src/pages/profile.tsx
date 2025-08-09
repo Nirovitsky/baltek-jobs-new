@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiClient } from "@/lib/api";
+import { Link } from "wouter";
+import type { Organization } from "@shared/schema";
 
 import ProfileModal from "@/components/profile-modal";
 import { Button } from "@/components/ui/button";
@@ -10,7 +12,128 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, MapPin, Mail, Phone, Edit, Loader2, GraduationCap, Briefcase, Code2, ExternalLink, FileText } from "lucide-react";
+import { User, MapPin, Mail, Phone, Edit, Loader2, GraduationCap, Briefcase, Code2, ExternalLink, FileText, Building2, Building } from "lucide-react";
+
+// Mock categories for companies since API doesn't provide category data
+const MOCK_CATEGORIES = {
+  1: "IT & Technology",
+  21: "Healthcare",
+  22: "Marketing & Advertising", 
+  23: "Finance & Banking",
+  24: "Education",
+  25: "Manufacturing",
+  26: "Retail & E-commerce",
+  27: "Construction",
+  28: "Transportation",
+  29: "Food & Beverage",
+  30: "Media & Entertainment",
+  31: "Real Estate",
+  32: "Consulting",
+  33: "Energy & Utilities",
+  34: "Telecommunications",
+  35: "Automotive",
+  36: "Pharmaceutical",
+  37: "Legal Services",
+  38: "Tourism & Hospitality",
+  39: "Agriculture",
+  40: "Fashion & Apparel"
+} as const;
+
+// Company Suggestions Component
+function CompanySuggestions() {
+  const { data: companiesData, isLoading } = useQuery({
+    queryKey: ["/api/organizations"],
+    queryFn: () => fetch("/api/organizations?limit=15").then(res => res.json()),
+  });
+
+  // Handle both array and paginated response formats
+  const allCompanies = Array.isArray(companiesData) ? companiesData : (companiesData?.results || []);
+  
+  // Add mock categories to companies
+  const companiesWithCategories = allCompanies.map((company: Organization) => ({
+    ...company,
+    mockCategory: MOCK_CATEGORIES[company.id as keyof typeof MOCK_CATEGORIES] || "Business Services"
+  }));
+  
+  const suggestions = companiesWithCategories.slice(0, 10) || [];
+
+  return (
+    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden w-full">
+      <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <Building2 className="h-5 w-5 text-primary" />
+          Suggested Companies
+        </h3>
+      </div>
+      
+      {isLoading ? (
+        <div>
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i}>
+              <div className="flex items-center gap-4 p-4">
+                <Skeleton className="h-12 w-12 rounded-full ring-2 ring-gray-100" />
+                <div className="flex-1">
+                  <Skeleton className="h-4 w-32 mb-2" />
+                  <Skeleton className="h-3 w-24 mb-2" />
+                  <Skeleton className="h-3 w-20" />
+                </div>
+                <Skeleton className="h-4 w-4" />
+              </div>
+              {i < 9 && <hr className="border-gray-200 dark:border-gray-700" />}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>
+          {suggestions.map((company: Organization, index: number) => (
+            <div key={company.id}>
+              <Link href={`/company/${company.id}`}>
+                <div className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group">
+                  <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
+                    <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
+                    <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/20 text-primary text-sm font-bold border border-primary/20">
+                      {(company.display_name || company.official_name || 'CO')
+                        .split(' ')
+                        .map(word => word.charAt(0))
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors text-sm">
+                      {company.display_name || company.official_name}
+                    </h4>
+                    
+                    <div className="flex items-center gap-1 mt-1">
+                      <Building2 className="h-3 w-3 text-gray-500" />
+                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                        {(company as any).mockCategory}
+                      </span>
+                    </div>
+                    
+                    {company.location?.name && (
+                      <div className="flex items-center gap-1 mt-1">
+                        <MapPin className="h-3 w-3 text-gray-400" />
+                        <span className="text-xs text-gray-400 truncate">
+                          {company.location.name}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary transition-colors" />
+                </div>
+              </Link>
+              {index < suggestions.length - 1 && <hr className="border-gray-200 dark:border-gray-700" />}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Profile() {
   const { user } = useAuth();
@@ -237,112 +360,116 @@ export default function Profile() {
 
   return (
     <div className="h-full overflow-y-auto">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-6">
-          {/* Personal Information Card */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Personal Information</CardTitle>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsProfileModalOpen(true)}
-                >
-                  <Edit className="w-4 h-4" />
-                </Button>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Personal Information Card - Full Width */}
+        <Card className="mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <CardTitle>Personal Information</CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsProfileModalOpen(true)}
+              >
+                <Edit className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="space-y-6">
+              {/* Profile Header with Avatar */}
+              <div className="flex items-center space-x-4 pb-4 border-b">
+                <Avatar className="w-16 h-16">
+                  {displayProfile.avatar ? (
+                    <AvatarImage src={displayProfile.avatar} alt={`${displayProfile.first_name} ${displayProfile.last_name}`} />
+                  ) : (
+                    <AvatarFallback className="text-lg bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
+                      {(displayProfile.first_name?.[0] || "") + (displayProfile.last_name?.[0] || "")}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+                <div className="flex-1">
+                  <h1 className="text-xl font-bold text-foreground">
+                    {displayProfile.first_name} {displayProfile.last_name}
+                  </h1>
+                  {displayProfile.profession && (
+                    <p className="text-muted-foreground">{displayProfile.profession}</p>
+                  )}
+                  {displayProfile.bio && (
+                    <p className="text-sm text-gray-600 mt-1">{displayProfile.bio}</p>
+                  )}
+                </div>
               </div>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <div className="space-y-6">
-                {/* Profile Header with Avatar */}
-                <div className="flex items-center space-x-4 pb-4 border-b">
-                  <Avatar className="w-16 h-16">
-                    {displayProfile.avatar ? (
-                      <AvatarImage src={displayProfile.avatar} alt={`${displayProfile.first_name} ${displayProfile.last_name}`} />
-                    ) : (
-                      <AvatarFallback className="text-lg bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
-                        {(displayProfile.first_name?.[0] || "") + (displayProfile.last_name?.[0] || "")}
-                      </AvatarFallback>
-                    )}
-                  </Avatar>
-                  <div className="flex-1">
-                    <h1 className="text-xl font-bold text-foreground">
-                      {displayProfile.first_name} {displayProfile.last_name}
-                    </h1>
-                    {displayProfile.profession && (
-                      <p className="text-muted-foreground">{displayProfile.profession}</p>
-                    )}
-                    {displayProfile.bio && (
-                      <p className="text-sm text-gray-600 mt-1">{displayProfile.bio}</p>
-                    )}
-                  </div>
+
+              {/* Personal Details Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-foreground">Email</label>
+                  <p className="text-foreground flex items-center">
+                    <Mail className="w-4 h-4 mr-2 text-gray-400" />
+                    {displayProfile.email || "Not provided"}
+                  </p>
                 </div>
 
-                {/* Personal Details Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Email</label>
-                    <p className="text-foreground flex items-center">
-                      <Mail className="w-4 h-4 mr-2 text-gray-400" />
-                      {displayProfile.email || "Not provided"}
-                    </p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Phone</label>
-                    <p className="text-foreground flex items-center">
-                      <Phone className="w-4 h-4 mr-2 text-gray-400" />
-                      {displayProfile.phone || "Not provided"}
-                    </p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Location</label>
-                    <p className="text-foreground flex items-center">
-                      <MapPin className="w-4 h-4 mr-2 text-gray-400" />
-                      {typeof displayProfile.location === 'string' 
-                        ? displayProfile.location 
-                        : displayProfile.location?.name || displayProfile.location || "Not provided"}
-                    </p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Date of Birth</label>
-                    <p className="text-foreground">
-                      {displayProfile.date_of_birth || "Not provided"}
-                    </p>
-                  </div>
-
-                  <div className="space-y-1">
-                    <label className="text-sm font-medium text-foreground">Gender</label>
-                    <p className="text-foreground">
-                      {displayProfile.gender ? 
-                        displayProfile.gender.charAt(0).toUpperCase() + displayProfile.gender.slice(1) 
-                        : "Not provided"}
-                    </p>
-                  </div>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-foreground">Phone</label>
+                  <p className="text-foreground flex items-center">
+                    <Phone className="w-4 h-4 mr-2 text-gray-400" />
+                    {displayProfile.phone || "Not provided"}
+                  </p>
                 </div>
 
-                {/* Skills Section */}
-                {displayProfile.skills && displayProfile.skills.length > 0 && (
-                  <div className="pt-4 border-t">
-                    <label className="text-sm font-medium text-foreground mb-3 block">Skills</label>
-                    <div className="flex flex-wrap gap-2">
-                      {displayProfile.skills.map((skill: string, index: number) => (
-                        <Badge key={index} variant="secondary">
-                          {skill}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-foreground">Location</label>
+                  <p className="text-foreground flex items-center">
+                    <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                    {typeof displayProfile.location === 'string' 
+                      ? displayProfile.location 
+                      : displayProfile.location?.name || displayProfile.location || "Not provided"}
+                  </p>
+                </div>
 
-          {/* Experience Section */}
-          {(fullProfile as any)?.experiences && (fullProfile as any).experiences.length > 0 && (
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-foreground">Date of Birth</label>
+                  <p className="text-foreground">
+                    {displayProfile.date_of_birth || "Not provided"}
+                  </p>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-medium text-foreground">Gender</label>
+                  <p className="text-foreground">
+                    {displayProfile.gender ? 
+                      displayProfile.gender.charAt(0).toUpperCase() + displayProfile.gender.slice(1) 
+                      : "Not provided"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Skills Section */}
+              {displayProfile.skills && displayProfile.skills.length > 0 && (
+                <div className="pt-4 border-t">
+                  <label className="text-sm font-medium text-foreground mb-3 block">Skills</label>
+                  <div className="flex flex-wrap gap-2">
+                    {displayProfile.skills.map((skill: string, index: number) => (
+                      <Badge key={index} variant="secondary">
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Profile Sections */}
+          <div className="lg:col-span-2 space-y-6">
+
+            {/* Experience Section */}
+            {(fullProfile as any)?.experiences && (fullProfile as any).experiences.length > 0 && (
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
@@ -541,9 +668,13 @@ export default function Profile() {
                 </div>
               )}
             </CardContent>
-          </Card>
+            </Card>
+          </div>
 
-
+          {/* Right Column - Company Suggestions */}
+          <div className="lg:col-span-1">
+            <CompanySuggestions />
+          </div>
         </div>
       </div>
 
