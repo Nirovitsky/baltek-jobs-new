@@ -277,12 +277,11 @@ export default function Profile() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <User className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <User className="w-6 h-6 text-gray-600" />
                     </div>
                     <div>
                       <CardTitle>Personal Information</CardTitle>
-                      <CardDescription>Basic profile information and contact details</CardDescription>
                     </div>
                   </div>
                   <Button
@@ -388,8 +387,8 @@ export default function Profile() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Briefcase className="w-6 h-6 text-primary" />
+                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <Briefcase className="w-6 h-6 text-gray-600" />
                       </div>
                       <div>
                         <CardTitle>Work Experience</CardTitle>
@@ -430,8 +429,8 @@ export default function Profile() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <GraduationCap className="w-6 h-6 text-green-600" />
+                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <GraduationCap className="w-6 h-6 text-gray-600" />
                       </div>
                       <div>
                         <CardTitle>Education</CardTitle>
@@ -472,8 +471,8 @@ export default function Profile() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <Code2 className="w-6 h-6 text-purple-600" />
+                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <Code2 className="w-6 h-6 text-gray-600" />
                       </div>
                       <div>
                         <CardTitle>Projects</CardTitle>
@@ -521,8 +520,8 @@ export default function Profile() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <FileText className="w-6 h-6 text-orange-600" />
+                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <FileText className="w-6 h-6 text-gray-600" />
                     </div>
                     <div>
                       <CardTitle>Resumes</CardTitle>
