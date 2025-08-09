@@ -14,6 +14,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from "@/hooks/use-toast";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import { 
   User, 
   Bell, 
@@ -190,8 +191,7 @@ export default function SettingsPage() {
   if (profileLoading) {
     return (
       <div>
-        {/* Spacer to match jobs filter height */}
-        <div className="h-[72px]"></div>
+        <BreadcrumbNavigation />
         <div className="max-w-4xl mx-auto px-4 py-8">
           <div className="animate-pulse space-y-4">
           <div className="h-8 bg-gray-200 rounded w-1/4"></div>
@@ -204,8 +204,7 @@ export default function SettingsPage() {
 
   return (
     <div>
-      {/* Spacer to match jobs filter height */}
-      <div className="h-[72px]"></div>
+      <BreadcrumbNavigation />
       <div className="max-w-4xl mx-auto px-4 py-8" data-testid="settings-page">
       {/* Header */}
       <div className="mb-8">

@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import type { Organization } from "@shared/schema";
+import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 // Mock categories for companies since API doesn't provide category data
 const MOCK_CATEGORIES = {
@@ -164,8 +165,7 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
 function CompanyProfileSkeleton() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Spacer to match jobs filter height */}
-      <div className="h-[72px]"></div>
+      <BreadcrumbNavigation />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
@@ -235,8 +235,7 @@ export default function CompanyProfile() {
   if (companyError || !company) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-        {/* Spacer to match jobs filter height */}
-        <div className="h-[72px]"></div>
+        <BreadcrumbNavigation />
         <div className="flex items-center justify-center">
           <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -272,8 +271,7 @@ export default function CompanyProfile() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Spacer to match jobs filter height */}
-      <div className="h-[72px]"></div>
+      <BreadcrumbNavigation />
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Company Info */}

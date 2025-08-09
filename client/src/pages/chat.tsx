@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import { 
   MessageCircle, 
   Send, 
@@ -303,8 +304,7 @@ export default function ChatPage() {
   if (roomsError && !roomsLoading) {
     return (
       <div>
-        {/* Spacer to match jobs filter height */}
-        <div className="h-[72px]"></div>
+        <BreadcrumbNavigation />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="text-center py-8">
           <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -328,8 +328,7 @@ export default function ChatPage() {
 
   return (
     <div>
-      {/* Spacer to match jobs filter height */}
-      <div className="h-[72px]"></div>
+      <BreadcrumbNavigation />
       <div className="max-w-7xl mx-auto px-4 py-8" data-testid="chat-page">
       {/* Header */}
       <div className="mb-6">

@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, MapPin, Mail, Phone, Edit, Loader2, GraduationCap, Briefcase, Code2, ExternalLink, FileText, Building2, Building } from "lucide-react";
+import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 // Mock categories for companies since API doesn't provide category data
 const MOCK_CATEGORIES = {
@@ -170,8 +171,7 @@ export default function Profile() {
   if (profileLoading) {
     return (
       <div className="h-full overflow-y-auto">
-        {/* Spacer to match jobs filter height */}
-        <div className="h-[72px]"></div>
+        <BreadcrumbNavigation />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Profile Sections Skeleton */}
@@ -258,8 +258,7 @@ export default function Profile() {
 
   return (
     <div className="h-full overflow-y-auto">
-      {/* Spacer to match jobs filter height */}
-      <div className="h-[72px]"></div>
+      <BreadcrumbNavigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Two Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

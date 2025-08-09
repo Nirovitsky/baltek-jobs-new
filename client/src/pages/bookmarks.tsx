@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, Bookmark } from "lucide-react";
+import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 interface BookmarksProps {}
 
@@ -46,8 +47,7 @@ export default function Bookmarks({}: BookmarksProps) {
   if (error) {
     return (
       <div className="h-full p-6">
-        {/* Spacer to match jobs filter height */}
-        <div className="h-[72px]"></div>
+        <BreadcrumbNavigation />
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
@@ -60,8 +60,7 @@ export default function Bookmarks({}: BookmarksProps) {
 
   return (
     <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
-      {/* Spacer to match jobs filter height */}
-      <div className="h-[72px]"></div>
+      <BreadcrumbNavigation />
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
         <div className="flex gap-6 h-full">
           <div className="w-[30%] h-full flex-shrink-0">
