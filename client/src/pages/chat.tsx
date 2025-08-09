@@ -212,10 +212,15 @@ export default function ChatPage() {
             
             if (data.type === 'delivered_message') {
               // Message was successfully sent - add it to the cache immediately
-              const currentRoom = parseInt(selectedConversation || '0');
+              const currentRoom = selectedConversation ? parseInt(selectedConversation) : 0;
               if (data.data.room === currentRoom) {
-                queryClient.setQueryData(['chat', 'messages', currentRoom], (old: any) => {
-                  if (!old) return old;
+                console.log('Adding delivered message to cache for room:', currentRoom);
+                queryClient.setQueryData(['chat', 'messages', currentRoom.toString()], (old: any) => {
+                  console.log('Old cache data:', old);
+                  if (!old) {
+                    console.warn('No existing cache data for messages');
+                    return old;
+                  }
                   
                   // Add the new message to the results
                   const newMessage = {
@@ -228,23 +233,28 @@ export default function ChatPage() {
                     attachments: data.data.message.attachments || []
                   };
                   
-                  return {
+                  console.log('Adding new message:', newMessage);
+                  const updated = {
                     ...old,
                     results: [...old.results, newMessage]
                   };
+                  console.log('Updated cache data:', updated);
+                  return updated;
                 });
                 
                 // Scroll to bottom after adding message
                 setTimeout(scrollToBottom, 100);
+              } else {
+                console.log('Message room does not match current room:', data.data.room, 'vs', currentRoom);
               }
               
-              // Also refresh to get updated room list
-              queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
+              // Don't refresh room list immediately to avoid unnecessary API calls
+              // The room list will update on next natural refresh
             } else if (data.type === 'receive_message') {
               // Received a message from someone else - add it immediately and refresh
-              const currentRoom = parseInt(selectedConversation || '0');
+              const currentRoom = selectedConversation ? parseInt(selectedConversation) : 0;
               if (data.data.room === currentRoom) {
-                queryClient.setQueryData(['chat', 'messages', currentRoom], (old: any) => {
+                queryClient.setQueryData(['chat', 'messages', currentRoom.toString()], (old: any) => {
                   if (!old) return old;
                   
                   return {
