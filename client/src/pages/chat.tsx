@@ -182,8 +182,12 @@ export default function ChatPage() {
           console.log('WebSocket connected');
           
           // Send authentication immediately after connection is established
-          const token = localStorage.getItem('access_token');
+          const token = localStorage.getItem('baltek_access_token');
           console.log('Token from localStorage:', token ? 'Token found' : 'No token');
+          console.log('Checking all token keys:', {
+            access_token: !!localStorage.getItem('access_token'),
+            baltek_access_token: !!localStorage.getItem('baltek_access_token')
+          });
           
           if (token && ws && ws.readyState === WebSocket.OPEN) {
             console.log('Sending authentication token via WebSocket');
@@ -194,7 +198,7 @@ export default function ChatPage() {
             console.log('Auth message:', authMessage);
             ws.send(JSON.stringify(authMessage));
           } else {
-            console.warn('No access token available for WebSocket authentication');
+            console.warn('No access token available for WebSocket authentication. User might need to log in.');
           }
           
           // Set socket after attempting authentication
