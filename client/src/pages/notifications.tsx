@@ -206,6 +206,8 @@ export default function Notifications() {
 
   return (
     <div className="h-full bg-gray-50 dark:bg-gray-900">
+      {/* Spacer to match jobs filter height */}
+      <div className="h-[72px]"></div>
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">

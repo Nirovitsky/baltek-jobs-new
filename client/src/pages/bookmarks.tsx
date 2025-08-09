@@ -46,6 +46,8 @@ export default function Bookmarks({}: BookmarksProps) {
   if (error) {
     return (
       <div className="h-full p-6">
+        {/* Spacer to match jobs filter height */}
+        <div className="h-[72px]"></div>
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
@@ -58,6 +60,8 @@ export default function Bookmarks({}: BookmarksProps) {
 
   return (
     <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
+      {/* Spacer to match jobs filter height */}
+      <div className="h-[72px]"></div>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
         <div className="flex gap-6 h-full">
           <div className="w-[30%] h-full flex-shrink-0">

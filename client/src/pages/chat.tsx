@@ -302,8 +302,11 @@ export default function ChatPage() {
   // Add error state handling
   if (roomsError && !roomsLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="text-center py-8">
+      <div>
+        {/* Spacer to match jobs filter height */}
+        <div className="h-[72px]"></div>
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="text-center py-8">
           <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">
             Unable to load conversations
@@ -317,13 +320,17 @@ export default function ChatPage() {
           >
             Try again
           </Button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8" data-testid="chat-page">
+    <div>
+      {/* Spacer to match jobs filter height */}
+      <div className="h-[72px]"></div>
+      <div className="max-w-7xl mx-auto px-4 py-8" data-testid="chat-page">
       {/* Header */}
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-2">
@@ -612,6 +619,7 @@ export default function ChatPage() {
             </CardContent>
           )}
         </Card>
+      </div>
       </div>
     </div>
   );

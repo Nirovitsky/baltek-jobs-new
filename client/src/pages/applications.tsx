@@ -68,6 +68,8 @@ export default function ApplicationsPage() {
   if (isLoading) {
     return (
       <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
+        {/* Spacer to match jobs filter height */}
+        <div className="h-[72px]"></div>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
           <div className="flex gap-6 h-full">
             <div className="w-[30%] h-full flex-shrink-0">
@@ -121,6 +123,8 @@ export default function ApplicationsPage() {
   if (appliedJobs.length === 0) {
     return (
       <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
+        {/* Spacer to match jobs filter height */}
+        <div className="h-[72px]"></div>
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
           <div className="flex gap-6 h-full">
             <div className="w-[30%] h-full flex-shrink-0">
@@ -166,6 +170,8 @@ export default function ApplicationsPage() {
 
   return (
     <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
+      {/* Spacer to match jobs filter height */}
+      <div className="h-[72px]"></div>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
         <div className="flex gap-6 h-full">
           <div className="w-[30%] h-full flex-shrink-0">
