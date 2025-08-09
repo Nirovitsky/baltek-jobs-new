@@ -211,11 +211,53 @@ export default function ChatPage() {
             console.log('Received WebSocket message:', data);
             
             if (data.type === 'delivered_message') {
-              // Message was successfully sent - refresh message list
-              queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.data.room] });
+              // Message was successfully sent - add it to the cache immediately
+              const currentRoom = parseInt(selectedConversation || '0');
+              if (data.data.room === currentRoom) {
+                queryClient.setQueryData(['chat', 'messages', currentRoom], (old: any) => {
+                  if (!old) return old;
+                  
+                  // Add the new message to the results
+                  const newMessage = {
+                    id: data.data.message.id,
+                    content: data.data.message.content,
+                    sender: data.data.message.sender,
+                    recipient: data.data.message.recipient,
+                    created_at: data.data.message.created_at,
+                    read: false,
+                    attachments: data.data.message.attachments || []
+                  };
+                  
+                  return {
+                    ...old,
+                    results: [...old.results, newMessage]
+                  };
+                });
+                
+                // Scroll to bottom after adding message
+                setTimeout(scrollToBottom, 100);
+              }
+              
+              // Also refresh to get updated room list
               queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
             } else if (data.type === 'receive_message') {
-              // Received a message from someone else - refresh message list
+              // Received a message from someone else - add it immediately and refresh
+              const currentRoom = parseInt(selectedConversation || '0');
+              if (data.data.room === currentRoom) {
+                queryClient.setQueryData(['chat', 'messages', currentRoom], (old: any) => {
+                  if (!old) return old;
+                  
+                  return {
+                    ...old,
+                    results: [...old.results, data.data.message]
+                  };
+                });
+                
+                // Scroll to bottom after adding message
+                setTimeout(scrollToBottom, 100);
+              }
+              
+              // Refresh both messages and rooms
               queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.data.room] });
               queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
             } else if (data.type === 'message_error') {
