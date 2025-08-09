@@ -212,7 +212,8 @@ export default function ChatPage() {
             
             if (data.type === 'delivered_message') {
               // Message was successfully sent - add it to the cache immediately
-              const currentRoom = selectedConversation ? parseInt(selectedConversation) : 0;
+              const currentRoom = selectedConversation || 0;
+              console.log('Current selected conversation:', selectedConversation, 'using room:', currentRoom);
               if (data.data.room === currentRoom) {
                 console.log('Adding delivered message to cache for room:', currentRoom);
                 queryClient.setQueryData(['chat', 'messages', currentRoom.toString()], (old: any) => {
@@ -252,7 +253,8 @@ export default function ChatPage() {
               // The room list will update on next natural refresh
             } else if (data.type === 'receive_message') {
               // Received a message from someone else - add it immediately and refresh
-              const currentRoom = selectedConversation ? parseInt(selectedConversation) : 0;
+              const currentRoom = selectedConversation || 0;
+              console.log('Current selected conversation for receive:', selectedConversation, 'using room:', currentRoom);
               if (data.data.room === currentRoom) {
                 queryClient.setQueryData(['chat', 'messages', currentRoom.toString()], (old: any) => {
                   if (!old) return old;
