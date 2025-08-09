@@ -182,13 +182,16 @@ export default function ChatPage() {
           console.log('WebSocket connected');
           setSocket(ws);
           
-          // Send authentication after connection is established
+          // Send authentication immediately after connection is established
           const token = localStorage.getItem('access_token');
           if (token && ws && ws.readyState === WebSocket.OPEN) {
+            console.log('Sending authentication token via WebSocket');
             ws.send(JSON.stringify({
               type: 'authenticate',
               token: `Bearer ${token}`
             }));
+          } else {
+            console.warn('No access token available for WebSocket authentication');
           }
         };
         
@@ -212,6 +215,8 @@ export default function ChatPage() {
                 description: data.data.error,
                 variant: "destructive",
               });
+            } else if (data.type === 'auth_success') {
+              console.log('WebSocket authentication successful');
             }
           } catch (error) {
             console.error('WebSocket message error:', error);
