@@ -177,14 +177,7 @@ export default function Profile() {
               {/* Personal Information Skeleton */}
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <Skeleton className="w-12 h-12 rounded-lg" />
-                      <div>
-                        <Skeleton className="h-6 w-32 mb-1" />
-                        <Skeleton className="h-4 w-48" />
-                      </div>
-                    </div>
+                  <div className="flex items-center justify-end">
                     <Skeleton className="h-8 w-8" />
                   </div>
                 </CardHeader>
@@ -275,15 +268,7 @@ export default function Profile() {
             {/* Personal Information Card */}
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <User className="w-6 h-6 text-gray-600" />
-                    </div>
-                    <div>
-                      <CardTitle>Personal Information</CardTitle>
-                    </div>
-                  </div>
+                <div className="flex items-center justify-end">
                   <Button
                     variant="ghost"
                     size="sm"
