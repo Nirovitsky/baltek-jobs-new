@@ -510,8 +510,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Make wss available for message broadcasting
   (app as any).wss = wss;
   
-  wss.on('connection', (ws) => {
+  wss.on('connection', (ws, req) => {
     console.log('WebSocket client connected');
+    
+    // Extract authorization token from connection
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      (ws as any).authToken = authHeader;
+      console.log('WebSocket client authenticated');
+    } else {
+      console.log('WebSocket client connected without authentication');
+    }
     
     ws.on('message', (message) => {
       try {
@@ -520,6 +529,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Handle different message types
         switch (data.type) {
+          case 'authenticate':
+            (ws as any).authToken = data.token;
+            console.log('WebSocket client authenticated with token');
+            break;
+            
           case 'join_conversation':
             (ws as any).conversationId = data.conversation_id;
             console.log(`WebSocket client joined conversation ${data.conversation_id}`);
@@ -528,56 +542,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
           case 'send_message':
             console.log('Processing send_message:', JSON.stringify(data, null, 2));
             
-            // Create message object to broadcast
-            const messageData = {
-              id: Date.now(), // Use timestamp as ID
-              content: data.data.text,
-              sender: {
-                id: 2, // Current user ID (should get from JWT token)
-                first_name: "You",
-                last_name: "",
-                avatar: ""
-              },
-              recipient: {
-                id: 1,
-                first_name: "Recipient",
-                last_name: "",
-                avatar: ""
-              },
-              created_at: new Date().toISOString(),
-              read: false,
-              attachments: data.data.attachments || []
+            // Send message to Baltek API
+            const sendMessageToAPI = async () => {
+              try {
+                const messagePayload = {
+                  room: data.data.room,
+                  text: data.data.text,
+                  attachments: data.data.attachments || []
+                };
+                
+                // Get authorization token from WebSocket connection (need to store it during connection)
+                const authToken = (ws as any).authToken;
+                if (!authToken) {
+                  throw new Error('No authorization token available');
+                }
+                
+                const response = await fetch('https://api.baltek.net/api/chat/messages/', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': authToken
+                  },
+                  body: JSON.stringify(messagePayload)
+                });
+                
+                if (!response.ok) {
+                  const errorText = await response.text();
+                  console.error('Failed to send message to API:', response.status, errorText);
+                  throw new Error(`API request failed: ${response.status}`);
+                }
+                
+                const apiResponse = await response.json();
+                console.log('Message sent to API successfully:', apiResponse);
+                
+                // Send delivered_message confirmation to sender with API response
+                if (ws.readyState === WebSocket.OPEN) {
+                  const deliveryConfirmation = {
+                    type: 'delivered_message',
+                    data: {
+                      room: data.data.room,
+                      message: apiResponse
+                    }
+                  };
+                  console.log('Sending delivery confirmation:', JSON.stringify(deliveryConfirmation, null, 2));
+                  ws.send(JSON.stringify(deliveryConfirmation));
+                }
+                
+                // Broadcast receive_message to other clients in the same conversation
+                wss.clients.forEach((client) => {
+                  if (client !== ws && client.readyState === WebSocket.OPEN && (client as any).conversationId === data.data.room) {
+                    const receiveMessage = {
+                      type: 'receive_message',
+                      data: {
+                        room: data.data.room,
+                        message: apiResponse
+                      }
+                    };
+                    console.log('Broadcasting receive_message to other clients:', JSON.stringify(receiveMessage, null, 2));
+                    client.send(JSON.stringify(receiveMessage));
+                  }
+                });
+                
+              } catch (error) {
+                console.error('Error sending message to API:', error);
+                
+                // Send error message back to sender
+                if (ws.readyState === WebSocket.OPEN) {
+                  const errorMessage = {
+                    type: 'message_error',
+                    data: {
+                      room: data.data.room,
+                      error: error instanceof Error ? error.message : 'Failed to send message'
+                    }
+                  };
+                  ws.send(JSON.stringify(errorMessage));
+                }
+              }
             };
             
-            // Send delivered_message confirmation to sender
-            if (ws.readyState === WebSocket.OPEN) {
-              const deliveryConfirmation = {
-                type: 'delivered_message',
-                data: {
-                  room: data.data.room,
-                  message: messageData
-                }
-              };
-              console.log('Sending delivery confirmation:', JSON.stringify(deliveryConfirmation, null, 2));
-              ws.send(JSON.stringify(deliveryConfirmation));
-            }
-            
-            // Broadcast receive_message to other clients in the same conversation
-            wss.clients.forEach((client) => {
-              if (client !== ws && client.readyState === WebSocket.OPEN && (client as any).conversationId === data.data.room) {
-                const receiveMessage = {
-                  type: 'receive_message',
-                  data: {
-                    room: data.data.room,
-                    message: messageData
-                  }
-                };
-                console.log('Broadcasting receive_message to other clients:', JSON.stringify(receiveMessage, null, 2));
-                client.send(JSON.stringify(receiveMessage));
-              }
-            });
-            
-            console.log(`Message sent to room ${data.data.room}: "${data.data.text}"`);
+            sendMessageToAPI();
             break;
             
           default:

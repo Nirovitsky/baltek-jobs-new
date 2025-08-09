@@ -175,11 +175,21 @@ export default function ChatPage() {
     
     const connectWebSocket = () => {
       try {
+        // Include authorization token in WebSocket connection
         ws = new WebSocket(wsUrl);
         
         ws.onopen = () => {
           console.log('WebSocket connected');
           setSocket(ws);
+          
+          // Send authentication after connection is established
+          const token = localStorage.getItem('access_token');
+          if (token && ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+              type: 'authenticate',
+              token: `Bearer ${token}`
+            }));
+          }
         };
         
         ws.onmessage = (event) => {
@@ -195,6 +205,13 @@ export default function ChatPage() {
               // Received a message from someone else - refresh message list
               queryClient.invalidateQueries({ queryKey: ['chat', 'messages', data.data.room] });
               queryClient.invalidateQueries({ queryKey: ['chat', 'rooms'] });
+            } else if (data.type === 'message_error') {
+              // Handle message send error
+              toast({
+                title: "Failed to send message",
+                description: data.data.error,
+                variant: "destructive",
+              });
             }
           } catch (error) {
             console.error('WebSocket message error:', error);
