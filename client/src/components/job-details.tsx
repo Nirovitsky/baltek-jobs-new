@@ -343,26 +343,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
       {/* Scrollable Content */}
       <div className="flex-1 overflow-y-auto job-description-scroll">
         <CardContent className="p-6">
-          {/* Skills */}
-          <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">
-              Required Skills
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {job.skills && job.skills.length > 0 ? (
-                job.skills.map((skill, index) => (
-                  <Badge
-                    key={index}
-                    className="bg-blue-100 text-blue-800 hover:bg-blue-200"
-                  >
-                    {skill}
-                  </Badge>
-                ))
-              ) : (
-                <p className="text-gray-500">No specific skills listed</p>
-              )}
-            </div>
-          </div>
+
 
           {/* Description */}
           <div className="mb-6">
