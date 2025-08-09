@@ -75,8 +75,8 @@ export default function BreadcrumbNavigation() {
   }
 
   return (
-    <div className="h-[72px] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-7xl mx-auto">
+    <div className="h-[72px] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <Breadcrumb>
           <BreadcrumbList>
             {breadcrumbItems.map((item, index) => {
