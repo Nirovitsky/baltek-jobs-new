@@ -146,6 +146,8 @@ export default function Profile() {
     enabled: !!user?.id,
   });
 
+
+
   // Fetch user applications for stats
   const { data: applications } = useQuery({
     queryKey: ["user", "applications"],
@@ -170,7 +172,7 @@ export default function Profile() {
   if (profileLoading) {
     return (
       <div className="h-full overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Profile Sections Skeleton */}
             <div className="lg:col-span-2 space-y-6">
@@ -212,6 +214,144 @@ export default function Profile() {
                         <Skeleton key={i} className="h-6 w-20" />
                       ))}
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+            {/* Stats Section Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center">
+                    <Skeleton className="w-8 h-8 rounded mr-3" />
+                    <div>
+                      <Skeleton className="h-8 w-12 mb-1" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center">
+                    <Skeleton className="w-8 h-8 rounded mr-3" />
+                    <div>
+                      <Skeleton className="h-8 w-12 mb-1" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="flex items-center">
+                    <Skeleton className="w-8 h-8 rounded mr-3" />
+                    <div>
+                      <Skeleton className="h-8 w-12 mb-1" />
+                      <Skeleton className="h-4 w-20" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Content Sections Skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Education Skeleton */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-6 w-24" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="h-5 w-48 mb-2" />
+                      <Skeleton className="h-4 w-36 mb-1" />
+                      <Skeleton className="h-4 w-28" />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+
+              {/* Experience Skeleton */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <Skeleton className="h-6 w-32" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {[...Array(2)].map((_, i) => (
+                    <div key={i}>
+                      <Skeleton className="h-5 w-40 mb-2" />
+                      <Skeleton className="h-4 w-32 mb-1" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Projects Skeleton */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-6 w-20" />
+                  <Skeleton className="h-4 w-16" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={i} className="border rounded-lg p-4">
+                      <Skeleton className="h-5 w-36 mb-2" />
+                      <Skeleton className="h-16 w-full mb-3" />
+                      <div className="flex gap-2">
+                        {[...Array(3)].map((_, j) => (
+                          <Skeleton key={j} className="h-5 w-16" />
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+              {/* Resumes Skeleton */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <Skeleton className="w-12 h-12 rounded-lg" />
+                      <div>
+                        <Skeleton className="h-6 w-20 mb-1" />
+                        <Skeleton className="h-4 w-48" />
+                      </div>
+                    </div>
+                    <Skeleton className="h-8 w-8" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {[...Array(2)].map((_, i) => (
+                      <div key={i} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <Skeleton className="w-8 h-8" />
+                          <div>
+                            <Skeleton className="h-4 w-32 mb-1" />
+                            <Skeleton className="h-3 w-20" />
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          <Skeleton className="h-8 w-16" />
+                          <Skeleton className="h-8 w-8" />
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </CardContent>
               </Card>
@@ -384,149 +524,16 @@ export default function Profile() {
 
             {/* Experience Section */}
             {(fullProfile as any)?.experiences && (fullProfile as any).experiences.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                        <Briefcase className="w-6 h-6 text-primary" />
-                      </div>
-                      <div>
-                        <CardTitle>Work Experience</CardTitle>
-                        <CardDescription>Professional experience and career history</CardDescription>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsProfileModalOpen(true)}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {(fullProfile as any).experiences.map((experience: any) => (
-                      <div key={experience.id} className="border-l-2 border-blue-200 pl-4">
-                        <h4 className="font-semibold text-foreground">{experience.position}</h4>
-                        <p className="text-primary font-medium">{experience.organization_name}</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {experience.date_started} - {experience.date_finished || "Present"}
-                        </p>
-                        {experience.description && (
-                          <p className="text-foreground mt-2">{experience.description}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Education Section */}
-            {(fullProfile as any)?.educations && (fullProfile as any).educations.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <GraduationCap className="w-6 h-6 text-green-600" />
-                      </div>
-                      <div>
-                        <CardTitle>Education</CardTitle>
-                        <CardDescription>Educational background and qualifications</CardDescription>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsProfileModalOpen(true)}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {(fullProfile as any).educations.map((education: any) => (
-                      <div key={education.id} className="border-l-2 border-green-200 pl-4">
-                        <h4 className="font-semibold text-foreground capitalize">{education.level}</h4>
-                        <p className="text-green-600 font-medium">{education.university_name}</p>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {education.date_started} - {education.date_finished || "Present"}
-                        </p>
-                        {education.description && (
-                          <p className="text-foreground mt-2">{education.description}</p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Projects Section */}
-            {(fullProfile as any)?.projects && (fullProfile as any).projects.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <Code2 className="w-6 h-6 text-purple-600" />
-                      </div>
-                      <div>
-                        <CardTitle>Projects</CardTitle>
-                        <CardDescription>Personal and professional projects</CardDescription>
-                      </div>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setIsProfileModalOpen(true)}
-                    >
-                      <Edit className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {(fullProfile as any).projects.map((project: any) => (
-                      <div key={project.id} className="border-l-2 border-purple-200 pl-4">
-                        <h4 className="font-semibold text-foreground">{project.title}</h4>
-                        {project.url && (
-                          <a 
-                            href={project.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-purple-600 hover:text-purple-800 text-sm flex items-center mt-1"
-                          >
-                            <ExternalLink className="w-3 h-3 mr-1" />
-                            View Project
-                          </a>
-                        )}
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {project.date_started} - {project.date_finished || "Ongoing"}
-                        </p>
-                        <p className="text-foreground mt-2">{project.description}</p>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Resumes Section */}
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <FileText className="w-6 h-6 text-orange-600" />
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <Briefcase className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <CardTitle>Resumes</CardTitle>
-                      <CardDescription>Uploaded resume documents</CardDescription>
+                      <CardTitle>Work Experience</CardTitle>
+                      <CardDescription>Professional experience and career history</CardDescription>
                     </div>
                   </div>
                   <Button
@@ -539,49 +546,182 @@ export default function Profile() {
                 </div>
               </CardHeader>
               <CardContent>
-                {resumesList.length > 0 ? (
-                  <div className="space-y-3">
-                    {resumesList.map((resume: any) => (
-                      <div key={resume.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center space-x-3">
-                          <FileText className="w-8 h-8 text-primary" />
-                          <div>
-                            <h4 className="font-medium">{resume.title}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              Uploaded: {new Date(resume.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          {resume.file && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => window.open(resume.file, '_blank')}
-                            >
-                              View
-                            </Button>
-                          )}
+                <div className="space-y-4">
+                  {(fullProfile as any).experiences.map((experience: any) => (
+                    <div key={experience.id} className="border-l-2 border-blue-200 pl-4">
+                      <h4 className="font-semibold text-foreground">{experience.position}</h4>
+                      <p className="text-primary font-medium">{experience.organization_name}</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {experience.date_started} - {experience.date_finished || "Present"}
+                      </p>
+                      {experience.description && (
+                        <p className="text-foreground mt-2">{experience.description}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Education Section */}
+          {(fullProfile as any)?.educations && (fullProfile as any).educations.length > 0 && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <GraduationCap className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div>
+                      <CardTitle>Education</CardTitle>
+                      <CardDescription>Educational background and qualifications</CardDescription>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsProfileModalOpen(true)}
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {(fullProfile as any).educations.map((education: any) => (
+                    <div key={education.id} className="border-l-2 border-green-200 pl-4">
+                      <h4 className="font-semibold text-foreground capitalize">{education.level}</h4>
+                      <p className="text-green-600 font-medium">{education.university_name}</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {education.date_started} - {education.date_finished || "Present"}
+                      </p>
+                      {education.description && (
+                        <p className="text-foreground mt-2">{education.description}</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Projects Section */}
+          {(fullProfile as any)?.projects && (fullProfile as any).projects.length > 0 && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <Code2 className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <CardTitle>Projects</CardTitle>
+                      <CardDescription>Personal and professional projects</CardDescription>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsProfileModalOpen(true)}
+                  >
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {(fullProfile as any).projects.map((project: any) => (
+                    <div key={project.id} className="border-l-2 border-purple-200 pl-4">
+                      <h4 className="font-semibold text-foreground">{project.title}</h4>
+                      {project.url && (
+                        <a 
+                          href={project.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-purple-600 hover:text-purple-800 text-sm flex items-center mt-1"
+                        >
+                          <ExternalLink className="w-3 h-3 mr-1" />
+                          View Project
+                        </a>
+                      )}
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {project.date_started} - {project.date_finished || "Ongoing"}
+                      </p>
+                      <p className="text-foreground mt-2">{project.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Resumes Section */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                    <FileText className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <CardTitle>Resumes</CardTitle>
+                    <CardDescription>Uploaded resume documents</CardDescription>
+                  </div>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsProfileModalOpen(true)}
+                >
+                  <Edit className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {resumesList.length > 0 ? (
+                <div className="space-y-3">
+                  {resumesList.map((resume: any) => (
+                    <div key={resume.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <FileText className="w-8 h-8 text-primary" />
+                        <div>
+                          <h4 className="font-medium">{resume.title}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            Uploaded: {new Date(resume.created_at).toLocaleDateString()}
+                          </p>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600 font-medium">No resumes uploaded</p>
-                    <p className="text-sm text-gray-500">Upload your resume to showcase your experience to employers.</p>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="mt-3"
-                      onClick={() => setIsProfileModalOpen(true)}
-                    >
-                      Upload Resume
-                    </Button>
-                  </div>
-                )}
-              </CardContent>
+                      <div className="flex gap-2">
+                        {resume.file && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => window.open(resume.file, '_blank')}
+                          >
+                            View
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8 bg-gray-50 rounded-lg">
+                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <p className="text-gray-600 font-medium">No resumes uploaded</p>
+                  <p className="text-sm text-gray-500">Upload your resume to showcase your experience to employers.</p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => setIsProfileModalOpen(true)}
+                  >
+                    Upload Resume
+                  </Button>
+                </div>
+              )}
+            </CardContent>
             </Card>
           </div>
 
