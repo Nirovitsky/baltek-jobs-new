@@ -176,12 +176,7 @@ export default function Profile() {
             <div className="lg:col-span-2 space-y-6">
               {/* Personal Information Skeleton */}
               <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-end">
-                    <Skeleton className="h-8 w-8" />
-                  </div>
-                </CardHeader>
-                <CardContent>
+                <CardContent className="pt-6">
                   <div className="flex items-center space-x-4 pb-4 border-b mb-6">
                     <Skeleton className="w-16 h-16 rounded-full" />
                     <div className="flex-1">
@@ -189,6 +184,7 @@ export default function Profile() {
                       <Skeleton className="h-4 w-32 mb-2" />
                       <Skeleton className="h-4 w-64" />
                     </div>
+                    <Skeleton className="h-8 w-8" />
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                     {[...Array(5)].map((_, i) => (
@@ -267,18 +263,7 @@ export default function Profile() {
           <div className="lg:col-span-2 space-y-6">
             {/* Personal Information Card */}
             <Card>
-              <CardHeader>
-                <div className="flex items-center justify-end">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsProfileModalOpen(true)}
-                  >
-                    <Edit className="w-4 h-4" />
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
+              <CardContent className="pt-6">
                 <div className="space-y-6">
                   {/* Profile Header with Avatar */}
                   <div className="flex items-center space-x-4 pb-4 border-b">
@@ -302,6 +287,13 @@ export default function Profile() {
                         <p className="text-sm text-gray-600 mt-1">{displayProfile.bio}</p>
                       )}
                     </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsProfileModalOpen(true)}
+                    >
+                      <Edit className="w-4 h-4" />
+                    </Button>
                   </div>
 
                   {/* Personal Details Grid */}
