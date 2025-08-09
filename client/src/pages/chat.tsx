@@ -180,19 +180,25 @@ export default function ChatPage() {
         
         ws.onopen = () => {
           console.log('WebSocket connected');
-          setSocket(ws);
           
           // Send authentication immediately after connection is established
           const token = localStorage.getItem('access_token');
+          console.log('Token from localStorage:', token ? 'Token found' : 'No token');
+          
           if (token && ws && ws.readyState === WebSocket.OPEN) {
             console.log('Sending authentication token via WebSocket');
-            ws.send(JSON.stringify({
+            const authMessage = {
               type: 'authenticate',
               token: `Bearer ${token}`
-            }));
+            };
+            console.log('Auth message:', authMessage);
+            ws.send(JSON.stringify(authMessage));
           } else {
             console.warn('No access token available for WebSocket authentication');
           }
+          
+          // Set socket after attempting authentication
+          setSocket(ws);
         };
         
         ws.onmessage = (event) => {

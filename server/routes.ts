@@ -530,14 +530,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Handle different message types
         switch (data.type) {
           case 'authenticate':
+            console.log('Processing authenticate message:', JSON.stringify(data, null, 2));
             (ws as any).authToken = data.token;
             console.log('WebSocket client authenticated with token:', data.token ? 'Token received' : 'No token');
+            console.log('Stored auth token:', !!(ws as any).authToken);
             // Send authentication confirmation back to client
             if (ws.readyState === WebSocket.OPEN) {
-              ws.send(JSON.stringify({
+              const authResponse = {
                 type: 'auth_success',
                 message: 'Authentication successful'
-              }));
+              };
+              console.log('Sending auth success:', authResponse);
+              ws.send(JSON.stringify(authResponse));
             }
             break;
             
