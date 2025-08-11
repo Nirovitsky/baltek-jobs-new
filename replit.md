@@ -16,8 +16,8 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Architecture Overhaul**: Completely removed Express proxy server that previously acted as middleware between frontend and external API
 - **Direct API Integration**: All API requests now go directly to https://api.baltek.net/api from the React frontend
 - **Unified ApiClient**: Consolidated all API interactions into a single `ApiClient` class with comprehensive method coverage (40+ methods)
-- **Authentication Endpoints Fixed**: Updated login endpoint from `/auth/login` to `/auth/token/` to match backend expectations
-- **Complete Endpoint Alignment**: All authentication endpoints now use proper trailing slashes (`/auth/token/`, `/auth/token/refresh/`, `/auth/register/`)
+- **Authentication Endpoints Fixed**: Updated login endpoint from `/auth/login` to `/token/` to match backend expectations
+- **Complete Endpoint Alignment**: All authentication endpoints now use proper format (`/token/`, `/token/refresh/`, `/register/`, `/change-password/`)
 - **Authentication Flow**: JWT token management handled entirely client-side with automatic refresh capabilities
 - **WebSocket Direct Connection**: Chat connects directly to wss://api.baltek.net/ws/chat/ for real-time messaging
 - **Minimalist Server**: Express server now only serves React app via Vite middleware - no API routing or proxy logic

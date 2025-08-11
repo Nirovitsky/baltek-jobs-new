@@ -324,7 +324,7 @@ export class ApiClient {
 
   // Auth API
   static async changePassword(currentPassword: string, newPassword: string) {
-    return this.makeRequest("/auth/change-password/", {
+    return this.makeRequest("/change-password/", {
       method: "POST",
       body: JSON.stringify({ 
         current_password: currentPassword, 

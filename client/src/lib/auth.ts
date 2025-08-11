@@ -31,7 +31,7 @@ export class AuthService {
 
   static async login(credentials: LoginRequest): Promise<{ access: string; refresh: string }> {
     try {
-      const response = await fetch(`${API_BASE}/auth/token/`, {
+      const response = await fetch(`${API_BASE}/token/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export class AuthService {
 
   static async register(userData: RegisterRequest): Promise<UserProfile> {
     try {
-      const response = await fetch(`${API_BASE}/auth/register/`, {
+      const response = await fetch(`${API_BASE}/register/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export class AuthService {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/auth/token/refresh/`, {
+      const response = await fetch(`${API_BASE}/token/refresh/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
