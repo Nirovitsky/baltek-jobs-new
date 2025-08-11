@@ -24,7 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import FileUpload from "@/components/file-upload";
-import { Send, X, Zap } from "lucide-react";
+import { Send, X } from "lucide-react";
+import baltekIcon from "@/assets/baltek-icon.svg";
 
 interface ApplicationModalProps {
   job: Job;
@@ -206,7 +207,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
           {isQuickApply && (
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <div className="flex items-center space-x-2 text-blue-700">
-                <Zap className="w-5 h-5" />
+                <img src={baltekIcon} alt="" className="w-5 h-5" />
                 <span className="font-medium">Quick Apply</span>
               </div>
               <p className="text-sm text-blue-600 mt-1">
@@ -231,7 +232,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
                 "Submitting..."
               ) : (
                 <>
-                  {isQuickApply ? <Zap className="w-4 h-4 mr-2" /> : <Send className="w-4 h-4 mr-2" />}
+                  {isQuickApply ? <img src={baltekIcon} alt="" className="w-4 h-4 mr-2" /> : <Send className="w-4 h-4 mr-2" />}
                   {isQuickApply ? "Quick Apply" : "Submit Application"}
                 </>
               )}

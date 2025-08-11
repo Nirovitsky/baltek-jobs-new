@@ -24,8 +24,8 @@ import {
   Globe,
   CheckCircle,
   ExternalLink,
-  Zap,
 } from "lucide-react";
+import baltekIcon from "@/assets/baltek-icon.svg";
 
 interface JobDetailsProps {
   jobId: number;
@@ -397,16 +397,15 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   onClick={() => setIsQuickApplyModalOpen(true)}
                   className="flex-1"
                   size="lg"
-                  variant="outline"
+                  variant="default"
                 >
-                  <Zap className="w-4 h-4 mr-2" />
+                  <img src={baltekIcon} alt="" className="w-4 h-4 mr-2" />
                   Quick Apply
                 </Button>
                 <Button
                   onClick={() => setIsApplicationModalOpen(true)}
-                  className="flex-1"
+                  className="flex-1 bg-white text-gray-900 border border-gray-300 hover:bg-gray-50"
                   size="lg"
-                  variant="default"
                 >
                   <Send className="w-4 h-4 mr-2" />
                   Apply Now
