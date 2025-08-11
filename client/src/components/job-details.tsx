@@ -24,6 +24,7 @@ import {
   Globe,
   CheckCircle,
   ExternalLink,
+  Zap,
 } from "lucide-react";
 
 interface JobDetailsProps {
@@ -32,6 +33,7 @@ interface JobDetailsProps {
 
 export default function JobDetails({ jobId }: JobDetailsProps) {
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const [isQuickApplyModalOpen, setIsQuickApplyModalOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -379,27 +381,38 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
           {/* Action Buttons */}
           <div className="flex space-x-3">
-            <Button
-              onClick={
-                hasApplied ? undefined : () => setIsApplicationModalOpen(true)
-              }
-              className="flex-1"
-              size="lg"
-              variant={hasApplied ? "outline" : "default"}
-              disabled={hasApplied}
-            >
-              {hasApplied ? (
-                <>
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Applied
-                </>
-              ) : (
-                <>
+            {hasApplied ? (
+              <Button
+                className="flex-1"
+                size="lg"
+                variant="outline"
+                disabled={true}
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Applied
+              </Button>
+            ) : (
+              <>
+                <Button
+                  onClick={() => setIsQuickApplyModalOpen(true)}
+                  className="flex-1"
+                  size="lg"
+                  variant="outline"
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  Quick Apply
+                </Button>
+                <Button
+                  onClick={() => setIsApplicationModalOpen(true)}
+                  className="flex-1"
+                  size="lg"
+                  variant="default"
+                >
                   <Send className="w-4 h-4 mr-2" />
                   Apply Now
-                </>
-              )}
-            </Button>
+                </Button>
+              </>
+            )}
           </div>
         </CardContent>
       </div>
@@ -408,6 +421,13 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
         job={job}
         isOpen={isApplicationModalOpen}
         onClose={() => setIsApplicationModalOpen(false)}
+      />
+      
+      <ApplicationModal
+        job={job}
+        isOpen={isQuickApplyModalOpen}
+        onClose={() => setIsQuickApplyModalOpen(false)}
+        isQuickApply={true}
       />
     </Card>
   );

@@ -24,15 +24,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import FileUpload from "@/components/file-upload";
-import { Send, X } from "lucide-react";
+import { Send, X, Zap } from "lucide-react";
 
 interface ApplicationModalProps {
   job: Job;
   isOpen: boolean;
   onClose: () => void;
+  isQuickApply?: boolean;
 }
 
-export default function ApplicationModal({ job, isOpen, onClose }: ApplicationModalProps) {
+export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = false }: ApplicationModalProps) {
   const [selectedResumeId, setSelectedResumeId] = useState<string>("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const { toast } = useToast();
@@ -64,11 +65,8 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
 
   const applicationMutation = useMutation({
     mutationFn: async (data: JobApplication) => {
-      // Validate that we have either an uploaded file or selected resume
-      if (!uploadedFile && !selectedResumeId) {
-        throw new Error("Please upload a resume or select an existing one");
-      }
-
+      // For regular apply, don't require resume anymore (made optional)
+      // For quick apply, skip resume requirement entirely
       const applicationData = {
         job: data.job,
         cover_letter: data.cover_letter || "",
@@ -78,8 +76,8 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
       console.log("Resume file:", uploadedFile);
       console.log("Selected resume ID:", selectedResumeId);
       
-      // Pass the file or selected resume ID to the application API
-      const result = await ApiClient.applyToJob(applicationData, uploadedFile || undefined, selectedResumeId);
+      // Pass the file or selected resume ID to the application API (both optional now)
+      const result = await ApiClient.applyToJob(applicationData, uploadedFile || undefined, selectedResumeId || undefined);
       console.log("Application submission result:", result);
       return result;
     },
@@ -131,9 +129,12 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
         <DialogHeader>
           <div className="flex items-center justify-between">
             <div>
-              <DialogTitle className="text-xl">Apply for {job.title}</DialogTitle>
+              <DialogTitle className="text-xl">
+                {isQuickApply ? "Quick Apply for" : "Apply for"} {job.title}
+              </DialogTitle>
               <DialogDescription>
                 {job.organization?.display_name || job.organization?.name} • {job.location?.name}, {job.location?.country}
+                {isQuickApply && <span className="block text-sm text-blue-600 mt-1">Quick application - no cover letter or resume required</span>}
               </DialogDescription>
             </div>
             <Button variant="ghost" size="sm" onClick={handleClose}>
@@ -144,61 +145,76 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Cover Letter */}
-          <div className="space-y-2">
-            <Label htmlFor="cover_letter">Cover Letter</Label>
-            <Textarea
-              id="cover_letter"
-              rows={6}
-              {...register("cover_letter")}
-              placeholder="Write a compelling cover letter explaining why you're the perfect fit for this role. Highlight your relevant experience, skills, and enthusiasm for the position..."
-              className="resize-none"
-            />
-            {errors.cover_letter && (
-              <p className="text-sm text-red-600">{errors.cover_letter.message}</p>
-            )}
-          </div>
+          {!isQuickApply && (
+            <div className="space-y-2">
+              <Label htmlFor="cover_letter">Cover Letter <span className="text-sm text-gray-500">(Optional)</span></Label>
+              <Textarea
+                id="cover_letter"
+                rows={6}
+                {...register("cover_letter")}
+                placeholder="Write a compelling cover letter explaining why you're the perfect fit for this role. Highlight your relevant experience, skills, and enthusiasm for the position..."
+                className="resize-none"
+              />
+              {errors.cover_letter && (
+                <p className="text-sm text-red-600">{errors.cover_letter.message}</p>
+              )}
+            </div>
+          )}
 
           {/* Resume Selection */}
-          <div className="space-y-4">
-            <Label>Resume/CV</Label>
-            
-            {/* Existing Resumes */}
-            {!resumesLoading && (resumes as any)?.results?.length > 0 && (
+          {!isQuickApply && (
+            <div className="space-y-4">
+              <Label>Resume/CV <span className="text-sm text-gray-500">(Optional)</span></Label>
+              
+              {/* Existing Resumes */}
+              {!resumesLoading && (resumes as any)?.results?.length > 0 && (
+                <div className="space-y-2">
+                  <Label className="text-sm text-gray-600">Select from your resumes:</Label>
+                  <Select value={selectedResumeId} onValueChange={setSelectedResumeId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a resume (optional)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {(resumes as any).results.map((resume: any) => (
+                        <SelectItem key={resume.id} value={resume.id.toString()}>
+                          {resume.title}
+                          {resume.is_primary && " (Primary)"}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* File Upload */}
               <div className="space-y-2">
-                <Label className="text-sm text-gray-600">Select from your resumes:</Label>
-                <Select value={selectedResumeId} onValueChange={setSelectedResumeId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a resume" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(resumes as any).results.map((resume: any) => (
-                      <SelectItem key={resume.id} value={resume.id.toString()}>
-                        {resume.title}
-                        {resume.is_primary && " (Primary)"}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label className="text-sm text-gray-600">Or upload a new resume:</Label>
+                <FileUpload
+                  onFileSelect={handleFileUpload}
+                  accept=".pdf,.doc,.docx"
+                  maxSize={10 * 1024 * 1024} // 10MB
+                  selectedFile={uploadedFile}
+                />
               </div>
-            )}
 
-            {/* File Upload */}
-            <div className="space-y-2">
-              <Label className="text-sm text-gray-600">Or upload a new resume:</Label>
-              <FileUpload
-                onFileSelect={handleFileUpload}
-                accept=".pdf,.doc,.docx"
-                maxSize={10 * 1024 * 1024} // 10MB
-                selectedFile={uploadedFile}
-              />
-            </div>
-
-            {!selectedResumeId && !uploadedFile && (
-              <p className="text-sm text-red-500">
-                Required: Please select an existing resume or upload a new one to apply.
+              <p className="text-sm text-gray-500">
+                You can apply without a resume, but including one improves your chances.
               </p>
-            )}
-          </div>
+            </div>
+          )}
+
+          {isQuickApply && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="flex items-center space-x-2 text-blue-700">
+                <Zap className="w-5 h-5" />
+                <span className="font-medium">Quick Apply</span>
+              </div>
+              <p className="text-sm text-blue-600 mt-1">
+                Your application will be submitted immediately without additional documents. 
+                You can always add a cover letter and resume later.
+              </p>
+            </div>
+          )}
 
 
 
@@ -209,14 +225,14 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
             </Button>
             <Button
               type="submit"
-              disabled={applicationMutation.isPending || (!uploadedFile && !selectedResumeId)}
+              disabled={applicationMutation.isPending}
             >
               {applicationMutation.isPending ? (
                 "Submitting..."
               ) : (
                 <>
-                  <Send className="w-4 h-4 mr-2" />
-                  Submit Application
+                  {isQuickApply ? <Zap className="w-4 h-4 mr-2" /> : <Send className="w-4 h-4 mr-2" />}
+                  {isQuickApply ? "Quick Apply" : "Submit Application"}
                 </>
               )}
             </Button>
