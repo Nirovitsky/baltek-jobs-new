@@ -39,7 +39,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
   const queryClient = useQueryClient();
 
   const { data: resumes, isLoading: resumesLoading } = useQuery({
-    queryKey: ["resumes"],
+    queryKey: ["user", "resumes", "current"],
     queryFn: () => ApiClient.getResumes(),
     enabled: isOpen,
   });
@@ -88,6 +88,7 @@ export default function ApplicationModal({ job, isOpen, onClose }: ApplicationMo
       queryClient.invalidateQueries({ queryKey: ["job", job.id] });
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
       queryClient.invalidateQueries({ queryKey: ["user", "applications"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "resumes", "current"] });
       toast({
         title: "Application submitted",
         description: "Your application has been sent successfully!",

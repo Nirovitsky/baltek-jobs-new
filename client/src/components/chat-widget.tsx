@@ -19,6 +19,7 @@ export default function ChatWidget() {
     queryKey: ["chat", "rooms"],
     queryFn: () => ApiClient.getChatRooms(),
     enabled: isOpen,
+    staleTime: 5 * 60 * 1000, // Keep fresh for 5 minutes
     retry: 2,
     retryDelay: 1000,
   });

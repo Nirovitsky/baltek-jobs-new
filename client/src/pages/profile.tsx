@@ -43,8 +43,8 @@ const MOCK_CATEGORIES = {
 // Company Suggestions Component
 function CompanySuggestions() {
   const { data: companiesData, isLoading } = useQuery({
-    queryKey: ["/api/organizations"],
-    queryFn: () => fetch("/api/organizations?limit=15").then(res => res.json()),
+    queryKey: ["organizations", "suggestions"],
+    queryFn: () => ApiClient.getOrganizations({ limit: 15 }),
   });
 
   // Handle both array and paginated response formats
@@ -153,9 +153,9 @@ export default function Profile() {
     enabled: !!user?.id,
   });
 
-  // Fetch user resumes
+  // Use cached resumes data from profile modal (if available) or fetch fresh data
   const { data: resumes } = useQuery({
-    queryKey: ["user", "resumes", user?.id],
+    queryKey: ["user", "resumes", "current"],
     queryFn: () => ApiClient.getResumes(),
     enabled: !!user?.id,
   });

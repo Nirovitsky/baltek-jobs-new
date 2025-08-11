@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import type { Organization } from "@shared/schema";
+import { ApiClient } from "@/lib/api";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 // Mock categories for companies since API doesn't provide category data
@@ -50,12 +51,12 @@ import {
 // Company Suggestions Component
 function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | undefined }) {
   const { data: companiesData, isLoading } = useQuery({
-    queryKey: ["/api/organizations"],
-    queryFn: () => fetch("/api/organizations?limit=15").then(res => res.json()),
+    queryKey: ["organizations", "suggestions"],
+    queryFn: () => ApiClient.getOrganizations({ limit: 15 }),
   });
 
   // Handle both array and paginated response formats
-  const allCompanies = Array.isArray(companiesData) ? companiesData : (companiesData?.results || []);
+  const allCompanies = Array.isArray(companiesData) ? companiesData : ((companiesData as any)?.results || []);
   
   // Add mock categories to companies
   const companiesWithCategories = allCompanies.map((company: Organization) => ({
@@ -224,7 +225,8 @@ export default function CompanyProfile() {
   const companyId = params?.id;
 
   const { data: company, isLoading: companyLoading, error: companyError } = useQuery({
-    queryKey: ["/api/organizations", companyId],
+    queryKey: ["organization", companyId],
+    queryFn: () => ApiClient.getOrganization(parseInt(companyId!)),
     enabled: !!companyId,
   });
 

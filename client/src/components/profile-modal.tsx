@@ -84,8 +84,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   });
 
   const { data: organizations, isLoading: organizationsLoading } = useQuery({
-    queryKey: ["organizations"],
-    queryFn: () => ApiClient.getOrganizations(),
+    queryKey: ["organizations", "suggestions"],
+    queryFn: () => ApiClient.getOrganizations({ limit: 15 }),
     enabled: isOpen,
   });
 
@@ -101,7 +101,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
 
   // Use cached resumes data from profile page (avoids duplicate API call)
   const { data: userResumes, isLoading: resumesLoading } = useQuery({
-    queryKey: ["user", "resumes", user?.id],
+    queryKey: ["user", "resumes", "current"],
     enabled: false, // Don't fetch - use cached data from profile page
   });
 
@@ -336,8 +336,8 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     },
     onSuccess: () => {
       // Invalidate and refetch resumes immediately
-      queryClient.invalidateQueries({ queryKey: ["user", "resumes", user?.id] });
-      queryClient.refetchQueries({ queryKey: ["user", "resumes", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["user", "resumes", "current"] });
+      queryClient.refetchQueries({ queryKey: ["user", "resumes", "current"] });
       setUploadingResume(null);
       toast({ title: "Resume uploaded", description: "Resume uploaded successfully" });
     },
@@ -353,7 +353,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const deleteResumeMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteResume(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "resumes", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["user", "resumes", "current"] });
       toast({ title: "Resume deleted", description: "Resume deleted successfully" });
     },
     onError: (error) => {
