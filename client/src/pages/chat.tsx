@@ -198,60 +198,68 @@ export default function ChatPage() {
             }
 
             if (data.type === "message_delivered") {
-              // Message was successfully sent - add it to local messages
-              if (data.data && data.data.room === selectedConversation) {
-                const newMessage = data.data.message;
-                if (newMessage && newMessage.id) {
-                  // Ensure the message has the correct structure
-                  const formattedMessage = {
-                    id: newMessage.id,
-                    room: newMessage.room || data.data.room,
-                    owner: newMessage.owner || user?.id,
-                    text: newMessage.text || newMessage.content,
-                    status: newMessage.status || "delivered",
-                    attachments: newMessage.attachments || [],
-                    date_created: newMessage.date_created || Math.floor(Date.now() / 1000),
-                  };
-                  
-                  setLocalMessages(prev => {
-                    // Check if message already exists to avoid duplicates
-                    const exists = prev.some(msg => msg.id === formattedMessage.id);
-                    if (!exists) {
-                      return [...prev, formattedMessage];
-                    }
-                    return prev;
-                  });
-                  // Scroll to bottom after adding message
-                  setTimeout(scrollToBottom, 100);
-                }
+              // Message was successfully sent by me - add it to local messages as my message
+              console.log("Message delivered - adding as my message");
+              
+              // Extract message data - could be in data.message or data directly
+              const messageData = data.message || data.data?.message || data.data;
+              const roomId = data.room || data.data?.room || selectedConversation;
+              
+              if (roomId === selectedConversation && messageData) {
+                const formattedMessage = {
+                  id: messageData.id || Date.now(), // Use timestamp if no ID
+                  room: roomId,
+                  owner: user?.id, // This message is from me
+                  text: messageData.text || messageData.content || data.text,
+                  status: "delivered",
+                  attachments: messageData.attachments || [],
+                  date_created: messageData.date_created || Math.floor(Date.now() / 1000),
+                };
+                
+                console.log("Adding delivered message to UI:", formattedMessage);
+                
+                setLocalMessages(prev => {
+                  // Check if message already exists to avoid duplicates
+                  const exists = prev.some(msg => msg.id === formattedMessage.id);
+                  if (!exists) {
+                    return [...prev, formattedMessage];
+                  }
+                  return prev;
+                });
+                // Scroll to bottom after adding message
+                setTimeout(scrollToBottom, 100);
               }
             } else if (data.type === "receive_message") {
-              // Received a message from someone else - add it to local state
-              if (data.data && data.data.room === selectedConversation) {
-                const newMessage = data.data.message;
-                if (newMessage && newMessage.id) {
-                  // Ensure the message has the correct structure
-                  const formattedMessage = {
-                    id: newMessage.id,
-                    room: newMessage.room || data.data.room,
-                    owner: newMessage.owner,
-                    text: newMessage.text || newMessage.content,
-                    status: newMessage.status || "delivered",
-                    attachments: newMessage.attachments || [],
-                    date_created: newMessage.date_created || Math.floor(Date.now() / 1000),
-                  };
-                  
-                  setLocalMessages(prev => {
-                    // Check if message already exists to avoid duplicates
-                    const exists = prev.some(msg => msg.id === formattedMessage.id);
-                    if (!exists) {
-                      return [...prev, formattedMessage];
-                    }
-                    return prev;
-                  });
-                  // Scroll to bottom after adding message
-                  setTimeout(scrollToBottom, 100);
-                }
+              // Received a message from someone else - add it to local state as their message
+              console.log("Message received - adding as other person's message");
+              
+              // Extract message data - could be in data.message or data directly
+              const messageData = data.message || data.data?.message || data.data;
+              const roomId = data.room || data.data?.room || selectedConversation;
+              
+              if (roomId === selectedConversation && messageData) {
+                const formattedMessage = {
+                  id: messageData.id || Date.now(),
+                  room: roomId,
+                  owner: messageData.owner || messageData.sender_id, // This message is from them
+                  text: messageData.text || messageData.content || data.text,
+                  status: messageData.status || "delivered",
+                  attachments: messageData.attachments || [],
+                  date_created: messageData.date_created || Math.floor(Date.now() / 1000),
+                };
+                
+                console.log("Adding received message to UI:", formattedMessage);
+                
+                setLocalMessages(prev => {
+                  // Check if message already exists to avoid duplicates
+                  const exists = prev.some(msg => msg.id === formattedMessage.id);
+                  if (!exists) {
+                    return [...prev, formattedMessage];
+                  }
+                  return prev;
+                });
+                // Scroll to bottom after adding message
+                setTimeout(scrollToBottom, 100);
               }
 
               // Only refresh rooms to update last message info
