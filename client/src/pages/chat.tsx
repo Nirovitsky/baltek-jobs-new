@@ -394,7 +394,14 @@ export default function ChatPage() {
     msg && msg.id && self.findIndex(m => m && m.id === msg.id) === index
   );
   
-  const messagesData = { results: uniqueMessages };
+  // Sort messages by date_created (oldest first, newest at bottom)
+  const sortedMessages = uniqueMessages.sort((a, b) => {
+    const timeA = a.date_created || 0;
+    const timeB = b.date_created || 0;
+    return timeA - timeB; // Ascending order (oldest first)
+  });
+  
+  const messagesData = { results: sortedMessages };
   
   // Debug logging
   console.log("Messages debug:", {
