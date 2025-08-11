@@ -149,6 +149,69 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update user profile
+  app.patch("/api/users/:id/", async (req, res) => {
+    try {
+      const response = await fetch(`https://api.baltek.net/api/users/${req.params.id}/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: req.headers.authorization || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Profile update failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to update profile" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      res.status(500).json({ error: "Failed to update profile" });
+    }
+  });
+
+  // Current user endpoint for the me route 
+  app.get("/api/users/me", async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: "No authorization token provided" });
+      }
+
+      const token = authHeader.split(' ')[1];
+      // Simple JWT decode to get user ID (just parse the payload)
+      const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+      const userId = payload.user_id;
+
+      if (!userId) {
+        return res.status(401).json({ error: "Invalid token format" });
+      }
+
+      const response = await fetch(`https://api.baltek.net/api/users/${userId}/`, {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Get current user failed:", response.status, errorData);
+        return res.status(response.status).json({ error: "Failed to get current user" });
+      }
+
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error getting current user:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   // Proxy routes to Baltek API
   app.get("/api/organizations/:id", async (req, res) => {
     try {
@@ -267,7 +330,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user resumes
+  // Get universities for education forms
+  app.get("/api/universities/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/universities/", {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch universities: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching universities:", error);
+      res.status(500).json({ error: "Failed to fetch universities" });
+    }
+  });
+
+  // User resume endpoints
   app.get("/api/users/resumes/", async (req, res) => {
     try {
       const response = await fetch("https://api.baltek.net/api/users/resumes/", {
@@ -283,6 +365,293 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching resumes:", error);
       res.status(500).json({ error: "Failed to fetch resumes" });
+    }
+  });
+
+  app.post("/api/users/resumes/", upload.any(), async (req, res) => {
+    try {
+      console.log("Received resume upload request");
+      console.log("Request files:", req.files);
+      
+      // Create FormData for the external API
+      const formData = new FormData();
+      
+      // Add form fields
+      if (req.body.title) {
+        formData.append("title", req.body.title);
+      }
+      
+      // Handle file uploads
+      if (req.files && Array.isArray(req.files)) {
+        for (const file of req.files) {
+          if (file.fieldname === "file") {
+            const blob = new Blob([file.buffer], { type: file.mimetype });
+            formData.append("file", blob, file.originalname);
+          }
+        }
+      }
+      
+      const response = await fetch("https://api.baltek.net/api/users/resumes/", {
+        method: "POST",
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+        body: formData
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Resume upload failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to upload resume" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error uploading resume:", error);
+      res.status(500).json({ error: "Failed to upload resume" });
+    }
+  });
+
+  app.delete("/api/users/resumes/:id/", async (req, res) => {
+    try {
+      const response = await fetch(`https://api.baltek.net/api/users/resumes/${req.params.id}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Resume delete failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to delete resume" });
+      }
+      
+      // Return success response
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting resume:", error);
+      res.status(500).json({ error: "Failed to delete resume" });
+    }
+  });
+
+  // Education endpoints
+  app.post("/api/users/educations/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/users/educations/", {
+        method: "POST",
+        headers: {
+          Authorization: req.headers.authorization || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Education add failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to add education" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error adding education:", error);
+      res.status(500).json({ error: "Failed to add education" });
+    }
+  });
+
+  app.patch("/api/users/educations/:id/", async (req, res) => {
+    try {
+      const response = await fetch(`https://api.baltek.net/api/users/educations/${req.params.id}/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: req.headers.authorization || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Education update failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to update education" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error updating education:", error);
+      res.status(500).json({ error: "Failed to update education" });
+    }
+  });
+
+  app.delete("/api/users/educations/:id/", async (req, res) => {
+    try {
+      const response = await fetch(`https://api.baltek.net/api/users/educations/${req.params.id}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Education delete failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to delete education" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting education:", error);
+      res.status(500).json({ error: "Failed to delete education" });
+    }
+  });
+
+  // Experience endpoints
+  app.post("/api/users/experiences/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/users/experiences/", {
+        method: "POST",
+        headers: {
+          Authorization: req.headers.authorization || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Experience add failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to add experience" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error adding experience:", error);
+      res.status(500).json({ error: "Failed to add experience" });
+    }
+  });
+
+  app.patch("/api/users/experiences/:id/", async (req, res) => {
+    try {
+      const response = await fetch(`https://api.baltek.net/api/users/experiences/${req.params.id}/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: req.headers.authorization || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Experience update failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to update experience" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error updating experience:", error);
+      res.status(500).json({ error: "Failed to update experience" });
+    }
+  });
+
+  app.delete("/api/users/experiences/:id/", async (req, res) => {
+    try {
+      const response = await fetch(`https://api.baltek.net/api/users/experiences/${req.params.id}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Experience delete failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to delete experience" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting experience:", error);
+      res.status(500).json({ error: "Failed to delete experience" });
+    }
+  });
+
+  // Projects endpoints
+  app.post("/api/users/projects/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/users/projects/", {
+        method: "POST",
+        headers: {
+          Authorization: req.headers.authorization || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Project add failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to add project" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error adding project:", error);
+      res.status(500).json({ error: "Failed to add project" });
+    }
+  });
+
+  app.patch("/api/users/projects/:id/", async (req, res) => {
+    try {
+      const response = await fetch(`https://api.baltek.net/api/users/projects/${req.params.id}/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: req.headers.authorization || "",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req.body),
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Project update failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to update project" });
+      }
+      
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error updating project:", error);
+      res.status(500).json({ error: "Failed to update project" });
+    }
+  });
+
+  app.delete("/api/users/projects/:id/", async (req, res) => {
+    try {
+      const response = await fetch(`https://api.baltek.net/api/users/projects/${req.params.id}/`, {
+        method: "DELETE",
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Project delete failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to delete project" });
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      res.status(500).json({ error: "Failed to delete project" });
     }
   });
 
