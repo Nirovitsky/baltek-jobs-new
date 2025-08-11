@@ -219,7 +219,7 @@ export default function Notifications() {
   const [activeTab, setActiveTab] = useState<string>("all");
   const queryClient = useQueryClient();
 
-  // Fetch notifications from API with error handling for unimplemented endpoint
+  // Fetch notifications from API with error handling for server issues
   const {
     data: notificationsData,
     isLoading,
@@ -228,8 +228,16 @@ export default function Notifications() {
     refetch,
   } = useQuery({
     queryKey: ["notifications"],
-    queryFn: () => ApiClient.getNotifications({ page_size: 50 }),
-    retry: false, // Don't retry on 500 errors
+    queryFn: async () => {
+      try {
+        return await ApiClient.getNotifications({ page_size: 50 });
+      } catch (err: any) {
+        // Log the actual error for debugging
+        console.error("Notifications API error:", err);
+        throw err;
+      }
+    },
+    retry: false, // Don't retry on server errors
     retryOnMount: false,
   });
 
@@ -319,9 +327,15 @@ export default function Notifications() {
       <BreadcrumbNavigation />
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Notifications</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                Stay updated with your job search activity
+              </p>
+            </div>
             <div className="flex gap-2">
-              {unreadCount > 0 && (
+              {!isError && unreadCount > 0 && (
                 <Button
                   variant="outline"
                   onClick={handleMarkAllAsRead}
@@ -353,16 +367,17 @@ export default function Notifications() {
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-6">
-            <TabsTrigger value="all">All ({notifications.length})</TabsTrigger>
-            <TabsTrigger value="unread">Unread ({unreadCount})</TabsTrigger>
-            <TabsTrigger value="read">
-              Read ({notifications.length - unreadCount})
-            </TabsTrigger>
-          </TabsList>
+        {!isError ? (
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="mb-6">
+              <TabsTrigger value="all">All ({notifications.length})</TabsTrigger>
+              <TabsTrigger value="unread">Unread ({unreadCount})</TabsTrigger>
+              <TabsTrigger value="read">
+                Read ({notifications.length - unreadCount})
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value={activeTab}>
+            <TabsContent value={activeTab}>
             {isLoading ? (
               <div className="space-y-4">
                 {[...Array(3)].map((_, i) => (
@@ -385,18 +400,30 @@ export default function Notifications() {
                 <CardContent className="p-8 text-center">
                   <AlertCircle className="w-12 h-12 text-amber-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                    Notifications Coming Soon
+                    Notifications Under Development
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    The notification system is being set up on the server. This feature will be available soon!
+                    The notification system is being updated on the server. We're working to resolve this issue.
                   </p>
-                  <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
-                    <p>In the meantime, you can:</p>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li>Check your applications page for updates</li>
-                      <li>Visit the chat page for messages</li>
-                      <li>Browse new job listings</li>
-                    </ul>
+                  <div className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
+                    <p>You can stay updated through:</p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                      <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+                        <BriefcaseIcon className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                        <p className="font-medium text-blue-900 dark:text-blue-100">Applications</p>
+                        <p className="text-xs text-blue-700 dark:text-blue-300">Track your job applications</p>
+                      </div>
+                      <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg">
+                        <MessageCircle className="w-6 h-6 text-green-600 mx-auto mb-2" />
+                        <p className="font-medium text-green-900 dark:text-green-100">Messages</p>
+                        <p className="text-xs text-green-700 dark:text-green-300">Chat with recruiters</p>
+                      </div>
+                      <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                        <CheckCircle className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+                        <p className="font-medium text-purple-900 dark:text-purple-100">Jobs</p>
+                        <p className="text-xs text-purple-700 dark:text-purple-300">Find new opportunities</p>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -428,8 +455,41 @@ export default function Notifications() {
                 ))}
               </div>
             )}
-          </TabsContent>
-        </Tabs>
+            </TabsContent>
+          </Tabs>
+        ) : (
+          <Card>
+            <CardContent className="p-8 text-center">
+              <AlertCircle className="w-12 h-12 text-amber-400 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                Notifications Under Development
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                The notification system is being updated on the server. We're working to resolve this issue.
+              </p>
+              <div className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
+                <p>You can stay updated through:</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div className="p-3 bg-blue-50 dark:bg-blue-950/30 rounded-lg">
+                    <BriefcaseIcon className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                    <p className="font-medium text-blue-900 dark:text-blue-100">Applications</p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">Track your job applications</p>
+                  </div>
+                  <div className="p-3 bg-green-50 dark:bg-green-950/30 rounded-lg">
+                    <MessageCircle className="w-6 h-6 text-green-600 mx-auto mb-2" />
+                    <p className="font-medium text-green-900 dark:text-green-100">Messages</p>
+                    <p className="text-xs text-green-700 dark:text-green-300">Chat with recruiters</p>
+                  </div>
+                  <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+                    <CheckCircle className="w-6 h-6 text-purple-600 mx-auto mb-2" />
+                    <p className="font-medium text-purple-900 dark:text-purple-100">Jobs</p>
+                    <p className="text-xs text-purple-700 dark:text-purple-300">Find new opportunities</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
