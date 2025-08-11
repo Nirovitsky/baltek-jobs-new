@@ -88,38 +88,28 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     }
   }, [isOpen, initialTab]);
 
-  // Enhanced DatePicker component with easy year selection
+  // Enhanced DatePicker component with improved year navigation
   const DatePicker = ({ value, onChange, placeholder }: { value: string; onChange: (date: string) => void; placeholder: string }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const currentDate = value ? new Date(value) : new Date();
-    const currentYear = currentDate.getFullYear();
-    const currentMonth = currentDate.getMonth();
-    const currentDay = currentDate.getDate();
+    const [currentMonth, setCurrentMonth] = useState(() => {
+      return value ? new Date(value) : new Date();
+    });
+    const dateValue = value ? new Date(value) : undefined;
 
-    // Generate year options (from 1950 to current year + 10)
-    const years = Array.from({ length: new Date().getFullYear() - 1950 + 11 }, (_, i) => 1950 + i).reverse();
-    
-    // Month names
-    const months = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
+    // Quick year selection buttons
+    const currentYear = new Date().getFullYear();
+    const years = [currentYear - 30, currentYear - 20, currentYear - 10, currentYear, currentYear + 5];
 
-    // Days in month
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    const handleYearSelect = (year: number) => {
+      const newDate = new Date(currentMonth);
+      newDate.setFullYear(year);
+      setCurrentMonth(newDate);
+    };
 
-    const handleDateChange = (year?: number, month?: number, day?: number) => {
-      const newYear = year ?? currentYear;
-      const newMonth = month ?? currentMonth;
-      const newDay = day ?? currentDay;
-      
-      // Ensure day is valid for the selected month
-      const maxDaysInNewMonth = new Date(newYear, newMonth + 1, 0).getDate();
-      const validDay = Math.min(newDay, maxDaysInNewMonth);
-      
-      const newDate = new Date(newYear, newMonth, validDay);
-      onChange(format(newDate, "yyyy-MM-dd"));
+    const handleMonthSelect = (increment: number) => {
+      const newDate = new Date(currentMonth);
+      newDate.setMonth(newDate.getMonth() + increment);
+      setCurrentMonth(newDate);
     };
 
     return (
@@ -133,76 +123,72 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
             {value ? format(new Date(value), "PP") : <span>{placeholder}</span>}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-80 p-4" align="start">
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Year</Label>
-                <Select
-                  value={currentYear.toString()}
-                  onValueChange={(yearStr) => handleDateChange(parseInt(yearStr))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {years.map((year) => (
-                      <SelectItem key={year} value={year.toString()}>
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <Label className="text-sm font-medium">Month</Label>
-                <Select
-                  value={currentMonth.toString()}
-                  onValueChange={(monthStr) => handleDateChange(undefined, parseInt(monthStr))}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {months.map((month, index) => (
-                      <SelectItem key={index} value={index.toString()}>
-                        {month}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Day</Label>
-              <Select
-                value={currentDay.toString()}
-                onValueChange={(dayStr) => handleDateChange(undefined, undefined, parseInt(dayStr))}
+        <PopoverContent className="w-auto p-0" align="start">
+          <div className="p-3 border-b">
+            <div className="flex items-center justify-between mb-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => handleMonthSelect(-12)}
+                className="h-7 w-7 p-0"
               >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="max-h-60">
-                  {days.map((day) => (
-                    <SelectItem key={day} value={day.toString()}>
-                      {day}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                ‹‹
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => handleMonthSelect(-1)}
+                className="h-7 w-7 p-0"
+              >
+                ‹
+              </Button>
+              <div className="text-sm font-medium">
+                {format(currentMonth, "MMMM yyyy")}
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => handleMonthSelect(1)}
+                className="h-7 w-7 p-0"
+              >
+                ›
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => handleMonthSelect(12)}
+                className="h-7 w-7 p-0"
+              >
+                ››
+              </Button>
             </div>
-
-            <div className="flex justify-end space-x-2 pt-2">
-              <Button variant="outline" size="sm" onClick={() => setIsOpen(false)}>
-                Cancel
-              </Button>
-              <Button size="sm" onClick={() => setIsOpen(false)}>
-                Done
-              </Button>
+            <div className="flex flex-wrap gap-1">
+              {years.map((year) => (
+                <Button
+                  key={year}
+                  variant={currentMonth.getFullYear() === year ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleYearSelect(year)}
+                  className="h-6 px-2 text-xs"
+                >
+                  {year}
+                </Button>
+              ))}
             </div>
           </div>
+          <Calendar
+            mode="single"
+            selected={dateValue}
+            onSelect={(date) => {
+              if (date) {
+                onChange(format(date, "yyyy-MM-dd"));
+              }
+              setIsOpen(false);
+            }}
+            month={currentMonth}
+            onMonthChange={setCurrentMonth}
+            initialFocus
+          />
         </PopoverContent>
       </Popover>
     );

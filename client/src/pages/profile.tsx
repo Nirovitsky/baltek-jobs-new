@@ -50,7 +50,7 @@ function CompanySuggestions() {
   // Handle both array and paginated response formats
   const allCompanies = Array.isArray(companiesData) 
     ? companiesData 
-    : (companiesData && 'results' in companiesData ? companiesData.results : []) as Organization[];
+    : (companiesData && typeof companiesData === 'object' && 'results' in companiesData ? (companiesData as any).results : []) as Organization[];
   
   // Add mock categories to companies
   const companiesWithCategories = allCompanies.map((company: Organization) => ({
