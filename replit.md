@@ -26,7 +26,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Code Simplification**: Removed all server-side API endpoint handlers and proxy configuration
 - **TypeScript Fixes**: Resolved all type errors and improved code reliability
 - **Chat File Attachments**: Added comprehensive file upload functionality with progress indicators, attachment previews, and WebSocket integration using `/files/` endpoint. Fixed API field name from "file" to "path" for uploads. Enhanced message filtering to show attachment-only messages. Added real-time upload progress with visual indicators and error handling. Modernized attachment display with view/download buttons and proper ordering (attachments appear before text).
-- **Notification System**: Implemented complete notification functionality with real API integration replacing hardcoded data. Added notification API endpoints (`/notifications/`, mark as read, mark all as read, delete). Features include loading states, error handling, refresh functionality, delete capabilities, and proper notification type mapping. Notifications support filtering by read/unread status with real-time updates.
+- **Notification System**: Implemented notification functionality with graceful API fallback. The notification endpoints (`/notifications/`, mark as read, mark all as read, delete) are prepared for when the Baltek API implements them. Currently shows a user-friendly "Coming Soon" message with helpful alternative actions when the API returns 500 errors. Features proper error handling, loading states, and notification type mapping ready for future API implementation.
 
 ## System Architecture
 

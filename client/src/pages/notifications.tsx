@@ -219,18 +219,21 @@ export default function Notifications() {
   const [activeTab, setActiveTab] = useState<string>("all");
   const queryClient = useQueryClient();
 
-  // Fetch notifications from API
+  // Fetch notifications from API with error handling for unimplemented endpoint
   const {
     data: notificationsData,
     isLoading,
     isError,
+    error,
     refetch,
   } = useQuery({
     queryKey: ["notifications"],
     queryFn: () => ApiClient.getNotifications({ page_size: 50 }),
+    retry: false, // Don't retry on 500 errors
+    retryOnMount: false,
   });
 
-  // Mark single notification as read mutation
+  // Mark single notification as read mutation (disabled when API unavailable)
   const markAsReadMutation = useMutation({
     mutationFn: (notificationId: number) =>
       ApiClient.markNotificationAsRead(notificationId),
@@ -243,14 +246,14 @@ export default function Notifications() {
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to mark notification as read",
-        variant: "destructive",
+        title: "Feature Coming Soon",
+        description: "Notification management will be available when the server feature is ready",
+        variant: "default",
       });
     },
   });
 
-  // Mark all notifications as read mutation
+  // Mark all notifications as read mutation (disabled when API unavailable)
   const markAllAsReadMutation = useMutation({
     mutationFn: () => ApiClient.markAllNotificationsAsRead(),
     onSuccess: () => {
@@ -262,14 +265,14 @@ export default function Notifications() {
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to mark all notifications as read",
-        variant: "destructive",
+        title: "Feature Coming Soon",
+        description: "Notification management will be available when the server feature is ready",
+        variant: "default",
       });
     },
   });
 
-  // Delete notification mutation
+  // Delete notification mutation (disabled when API unavailable)
   const deleteNotificationMutation = useMutation({
     mutationFn: (notificationId: number) =>
       ApiClient.deleteNotification(notificationId),
@@ -282,9 +285,9 @@ export default function Notifications() {
     },
     onError: (error: any) => {
       toast({
-        title: "Error",
-        description: error.message || "Failed to delete notification",
-        variant: "destructive",
+        title: "Feature Coming Soon",
+        description: "Notification management will be available when the server feature is ready",
+        variant: "default",
       });
     },
   });
@@ -335,15 +338,17 @@ export default function Notifications() {
                   )}
                 </Button>
               )}
-              <Button
-                variant="ghost"
-                onClick={() => refetch()}
-                disabled={isLoading}
-                className="text-sm"
-              >
-                <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
-                Refresh
-              </Button>
+              {!isError && (
+                <Button
+                  variant="ghost"
+                  onClick={() => refetch()}
+                  disabled={isLoading}
+                  className="text-sm"
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+                  Refresh
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -378,17 +383,21 @@ export default function Notifications() {
             ) : isError ? (
               <Card>
                 <CardContent className="p-8 text-center">
-                  <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                  <AlertCircle className="w-12 h-12 text-amber-400 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-                    Failed to load notifications
+                    Notifications Coming Soon
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 mb-4">
-                    There was an error loading your notifications. Please try again.
+                    The notification system is being set up on the server. This feature will be available soon!
                   </p>
-                  <Button onClick={() => refetch()} variant="outline">
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Try again
-                  </Button>
+                  <div className="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                    <p>In the meantime, you can:</p>
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>Check your applications page for updates</li>
+                      <li>Visit the chat page for messages</li>
+                      <li>Browse new job listings</li>
+                    </ul>
+                  </div>
                 </CardContent>
               </Card>
             ) : filteredNotifications.length === 0 ? (
