@@ -56,23 +56,12 @@ interface Message {
 
 interface Conversation {
   id: number;
-  name?: string; // Company name or participant name
-  participant: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    avatar?: string;
-    role?: string;
-    company?: string;
-  };
-  last_message: {
-    content: string;
-    created_at?: string;
-  } | null;
-  unread_count: number;
-  updated_at: string;
-  is_expired?: boolean;
-  is_active?: boolean;
+  content_type: string;
+  object_id: number;
+  content_object: any;
+  unread_message_count: number;
+  last_message_text: string | null;
+  last_message_date_created: number | null;
 }
 
 export default function ChatPage() {
@@ -128,7 +117,7 @@ export default function ChatPage() {
     }
 
     // Check if conversation is expired before sending
-    if (selectedConversationData?.is_expired) {
+    if (selectedConversationData?.content_object?.status === "expired") {
       toast({
         title: "Error",
         description: "This conversation has expired and is read-only",
@@ -540,29 +529,28 @@ export default function ChatPage() {
                           selectedConversation === conversation.id
                             ? "bg-primary/8 border-l-primary shadow-sm"
                             : "hover:bg-gray-50 hover:border-l-gray-200"
-                        } ${conversation.is_expired ? "opacity-70" : ""}`}
+                        } ${conversation.content_object?.status === "expired" ? "opacity-70" : ""}`}
                         data-testid={`conversation-${conversation.id}`}
                       >
                         <div className="flex items-start space-x-3">
                           <div className="relative flex-shrink-0">
                             <Avatar className="w-14 h-14 ring-2 ring-white shadow-sm">
                               <AvatarImage
-                                src={conversation.participant?.avatar}
+                                src={conversation.content_object?.job?.organization?.logo}
                                 className="object-cover"
                               />
                               <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/30 text-primary font-semibold text-lg">
-                                {conversation.name?.[0]?.toUpperCase() ||
-                                  conversation.participant?.first_name?.[0] ||
+                                {conversation.content_object?.job?.organization?.display_name?.[0] ||
+                                  conversation.content_object?.job?.organization?.official_name?.[0] ||
                                   "C"}
                               </AvatarFallback>
                             </Avatar>
-                            {conversation.unread_count > 0 &&
-                              !conversation.is_expired && (
-                                <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white shadow-md animate-pulse">
-                                  {conversation.unread_count > 99 ? "99+" : conversation.unread_count}
-                                </Badge>
-                              )}
-                            {!conversation.is_expired && conversation.unread_count === 0 && (
+                            {conversation.unread_message_count > 0 && (
+                              <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white shadow-md animate-pulse">
+                                {conversation.unread_message_count > 99 ? "99+" : conversation.unread_message_count}
+                              </Badge>
+                            )}
+                            {conversation.unread_message_count === 0 && (
                               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
                             )}
                           </div>
@@ -571,15 +559,15 @@ export default function ChatPage() {
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex items-center space-x-2 flex-1 min-w-0">
                                 <h3 className={`font-semibold truncate text-base leading-5 ${
-                                  conversation.unread_count > 0 && !conversation.is_expired
+                                  conversation.unread_message_count > 0
                                     ? "text-gray-900"
                                     : "text-gray-700"
                                 }`}>
-                                  {conversation.name ||
-                                    conversation.participant?.first_name ||
-                                    "Unknown Conversation"}
+                                  {(conversation.content_object?.job?.organization?.display_name || 
+                                    conversation.content_object?.job?.organization?.official_name || "Unknown Company") + 
+                                   (conversation.content_object?.job?.title ? ` - ${conversation.content_object.job.title}` : "")}
                                 </h3>
-                                {conversation.is_expired && (
+                                {conversation.content_object?.status === "expired" && (
                                   <Badge
                                     variant="destructive"
                                     className="text-xs px-2 py-0.5 bg-red-50 text-red-700 border-red-200 font-medium"
@@ -589,34 +577,31 @@ export default function ChatPage() {
                                 )}
                               </div>
                               <span className="text-xs text-gray-500 flex-shrink-0 ml-2 font-medium">
-                                {formatTime(
-                                  conversation.last_message?.created_at ||
-                                    conversation.updated_at,
-                                )}
+                                {conversation.last_message_date_created 
+                                  ? formatTime(new Date(conversation.last_message_date_created * 1000).toISOString())
+                                  : "Recently"}
                               </span>
                             </div>
 
                             {/* Role/Company info */}
-                            {conversation.participant?.role && (
+                            {conversation.content_object?.job?.title && (
                               <div className="flex items-center space-x-1 mb-2">
                                 <Briefcase className="w-3 h-3 text-primary/60" />
                                 <span className="text-xs text-gray-600 truncate font-medium">
-                                  {conversation.participant.role}
-                                  {conversation.participant.company && 
-                                    ` • ${conversation.participant.company}`}
+                                  {conversation.content_object.job.title}
                                 </span>
                               </div>
                             )}
 
                             {/* Last message */}
                             <div className="flex items-center">
-                              {conversation.last_message ? (
+                              {conversation.last_message_text ? (
                                 <p className={`text-sm truncate flex-1 leading-5 ${
-                                  conversation.unread_count > 0 && !conversation.is_expired
+                                  conversation.unread_message_count > 0
                                     ? "text-gray-800 font-medium"
                                     : "text-gray-600"
                                 }`}>
-                                  {conversation.last_message.content}
+                                  {conversation.last_message_text}
                                 </p>
                               ) : (
                                 <p className="text-sm text-gray-400 italic flex-1">
@@ -649,31 +634,29 @@ export default function ChatPage() {
                     <div className="flex items-center space-x-3">
                       <Avatar className="w-10 h-10">
                         <AvatarImage
-                          src={selectedConversationData?.participant?.avatar}
+                          src={selectedConversationData?.content_object?.job?.organization?.logo}
                         />
                         <AvatarFallback>
-                          {selectedConversationData?.name?.[0]?.toUpperCase() ||
-                            selectedConversationData?.participant
-                              ?.first_name?.[0] ||
+                          {selectedConversationData?.content_object?.job?.organization?.display_name?.[0] ||
+                            selectedConversationData?.content_object?.job?.organization?.official_name?.[0] ||
                             "C"}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="flex items-center space-x-2">
                           <h3 className="font-semibold text-gray-900">
-                            {selectedConversationData?.name ||
-                              selectedConversationData?.participant
-                                ?.first_name ||
-                              "Unknown Conversation"}
+                            {(selectedConversationData?.content_object?.job?.organization?.display_name || 
+                              selectedConversationData?.content_object?.job?.organization?.official_name || "Unknown Company") + 
+                             (selectedConversationData?.content_object?.job?.title ? ` - ${selectedConversationData?.content_object?.job?.title}` : "")}
                           </h3>
-                          {selectedConversationData?.is_expired && (
+                          {selectedConversationData?.content_object?.status === "expired" && (
                             <Badge variant="secondary" className="text-xs">
                               Expired
                             </Badge>
                           )}
                         </div>
 
-                        {selectedConversationData?.is_expired && (
+                        {selectedConversationData?.content_object?.status === "expired" && (
                           <p className="text-xs text-yellow-600 mt-1">
                             This conversation has expired and is now read-only.
                           </p>
@@ -783,7 +766,7 @@ export default function ChatPage() {
                 </CardContent>
 
                 {/* Message Input - Only show if not expired */}
-                {!selectedConversationData?.is_expired ? (
+                {selectedConversationData?.content_object?.status !== "expired" ? (
                   <div className="p-4 border-t">
                     <form
                       onSubmit={handleSendMessage}
