@@ -334,69 +334,93 @@ export class ApiClient {
     return { results: response };
   }
 
-  // Dynamic filter options derived from actual job data
-  static async getJobTypes() {
-    try {
-      const response = await this.makeRequest<any>("/jobs/");
-      const jobs = response.results || [];
-      const uniqueJobTypes = Array.from(new Set(jobs.map((job: any) => job.job_type).filter(Boolean))) as string[];
-      
-      return uniqueJobTypes.map((type: string) => ({
-        value: type,
-        label: type.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-      }));
-    } catch (error) {
-      console.warn('Failed to fetch job types from API, using fallback');
-      return STATIC_FILTER_OPTIONS.JOB_TYPES;
+  // Cache for filter options to avoid multiple API calls
+  private static filterOptionsCache: {
+    jobTypes?: any[];
+    workplaceTypes?: any[];
+    currencies?: any[];
+    paymentFrequencies?: any[];
+    cacheTime?: number;
+  } = {};
+
+  // Fetch filter options from a single API call
+  static async fetchFilterOptions() {
+    const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+    const now = Date.now();
+    
+    // Return cached data if still valid
+    if (this.filterOptionsCache.cacheTime && 
+        (now - this.filterOptionsCache.cacheTime) < CACHE_DURATION &&
+        this.filterOptionsCache.jobTypes) {
+      return this.filterOptionsCache;
     }
+
+    try {
+      // Fetch a reasonable sample of jobs for filter options
+      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const jobs = response.results || [];
+      
+      // Extract unique values for each filter type
+      const uniqueJobTypes = Array.from(new Set(jobs.map((job: any) => job.job_type).filter(Boolean))) as string[];
+      const uniqueWorkplaceTypes = Array.from(new Set(jobs.map((job: any) => job.workplace_type).filter(Boolean))) as string[];
+      const uniqueCurrencies = Array.from(new Set(jobs.map((job: any) => job.currency).filter(Boolean))) as string[];
+      const uniquePaymentFreqs = Array.from(new Set(jobs.map((job: any) => job.payment_frequency).filter(Boolean))) as string[];
+      
+      // Transform into label-value pairs
+      const filterOptions = {
+        jobTypes: uniqueJobTypes.map((type: string) => ({
+          value: type,
+          label: type.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+        })),
+        workplaceTypes: uniqueWorkplaceTypes.map((type: string) => ({
+          value: type,
+          label: type.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+        })),
+        currencies: uniqueCurrencies.map((currency: string) => ({
+          value: currency,
+          label: currency
+        })),
+        paymentFrequencies: uniquePaymentFreqs.map((freq: string) => ({
+          value: freq,
+          label: freq.charAt(0).toUpperCase() + freq.slice(1)
+        })),
+        cacheTime: now
+      };
+      
+      // Cache the results
+      this.filterOptionsCache = filterOptions;
+      return filterOptions;
+    } catch (error) {
+      console.warn('Failed to fetch filter options from API, using fallback');
+      return {
+        jobTypes: STATIC_FILTER_OPTIONS.JOB_TYPES,
+        workplaceTypes: STATIC_FILTER_OPTIONS.WORKPLACE_TYPES,
+        currencies: STATIC_FILTER_OPTIONS.CURRENCIES,
+        paymentFrequencies: STATIC_FILTER_OPTIONS.PAYMENT_FREQUENCIES,
+        cacheTime: now
+      };
+    }
+  }
+
+  // Individual getter methods that use the cached data
+  static async getJobTypes() {
+    const options = await this.fetchFilterOptions();
+    return options.jobTypes || STATIC_FILTER_OPTIONS.JOB_TYPES;
   }
 
   static async getWorkplaceTypes() {
-    try {
-      const response = await this.makeRequest<any>("/jobs/");
-      const jobs = response.results || [];
-      const uniqueWorkplaceTypes = Array.from(new Set(jobs.map((job: any) => job.workplace_type).filter(Boolean))) as string[];
-      
-      return uniqueWorkplaceTypes.map((type: string) => ({
-        value: type,
-        label: type.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-      }));
-    } catch (error) {
-      console.warn('Failed to fetch workplace types from API, using fallback');
-      return STATIC_FILTER_OPTIONS.WORKPLACE_TYPES;
-    }
+    const options = await this.fetchFilterOptions();
+    return options.workplaceTypes || STATIC_FILTER_OPTIONS.WORKPLACE_TYPES;
   }
 
   static async getCurrencies() {
-    try {
-      const response = await this.makeRequest<any>("/jobs/");
-      const jobs = response.results || [];
-      const uniqueCurrencies = Array.from(new Set(jobs.map((job: any) => job.currency).filter(Boolean))) as string[];
-      
-      return uniqueCurrencies.map((currency: string) => ({
-        value: currency,
-        label: currency
-      }));
-    } catch (error) {
-      console.warn('Failed to fetch currencies from API, using fallback');
-      return STATIC_FILTER_OPTIONS.CURRENCIES;
-    }
+    const options = await this.fetchFilterOptions();
+    return options.currencies || STATIC_FILTER_OPTIONS.CURRENCIES;
   }
 
   static async getPaymentFrequencies() {
-    try {
-      const response = await this.makeRequest<any>("/jobs/");
-      const jobs = response.results || [];
-      const uniquePaymentFreqs = Array.from(new Set(jobs.map((job: any) => job.payment_frequency).filter(Boolean))) as string[];
-      
-      return uniquePaymentFreqs.map((freq: string) => ({
-        value: freq,
-        label: freq.charAt(0).toUpperCase() + freq.slice(1)
-      }));
-    } catch (error) {
-      console.warn('Failed to fetch payment frequencies from API, using fallback');
-      return STATIC_FILTER_OPTIONS.PAYMENT_FREQUENCIES;
-    }
+    const options = await this.fetchFilterOptions();
+    return options.paymentFrequencies || STATIC_FILTER_OPTIONS.PAYMENT_FREQUENCIES;
   }
 
   static async getEducationLevels() {

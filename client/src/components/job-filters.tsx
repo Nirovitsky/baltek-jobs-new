@@ -53,25 +53,18 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     queryFn: () => ApiClient.getCategories(),
   });
 
-  const { data: jobTypes } = useQuery({
-    queryKey: ["jobTypes"],
-    queryFn: () => ApiClient.getJobTypes(),
+  // Single query for all filter options to reduce API calls
+  const { data: filterOptions } = useQuery({
+    queryKey: ["filterOptions"],
+    queryFn: () => ApiClient.fetchFilterOptions(),
+    staleTime: 5 * 60 * 1000, // 5 minutes cache
   });
 
-  const { data: workplaceTypes } = useQuery({
-    queryKey: ["workplaceTypes"],
-    queryFn: () => ApiClient.getWorkplaceTypes(),
-  });
-
-  const { data: currencies } = useQuery({
-    queryKey: ["currencies"],
-    queryFn: () => ApiClient.getCurrencies(),
-  });
-
-  const { data: paymentFrequencies } = useQuery({
-    queryKey: ["paymentFrequencies"],
-    queryFn: () => ApiClient.getPaymentFrequencies(),
-  });
+  // Extract individual filter arrays from the combined response
+  const jobTypes = filterOptions?.jobTypes;
+  const workplaceTypes = filterOptions?.workplaceTypes;
+  const currencies = filterOptions?.currencies;
+  const paymentFrequencies = filterOptions?.paymentFrequencies;
 
   const { data: educationLevels } = useQuery({
     queryKey: ["educationLevels"],
