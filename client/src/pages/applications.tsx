@@ -22,10 +22,68 @@ export default function ApplicationsPage() {
 
   // Calculate derived state (must be before useEffect)
   const applicationsData = applications as any;
-  const applicationsList = applicationsData?.results || [];
-  const appliedJobs = applicationsList.filter((job: any) => 
-    job.my_application_id !== null && job.my_application_id !== undefined
-  );
+  const applicationsList = applicationsData?.results || applicationsData || [];
+  
+  // Debug logging
+  console.log("Applications API response:", applicationsData);
+  console.log("Applications list:", applicationsList);
+  console.log("Applications list length:", applicationsList.length);
+  if (applicationsList.length > 0) {
+    console.log("First application:", applicationsList[0]);
+    console.log("Application structure:", Object.keys(applicationsList[0]));
+  }
+  
+  // Transform applications to job format expected by JobCard component
+  const appliedJobs = applicationsList.map((application: any) => {
+    // If this is already a job object with my_application_id, use it as is
+    if (application.my_application_id !== undefined) {
+      return application;
+    }
+    
+    // If this is an application object with a job field
+    if (application.job && typeof application.job === 'object') {
+      return {
+        ...application.job,
+        my_application_id: application.id,
+        application_status: application.status,
+        application_date: application.created_at || application.date_created,
+        application_cover_letter: application.cover_letter,
+      };
+    }
+    
+    // If this is an application object with job_id instead of job object
+    if (application.job_id || application.job) {
+      return {
+        id: application.job_id || application.job,
+        title: application.job_title || application.title || 'Job Application',
+        company: application.company || { name: 'Company' },
+        my_application_id: application.id,
+        application_status: application.status,
+        application_date: application.created_at || application.date_created,
+        application_cover_letter: application.cover_letter,
+        // Add placeholder data so JobCard can render
+        min_salary: 0,
+        max_salary: 0,
+        currency: 'USD',
+        payment_frequency: 'monthly',
+        location: 'Remote',
+        skills: [],
+        description: '',
+        requirements: '',
+      };
+    }
+    
+    // Fallback: treat the application itself as a job-like object
+    return {
+      ...application,
+      my_application_id: application.id,
+      application_status: application.status,
+      application_date: application.created_at || application.date_created,
+    };
+  });
+  
+  console.log("Transformed applied jobs:", appliedJobs);
+  console.log("Applied jobs length:", appliedJobs.length);
 
   // Auto-select first job when applications load (hook must be called consistently)
   useEffect(() => {
