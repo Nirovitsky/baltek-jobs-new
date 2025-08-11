@@ -896,48 +896,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
   (app as any).wss = wss;
   
   wss.on('connection', (ws, req) => {
-    console.log('WebSocket client connected');
-    
     // Extract authorization token from connection
     const authHeader = req.headers.authorization;
     if (authHeader) {
       (ws as any).authToken = authHeader;
-      console.log('WebSocket client authenticated');
-    } else {
-      console.log('WebSocket client connected without authentication');
     }
     
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message.toString());
-        console.log('Received WebSocket message:', JSON.stringify(data, null, 2));
+        console.log(JSON.stringify(data, null, 2));
         
         // Handle different message types
         switch (data.type) {
           case 'authenticate':
-            console.log('Processing authenticate message:', JSON.stringify(data, null, 2));
             (ws as any).authToken = data.token;
-            console.log('WebSocket client authenticated with token:', data.token ? 'Token received' : 'No token');
-            console.log('Stored auth token:', !!(ws as any).authToken);
             // Send authentication confirmation back to client
             if (ws.readyState === WebSocket.OPEN) {
               const authResponse = {
                 type: 'auth_success',
                 message: 'Authentication successful'
               };
-              console.log('Sending auth success:', authResponse);
               ws.send(JSON.stringify(authResponse));
             }
             break;
             
           case 'join_conversation':
             (ws as any).conversationId = data.conversation_id;
-            console.log(`WebSocket client joined conversation ${data.conversation_id}`);
             break;
             
           case 'send_message':
-            console.log('Processing send_message:', JSON.stringify(data, null, 2));
-            
             // Send message to Baltek API
             const sendMessageToAPI = async () => {
               try {
@@ -949,7 +937,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 
                 // Get authorization token from WebSocket connection
                 const authToken = (ws as any).authToken;
-                console.log('Auth token available:', !!authToken);
                 if (!authToken) {
                   throw new Error('No authorization token available. Please refresh the page and try again.');
                 }
@@ -978,11 +965,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                   attachments: data.data.attachments || []
                 };
                 
-                console.log('Simulating message send (API endpoint not available for POST)');
                 const apiResponse = mockMessage;
-                
-                // No API call needed since we're simulating locally
-                console.log('Message processed successfully:', apiResponse);
                 
                 // Send delivered_message confirmation to sender with API response
                 if (ws.readyState === WebSocket.OPEN) {
@@ -993,7 +976,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
                       message: apiResponse
                     }
                   };
-                  console.log('Sending delivery confirmation:', JSON.stringify(deliveryConfirmation, null, 2));
                   ws.send(JSON.stringify(deliveryConfirmation));
                 }
                 
@@ -1007,7 +989,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
                         message: apiResponse
                       }
                     };
-                    console.log('Broadcasting receive_message to other clients:', JSON.stringify(receiveMessage, null, 2));
                     client.send(JSON.stringify(receiveMessage));
                   }
                 });
@@ -1033,7 +1014,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             break;
             
           default:
-            console.log('Unknown WebSocket message type:', data.type);
+            break;
         }
       } catch (error) {
         console.error('WebSocket message error:', error);
@@ -1041,7 +1022,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
     
     ws.on('close', () => {
-      console.log('WebSocket client disconnected');
+      // WebSocket disconnected
     });
   });
 
