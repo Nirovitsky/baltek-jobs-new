@@ -1,41 +1,31 @@
 import express from 'express';
-import { createServer } from 'http';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { createServer as createViteServer } from 'vite';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const app = express();
 const port = Number(process.env.PORT) || 5000;
 
-// Serve static files from the client directory during development
-if (process.env.NODE_ENV === 'development') {
+console.log(`[express] serving on port ${port}`);
+
+async function createServer() {
+  const app = express();
+
   try {
-    const vite = await import('vite');
-    const viteServer = await vite.createServer({
+    // Create Vite server in middleware mode
+    const vite = await createViteServer({
       server: { middlewareMode: true },
-      appType: 'spa',
+      appType: 'spa'
     });
-    
-    app.use(viteServer.ssrFixStacktrace);
-    app.use(viteServer.middlewares);
+
+    // Use vite's connect instance as middleware
+    app.use(vite.ssrFixStacktrace);
+    app.use(vite.middlewares);
+
+    app.listen(port, '0.0.0.0', () => {
+      console.log(`Server ready on port ${port}`);
+    });
   } catch (error) {
-    console.error('Failed to create Vite server:', error);
-    // Fallback: serve static files
-    app.use(express.static(join(__dirname, '../client')));
+    console.error('Error starting server:', error);
+    process.exit(1);
   }
-} else {
-  // Serve built files in production
-  app.use(express.static(join(__dirname, '../dist')));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(join(__dirname, '../dist/index.html'));
-  });
 }
 
-const server = createServer(app);
-
-server.listen(port, '0.0.0.0', () => {
-  console.log(`[express] serving on port ${port}`);
-});
+createServer();
