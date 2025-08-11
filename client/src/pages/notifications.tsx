@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Bell,
   BriefcaseIcon,
@@ -6,16 +7,32 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
+  Trash2,
+  RefreshCw,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { formatDistanceToNow } from "date-fns";
+import { toast } from "@/hooks/use-toast";
+import { ApiClient } from "@/lib/api";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
+interface ApiNotification {
+  id: number;
+  title: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+  notification_type: string;
+  related_object_id?: number;
+  related_object_type?: string;
+}
+
 interface Notification {
-  id: string;
+  id: number;
   type: "job_application" | "message" | "job_match" | "interview" | "system";
   title: string;
   description: string;
@@ -25,73 +42,51 @@ interface Notification {
   priority: "low" | "medium" | "high";
 }
 
-// Mock data for notifications
-const mockNotifications: Notification[] = [
-  {
-    id: "1",
-    type: "job_application",
-    title: "Application Status Update",
-    description:
-      "Your application for Senior Frontend Developer at TechCorp has been reviewed.",
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
-    actionUrl: "/applications",
-    priority: "high",
-  },
-  {
-    id: "2",
-    type: "message",
-    title: "New Message from Recruiter",
-    description:
-      "Sarah Johnson from InnovateLab sent you a message about the React Developer position.",
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-    actionUrl: "/chat",
-    priority: "high",
-  },
-  {
-    id: "3",
-    type: "job_match",
-    title: "New Job Match",
-    description: "We found 3 new jobs that match your profile and preferences.",
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 4), // 4 hours ago
-    actionUrl: "/",
-    priority: "medium",
-  },
-  {
-    id: "4",
-    type: "interview",
-    title: "Interview Scheduled",
-    description:
-      "Your interview with DataDriven Inc is scheduled for tomorrow at 2:00 PM.",
-    isRead: false,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8), // 8 hours ago
-    priority: "high",
-  },
-  {
-    id: "5",
-    type: "system",
-    title: "Profile Update Required",
-    description:
-      "Please update your profile to increase your visibility to recruiters.",
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-    actionUrl: "/profile",
-    priority: "low",
-  },
-  {
-    id: "6",
-    type: "job_application",
-    title: "Application Submitted",
-    description:
-      "Your application for Full Stack Developer at StartupXYZ has been successfully submitted.",
-    isRead: true,
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
-    actionUrl: "/applications",
-    priority: "medium",
-  },
-];
+// Transform API notification to UI notification format
+function transformNotification(apiNotification: ApiNotification): Notification {
+  // Map notification types to UI types and determine priority
+  const typeMapping: Record<string, { type: Notification["type"]; priority: Notification["priority"] }> = {
+    application: { type: "job_application", priority: "high" },
+    job_match: { type: "job_match", priority: "medium" },
+    message: { type: "message", priority: "high" },
+    interview: { type: "interview", priority: "high" },
+    system: { type: "system", priority: "low" },
+    profile: { type: "system", priority: "low" },
+    default: { type: "system", priority: "medium" },
+  };
+
+  const mapping = typeMapping[apiNotification.notification_type] || typeMapping.default;
+  
+  // Determine action URL based on notification type and related object
+  let actionUrl: string | undefined;
+  switch (apiNotification.notification_type) {
+    case "application":
+      actionUrl = "/applications";
+      break;
+    case "message":
+      actionUrl = "/chat";
+      break;
+    case "job_match":
+      actionUrl = "/";
+      break;
+    case "profile":
+      actionUrl = "/profile";
+      break;
+    default:
+      actionUrl = undefined;
+  }
+
+  return {
+    id: apiNotification.id,
+    type: mapping.type,
+    title: apiNotification.title,
+    description: apiNotification.message,
+    isRead: apiNotification.is_read,
+    createdAt: new Date(apiNotification.created_at),
+    actionUrl,
+    priority: mapping.priority,
+  };
+}
 
 function NotificationIcon({ type }: { type: Notification["type"] }) {
   switch (type) {
@@ -113,9 +108,11 @@ function NotificationIcon({ type }: { type: Notification["type"] }) {
 function NotificationCard({
   notification,
   onMarkAsRead,
+  onDelete,
 }: {
   notification: Notification;
-  onMarkAsRead: (id: string) => void;
+  onMarkAsRead: (id: number) => void;
+  onDelete: (id: number) => void;
 }) {
   const priorityColors = {
     low: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
@@ -200,6 +197,14 @@ function NotificationCard({
                       View
                     </Button>
                   )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => onDelete(notification.id)}
+                    className="text-xs px-2 py-1 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
                 </div>
               </div>
             </div>
@@ -211,26 +216,93 @@ function NotificationCard({
 }
 
 export default function Notifications() {
-  const [notifications, setNotifications] =
-    useState<Notification[]>(mockNotifications);
   const [activeTab, setActiveTab] = useState<string>("all");
+  const queryClient = useQueryClient();
 
-  const handleMarkAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((notification) =>
-        notification.id === id
-          ? { ...notification, isRead: true }
-          : notification,
-      ),
-    );
+  // Fetch notifications from API
+  const {
+    data: notificationsData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => ApiClient.getNotifications({ page_size: 50 }),
+  });
+
+  // Mark single notification as read mutation
+  const markAsReadMutation = useMutation({
+    mutationFn: (notificationId: number) =>
+      ApiClient.markNotificationAsRead(notificationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      toast({
+        title: "Success",
+        description: "Notification marked as read",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to mark notification as read",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Mark all notifications as read mutation
+  const markAllAsReadMutation = useMutation({
+    mutationFn: () => ApiClient.markAllNotificationsAsRead(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      toast({
+        title: "Success",
+        description: "All notifications marked as read",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to mark all notifications as read",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete notification mutation
+  const deleteNotificationMutation = useMutation({
+    mutationFn: (notificationId: number) =>
+      ApiClient.deleteNotification(notificationId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      toast({
+        title: "Success",
+        description: "Notification deleted",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to delete notification",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleMarkAsRead = (id: number) => {
+    markAsReadMutation.mutate(id);
   };
 
   const handleMarkAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({ ...notification, isRead: true })),
-    );
+    markAllAsReadMutation.mutate();
   };
 
+  const handleDelete = (id: number) => {
+    deleteNotificationMutation.mutate(id);
+  };
+
+  // Transform API notifications to UI format
+  const notifications = notificationsData?.results.map(transformNotification) || [];
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
   const filteredNotifications = notifications.filter((notification) => {
@@ -245,15 +317,34 @@ export default function Notifications() {
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            {unreadCount > 0 && (
+            <div className="flex gap-2">
+              {unreadCount > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={handleMarkAllAsRead}
+                  disabled={markAllAsReadMutation.isPending}
+                  className="text-sm"
+                >
+                  {markAllAsReadMutation.isPending ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                      Marking...
+                    </>
+                  ) : (
+                    "Mark all as read"
+                  )}
+                </Button>
+              )}
               <Button
-                variant="outline"
-                onClick={handleMarkAllAsRead}
+                variant="ghost"
+                onClick={() => refetch()}
+                disabled={isLoading}
                 className="text-sm"
               >
-                Mark all as read
+                <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+                Refresh
               </Button>
-            )}
+            </div>
           </div>
         </div>
 
@@ -267,7 +358,40 @@ export default function Notifications() {
           </TabsList>
 
           <TabsContent value={activeTab}>
-            {filteredNotifications.length === 0 ? (
+            {isLoading ? (
+              <div className="space-y-4">
+                {[...Array(3)].map((_, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-4">
+                      <div className="flex items-start gap-3">
+                        <Skeleton className="w-10 h-10 rounded-full" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-4 w-3/4" />
+                          <Skeleton className="h-3 w-full" />
+                          <Skeleton className="h-3 w-1/2" />
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : isError ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                    Failed to load notifications
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    There was an error loading your notifications. Please try again.
+                  </p>
+                  <Button onClick={() => refetch()} variant="outline">
+                    <RefreshCw className="w-4 h-4 mr-2" />
+                    Try again
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : filteredNotifications.length === 0 ? (
               <Card>
                 <CardContent className="p-8 text-center">
                   <Bell className="w-12 h-12 text-gray-400 dark:text-gray-600 mx-auto mb-4" />
@@ -290,6 +414,7 @@ export default function Notifications() {
                     key={notification.id}
                     notification={notification}
                     onMarkAsRead={handleMarkAsRead}
+                    onDelete={handleDelete}
                   />
                 ))}
               </div>

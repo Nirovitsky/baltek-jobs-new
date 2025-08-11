@@ -25,7 +25,8 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Performance Optimization**: Removed unnecessary network hops through local proxy server
 - **Code Simplification**: Removed all server-side API endpoint handlers and proxy configuration
 - **TypeScript Fixes**: Resolved all type errors and improved code reliability
-- **Chat File Attachments**: Added comprehensive file upload functionality with progress indicators, attachment previews, and WebSocket integration using `/files/` endpoint. Fixed API field name from "file" to "path" for uploads. Enhanced message filtering to show attachment-only messages. Added real-time upload progress with visual indicators and error handling.
+- **Chat File Attachments**: Added comprehensive file upload functionality with progress indicators, attachment previews, and WebSocket integration using `/files/` endpoint. Fixed API field name from "file" to "path" for uploads. Enhanced message filtering to show attachment-only messages. Added real-time upload progress with visual indicators and error handling. Modernized attachment display with view/download buttons and proper ordering (attachments appear before text).
+- **Notification System**: Implemented complete notification functionality with real API integration replacing hardcoded data. Added notification API endpoints (`/notifications/`, mark as read, mark all as read, delete). Features include loading states, error handling, refresh functionality, delete capabilities, and proper notification type mapping. Notifications support filtering by read/unread status with real-time updates.
 
 ## System Architecture
 
@@ -50,7 +51,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 
 ### Technical Implementations & Features
 - **Data Validation**: Zod schemas for type-safe form validation and API response parsing.
-- **API Client**: Comprehensive `ApiClient` class with 40+ methods covering all Baltek API endpoints, automatic token refresh, and robust error handling. Includes methods for jobs, applications, profile management, chat, organizations, authentication, file operations, password changes, account deletion, and data export. All endpoints use proper trailing slash format to match backend expectations.
+- **API Client**: Comprehensive `ApiClient` class with 45+ methods covering all Baltek API endpoints, automatic token refresh, and robust error handling. Includes methods for jobs, applications, profile management, chat, organizations, authentication, file operations, notifications, password changes, account deletion, and data export. All endpoints use proper trailing slash format to match backend expectations.
 - **Authentication**: JWT-based with access and refresh tokens stored in localStorage.
 - **State Caching**: TanStack Query for intelligent caching and background updates.
 - **Job Display**: Job cards with job title, salary, skills tags, company details (logo, name, location), and detailed job views upon click.

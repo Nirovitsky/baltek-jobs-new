@@ -433,4 +433,83 @@ export class ApiClient {
       method: "DELETE",
     });
   }
+
+  // ===== Notifications =====
+  static async getNotifications(params?: {
+    page?: number;
+    page_size?: number;
+    is_read?: boolean;
+  }): Promise<{
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: Array<{
+      id: number;
+      title: string;
+      message: string;
+      is_read: boolean;
+      created_at: string;
+      notification_type: string;
+      related_object_id?: number;
+      related_object_type?: string;
+    }>;
+  }> {
+    const queryParams = new URLSearchParams();
+    if (params?.page) queryParams.append("page", params.page.toString());
+    if (params?.page_size) queryParams.append("page_size", params.page_size.toString());
+    if (params?.is_read !== undefined) queryParams.append("is_read", params.is_read.toString());
+
+    const endpoint = `/notifications/${queryParams.toString() ? `?${queryParams.toString()}` : ""}`;
+    return this.makeRequest<{
+      count: number;
+      next: string | null;
+      previous: string | null;
+      results: Array<{
+        id: number;
+        title: string;
+        message: string;
+        is_read: boolean;
+        created_at: string;
+        notification_type: string;
+        related_object_id?: number;
+        related_object_type?: string;
+      }>;
+    }>(endpoint);
+  }
+
+  static async markNotificationAsRead(notificationId: number): Promise<{
+    id: number;
+    title: string;
+    message: string;
+    is_read: boolean;
+    created_at: string;
+    notification_type: string;
+    related_object_id?: number;
+    related_object_type?: string;
+  }> {
+    return this.makeRequest<{
+      id: number;
+      title: string;
+      message: string;
+      is_read: boolean;
+      created_at: string;
+      notification_type: string;
+      related_object_id?: number;
+      related_object_type?: string;
+    }>(`/notifications/${notificationId}/mark_as_read/`, {
+      method: "POST",
+    });
+  }
+
+  static async markAllNotificationsAsRead(): Promise<{ message: string }> {
+    return this.makeRequest<{ message: string }>("/notifications/mark_all_as_read/", {
+      method: "POST",
+    });
+  }
+
+  static async deleteNotification(notificationId: number): Promise<void> {
+    return this.makeRequest<void>(`/notifications/${notificationId}/`, {
+      method: "DELETE",
+    });
+  }
 }
