@@ -165,9 +165,8 @@ export class ApiClient {
   }
 
   static async getMyApplications() {
-    // Get jobs with large limit to capture all applied jobs, then filter client-side
-    // This approach works with the API structure that includes my_application_id in job data
-    return this.makeRequest("/jobs/?limit=1000");
+    // Use dedicated applications endpoint instead of fetching all jobs
+    return this.makeRequest("/jobs/applications/");
   }
 
   static async getApplicationDetails(applicationId: number) {
