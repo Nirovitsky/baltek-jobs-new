@@ -488,10 +488,10 @@ export default function ChatPage() {
                           setSelectedConversation(conversation.id);
                           markAsReadMutation.mutate(conversation.id);
                         }}
-                        className={`relative p-4 cursor-pointer transition-all duration-200 border-l-4 border-transparent ${
+                        className={`relative p-4 cursor-pointer transition-all duration-200 border-l-4 ${
                           selectedConversation === conversation.id
-                            ? "bg-primary/8 border-l-primary shadow-sm"
-                            : "hover:bg-gray-50 hover:border-l-gray-200"
+                            ? "bg-blue-50 border-l-blue-500 shadow-sm"
+                            : "border-transparent hover:bg-gray-50 hover:border-l-gray-300"
                         } ${conversation.content_object?.status === "expired" ? "opacity-70" : ""}`}
                         data-testid={`conversation-${conversation.id}`}
                       >
@@ -567,7 +567,7 @@ export default function ChatPage() {
                         
                         {/* Active conversation indicator */}
                         {selectedConversation === conversation.id && (
-                          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-primary rounded-l-full"></div>
+                          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-12 bg-blue-500 rounded-l-full"></div>
                         )}
                       </div>
                     ))}
