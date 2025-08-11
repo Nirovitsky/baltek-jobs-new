@@ -33,6 +33,10 @@ import {
   CheckCheck,
   Users,
   Briefcase,
+  Paperclip,
+  X,
+  FileText,
+  Download,
 } from "lucide-react";
 
 interface Message {
@@ -64,7 +68,10 @@ export default function ChatPage() {
   >(null);
   const [messageInput, setMessageInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [attachedFiles, setAttachedFiles] = useState<Array<{id: number, name: string, size: number}>>([]);
+  const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch chat rooms only once
   const {
@@ -99,7 +106,7 @@ export default function ChatPage() {
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
   // Send message via WebSocket
-  const sendMessageViaWebSocket = (content: string) => {
+  const sendMessageViaWebSocket = (content: string, attachments: number[] = []) => {
     if (!selectedConversation) {
       toast({
         title: "Error",
@@ -133,12 +140,14 @@ export default function ChatPage() {
       data: {
         room: selectedConversation,
         text: content,
+        attachments: attachments,
       },
     };
 
     console.log("Sending WebSocket message:", message);
     socket.send(JSON.stringify(message));
     setMessageInput("");
+    setAttachedFiles([]);
   };
 
   // Mark conversation as read mutation
@@ -345,9 +354,75 @@ export default function ChatPage() {
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!messageInput.trim() || !selectedConversation) return;
+    if ((!messageInput.trim() && attachedFiles.length === 0) || !selectedConversation) return;
 
-    sendMessageViaWebSocket(messageInput.trim());
+    const attachmentIds = attachedFiles.map(file => file.id);
+    sendMessageViaWebSocket(messageInput.trim() || "", attachmentIds);
+  };
+
+  // Handle file upload
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    setUploadingFiles(true);
+    
+    try {
+      const uploadPromises = Array.from(files).map(async (file) => {
+        try {
+          const result = await ApiClient.uploadFile(file);
+          return {
+            id: result.id,
+            name: file.name,
+            size: file.size,
+          };
+        } catch (error) {
+          toast({
+            title: "Upload Failed",
+            description: `Failed to upload ${file.name}`,
+            variant: "destructive",
+          });
+          return null;
+        }
+      });
+
+      const uploadedFiles = await Promise.all(uploadPromises);
+      const successfulUploads = uploadedFiles.filter(Boolean) as Array<{id: number, name: string, size: number}>;
+      
+      setAttachedFiles(prev => [...prev, ...successfulUploads]);
+      
+      if (successfulUploads.length > 0) {
+        toast({
+          title: "Files Uploaded",
+          description: `${successfulUploads.length} file(s) attached successfully`,
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Upload Error",
+        description: "Failed to upload files",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingFiles(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  // Remove attached file
+  const removeAttachedFile = (fileId: number) => {
+    setAttachedFiles(prev => prev.filter(file => file.id !== fileId));
+  };
+
+  // Format file size
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   const formatTime = (timestamp: string) => {
@@ -721,7 +796,56 @@ export default function ChatPage() {
                                       : "bg-gray-100 text-gray-900"
                                   }`}
                                 >
-                                  <p className="text-sm">{message.text}</p>
+                                  {message.text && <p className="text-sm">{message.text}</p>}
+                                  
+                                  {/* Display attachments */}
+                                  {message.attachments && message.attachments.length > 0 && (
+                                    <div className={`${message.text ? 'mt-2' : ''} space-y-1`}>
+                                      {message.attachments.map((attachment: any, index: number) => (
+                                        <div 
+                                          key={attachment.id || index}
+                                          className={`flex items-center space-x-2 p-2 rounded ${
+                                            message.owner === user?.id
+                                              ? "bg-white/10"
+                                              : "bg-white"
+                                          }`}
+                                        >
+                                          <FileText className={`w-4 h-4 ${
+                                            message.owner === user?.id ? "text-white/70" : "text-gray-500"
+                                          }`} />
+                                          <div className="flex-1 min-w-0">
+                                            <div className={`text-xs font-medium truncate ${
+                                              message.owner === user?.id ? "text-white" : "text-gray-900"
+                                            }`}>
+                                              {attachment.file_name || attachment.name || `Attachment ${index + 1}`}
+                                            </div>
+                                            {attachment.size && (
+                                              <div className={`text-xs ${
+                                                message.owner === user?.id ? "text-white/70" : "text-gray-500"
+                                              }`}>
+                                                {formatFileSize(attachment.size)}
+                                              </div>
+                                            )}
+                                          </div>
+                                          {attachment.file_url && (
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              className={`h-6 w-6 p-0 ${
+                                                message.owner === user?.id 
+                                                  ? "text-white/70 hover:text-white hover:bg-white/20" 
+                                                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                                              }`}
+                                              onClick={() => window.open(attachment.file_url, '_blank')}
+                                            >
+                                              <Download className="w-3 h-3" />
+                                            </Button>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  )}
+                                  
                                   <div className="flex items-center justify-end gap-1 mt-1">
                                     <span
                                       className={`text-xs ${
@@ -755,10 +879,56 @@ export default function ChatPage() {
                 {/* Message Input - Only show if not expired */}
                 {selectedConversationData?.content_object?.status !== "expired" ? (
                   <div className="p-4 border-t">
+                    {/* File Attachments Preview */}
+                    {attachedFiles.length > 0 && (
+                      <div className="mb-3 p-2 bg-gray-50 rounded-lg">
+                        <div className="text-xs text-gray-600 mb-2">Attachments:</div>
+                        <div className="space-y-1">
+                          {attachedFiles.map((file) => (
+                            <div key={file.id} className="flex items-center justify-between bg-white p-2 rounded border">
+                              <div className="flex items-center space-x-2">
+                                <FileText className="w-4 h-4 text-gray-500" />
+                                <div>
+                                  <div className="text-sm font-medium">{file.name}</div>
+                                  <div className="text-xs text-gray-500">{formatFileSize(file.size)}</div>
+                                </div>
+                              </div>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeAttachedFile(file.id)}
+                                className="h-6 w-6 p-0"
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
                     <form
                       onSubmit={handleSendMessage}
                       className="flex space-x-2"
                     >
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        multiple
+                        className="hidden"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={uploadingFiles}
+                        className="px-3"
+                      >
+                        <Paperclip className="w-4 h-4" />
+                      </Button>
                       <Input
                         value={messageInput}
                         onChange={(e) => setMessageInput(e.target.value)}
@@ -769,9 +939,10 @@ export default function ChatPage() {
                       <Button
                         type="submit"
                         disabled={
-                          !messageInput.trim() ||
+                          (!messageInput.trim() && attachedFiles.length === 0) ||
                           !socket ||
-                          socket.readyState !== WebSocket.OPEN
+                          socket.readyState !== WebSocket.OPEN ||
+                          uploadingFiles
                         }
                         data-testid="button-send-message"
                       >
