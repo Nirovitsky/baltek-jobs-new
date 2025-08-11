@@ -146,7 +146,6 @@ export default function ChatPage() {
     };
 
     console.log("Sending WebSocket message:", message);
-    console.log("Message details:", { text: content, attachments, attachmentCount: attachments.length });
     socket.send(JSON.stringify(message));
     setMessageInput("");
     setAttachedFiles([]);
@@ -218,9 +217,9 @@ export default function ChatPage() {
               
               console.log("Extracted data:", { messageData, roomId, attachments: messageData?.attachments || data.attachments });
               
-              // Handle the case where data comes directly at root level or attachment-only messages
-              if (!messageData || (!messageData.text && !messageData.attachments && (data.text || data.attachments))) {
-                console.log("Using root-level data or attachment-only message", data);
+              // Handle the case where data comes directly at root level
+              if (!messageData && data.text !== undefined) {
+                console.log("Using root-level data");
                 const rootMessage = {
                   id: data.id || Date.now(),
                   text: data.text || "",
@@ -263,7 +262,6 @@ export default function ChatPage() {
                 };
                 
                 console.log("Adding delivered message to UI:", formattedMessage);
-                console.log("Message has attachments:", formattedMessage.attachments.length > 0, formattedMessage.attachments);
                 
                 setLocalMessages(prev => {
                   // Check if message already exists to avoid duplicates
@@ -278,13 +276,11 @@ export default function ChatPage() {
               }
             } else if (data.type === "receive_message") {
               // Received a message from someone else - add it to local state as their message
-              console.log("Message received - adding as other person's message", data);
+              console.log("Message received - adding as other person's message");
               
               // Extract message data - could be in data.message or data directly
               const messageData = data.message || data.data?.message || data.data;
               const roomId = data.room || data.data?.room || selectedConversation;
-              
-              console.log("Received message data:", { messageData, roomId, attachments: messageData?.attachments });
               
               if (roomId === selectedConversation && messageData) {
                 const formattedMessage = {
@@ -833,13 +829,8 @@ export default function ChatPage() {
                       <div className="space-y-4">
                         {messagesData?.results
                           ?.filter(
-                            (message: Message) => {
-                              const hasContent = message && message.id && (message.text || (message.attachments && message.attachments.length > 0));
-                              if (!hasContent) {
-                                console.log("Filtering out message:", message);
-                              }
-                              return hasContent;
-                            }
+                            (message: Message) =>
+                              message && message.id && (message.text || (message.attachments && message.attachments.length > 0)),
                           )
                           .map((message: Message) => (
                             <div
