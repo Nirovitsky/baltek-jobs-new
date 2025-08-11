@@ -1,6 +1,6 @@
 import { AuthService } from "./auth";
 
-const API_BASE = "/api";
+const API_BASE = "https://api.baltek.net/api";
 
 // Static enum data for filters (not provided as API endpoints by Baltek)
 const STATIC_FILTER_OPTIONS = {

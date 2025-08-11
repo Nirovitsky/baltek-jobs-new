@@ -174,16 +174,13 @@ export default function ChatPage() {
   useEffect(() => {
     if (!user?.id) return; // Don't connect if user is not authenticated
 
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-
     let ws: WebSocket | null = null;
     let reconnectTimeout: NodeJS.Timeout;
 
     const connectWebSocket = () => {
       try {
-        // Include authorization token in WebSocket connection
-        ws = new WebSocket(wsUrl);
+        // Connect directly to Baltek API WebSocket
+        ws = new WebSocket("wss://api.baltek.net/ws/chat/");
 
         ws.onopen = () => {
           console.log("WebSocket connected");

@@ -15,8 +15,11 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - Successfully migrated project from Replit Agent to standard Replit environment
 - Enhanced date picker component in profile modal with Select dropdowns for easier year/month navigation
 - Fixed TypeScript errors for better type safety
-- Verified all core functionalities working properly (authentication, API integration, job listings, profile management)
-- Project is fully operational and ready for continued development
+- **Simplified Architecture**: Removed local Express server WebSocket handling and proxy routes
+- **Direct API Integration**: All API requests now go directly to https://api.baltek.net/api instead of through local server
+- **WebSocket Direct Connection**: Chat now connects directly to wss://api.baltek.net/ws/chat/ for real-time messaging
+- **Streamlined Server**: Minimal Express server now only serves the React app via Vite middleware
+- Project is fully operational with simplified architecture and direct external API integration
 
 ## System Architecture
 
@@ -31,10 +34,11 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Authentication Flow**: JWT-based authentication with access and refresh tokens, automatic token refresh, route protection, and local storage for session persistence.
 
 ### Backend Architecture
-- **Server**: Express.js with TypeScript
-- **Development Setup**: Vite middleware integration
-- **API Strategy**: Proxy architecture where the Express server serves the frontend and health endpoints, with business logic handled by the external Baltek API.
-- **Storage**: No local database; all data operations through the external Baltek API.
+- **Server**: Minimal Express.js server with Vite middleware for development
+- **Development Setup**: Vite middleware integration for React app serving
+- **API Strategy**: Direct API calls to https://api.baltek.net/api - no local proxy or routing
+- **WebSocket**: Direct connection to wss://api.baltek.net/ws/chat/ for real-time messaging
+- **Storage**: No local database; all data operations through the external Baltek API
 
 ### Technical Implementations & Features
 - **Data Validation**: Zod schemas for type-safe form validation and API response parsing.
@@ -49,7 +53,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **User Profile**: Comprehensive profile management with integration for professional links, education, experience, and projects. Real-time stats and profile completion percentage. Profile editing is fully integrated with CRUD operations.
 - **Resume Management**: Upload up to 3 resumes (PDF, DOC, DOCX, max 10MB) with drag-and-drop, validation, listing, view/download, and delete functionality.
 - **Settings Management**: Comprehensive settings page with profile configuration, notification preferences, privacy controls, and account management including password changes and data export.
-- **Chat System**: Real-time messaging interface fully integrated with Baltek API. Features WebSocket connectivity for instant message delivery, conversation management, recruiter communication, and message history. Successfully implemented with proper authentication flow, real-time message display, and local message broadcasting. WebSocket server handles authentication, message sending/receiving, and conversation management.
+- **Chat System**: Real-time messaging interface with direct WebSocket connection to Baltek API (wss://api.baltek.net/ws/chat/). Features instant message delivery, conversation management, recruiter communication, and message history. Authentication flow integrated with direct API token passing, real-time message display, and proper message format handling (send_message/message_delivered).
 - **Company Profile Pages**: Dedicated company profile pages with organization details, statistics, open positions, and comprehensive company information. Accessible via clickable company links in job listings and job details.
 
 ## External Dependencies
