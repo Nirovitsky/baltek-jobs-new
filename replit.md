@@ -15,13 +15,16 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Migration Completed**: Successfully migrated project from Replit Agent to standard Replit environment
 - **Architecture Overhaul**: Completely removed Express proxy server that previously acted as middleware between frontend and external API
 - **Direct API Integration**: All API requests now go directly to https://api.baltek.net/api from the React frontend
-- **Unified ApiClient**: Consolidated all API interactions into a single `ApiClient` class with comprehensive method coverage
+- **Unified ApiClient**: Consolidated all API interactions into a single `ApiClient` class with comprehensive method coverage (40+ methods)
+- **Authentication Endpoints Fixed**: Updated login endpoint from `/auth/login` to `/auth/token/` to match backend expectations
+- **Complete Endpoint Alignment**: All authentication endpoints now use proper trailing slashes (`/auth/token/`, `/auth/token/refresh/`, `/auth/register/`)
 - **Authentication Flow**: JWT token management handled entirely client-side with automatic refresh capabilities
 - **WebSocket Direct Connection**: Chat connects directly to wss://api.baltek.net/ws/chat/ for real-time messaging
 - **Minimalist Server**: Express server now only serves React app via Vite middleware - no API routing or proxy logic
 - **Security Enhancement**: Eliminated server-side API key exposure by moving all external API calls to client-side
 - **Performance Optimization**: Removed unnecessary network hops through local proxy server
 - **Code Simplification**: Removed all server-side API endpoint handlers and proxy configuration
+- **TypeScript Fixes**: Resolved all type errors and improved code reliability
 
 ## System Architecture
 
@@ -46,7 +49,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 
 ### Technical Implementations & Features
 - **Data Validation**: Zod schemas for type-safe form validation and API response parsing.
-- **API Client**: Comprehensive `ApiClient` class with 40+ methods covering all Baltek API endpoints, automatic token refresh, and robust error handling. Includes methods for jobs, applications, profile management, chat, organizations, authentication, and file operations.
+- **API Client**: Comprehensive `ApiClient` class with 40+ methods covering all Baltek API endpoints, automatic token refresh, and robust error handling. Includes methods for jobs, applications, profile management, chat, organizations, authentication, file operations, password changes, account deletion, and data export. All endpoints use proper trailing slash format to match backend expectations.
 - **Authentication**: JWT-based with access and refresh tokens stored in localStorage.
 - **State Caching**: TanStack Query for intelligent caching and background updates.
 - **Job Display**: Job cards with job title, salary, skills tags, company details (logo, name, location), and detailed job views upon click.

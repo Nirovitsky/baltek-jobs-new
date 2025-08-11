@@ -324,7 +324,7 @@ export class ApiClient {
 
   // Auth API
   static async changePassword(currentPassword: string, newPassword: string) {
-    return this.makeRequest("/auth/change-password", {
+    return this.makeRequest("/auth/change-password/", {
       method: "POST",
       body: JSON.stringify({ 
         current_password: currentPassword, 
@@ -340,7 +340,7 @@ export class ApiClient {
   }
 
   static async exportUserData() {
-    return this.makeRequest("/users/export");
+    return this.makeRequest("/users/export/");
   }
 
   // Reference data API

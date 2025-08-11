@@ -46,8 +46,8 @@ function CompanySuggestions() {
     queryFn: () => ApiClient.getOrganizations({ limit: 15 }),
   });
 
-  // Handle both array and paginated response formats
-  const allCompanies = Array.isArray(companiesData) ? companiesData : (companiesData?.results || []);
+  // Handle both array and paginated response formats  
+  const allCompanies = Array.isArray(companiesData) ? companiesData : ((companiesData as any)?.results || []);
   
   // Add mock categories to companies
   const companiesWithCategories = allCompanies.map((company: Organization) => ({
