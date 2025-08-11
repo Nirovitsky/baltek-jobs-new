@@ -560,20 +560,21 @@ export default function ChatPage() {
                           setSelectedConversation(conversation.id);
                           markAsReadMutation.mutate(conversation.id);
                         }}
-                        className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
+                        className={`relative p-4 cursor-pointer transition-all duration-200 border-l-4 border-transparent ${
                           selectedConversation === conversation.id
-                            ? "bg-primary/10 border-r-4 border-primary"
-                            : ""
-                        } ${conversation.is_expired ? "opacity-60" : ""}`}
+                            ? "bg-primary/8 border-l-primary shadow-sm"
+                            : "hover:bg-gray-50 hover:border-l-gray-200"
+                        } ${conversation.is_expired ? "opacity-70" : ""}`}
                         data-testid={`conversation-${conversation.id}`}
                       >
                         <div className="flex items-start space-x-3">
-                          <div className="relative">
-                            <Avatar className="w-12 h-12">
+                          <div className="relative flex-shrink-0">
+                            <Avatar className="w-14 h-14 ring-2 ring-white shadow-sm">
                               <AvatarImage
                                 src={conversation.participant?.avatar}
+                                className="object-cover"
                               />
-                              <AvatarFallback>
+                              <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/30 text-primary font-semibold text-lg">
                                 {conversation.name?.[0]?.toUpperCase() ||
                                   conversation.participant?.first_name?.[0] ||
                                   "C"}
@@ -581,30 +582,37 @@ export default function ChatPage() {
                             </Avatar>
                             {conversation.unread_count > 0 &&
                               !conversation.is_expired && (
-                                <Badge className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-primary">
-                                  {conversation.unread_count}
+                                <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white shadow-md animate-pulse">
+                                  {conversation.unread_count > 99 ? "99+" : conversation.unread_count}
                                 </Badge>
                               )}
+                            {!conversation.is_expired && conversation.unread_count === 0 && (
+                              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+                            )}
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between mb-1">
-                              <div className="flex items-center space-x-2">
-                                <h3 className="font-medium text-gray-900 truncate">
+                            <div className="flex items-start justify-between mb-2">
+                              <div className="flex items-center space-x-2 flex-1 min-w-0">
+                                <h3 className={`font-semibold truncate text-base leading-5 ${
+                                  conversation.unread_count > 0 && !conversation.is_expired
+                                    ? "text-gray-900"
+                                    : "text-gray-700"
+                                }`}>
                                   {conversation.name ||
                                     conversation.participant?.first_name ||
                                     "Unknown Conversation"}
                                 </h3>
                                 {conversation.is_expired && (
                                   <Badge
-                                    variant="outline"
-                                    className="text-xs px-1 py-0"
+                                    variant="destructive"
+                                    className="text-xs px-2 py-0.5 bg-red-50 text-red-700 border-red-200 font-medium"
                                   >
                                     Expired
                                   </Badge>
                                 )}
                               </div>
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-gray-500 flex-shrink-0 ml-2 font-medium">
                                 {formatTime(
                                   conversation.last_message?.created_at ||
                                     conversation.updated_at,
@@ -612,17 +620,41 @@ export default function ChatPage() {
                               </span>
                             </div>
 
-                            {conversation.last_message ? (
-                              <p className="text-sm text-gray-600 truncate">
-                                {conversation.last_message.content}
-                              </p>
-                            ) : (
-                              <p className="text-sm text-gray-400 italic">
-                                No messages yet
-                              </p>
+                            {/* Role/Company info */}
+                            {conversation.participant?.role && (
+                              <div className="flex items-center space-x-1 mb-2">
+                                <Briefcase className="w-3 h-3 text-primary/60" />
+                                <span className="text-xs text-gray-600 truncate font-medium">
+                                  {conversation.participant.role}
+                                  {conversation.participant.company && 
+                                    ` • ${conversation.participant.company}`}
+                                </span>
+                              </div>
                             )}
+
+                            {/* Last message */}
+                            <div className="flex items-center">
+                              {conversation.last_message ? (
+                                <p className={`text-sm truncate flex-1 leading-5 ${
+                                  conversation.unread_count > 0 && !conversation.is_expired
+                                    ? "text-gray-800 font-medium"
+                                    : "text-gray-600"
+                                }`}>
+                                  {conversation.last_message.content}
+                                </p>
+                              ) : (
+                                <p className="text-sm text-gray-400 italic flex-1">
+                                  Start the conversation
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
+                        
+                        {/* Active conversation indicator */}
+                        {selectedConversation === conversation.id && (
+                          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-primary rounded-l-full"></div>
+                        )}
                       </div>
                     ))}
                   </div>
