@@ -89,16 +89,34 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   }, [isOpen, initialTab]);
 
   // Enhanced DatePicker component with improved year navigation
-  const DatePicker = ({ value, onChange, placeholder }: { value: string; onChange: (date: string) => void; placeholder: string }) => {
+  const DatePicker = ({ 
+    value, 
+    onChange, 
+    placeholder, 
+    maxDate, 
+    minDate 
+  }: { 
+    value: string; 
+    onChange: (date: string) => void; 
+    placeholder: string;
+    maxDate?: Date;
+    minDate?: Date;
+  }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(() => {
       return value ? new Date(value) : new Date();
     });
     const dateValue = value ? new Date(value) : undefined;
 
-    // Quick year selection buttons
+    // Quick year selection buttons - adjust based on date restrictions
     const currentYear = new Date().getFullYear();
-    const years = [currentYear - 30, currentYear - 20, currentYear - 10, currentYear, currentYear + 5];
+    const maxYear = maxDate ? maxDate.getFullYear() : currentYear + 5;
+    const minYear = minDate ? minDate.getFullYear() : currentYear - 50;
+    
+    // Generate appropriate year buttons based on date constraints
+    const years = maxDate 
+      ? [minYear, currentYear - 30, currentYear - 20, currentYear - 10, maxYear]
+      : [currentYear - 30, currentYear - 20, currentYear - 10, currentYear, currentYear + 5];
 
     const handleYearSelect = (year: number) => {
       const newDate = new Date(currentMonth);
@@ -181,12 +199,36 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
             selected={dateValue}
             onSelect={(date) => {
               if (date) {
-                onChange(format(date, "yyyy-MM-dd"));
+                // Check if date is within allowed range
+                const isValid = (!maxDate || date <= maxDate) && (!minDate || date >= minDate);
+                if (isValid) {
+                  onChange(format(date, "yyyy-MM-dd"));
+                  setIsOpen(false);
+                } else {
+                  // Show toast for invalid date selection
+                  if (maxDate && date > maxDate) {
+                    toast({
+                      title: "Invalid Date",
+                      description: "Birth date cannot be in the future",
+                      variant: "destructive",
+                    });
+                  } else if (minDate && date < minDate) {
+                    toast({
+                      title: "Invalid Date", 
+                      description: "Please select a valid date",
+                      variant: "destructive",
+                    });
+                  }
+                }
               }
-              setIsOpen(false);
             }}
             month={currentMonth}
             onMonthChange={setCurrentMonth}
+            disabled={(date) => {
+              if (maxDate && date > maxDate) return true;
+              if (minDate && date < minDate) return true;
+              return false;
+            }}
             initialFocus
           />
         </PopoverContent>
@@ -750,6 +792,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         value={personalForm.watch("date_of_birth") || ""}
                         onChange={(date) => personalForm.setValue("date_of_birth", date)}
                         placeholder="Select date of birth"
+                        maxDate={new Date()}
+                        minDate={new Date(1900, 0, 1)}
                       />
                     </div>
                     <div className="space-y-2">
