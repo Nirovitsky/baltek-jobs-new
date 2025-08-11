@@ -397,7 +397,7 @@ export class ApiClient {
   // File upload API
   static async uploadFile(file: File) {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("path", file);
 
     const response = await fetch(`${API_BASE}/files/`, {
       method: "POST",
@@ -406,7 +406,8 @@ export class ApiClient {
     });
 
     if (!response.ok) {
-      throw new Error("File upload failed");
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || errorData.message || "File upload failed");
     }
 
     return response.json();

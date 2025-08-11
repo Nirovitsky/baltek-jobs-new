@@ -25,6 +25,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Performance Optimization**: Removed unnecessary network hops through local proxy server
 - **Code Simplification**: Removed all server-side API endpoint handlers and proxy configuration
 - **TypeScript Fixes**: Resolved all type errors and improved code reliability
+- **Chat File Attachments**: Added comprehensive file upload functionality with progress indicators, attachment previews, and WebSocket integration using `/files/` endpoint
 
 ## System Architecture
 
@@ -60,7 +61,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **User Profile**: Comprehensive profile management with integration for professional links, education, experience, and projects. Real-time stats and profile completion percentage. Profile editing is fully integrated with CRUD operations.
 - **Resume Management**: Upload up to 3 resumes (PDF, DOC, DOCX, max 10MB) with drag-and-drop, validation, listing, view/download, and delete functionality.
 - **Settings Management**: Comprehensive settings page with profile configuration, notification preferences, privacy controls, and account management including password changes and data export.
-- **Chat System**: Real-time messaging interface with direct WebSocket connection to Baltek API (wss://api.baltek.net/ws/chat/?token=TOKEN). Features instant message delivery, conversation management, recruiter communication, and message history. Authentication via query parameter token passing, real-time message display, and proper message format handling (send_message/message_delivered). Message structure uses text/owner/date_created fields matching API response format.
+- **Chat System**: Real-time messaging interface with direct WebSocket connection to Baltek API (wss://api.baltek.net/ws/chat/?token=TOKEN). Features instant message delivery, conversation management, recruiter communication, and message history. Authentication via query parameter token passing, real-time message display, and proper message format handling (send_message/message_delivered). Message structure uses text/owner/date_created fields matching API response format. **File Attachments**: Comprehensive file upload support with paperclip button, drag-and-drop, progress indicators, attachment previews, and removal functionality. Files uploaded to `/files/` endpoint and sent via WebSocket as attachment IDs array.
 - **Company Profile Pages**: Dedicated company profile pages with organization details, statistics, open positions, and comprehensive company information. Accessible via clickable company links in job listings and job details.
 
 ## External Dependencies

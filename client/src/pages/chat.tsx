@@ -70,6 +70,7 @@ export default function ChatPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [attachedFiles, setAttachedFiles] = useState<Array<{id: number, name: string, size: number}>>([]);
   const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<Array<{name: string, progress: number}>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -367,21 +368,49 @@ export default function ChatPage() {
 
     setUploadingFiles(true);
     
+    // Initialize progress tracking
+    const fileNames = Array.from(files).map(file => file.name);
+    setUploadProgress(fileNames.map(name => ({ name, progress: 0 })));
+    
     try {
-      const uploadPromises = Array.from(files).map(async (file) => {
+      const uploadPromises = Array.from(files).map(async (file, index) => {
         try {
+          // Update progress to show starting upload
+          setUploadProgress(prev => 
+            prev.map((item, idx) => 
+              idx === index ? { ...item, progress: 10 } : item
+            )
+          );
+
           const result = await ApiClient.uploadFile(file);
+          
+          // Update progress to show completion
+          setUploadProgress(prev => 
+            prev.map((item, idx) => 
+              idx === index ? { ...item, progress: 100 } : item
+            )
+          );
+
           return {
             id: result.id,
             name: file.name,
             size: file.size,
           };
         } catch (error) {
+          console.error("Upload error:", error);
           toast({
             title: "Upload Failed",
-            description: `Failed to upload ${file.name}`,
+            description: `Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
             variant: "destructive",
           });
+          
+          // Update progress to show error
+          setUploadProgress(prev => 
+            prev.map((item, idx) => 
+              idx === index ? { ...item, progress: -1 } : item
+            )
+          );
+          
           return null;
         }
       });
@@ -398,6 +427,7 @@ export default function ChatPage() {
         });
       }
     } catch (error) {
+      console.error("Upload error:", error);
       toast({
         title: "Upload Error",
         description: "Failed to upload files",
@@ -405,6 +435,7 @@ export default function ChatPage() {
       });
     } finally {
       setUploadingFiles(false);
+      setUploadProgress([]);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -879,6 +910,43 @@ export default function ChatPage() {
                 {/* Message Input - Only show if not expired */}
                 {selectedConversationData?.content_object?.status !== "expired" ? (
                   <div className="p-4 border-t">
+                    {/* Upload Progress */}
+                    {uploadProgress.length > 0 && (
+                      <div className="mb-3 p-2 bg-blue-50 rounded-lg">
+                        <div className="text-xs text-blue-600 mb-2">Uploading files...</div>
+                        <div className="space-y-1">
+                          {uploadProgress.map((item, index) => (
+                            <div key={index} className="flex items-center space-x-2">
+                              <FileText className="w-4 h-4 text-blue-500" />
+                              <div className="flex-1">
+                                <div className="text-sm font-medium">{item.name}</div>
+                                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                                  <div
+                                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                                      item.progress === -1 
+                                        ? 'bg-red-500' 
+                                        : item.progress === 100 
+                                          ? 'bg-green-500' 
+                                          : 'bg-blue-500'
+                                    }`}
+                                    style={{ width: `${Math.max(0, item.progress)}%` }}
+                                  ></div>
+                                </div>
+                                <div className="text-xs text-gray-500">
+                                  {item.progress === -1 
+                                    ? 'Failed' 
+                                    : item.progress === 100 
+                                      ? 'Complete' 
+                                      : `${item.progress}%`
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
                     {/* File Attachments Preview */}
                     {attachedFiles.length > 0 && (
                       <div className="mb-3 p-2 bg-gray-50 rounded-lg">
