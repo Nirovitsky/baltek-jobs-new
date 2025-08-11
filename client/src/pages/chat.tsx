@@ -170,32 +170,20 @@ export default function ChatPage() {
 
     const connectWebSocket = () => {
       try {
-        // Connect directly to Baltek API WebSocket
-        ws = new WebSocket("wss://api.baltek.net/ws/chat/");
+        // Get token for WebSocket authentication
+        const token = localStorage.getItem("baltek_access_token");
+        
+        if (!token) {
+          console.warn("No access token available for WebSocket authentication");
+          return;
+        }
+
+        // Connect directly to Baltek API WebSocket with token as query parameter
+        const wsUrl = `wss://api.baltek.net/ws/chat/?token=${encodeURIComponent(token)}`;
+        ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
-          console.log("WebSocket connected");
-
-          // Send authentication immediately after connection is established
-          const token = localStorage.getItem("baltek_access_token");
-          
-          if (token && ws && ws.readyState === WebSocket.OPEN) {
-            console.log("Sending authentication token via WebSocket");
-            const authMessage = {
-              type: "authenticate",
-              token: token, // Remove 'Bearer ' prefix as it might not be expected
-            };
-            ws.send(JSON.stringify(authMessage));
-          } else {
-            console.warn("No access token available for WebSocket authentication");
-            // Close the WebSocket if no token to avoid constant reconnection attempts
-            if (ws) {
-              ws.close(1000, "No authentication token");
-            }
-            return;
-          }
-
-          // Set socket after attempting authentication
+          console.log("WebSocket connected successfully with token authentication");
           setSocket(ws);
         };
 
