@@ -178,27 +178,21 @@ export default function ChatPage() {
 
           // Send authentication immediately after connection is established
           const token = localStorage.getItem("baltek_access_token");
-          console.log(
-            "Token from localStorage:",
-            token ? "Token found" : "No token",
-          );
-          console.log("Checking all token keys:", {
-            access_token: !!localStorage.getItem("access_token"),
-            baltek_access_token: !!localStorage.getItem("baltek_access_token"),
-          });
-
+          
           if (token && ws && ws.readyState === WebSocket.OPEN) {
             console.log("Sending authentication token via WebSocket");
             const authMessage = {
               type: "authenticate",
-              token: `Bearer ${token}`,
+              token: token, // Remove 'Bearer ' prefix as it might not be expected
             };
-            console.log("Auth message:", authMessage);
             ws.send(JSON.stringify(authMessage));
           } else {
-            console.warn(
-              "No access token available for WebSocket authentication. User might need to log in.",
-            );
+            console.warn("No access token available for WebSocket authentication");
+            // Close the WebSocket if no token to avoid constant reconnection attempts
+            if (ws) {
+              ws.close(1000, "No authentication token");
+            }
+            return;
           }
 
           // Set socket after attempting authentication
@@ -288,12 +282,17 @@ export default function ChatPage() {
           console.log("WebSocket disconnected:", event.code, event.reason);
           setSocket(null);
 
-          // Attempt to reconnect after 3 seconds if not a manual disconnect
-          if (event.code !== 1000) {
+          // Only attempt to reconnect for certain error codes and if we have a token
+          const hasToken = !!localStorage.getItem("baltek_access_token");
+          const shouldReconnect = hasToken && event.code !== 1000 && event.code !== 1008; // Don't reconnect on authentication failures (1008)
+          
+          if (shouldReconnect) {
             reconnectTimeout = setTimeout(() => {
               console.log("Attempting to reconnect WebSocket...");
               connectWebSocket();
-            }, 3000);
+            }, 5000); // Increase delay to reduce server load
+          } else {
+            console.log("WebSocket connection stopped:", hasToken ? "Authentication failed" : "No token");
           }
         };
 
