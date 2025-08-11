@@ -88,7 +88,7 @@ export default function ChatPage() {
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
 
-  // Fetch messages for selected room
+  // Fetch messages for selected room (initial load only)
   const {
     data: messages,
     isLoading: messagesLoading,
@@ -97,10 +97,12 @@ export default function ChatPage() {
     queryKey: ["chat", "messages", selectedConversation],
     queryFn: () => ApiClient.getChatMessages(selectedConversation!),
     enabled: !!selectedConversation,
-    refetchInterval: 5000, // Poll more frequently for active conversation
     retry: 2,
     retryDelay: 1000,
   });
+
+  // Local messages state for real-time updates
+  const [localMessages, setLocalMessages] = useState<any[]>([]);
 
   // WebSocket connection
   const [socket, setSocket] = useState<WebSocket | null>(null);
@@ -221,7 +223,7 @@ export default function ChatPage() {
             console.log("Received WebSocket message:", data);
 
             if (data.type === "delivered_message") {
-              // Message was successfully sent - add it to the cache immediately
+              // Message was successfully sent - add it to local messages
               const currentRoom = selectedConversation || 0;
               console.log(
                 "Current selected conversation:",
@@ -231,39 +233,10 @@ export default function ChatPage() {
               );
               if (data.data.room === currentRoom) {
                 console.log(
-                  "Adding delivered message to cache for room:",
+                  "Adding delivered message to local state for room:",
                   currentRoom,
                 );
-                queryClient.setQueryData(
-                  ["chat", "messages", currentRoom.toString()],
-                  (old: any) => {
-                    console.log("Old cache data:", old);
-                    if (!old) {
-                      console.warn("No existing cache data for messages");
-                      return old;
-                    }
-
-                    // Add the new message to the results
-                    const newMessage = {
-                      id: data.data.message.id,
-                      content: data.data.message.content,
-                      sender: data.data.message.sender,
-                      recipient: data.data.message.recipient,
-                      created_at: data.data.message.created_at,
-                      read: false,
-                      attachments: data.data.message.attachments || [],
-                    };
-
-                    console.log("Adding new message:", newMessage);
-                    const updated = {
-                      ...old,
-                      results: [...old.results, newMessage],
-                    };
-                    console.log("Updated cache data:", updated);
-                    return updated;
-                  },
-                );
-
+                setLocalMessages(prev => [...prev, data.data.message]);
                 // Scroll to bottom after adding message
                 setTimeout(scrollToBottom, 100);
               } else {
@@ -274,11 +247,8 @@ export default function ChatPage() {
                   currentRoom,
                 );
               }
-
-              // Don't refresh room list immediately to avoid unnecessary API calls
-              // The room list will update on next natural refresh
             } else if (data.type === "receive_message") {
-              // Received a message from someone else - add it immediately and refresh
+              // Received a message from someone else - add it to local state
               const currentRoom = selectedConversation || 0;
               console.log(
                 "Current selected conversation for receive:",
@@ -287,26 +257,12 @@ export default function ChatPage() {
                 currentRoom,
               );
               if (data.data.room === currentRoom) {
-                queryClient.setQueryData(
-                  ["chat", "messages", currentRoom.toString()],
-                  (old: any) => {
-                    if (!old) return old;
-
-                    return {
-                      ...old,
-                      results: [...old.results, data.data.message],
-                    };
-                  },
-                );
-
+                setLocalMessages(prev => [...prev, data.data.message]);
                 // Scroll to bottom after adding message
                 setTimeout(scrollToBottom, 100);
               }
 
-              // Refresh both messages and rooms
-              queryClient.invalidateQueries({
-                queryKey: ["chat", "messages", data.data.room],
-              });
+              // Only refresh rooms to update last message info
               queryClient.invalidateQueries({ queryKey: ["chat", "rooms"] });
             } else if (data.type === "message_error") {
               // Handle message send error
@@ -415,8 +371,15 @@ export default function ChatPage() {
     (c: Conversation) => c.id === selectedConversation,
   );
 
-  // Use actual messages data from API
-  const messagesData = (messages as any) || { results: [] };
+  // Combine API messages with local real-time messages and reset local messages when conversation changes
+  useEffect(() => {
+    setLocalMessages([]);
+  }, [selectedConversation]);
+
+  // Use actual messages data from API combined with local messages
+  const apiMessages = (messages as any)?.results || [];
+  const allMessages = [...apiMessages, ...localMessages];
+  const messagesData = { results: allMessages };
 
   // Add error state handling
   if (roomsError && !roomsLoading) {
