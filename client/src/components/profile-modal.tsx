@@ -1323,9 +1323,19 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                             <div className="flex items-center space-x-3">
                               <FileText className="w-8 h-8 text-primary" />
                               <div>
-                                <h4 className="font-medium">{resume.filename || resume.file}</h4>
+                                <h4 className="font-medium">{resume.title || resume.filename || "Resume"}</h4>
                                 <div className="flex items-center gap-4 text-sm text-gray-500">
-                                  <span>Uploaded: {new Date(resume.created_at).toLocaleDateString()}</span>
+                                  {resume.created_at && (
+                                    <span>
+                                      Uploaded: {(() => {
+                                        try {
+                                          return new Date(resume.created_at).toLocaleDateString();
+                                        } catch {
+                                          return "Recently";
+                                        }
+                                      })()}
+                                    </span>
+                                  )}
                                   {resume.file_size && (
                                     <span>
                                       Size: {Math.round(resume.file_size / 1024)} KB
