@@ -520,12 +520,12 @@ export default function ChatPage() {
 
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between mb-2">
-                              <div className="flex items-center space-x-2 flex-1 min-w-0">
-                                <h3 className={`font-semibold truncate text-base leading-5 ${
+                              <div className="flex items-start space-x-2 flex-1 min-w-0">
+                                <h3 className={`font-semibold text-base leading-5 ${
                                   conversation.unread_message_count > 0
                                     ? "text-gray-900"
                                     : "text-gray-700"
-                                }`}>
+                                } break-words`}>
                                   {(conversation.content_object?.job?.organization?.display_name || 
                                     conversation.content_object?.job?.organization?.official_name || "Unknown Company") + 
                                    (conversation.content_object?.job?.title ? ` - ${conversation.content_object.job.title}` : "")}
@@ -533,7 +533,7 @@ export default function ChatPage() {
                                 {conversation.content_object?.status === "expired" && (
                                   <Badge
                                     variant="destructive"
-                                    className="text-xs px-2 py-0.5 bg-red-50 text-red-700 border-red-200 font-medium"
+                                    className="text-xs px-2 py-0.5 bg-red-50 text-red-700 border-red-200 font-medium flex-shrink-0"
                                   >
                                     Expired
                                   </Badge>
@@ -545,16 +545,6 @@ export default function ChatPage() {
                                   : "Recently"}
                               </span>
                             </div>
-
-                            {/* Role/Company info */}
-                            {conversation.content_object?.job?.title && (
-                              <div className="flex items-center space-x-1 mb-2">
-                                <Briefcase className="w-3 h-3 text-primary/60" />
-                                <span className="text-xs text-gray-600 truncate font-medium">
-                                  {conversation.content_object.job.title}
-                                </span>
-                              </div>
-                            )}
 
                             {/* Last message */}
                             <div className="flex items-center">
