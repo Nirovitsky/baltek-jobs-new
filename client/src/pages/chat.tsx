@@ -224,39 +224,14 @@ export default function ChatPage() {
 
             if (data.type === "delivered_message") {
               // Message was successfully sent - add it to local messages
-              const currentRoom = selectedConversation || 0;
-              console.log(
-                "Current selected conversation:",
-                selectedConversation,
-                "using room:",
-                currentRoom,
-              );
-              if (data.data.room === currentRoom) {
-                console.log(
-                  "Adding delivered message to local state for room:",
-                  currentRoom,
-                );
+              if (data.data.room === selectedConversation) {
                 setLocalMessages(prev => [...prev, data.data.message]);
                 // Scroll to bottom after adding message
                 setTimeout(scrollToBottom, 100);
-              } else {
-                console.log(
-                  "Message room does not match current room:",
-                  data.data.room,
-                  "vs",
-                  currentRoom,
-                );
               }
             } else if (data.type === "receive_message") {
               // Received a message from someone else - add it to local state
-              const currentRoom = selectedConversation || 0;
-              console.log(
-                "Current selected conversation for receive:",
-                selectedConversation,
-                "using room:",
-                currentRoom,
-              );
-              if (data.data.room === currentRoom) {
+              if (data.data.room === selectedConversation) {
                 setLocalMessages(prev => [...prev, data.data.message]);
                 // Scroll to bottom after adding message
                 setTimeout(scrollToBottom, 100);
