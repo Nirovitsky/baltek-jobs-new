@@ -36,7 +36,10 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import FileUpload from "@/components/file-upload";
+import { format } from "date-fns";
 import { 
   User, 
   X, 
@@ -50,7 +53,8 @@ import {
   Camera,
   FileText,
   Upload,
-  Download
+  Download,
+  CalendarIcon
 } from "lucide-react";
 
 interface ProfileModalProps {
@@ -83,6 +87,39 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       setActiveTab(initialTab);
     }
   }, [isOpen, initialTab]);
+
+  // DatePicker component for consistent date selection
+  const DatePicker = ({ value, onChange, placeholder }: { value: string; onChange: (date: string) => void; placeholder: string }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dateValue = value ? new Date(value) : undefined;
+
+    return (
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            className={`w-full justify-start text-left font-normal ${!value && "text-muted-foreground"}`}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {value ? format(new Date(value), "PP") : <span>{placeholder}</span>}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            mode="single"
+            selected={dateValue}
+            onSelect={(date) => {
+              if (date) {
+                onChange(format(date, "yyyy-MM-dd"));
+              }
+              setIsOpen(false);
+            }}
+            initialFocus
+          />
+        </PopoverContent>
+      </Popover>
+    );
+  };
 
   // Fetch additional data
   const { data: universities, isLoading: universitiesLoading } = useQuery({
@@ -125,9 +162,6 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       email: (profileData as any)?.email || "",
       phone: (profileData as any)?.phone || "",
       profession: (profileData as any)?.profession || "",
-      bio: (profileData as any)?.bio || "",
-      location: (profileData as any)?.location || "",
-      skills: (profileData as any)?.skills || [],
       date_of_birth: (profileData as any)?.date_of_birth || "",
       gender: (profileData as any)?.gender || "",
     },
@@ -161,9 +195,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     defaultValues: {
       title: "",
       description: "",
-      technologies: [],
       url: "",
-      github_url: "",
       date_started: "",
       date_finished: "",
     },
@@ -444,15 +476,9 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     }
   };
 
-  const handleSkillsChange = (skillsString: string) => {
-    const skills = skillsString.split(",").map(skill => skill.trim()).filter(Boolean);
-    personalForm.setValue("skills", skills);
-  };
 
-  const handleTechnologiesChange = (techString: string) => {
-    const technologies = techString.split(",").map(tech => tech.trim()).filter(Boolean);
-    projectForm.setValue("technologies", technologies);
-  };
+
+
 
   // Resume handlers
   const handleResumeUpload = (file: File) => {
@@ -480,7 +506,6 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       level: edu.level || "",
       date_started: formatDateForForm(edu.date_started || ""),
       date_finished: formatDateForForm(edu.date_finished || ""),
-      description: edu.description || "",
     });
   };
 
@@ -501,9 +526,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     projectForm.reset({
       title: project.title || "",
       description: project.description || "",
-      technologies: project.technologies || [],
       url: project.url || "",
-      github_url: project.github_url || "",
       date_started: formatDateForForm(project.date_started || ""),
       date_finished: formatDateForForm(project.date_finished || ""),
     });
@@ -627,23 +650,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     />
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input
-                        id="phone"
-                        {...personalForm.register("phone")}
-                        placeholder="+1 (555) 123-4567"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="location">Location</Label>
-                      <Input
-                        id="location"
-                        {...personalForm.register("location")}
-                        placeholder="San Francisco, CA"
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      {...personalForm.register("phone")}
+                      placeholder="+1 (555) 123-4567"
+                    />
                   </div>
 
                   <div className="space-y-2">
@@ -655,40 +668,15 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="bio">Bio</Label>
-                    <Textarea
-                      id="bio"
-                      rows={3}
-                      {...personalForm.register("bio")}
-                      placeholder="Tell us about yourself..."
-                    />
-                  </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="skills">Skills (comma-separated)</Label>
-                    <Input
-                      id="skills"
-                      defaultValue={user.skills?.join(", ") || ""}
-                      onChange={(e) => handleSkillsChange(e.target.value)}
-                      placeholder="React, TypeScript, Node.js"
-                    />
-                    {personalForm.watch("skills") && (
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {personalForm.watch("skills")?.map((skill: string, index: number) => (
-                          <Badge key={index} variant="secondary">{skill}</Badge>
-                        ))}
-                      </div>
-                    )}
-                  </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="date_of_birth">Date of Birth</Label>
-                      <Input
-                        id="date_of_birth"
-                        type="date"
-                        {...personalForm.register("date_of_birth")}
+                      <DatePicker
+                        value={personalForm.watch("date_of_birth") || ""}
+                        onChange={(date) => personalForm.setValue("date_of_birth", date)}
+                        placeholder="Select date of birth"
                       />
                     </div>
                     <div className="space-y-2">
@@ -703,8 +691,6 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         <SelectContent>
                           <SelectItem value="male">Male</SelectItem>
                           <SelectItem value="female">Female</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                          <SelectItem value="prefer_not_to_say">Prefer not to say</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -779,31 +765,23 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="date_started">Start Date</Label>
-                          <Input
-                            id="date_started"
-                            type="date"
-                            {...educationForm.register("date_started")}
+                          <DatePicker
+                            value={educationForm.watch("date_started") || ""}
+                            onChange={(date) => educationForm.setValue("date_started", date)}
+                            placeholder="Select start date"
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="date_finished">End Date</Label>
-                          <Input
-                            id="date_finished"
-                            type="date"
-                            {...educationForm.register("date_finished")}
+                          <DatePicker
+                            value={educationForm.watch("date_finished") || ""}
+                            onChange={(date) => educationForm.setValue("date_finished", date)}
+                            placeholder="Select end date"
                           />
                         </div>
                       </div>
 
-                      <div className="space-y-2">
-                        <Label htmlFor="edu_description">Description (Optional)</Label>
-                        <Textarea
-                          id="edu_description"
-                          rows={2}
-                          {...educationForm.register("description")}
-                          placeholder="Relevant coursework, achievements, etc."
-                        />
-                      </div>
+
 
                       <div className="flex gap-2">
                         <Button
@@ -958,18 +936,18 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="exp_date_started">Start Date</Label>
-                          <Input
-                            id="exp_date_started"
-                            type="date"
-                            {...experienceForm.register("date_started")}
+                          <DatePicker
+                            value={experienceForm.watch("date_started") || ""}
+                            onChange={(date) => experienceForm.setValue("date_started", date)}
+                            placeholder="Select start date"
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="exp_date_finished">End Date</Label>
-                          <Input
-                            id="exp_date_finished"
-                            type="date"
-                            {...experienceForm.register("date_finished")}
+                          <DatePicker
+                            value={experienceForm.watch("date_finished") || ""}
+                            onChange={(date) => experienceForm.setValue("date_finished", date)}
+                            placeholder="Select end date"
                           />
                         </div>
                       </div>
@@ -1093,56 +1071,29 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="technologies">Technologies (comma-separated)</Label>
+                        <Label htmlFor="proj_url">Project URL</Label>
                         <Input
-                          id="technologies"
-                          defaultValue={projectForm.watch("technologies")?.join(", ") || ""}
-                          onChange={(e) => handleTechnologiesChange(e.target.value)}
-                          placeholder="React, Node.js, MongoDB"
+                          id="proj_url"
+                          {...projectForm.register("url")}
+                          placeholder="https://myproject.com"
                         />
-                        {projectForm.watch("technologies") && (
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {projectForm.watch("technologies")?.map((tech: string, index: number) => (
-                              <Badge key={index} variant="secondary">{tech}</Badge>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label htmlFor="proj_url">Project URL</Label>
-                          <Input
-                            id="proj_url"
-                            {...projectForm.register("url")}
-                            placeholder="https://myproject.com"
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="proj_github_url">GitHub URL</Label>
-                          <Input
-                            id="proj_github_url"
-                            {...projectForm.register("github_url")}
-                            placeholder="https://github.com/user/project"
-                          />
-                        </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="proj_date_started">Start Date</Label>
-                          <Input
-                            id="proj_date_started"
-                            type="date"
-                            {...projectForm.register("date_started")}
+                          <DatePicker
+                            value={projectForm.watch("date_started") || ""}
+                            onChange={(date) => projectForm.setValue("date_started", date)}
+                            placeholder="Select start date"
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="proj_date_finished">End Date</Label>
-                          <Input
-                            id="proj_date_finished"
-                            type="date"
-                            {...projectForm.register("date_finished")}
+                          <DatePicker
+                            value={projectForm.watch("date_finished") || ""}
+                            onChange={(date) => projectForm.setValue("date_finished", date)}
+                            placeholder="Select end date"
                           />
                         </div>
                       </div>
@@ -1179,24 +1130,10 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         <div>
                           <h4 className="font-semibold">{project.title}</h4>
                           <p className="text-sm text-gray-700 mt-1">{project.description}</p>
-                          {project.technologies && project.technologies.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {project.technologies.map((tech: any, index: number) => (
-                                <Badge key={index} variant="outline" className="text-xs">
-                                  {typeof tech === 'string' ? tech : tech.name || tech}
-                                </Badge>
-                              ))}
-                            </div>
-                          )}
                           <div className="flex gap-4 mt-2 text-sm">
                             {project.url && (
                               <a href={project.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                                 View Project
-                              </a>
-                            )}
-                            {project.github_url && (
-                              <a href={project.github_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                                View Code
                               </a>
                             )}
                           </div>
