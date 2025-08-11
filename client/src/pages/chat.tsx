@@ -217,6 +217,39 @@ export default function ChatPage() {
               
               console.log("Extracted data:", { messageData, roomId, attachments: messageData?.attachments || data.attachments });
               
+              // Handle the case where data comes directly at root level
+              if (!messageData && data.text !== undefined) {
+                console.log("Using root-level data");
+                const rootMessage = {
+                  id: data.id || Date.now(),
+                  text: data.text || "",
+                  attachments: data.attachments || [],
+                  date_created: data.date_created || Math.floor(Date.now() / 1000),
+                };
+                
+                const formattedMessage = {
+                  id: rootMessage.id,
+                  room: roomId,
+                  owner: user?.id,
+                  text: rootMessage.text,
+                  status: "delivered",
+                  attachments: rootMessage.attachments,
+                  date_created: rootMessage.date_created,
+                };
+                
+                console.log("Adding root-level delivered message to UI:", formattedMessage);
+                
+                setLocalMessages(prev => {
+                  const exists = prev.some(msg => msg.id === formattedMessage.id);
+                  if (!exists) {
+                    return [...prev, formattedMessage];
+                  }
+                  return prev;
+                });
+                setTimeout(scrollToBottom, 100);
+                return;
+              }
+              
               if (roomId === selectedConversation && messageData) {
                 const formattedMessage = {
                   id: messageData.id || Date.now(), // Use timestamp if no ID
@@ -829,57 +862,101 @@ export default function ChatPage() {
                                       : "bg-gray-100 text-gray-900"
                                   }`}
                                 >
-                                  {message.text && <p className="text-sm">{message.text}</p>}
-                                  
-                                  {/* Display attachments */}
+                                  {/* Display attachments first if present */}
                                   {message.attachments && message.attachments.length > 0 && (
-                                    <div className={`${message.text ? 'mt-2' : ''} space-y-1`}>
+                                    <div className="space-y-2 mb-2">
                                       {message.attachments.map((attachment: any, index: number) => (
                                         <div 
                                           key={attachment.id || index}
-                                          className={`flex items-center space-x-2 p-2 rounded ${
+                                          className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
                                             message.owner === user?.id
-                                              ? "bg-white/10"
-                                              : "bg-white"
+                                              ? "bg-white/10 border-white/20 hover:bg-white/15"
+                                              : "bg-white border-gray-200 hover:border-gray-300"
                                           }`}
                                         >
-                                          <FileText className={`w-4 h-4 ${
-                                            message.owner === user?.id ? "text-white/70" : "text-gray-500"
-                                          }`} />
-                                          <div className="flex-1 min-w-0">
-                                            <div className={`text-xs font-medium truncate ${
-                                              message.owner === user?.id ? "text-white" : "text-gray-900"
+                                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                                            <div className={`p-2 rounded-lg ${
+                                              message.owner === user?.id
+                                                ? "bg-white/10"
+                                                : "bg-blue-50"
                                             }`}>
-                                              {attachment.file_name || attachment.name || `Attachment ${index + 1}`}
+                                              <FileText className={`w-5 h-5 ${
+                                                message.owner === user?.id ? "text-white" : "text-blue-600"
+                                              }`} />
                                             </div>
-                                            {attachment.size && (
-                                              <div className={`text-xs ${
-                                                message.owner === user?.id ? "text-white/70" : "text-gray-500"
+                                            <div className="flex-1 min-w-0">
+                                              <div className={`text-sm font-medium truncate ${
+                                                message.owner === user?.id ? "text-white" : "text-gray-900"
                                               }`}>
-                                                {formatFileSize(attachment.size)}
+                                                {attachment.file_name || attachment.name || `Attachment ${index + 1}`}
+                                              </div>
+                                              {attachment.size && (
+                                                <div className={`text-xs ${
+                                                  message.owner === user?.id ? "text-white/70" : "text-gray-500"
+                                                }`}>
+                                                  {formatFileSize(attachment.size)}
+                                                </div>
+                                              )}
+                                            </div>
+                                          </div>
+                                          <div className="flex items-center space-x-2">
+                                            {attachment.file_url ? (
+                                              <>
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  className={`h-8 w-8 p-0 ${
+                                                    message.owner === user?.id 
+                                                      ? "text-white/70 hover:text-white hover:bg-white/20" 
+                                                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                                                  }`}
+                                                  onClick={() => window.open(attachment.file_url, '_blank')}
+                                                  title="View file"
+                                                >
+                                                  <FileText className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  className={`h-8 w-8 p-0 ${
+                                                    message.owner === user?.id 
+                                                      ? "text-white/70 hover:text-white hover:bg-white/20" 
+                                                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                                                  }`}
+                                                  onClick={() => {
+                                                    const link = document.createElement('a');
+                                                    link.href = attachment.file_url;
+                                                    link.download = attachment.file_name || attachment.name || 'download';
+                                                    link.click();
+                                                  }}
+                                                  title="Download file"
+                                                >
+                                                  <Download className="w-4 h-4" />
+                                                </Button>
+                                              </>
+                                            ) : (
+                                              <div className={`text-xs px-2 py-1 rounded ${
+                                                message.owner === user?.id 
+                                                  ? "bg-white/10 text-white/70" 
+                                                  : "bg-gray-100 text-gray-500"
+                                              }`}>
+                                                Processing...
                                               </div>
                                             )}
                                           </div>
-                                          {attachment.file_url && (
-                                            <Button
-                                              variant="ghost"
-                                              size="sm"
-                                              className={`h-6 w-6 p-0 ${
-                                                message.owner === user?.id 
-                                                  ? "text-white/70 hover:text-white hover:bg-white/20" 
-                                                  : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
-                                              }`}
-                                              onClick={() => window.open(attachment.file_url, '_blank')}
-                                            >
-                                              <Download className="w-3 h-3" />
-                                            </Button>
-                                          )}
                                         </div>
                                       ))}
                                     </div>
                                   )}
                                   
-                                  <div className="flex items-center justify-end gap-1 mt-1">
+                                  {/* Display text message after attachments */}
+                                  {message.text && (
+                                    <p className={`text-sm ${message.attachments && message.attachments.length > 0 ? 'mt-2' : ''}`}>
+                                      {message.text}
+                                    </p>
+                                  )}
+                                  
+                                  <div className="flex items-center justify-end gap-1 mt-2">
                                     <span
                                       className={`text-xs ${
                                         message.owner === user?.id
