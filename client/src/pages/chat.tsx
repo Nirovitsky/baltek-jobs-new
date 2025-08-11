@@ -37,21 +37,12 @@ import {
 
 interface Message {
   id: number;
-  content: string;
-  sender: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    avatar?: string;
-  };
-  recipient: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    avatar?: string;
-  };
-  created_at: string;
-  read: boolean;
+  room: number;
+  owner: number;
+  text: string;
+  status: string;
+  attachments: any[];
+  date_created: number;
 }
 
 interface Conversation {
@@ -224,11 +215,22 @@ export default function ChatPage() {
               if (data.data.room === selectedConversation) {
                 const newMessage = data.data.message;
                 if (newMessage && newMessage.id) {
+                  // Ensure the message has the correct structure
+                  const formattedMessage = {
+                    id: newMessage.id,
+                    room: newMessage.room || data.data.room,
+                    owner: newMessage.owner || user?.id,
+                    text: newMessage.text || newMessage.content,
+                    status: newMessage.status || "delivered",
+                    attachments: newMessage.attachments || [],
+                    date_created: newMessage.date_created || Math.floor(Date.now() / 1000),
+                  };
+                  
                   setLocalMessages(prev => {
                     // Check if message already exists to avoid duplicates
-                    const exists = prev.some(msg => msg.id === newMessage.id);
+                    const exists = prev.some(msg => msg.id === formattedMessage.id);
                     if (!exists) {
-                      return [...prev, newMessage];
+                      return [...prev, formattedMessage];
                     }
                     return prev;
                   });
@@ -241,11 +243,22 @@ export default function ChatPage() {
               if (data.data.room === selectedConversation) {
                 const newMessage = data.data.message;
                 if (newMessage && newMessage.id) {
+                  // Ensure the message has the correct structure
+                  const formattedMessage = {
+                    id: newMessage.id,
+                    room: newMessage.room || data.data.room,
+                    owner: newMessage.owner,
+                    text: newMessage.text || newMessage.content,
+                    status: newMessage.status || "delivered",
+                    attachments: newMessage.attachments || [],
+                    date_created: newMessage.date_created || Math.floor(Date.now() / 1000),
+                  };
+                  
                   setLocalMessages(prev => {
                     // Check if message already exists to avoid duplicates
-                    const exists = prev.some(msg => msg.id === newMessage.id);
+                    const exists = prev.some(msg => msg.id === formattedMessage.id);
                     if (!exists) {
-                      return [...prev, newMessage];
+                      return [...prev, formattedMessage];
                     }
                     return prev;
                   });
@@ -386,7 +399,8 @@ export default function ChatPage() {
     localMessagesCount: localMessages.length,
     totalUniqueMessages: uniqueMessages.length,
     messagesLoading,
-    messagesError: messagesError ? messagesError.message : null
+    messagesError: messagesError ? messagesError.message : null,
+    sampleMessage: uniqueMessages[0] || null
   });
 
   // Add error state handling
@@ -664,51 +678,52 @@ export default function ChatPage() {
                         {messagesData?.results
                           ?.filter(
                             (message: Message) =>
-                              message && message.id && message.sender,
+                              message && message.id && message.text,
                           )
                           .map((message: Message) => (
                             <div
                               key={message.id}
-                              className={`flex ${message.sender?.id === user?.id ? "justify-end" : "justify-start"}`}
+                              className={`flex ${message.owner === user?.id ? "justify-end" : "justify-start"}`}
                             >
                               <div
                                 className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${
-                                  message.sender?.id === user?.id
+                                  message.owner === user?.id
                                     ? "flex-row-reverse space-x-reverse"
                                     : ""
                                 }`}
                               >
-                                {message.sender?.id !== user?.id && (
+                                {message.owner !== user?.id && (
                                   <Avatar className="w-8 h-8">
-                                    <AvatarImage src={message.sender?.avatar} />
+                                    <AvatarImage src="" />
                                     <AvatarFallback>
-                                      {message.sender?.first_name?.[0] || ""}
-                                      {message.sender?.last_name?.[0] || ""}
+                                      {selectedConversationData?.content_object?.job?.organization?.display_name?.[0] ||
+                                        selectedConversationData?.content_object?.job?.organization?.official_name?.[0] ||
+                                        "R"}
                                     </AvatarFallback>
                                   </Avatar>
                                 )}
 
                                 <div
                                   className={`rounded-lg p-3 ${
-                                    message.sender?.id === user?.id
+                                    message.owner === user?.id
                                       ? "bg-primary text-white"
                                       : "bg-gray-100 text-gray-900"
                                   }`}
                                 >
-                                  <p className="text-sm">{message.content}</p>
+                                  <p className="text-sm">{message.text}</p>
                                   <div className="flex items-center justify-end gap-1 mt-1">
                                     <span
                                       className={`text-xs ${
-                                        message.sender?.id === user?.id
+                                        message.owner === user?.id
                                           ? "text-white/70"
                                           : "text-gray-500"
                                       }`}
                                     >
-                                      {formatTime(message.created_at)}
+                                      {formatTime(new Date(message.date_created * 1000).toISOString())}
                                     </span>
-                                    {message.sender?.id === user?.id && (
+                                    {message.owner === user?.id && (
                                       <div className="text-white/70">
-                                        {message.read ? (
+                                        {message.status === "read" ? (
                                           <CheckCheck className="w-3 h-3" />
                                         ) : (
                                           <Check className="w-3 h-3" />
