@@ -169,9 +169,9 @@ function NotificationCard({
 
               <div className="flex items-center justify-between">
                 <span className="text-xs text-gray-500 dark:text-gray-500">
-                  {formatDistanceToNow(notification.createdAt, {
-                    addSuffix: true,
-                  })}
+                  {notification.createdAt && !isNaN(notification.createdAt.getTime()) 
+                    ? formatDistanceToNow(notification.createdAt, { addSuffix: true })
+                    : "Unknown time"}
                 </span>
 
                 <div className="flex gap-2">
@@ -228,7 +228,7 @@ export default function Notifications() {
     refetch,
   } = useQuery({
     queryKey: ["notifications"],
-    queryFn: () => ApiClient.getNotifications({ page_size: 50 }),
+    queryFn: () => ApiClient.getNotifications({ page_size: 15 }),
     retry: false, // Don't retry on 500 errors
     retryOnMount: false,
   });
