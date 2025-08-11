@@ -445,13 +445,15 @@ export class ApiClient {
     previous: string | null;
     results: Array<{
       id: number;
+      date_created: number;
+      event: {
+        type: string;
+        date_created: number;
+        content_type: string;
+        object_id: number;
+      };
       title: string;
-      message: string;
       is_read: boolean;
-      created_at: string;
-      notification_type: string;
-      related_object_id?: number;
-      related_object_type?: string;
     }>;
   }> {
     const queryParams = new URLSearchParams();
@@ -466,45 +468,42 @@ export class ApiClient {
       previous: string | null;
       results: Array<{
         id: number;
+        date_created: number;
+        event: {
+          type: string;
+          date_created: number;
+          content_type: string;
+          object_id: number;
+        };
         title: string;
-        message: string;
         is_read: boolean;
-        created_at: string;
-        notification_type: string;
-        related_object_id?: number;
-        related_object_type?: string;
       }>;
     }>(endpoint);
   }
 
   static async markNotificationAsRead(notificationId: number): Promise<{
     id: number;
+    date_created: number;
+    event: any;
     title: string;
-    message: string;
     is_read: boolean;
-    created_at: string;
-    notification_type: string;
-    related_object_id?: number;
-    related_object_type?: string;
   }> {
     return this.makeRequest<{
       id: number;
+      date_created: number;
+      event: any;
       title: string;
-      message: string;
       is_read: boolean;
-      created_at: string;
-      notification_type: string;
-      related_object_id?: number;
-      related_object_type?: string;
-    }>(`/notifications/${notificationId}/mark_as_read/`, {
-      method: "POST",
+    }>(`/notifications/${notificationId}/`, {
+      method: "PATCH",
+      body: JSON.stringify({ is_read: true }),
     });
   }
 
+  // Mark all notifications as read - API doesn't provide bulk endpoint, so we'll handle this client-side
   static async markAllNotificationsAsRead(): Promise<{ message: string }> {
-    return this.makeRequest<{ message: string }>("/notifications/mark_all_as_read/", {
-      method: "POST",
-    });
+    // Since the API doesn't provide a bulk mark-as-read endpoint, this will be handled in the UI
+    throw new Error("Bulk mark as read not supported by API. Handle individually on client side.");
   }
 
   static async deleteNotification(notificationId: number): Promise<void> {

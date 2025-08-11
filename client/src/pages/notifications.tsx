@@ -22,13 +22,15 @@ import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 interface ApiNotification {
   id: number;
+  date_created: number;
+  event: {
+    type: string;
+    date_created: number;
+    content_type: string;
+    object_id: number;
+  };
   title: string;
-  message: string;
   is_read: boolean;
-  created_at: string;
-  notification_type: string;
-  related_object_id?: number;
-  related_object_type?: string;
 }
 
 interface Notification {
@@ -46,40 +48,40 @@ interface Notification {
 function transformNotification(apiNotification: ApiNotification): Notification {
   // Map notification types to UI types and determine priority
   const typeMapping: Record<string, { type: Notification["type"]; priority: Notification["priority"] }> = {
-    application: { type: "job_application", priority: "high" },
-    job_match: { type: "job_match", priority: "medium" },
-    message: { type: "message", priority: "high" },
-    interview: { type: "interview", priority: "high" },
-    system: { type: "system", priority: "low" },
-    profile: { type: "system", priority: "low" },
+    JOB_APPLICATION_CREATED: { type: "job_application", priority: "high" },
+    JOB_MATCH_CREATED: { type: "job_match", priority: "medium" },
+    MESSAGE_RECEIVED: { type: "message", priority: "high" },
+    INTERVIEW_SCHEDULED: { type: "interview", priority: "high" },
+    SYSTEM_NOTIFICATION: { type: "system", priority: "low" },
+    PROFILE_UPDATE: { type: "system", priority: "low" },
     default: { type: "system", priority: "medium" },
   };
 
-  const mapping = typeMapping[apiNotification.notification_type] || typeMapping.default;
+  const mapping = typeMapping[apiNotification.event.type] || typeMapping.default;
   
   // Determine action URL based on notification type and related object
   let actionUrl: string | undefined;
-  switch (apiNotification.notification_type) {
-    case "application":
+  switch (apiNotification.event.type) {
+    case "JOB_APPLICATION_CREATED":
       actionUrl = "/applications";
       break;
-    case "message":
+    case "MESSAGE_RECEIVED":
       actionUrl = "/chat";
       break;
-    case "job_match":
+    case "JOB_MATCH_CREATED":
       actionUrl = "/";
       break;
-    case "profile":
+    case "PROFILE_UPDATE":
       actionUrl = "/profile";
       break;
     default:
       actionUrl = undefined;
   }
 
-  // Parse the date with validation
+  // Parse the date with validation - API uses Unix timestamp
   let createdAt: Date;
   try {
-    createdAt = new Date(apiNotification.created_at);
+    createdAt = new Date(apiNotification.date_created * 1000); // Convert Unix timestamp to milliseconds
     // Check if the date is invalid
     if (isNaN(createdAt.getTime())) {
       createdAt = new Date(); // Fallback to current date
@@ -92,7 +94,7 @@ function transformNotification(apiNotification: ApiNotification): Notification {
     id: apiNotification.id,
     type: mapping.type,
     title: apiNotification.title,
-    description: apiNotification.message,
+    description: apiNotification.title, // Use title as description since there's no separate message field
     isRead: apiNotification.is_read,
     createdAt,
     actionUrl,
@@ -245,7 +247,7 @@ export default function Notifications() {
     retryOnMount: false,
   });
 
-  // Mark single notification as read mutation (disabled when API unavailable)
+  // Mark single notification as read mutation
   const markAsReadMutation = useMutation({
     mutationFn: (notificationId: number) =>
       ApiClient.markNotificationAsRead(notificationId),
@@ -257,17 +259,30 @@ export default function Notifications() {
       });
     },
     onError: (error: any) => {
+      console.error("Mark as read error:", error);
       toast({
-        title: "Feature Coming Soon",
-        description: "Notification management will be available when the server feature is ready",
-        variant: "default",
+        title: "Error",
+        description: "Failed to mark notification as read",
+        variant: "destructive",
       });
     },
   });
 
-  // Mark all notifications as read mutation (disabled when API unavailable)
+  // Mark all notifications as read mutation - handled individually since API doesn't provide bulk endpoint
   const markAllAsReadMutation = useMutation({
-    mutationFn: () => ApiClient.markAllNotificationsAsRead(),
+    mutationFn: async () => {
+      if (!notificationsData?.results) return;
+      
+      const unreadNotifications = notificationsData.results.filter(n => !n.is_read);
+      
+      // Mark each unread notification individually
+      const promises = unreadNotifications.map(notification => 
+        ApiClient.markNotificationAsRead(notification.id)
+      );
+      
+      await Promise.all(promises);
+      return { message: "All notifications marked as read" };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       toast({
@@ -276,15 +291,16 @@ export default function Notifications() {
       });
     },
     onError: (error: any) => {
+      console.error("Mark all as read error:", error);
       toast({
-        title: "Feature Coming Soon",
-        description: "Notification management will be available when the server feature is ready",
-        variant: "default",
+        title: "Error",
+        description: "Failed to mark all notifications as read",
+        variant: "destructive",
       });
     },
   });
 
-  // Delete notification mutation (disabled when API unavailable)
+  // Delete notification mutation
   const deleteNotificationMutation = useMutation({
     mutationFn: (notificationId: number) =>
       ApiClient.deleteNotification(notificationId),
@@ -296,10 +312,11 @@ export default function Notifications() {
       });
     },
     onError: (error: any) => {
+      console.error("Delete notification error:", error);
       toast({
-        title: "Feature Coming Soon",
-        description: "Notification management will be available when the server feature is ready",
-        variant: "default",
+        title: "Error",
+        description: "Failed to delete notification",
+        variant: "destructive",
       });
     },
   });
