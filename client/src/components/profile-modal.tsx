@@ -99,11 +99,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const userExperience = (fullProfile as any)?.experiences || [];
   const userProjects = (fullProfile as any)?.projects || [];
 
-  // Fetch user resumes
+  // Use cached resumes data from profile page (avoids duplicate API call)
   const { data: userResumes, isLoading: resumesLoading } = useQuery({
     queryKey: ["user", "resumes", user?.id],
-    queryFn: () => ApiClient.getResumes(),
-    enabled: isOpen && !!user?.id,
+    enabled: false, // Don't fetch - use cached data from profile page
   });
 
   // Handle different API response structures - resumes might be in 'results' array or direct array

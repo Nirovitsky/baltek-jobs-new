@@ -156,7 +156,7 @@ export default function Profile() {
 
   // Fetch user resumes
   const { data: resumes } = useQuery({
-    queryKey: ["user", "resumes"],
+    queryKey: ["user", "resumes", user?.id],
     queryFn: () => ApiClient.getResumes(),
     enabled: !!user?.id,
   });
