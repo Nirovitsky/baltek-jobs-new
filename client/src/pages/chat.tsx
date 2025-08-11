@@ -222,16 +222,36 @@ export default function ChatPage() {
             if (data.type === "message_delivered") {
               // Message was successfully sent - add it to local messages
               if (data.data.room === selectedConversation) {
-                setLocalMessages(prev => [...prev, data.data.message]);
-                // Scroll to bottom after adding message
-                setTimeout(scrollToBottom, 100);
+                const newMessage = data.data.message;
+                if (newMessage && newMessage.id) {
+                  setLocalMessages(prev => {
+                    // Check if message already exists to avoid duplicates
+                    const exists = prev.some(msg => msg.id === newMessage.id);
+                    if (!exists) {
+                      return [...prev, newMessage];
+                    }
+                    return prev;
+                  });
+                  // Scroll to bottom after adding message
+                  setTimeout(scrollToBottom, 100);
+                }
               }
             } else if (data.type === "receive_message") {
               // Received a message from someone else - add it to local state
               if (data.data.room === selectedConversation) {
-                setLocalMessages(prev => [...prev, data.data.message]);
-                // Scroll to bottom after adding message
-                setTimeout(scrollToBottom, 100);
+                const newMessage = data.data.message;
+                if (newMessage && newMessage.id) {
+                  setLocalMessages(prev => {
+                    // Check if message already exists to avoid duplicates
+                    const exists = prev.some(msg => msg.id === newMessage.id);
+                    if (!exists) {
+                      return [...prev, newMessage];
+                    }
+                    return prev;
+                  });
+                  // Scroll to bottom after adding message
+                  setTimeout(scrollToBottom, 100);
+                }
               }
 
               // Only refresh rooms to update last message info
@@ -288,7 +308,7 @@ export default function ChatPage() {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, localMessages]);
 
   useEffect(() => {
     if (selectedConversation) {
@@ -343,15 +363,31 @@ export default function ChatPage() {
     (c: Conversation) => c.id === selectedConversation,
   );
 
-  // Combine API messages with local real-time messages and reset local messages when conversation changes
+  // Reset local messages when conversation changes
   useEffect(() => {
     setLocalMessages([]);
   }, [selectedConversation]);
 
-  // Use actual messages data from API combined with local messages
+  // Combine API messages with local real-time messages
   const apiMessages = (messages as any)?.results || [];
   const allMessages = [...apiMessages, ...localMessages];
-  const messagesData = { results: allMessages };
+  
+  // Remove duplicate messages based on ID to avoid showing messages multiple times
+  const uniqueMessages = allMessages.filter((msg, index, self) => 
+    msg && msg.id && self.findIndex(m => m && m.id === msg.id) === index
+  );
+  
+  const messagesData = { results: uniqueMessages };
+  
+  // Debug logging
+  console.log("Messages debug:", {
+    selectedConversation,
+    apiMessagesCount: apiMessages.length,
+    localMessagesCount: localMessages.length,
+    totalUniqueMessages: uniqueMessages.length,
+    messagesLoading,
+    messagesError: messagesError ? messagesError.message : null
+  });
 
   // Add error state handling
   if (roomsError && !roomsLoading) {
