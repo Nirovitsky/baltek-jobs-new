@@ -905,6 +905,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message.toString());
+        console.log('INCOMING:', JSON.stringify(data, null, 2));
         
         // Handle different message types
         switch (data.type) {
@@ -916,6 +917,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 type: 'auth_success',
                 message: 'Authentication successful'
               };
+              console.log('OUTGOING:', JSON.stringify(authResponse, null, 2));
               ws.send(JSON.stringify(authResponse));
             }
             break;
@@ -966,15 +968,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
                 
                 const apiResponse = mockMessage;
                 
-                // Send delivered_message confirmation to sender with API response
+                // Send message_delivered confirmation to sender with API response
                 if (ws.readyState === WebSocket.OPEN) {
                   const deliveryConfirmation = {
-                    type: 'delivered_message',
+                    type: 'message_delivered',
                     data: {
                       room: data.data.room,
                       message: apiResponse
                     }
                   };
+                  console.log('OUTGOING:', JSON.stringify(deliveryConfirmation, null, 2));
                   ws.send(JSON.stringify(deliveryConfirmation));
                 }
                 

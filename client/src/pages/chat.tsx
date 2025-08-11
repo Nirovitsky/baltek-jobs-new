@@ -222,7 +222,7 @@ export default function ChatPage() {
             const data = JSON.parse(event.data);
             console.log("Received WebSocket message:", data);
 
-            if (data.type === "delivered_message") {
+            if (data.type === "message_delivered") {
               // Message was successfully sent - add it to local messages
               if (data.data.room === selectedConversation) {
                 setLocalMessages(prev => [...prev, data.data.message]);
