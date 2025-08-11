@@ -76,13 +76,25 @@ function transformNotification(apiNotification: ApiNotification): Notification {
       actionUrl = undefined;
   }
 
+  // Parse the date with validation
+  let createdAt: Date;
+  try {
+    createdAt = new Date(apiNotification.created_at);
+    // Check if the date is invalid
+    if (isNaN(createdAt.getTime())) {
+      createdAt = new Date(); // Fallback to current date
+    }
+  } catch (error) {
+    createdAt = new Date(); // Fallback to current date
+  }
+
   return {
     id: apiNotification.id,
     type: mapping.type,
     title: apiNotification.title,
     description: apiNotification.message,
     isRead: apiNotification.is_read,
-    createdAt: new Date(apiNotification.created_at),
+    createdAt,
     actionUrl,
     priority: mapping.priority,
   };
