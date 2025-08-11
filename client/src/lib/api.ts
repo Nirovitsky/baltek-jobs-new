@@ -295,11 +295,11 @@ export class ApiClient {
     });
 
     const query = searchParams.toString();
-    return this.makeRequest(`/chat/messages?${query}`);
+    return this.makeRequest(`/chat/messages/?${query}`);
   }
 
   static async sendMessage(roomId: number, content: string) {
-    return this.makeRequest("/chat/messages", {
+    return this.makeRequest("/chat/messages/", {
       method: "POST",
       body: JSON.stringify({ room: roomId, content }),
     });
