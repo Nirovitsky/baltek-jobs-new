@@ -340,9 +340,9 @@ export class ApiClient {
     try {
       const response = await this.makeRequest<any>("/jobs/?limit=100");
       const jobs = response.results || [];
-      const uniqueJobTypes = Array.from(new Set(jobs.map((job: any) => job.job_type).filter(Boolean)));
+      const uniqueJobTypes = Array.from(new Set(jobs.map((job: any) => job.job_type).filter(Boolean))) as string[];
       
-      return uniqueJobTypes.map(type => ({
+      return uniqueJobTypes.map((type: string) => ({
         value: type,
         label: type.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
       }));
@@ -356,9 +356,9 @@ export class ApiClient {
     try {
       const response = await this.makeRequest<any>("/jobs/?limit=100");
       const jobs = response.results || [];
-      const uniqueWorkplaceTypes = Array.from(new Set(jobs.map((job: any) => job.workplace_type).filter(Boolean)));
+      const uniqueWorkplaceTypes = Array.from(new Set(jobs.map((job: any) => job.workplace_type).filter(Boolean))) as string[];
       
-      return uniqueWorkplaceTypes.map(type => ({
+      return uniqueWorkplaceTypes.map((type: string) => ({
         value: type,
         label: type.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
       }));
@@ -372,9 +372,9 @@ export class ApiClient {
     try {
       const response = await this.makeRequest<any>("/jobs/?limit=100");
       const jobs = response.results || [];
-      const uniqueCurrencies = Array.from(new Set(jobs.map((job: any) => job.currency).filter(Boolean)));
+      const uniqueCurrencies = Array.from(new Set(jobs.map((job: any) => job.currency).filter(Boolean))) as string[];
       
-      return uniqueCurrencies.map(currency => ({
+      return uniqueCurrencies.map((currency: string) => ({
         value: currency,
         label: currency
       }));
@@ -388,9 +388,9 @@ export class ApiClient {
     try {
       const response = await this.makeRequest<any>("/jobs/?limit=100");
       const jobs = response.results || [];
-      const uniquePaymentFreqs = Array.from(new Set(jobs.map((job: any) => job.payment_frequency).filter(Boolean)));
+      const uniquePaymentFreqs = Array.from(new Set(jobs.map((job: any) => job.payment_frequency).filter(Boolean))) as string[];
       
-      return uniquePaymentFreqs.map(freq => ({
+      return uniquePaymentFreqs.map((freq: string) => ({
         value: freq,
         label: freq.charAt(0).toUpperCase() + freq.slice(1)
       }));
@@ -402,11 +402,15 @@ export class ApiClient {
 
   static async getEducationLevels() {
     try {
-      const response = await this.makeRequest<any>("/jobs/?limit=100");
-      const jobs = response.results || [];
-      const uniqueEducationLevels = Array.from(new Set(jobs.map((job: any) => job.minimum_education).filter(Boolean)));
+      const response = await this.makeRequest<any>("/users/educations/");
+      const educations = response.results || response || [];
       
-      return uniqueEducationLevels.map(level => ({
+      // Extract unique levels from the education data
+      const uniqueLevels = Array.from(new Set(
+        educations.map((education: any) => education.level).filter(Boolean)
+      )) as string[];
+      
+      return uniqueLevels.map((level: string) => ({
         value: level,
         label: level.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
       }));
