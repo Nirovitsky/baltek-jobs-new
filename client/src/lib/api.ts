@@ -335,25 +335,85 @@ export class ApiClient {
     return { results: response };
   }
 
-  // Static filter options that don't come from API endpoints
-  static getJobTypes() {
-    return Promise.resolve(STATIC_FILTER_OPTIONS.JOB_TYPES);
+  // Dynamic filter options derived from actual job data
+  static async getJobTypes() {
+    try {
+      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const jobs = response.results || [];
+      const uniqueJobTypes = Array.from(new Set(jobs.map((job: any) => job.job_type).filter(Boolean)));
+      
+      return uniqueJobTypes.map(type => ({
+        value: type,
+        label: type.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+      }));
+    } catch (error) {
+      console.warn('Failed to fetch job types from API, using fallback');
+      return STATIC_FILTER_OPTIONS.JOB_TYPES;
+    }
   }
 
-  static getWorkplaceTypes() {
-    return Promise.resolve(STATIC_FILTER_OPTIONS.WORKPLACE_TYPES);
+  static async getWorkplaceTypes() {
+    try {
+      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const jobs = response.results || [];
+      const uniqueWorkplaceTypes = Array.from(new Set(jobs.map((job: any) => job.workplace_type).filter(Boolean)));
+      
+      return uniqueWorkplaceTypes.map(type => ({
+        value: type,
+        label: type.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+      }));
+    } catch (error) {
+      console.warn('Failed to fetch workplace types from API, using fallback');
+      return STATIC_FILTER_OPTIONS.WORKPLACE_TYPES;
+    }
   }
 
-  static getCurrencies() {
-    return Promise.resolve(STATIC_FILTER_OPTIONS.CURRENCIES);
+  static async getCurrencies() {
+    try {
+      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const jobs = response.results || [];
+      const uniqueCurrencies = Array.from(new Set(jobs.map((job: any) => job.currency).filter(Boolean)));
+      
+      return uniqueCurrencies.map(currency => ({
+        value: currency,
+        label: currency
+      }));
+    } catch (error) {
+      console.warn('Failed to fetch currencies from API, using fallback');
+      return STATIC_FILTER_OPTIONS.CURRENCIES;
+    }
   }
 
-  static getPaymentFrequencies() {
-    return Promise.resolve(STATIC_FILTER_OPTIONS.PAYMENT_FREQUENCIES);
+  static async getPaymentFrequencies() {
+    try {
+      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const jobs = response.results || [];
+      const uniquePaymentFreqs = Array.from(new Set(jobs.map((job: any) => job.payment_frequency).filter(Boolean)));
+      
+      return uniquePaymentFreqs.map(freq => ({
+        value: freq,
+        label: freq.charAt(0).toUpperCase() + freq.slice(1)
+      }));
+    } catch (error) {
+      console.warn('Failed to fetch payment frequencies from API, using fallback');
+      return STATIC_FILTER_OPTIONS.PAYMENT_FREQUENCIES;
+    }
   }
 
-  static getEducationLevels() {
-    return Promise.resolve(STATIC_FILTER_OPTIONS.EDUCATION_LEVELS);
+  static async getEducationLevels() {
+    try {
+      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const jobs = response.results || [];
+      const uniqueEducationLevels = Array.from(new Set(jobs.map((job: any) => job.minimum_education).filter(Boolean)));
+      
+      return uniqueEducationLevels.map(level => ({
+        value: level,
+        label: level.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+      }));
+    } catch (error) {
+      console.warn('Failed to fetch education levels from API, using fallback');
+      return STATIC_FILTER_OPTIONS.EDUCATION_LEVELS;
+    }
   }
 
   static async getUniversities() {

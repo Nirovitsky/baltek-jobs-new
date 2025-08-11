@@ -11,16 +11,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
-import { 
-  Search, 
-  Bell, 
-  MessageCircle, 
-  User, 
-  Settings, 
-  LogOut, 
+import {
+  Search,
+  Bell,
+  MessageCircle,
+  User,
+  Settings,
+  LogOut,
   ChevronDown,
   Heart,
-  FileText
+  FileText,
 } from "lucide-react";
 import baltekIcon from "@/assets/baltek-icon.svg";
 
@@ -91,8 +91,10 @@ export default function Navbar({}: NavbarProps) {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <div className="px-2 py-1.5">
-                  <p className="font-medium">{user?.first_name} {user?.last_name}</p>
-                  <p className="text-sm text-gray-500">{user?.email}</p>
+                  <p className="font-medium">
+                    {user?.first_name} {user?.last_name}
+                  </p>
+                  <p className="text-sm text-gray-500">{user?.phone}</p>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
@@ -104,13 +106,13 @@ export default function Navbar({}: NavbarProps) {
                 <DropdownMenuItem asChild>
                   <Link href="/bookmarks" className="flex items-center">
                     <Heart className="mr-2 h-4 w-4" />
-                    <span>Bookmarked Jobs</span>
+                    <span>Bookmarks</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/applications" className="flex items-center">
                     <FileText className="mr-2 h-4 w-4" />
-                    <span>My Applications</span>
+                    <span>Applications</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

@@ -34,7 +34,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Authentication**: JWT-based with access and refresh tokens stored in localStorage.
 - **State Caching**: TanStack Query for intelligent caching and background updates.
 - **Job Display**: Job cards with job title, salary, skills tags, company details (logo, name, location), and detailed job views upon click.
-- **Filtering**: Comprehensive filtering by salary range, currency, payment frequency, minimum education level, job types, and workplace types. Filter options are API-driven (enum-based).
+- **Filtering**: Comprehensive filtering by salary range, currency, payment frequency, minimum education level, job types, and workplace types. Filter options are dynamically generated from actual job data via API calls instead of hardcoded values.
 - **Pagination**: Offset-based pagination with smart prefetching for infinite scroll.
 - **Loading States**: Skeleton components for smooth visual feedback during loading.
 - **Job Application**: Streamlined form for cover letter and CV/resume upload (both required).
