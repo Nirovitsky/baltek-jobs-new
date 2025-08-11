@@ -133,7 +133,6 @@ export default function ChatPage() {
       data: {
         room: selectedConversation,
         text: content,
-        attachments: [], // TODO: Add file attachment support
       },
     };
 
@@ -192,9 +191,15 @@ export default function ChatPage() {
             const data = JSON.parse(event.data);
             console.log("Received WebSocket message:", data);
 
+            // Add safety checks for data structure
+            if (!data || !data.type) {
+              console.warn("Invalid WebSocket message format:", data);
+              return;
+            }
+
             if (data.type === "message_delivered") {
               // Message was successfully sent - add it to local messages
-              if (data.data.room === selectedConversation) {
+              if (data.data && data.data.room === selectedConversation) {
                 const newMessage = data.data.message;
                 if (newMessage && newMessage.id) {
                   // Ensure the message has the correct structure
@@ -222,7 +227,7 @@ export default function ChatPage() {
               }
             } else if (data.type === "receive_message") {
               // Received a message from someone else - add it to local state
-              if (data.data.room === selectedConversation) {
+              if (data.data && data.data.room === selectedConversation) {
                 const newMessage = data.data.message;
                 if (newMessage && newMessage.id) {
                   // Ensure the message has the correct structure
@@ -253,16 +258,20 @@ export default function ChatPage() {
               queryClient.invalidateQueries({ queryKey: ["chat", "rooms"] });
             } else if (data.type === "message_error") {
               // Handle message send error
+              const errorMsg = data.data?.error || data.error || "Unknown error occurred";
               toast({
                 title: "Failed to send message",
-                description: data.data.error,
+                description: errorMsg,
                 variant: "destructive",
               });
             } else if (data.type === "auth_success") {
               console.log("WebSocket authentication successful");
+            } else {
+              console.log("Unknown WebSocket message type:", data.type);
             }
           } catch (error) {
             console.error("WebSocket message error:", error);
+            console.error("Raw message data:", event.data);
           }
         };
 
