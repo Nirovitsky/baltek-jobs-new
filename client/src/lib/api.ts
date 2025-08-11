@@ -322,6 +322,27 @@ export class ApiClient {
     return this.makeRequest(`/organizations/${id}/`);
   }
 
+  // Auth API
+  static async changePassword(currentPassword: string, newPassword: string) {
+    return this.makeRequest("/auth/change-password", {
+      method: "POST",
+      body: JSON.stringify({ 
+        current_password: currentPassword, 
+        new_password: newPassword 
+      }),
+    });
+  }
+
+  static async deleteAccount(userId: number) {
+    return this.makeRequest(`/users/${userId}/`, {
+      method: "DELETE",
+    });
+  }
+
+  static async exportUserData() {
+    return this.makeRequest("/users/export");
+  }
+
   // Reference data API
   static async getLocations() {
     return this.makeRequest("/locations/");

@@ -1,7 +1,7 @@
 import { apiRequest } from "./queryClient";
 import type { LoginRequest, RegisterRequest, UserProfile } from "@shared/schema";
 
-const API_BASE = "/api";
+const API_BASE = "https://api.baltek.net/api";
 
 export class AuthService {
   private static TOKEN_KEY = "baltek_access_token";

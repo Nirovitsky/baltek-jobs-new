@@ -42,8 +42,8 @@ const MOCK_CATEGORIES = {
 // Company Suggestions Component
 function CompanySuggestions() {
   const { data: companiesData, isLoading } = useQuery({
-    queryKey: ["/api/organizations"],
-    queryFn: () => fetch("/api/organizations?limit=15").then(res => res.json()),
+    queryKey: ["organizations"],
+    queryFn: () => ApiClient.getOrganizations({ limit: 15 }),
   });
 
   // Handle both array and paginated response formats

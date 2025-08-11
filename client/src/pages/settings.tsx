@@ -61,7 +61,8 @@ export default function SettingsPage() {
 
   // Fetch user profile data
   const { data: profile, isLoading: profileLoading } = useQuery({
-    queryKey: ["/api/users", user?.id],
+    queryKey: ["profile", user?.id],
+    queryFn: () => user?.id ? ApiClient.getProfile(user.id) : null,
     enabled: !!user?.id,
   });
 
@@ -91,18 +92,15 @@ export default function SettingsPage() {
   // Profile update mutation
   const updateProfileMutation = useMutation({
     mutationFn: async (data: any) => {
-      const response = await ApiClient.makeRequest(`/api/users/${user?.id}`, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      });
-      return response;
+      if (!user?.id) throw new Error("User ID not found");
+      return ApiClient.updateProfile(user.id, data);
     },
     onSuccess: () => {
       toast({
         title: "Profile updated",
         description: "Your profile settings have been saved successfully.",
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/users", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["profile", user?.id] });
     },
     onError: () => {
       toast({
@@ -119,14 +117,7 @@ export default function SettingsPage() {
       currentPassword: string;
       newPassword: string;
     }) => {
-      const response = await ApiClient.makeRequest(
-        "/api/auth/change-password",
-        {
-          method: "POST",
-          body: JSON.stringify(data),
-        },
-      );
-      return response;
+      return ApiClient.changePassword(data.currentPassword, data.newPassword);
     },
     onSuccess: () => {
       toast({
@@ -147,10 +138,8 @@ export default function SettingsPage() {
   // Account deletion mutation
   const deleteAccountMutation = useMutation({
     mutationFn: async () => {
-      const response = await ApiClient.makeRequest(`/api/users/${user?.id}`, {
-        method: "DELETE",
-      });
-      return response;
+      if (!user?.id) throw new Error("User ID not found");
+      return ApiClient.deleteAccount(user.id);
     },
     onSuccess: () => {
       toast({
@@ -193,7 +182,7 @@ export default function SettingsPage() {
 
   const exportData = async () => {
     try {
-      const response = await ApiClient.makeRequest("/api/users/export");
+      const response = await ApiClient.exportUserData();
       const blob = new Blob([JSON.stringify(response, null, 2)], {
         type: "application/json",
       });

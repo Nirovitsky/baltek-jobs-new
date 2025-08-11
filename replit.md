@@ -12,14 +12,16 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 
 ## Recent Changes (August 11, 2025)
 
-- Successfully migrated project from Replit Agent to standard Replit environment
-- Enhanced date picker component in profile modal with Select dropdowns for easier year/month navigation
-- Fixed TypeScript errors for better type safety
-- **Simplified Architecture**: Removed local Express server WebSocket handling and proxy routes
-- **Direct API Integration**: All API requests now go directly to https://api.baltek.net/api instead of through local server
-- **WebSocket Direct Connection**: Chat now connects directly to wss://api.baltek.net/ws/chat/ for real-time messaging
-- **Streamlined Server**: Minimal Express server now only serves the React app via Vite middleware
-- Project is fully operational with simplified architecture and direct external API integration
+- **Migration Completed**: Successfully migrated project from Replit Agent to standard Replit environment
+- **Architecture Overhaul**: Completely removed Express proxy server that previously acted as middleware between frontend and external API
+- **Direct API Integration**: All API requests now go directly to https://api.baltek.net/api from the React frontend
+- **Unified ApiClient**: Consolidated all API interactions into a single `ApiClient` class with comprehensive method coverage
+- **Authentication Flow**: JWT token management handled entirely client-side with automatic refresh capabilities
+- **WebSocket Direct Connection**: Chat connects directly to wss://api.baltek.net/ws/chat/ for real-time messaging
+- **Minimalist Server**: Express server now only serves React app via Vite middleware - no API routing or proxy logic
+- **Security Enhancement**: Eliminated server-side API key exposure by moving all external API calls to client-side
+- **Performance Optimization**: Removed unnecessary network hops through local proxy server
+- **Code Simplification**: Removed all server-side API endpoint handlers and proxy configuration
 
 ## System Architecture
 
@@ -34,15 +36,17 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Authentication Flow**: JWT-based authentication with access and refresh tokens, automatic token refresh, route protection, and local storage for session persistence.
 
 ### Backend Architecture
-- **Server**: Minimal Express.js server with Vite middleware for development
+- **Server**: Minimal Express.js server with Vite middleware for development only
 - **Development Setup**: Vite middleware integration for React app serving
-- **API Strategy**: Direct API calls to https://api.baltek.net/api - no local proxy or routing
+- **API Strategy**: Direct frontend-to-API calls to https://api.baltek.net/api with zero local proxy or middleware
+- **Authentication**: Client-side JWT management with localStorage persistence and automatic refresh
 - **WebSocket**: Direct connection to wss://api.baltek.net/ws/chat/ for real-time messaging
-- **Storage**: No local database; all data operations through the external Baltek API
+- **Storage**: No local database; all data operations through external Baltek API
+- **Security Model**: Client/server separation with all API credentials managed client-side
 
 ### Technical Implementations & Features
 - **Data Validation**: Zod schemas for type-safe form validation and API response parsing.
-- **API Client**: Custom `ApiClient` class with automatic token refresh and error handling.
+- **API Client**: Comprehensive `ApiClient` class with 40+ methods covering all Baltek API endpoints, automatic token refresh, and robust error handling. Includes methods for jobs, applications, profile management, chat, organizations, authentication, and file operations.
 - **Authentication**: JWT-based with access and refresh tokens stored in localStorage.
 - **State Caching**: TanStack Query for intelligent caching and background updates.
 - **Job Display**: Job cards with job title, salary, skills tags, company details (logo, name, location), and detailed job views upon click.
