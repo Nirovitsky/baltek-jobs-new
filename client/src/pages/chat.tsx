@@ -419,34 +419,10 @@ export default function ChatPage() {
     }
   };
 
-  const filteredConversations =
-    roomsLoading || roomsError
-      ? []
-      : ((chatRooms as any)?.results || []).filter(
-          (conversation: Conversation) => {
-            if (!conversation || !conversation.id) return false;
+  // Use chat rooms data exactly as provided by the API
+  const conversations = roomsLoading || roomsError ? [] : ((chatRooms as any)?.results || []);
 
-            const conversationName = conversation.name?.toLowerCase() || "";
-            const participantName = conversation.participant
-              ? `${conversation.participant.first_name || ""} ${conversation.participant.last_name || ""}`
-                  .toLowerCase()
-                  .trim()
-              : "";
-            const company =
-              conversation.participant?.company?.toLowerCase() || "";
-            const role = conversation.participant?.role?.toLowerCase() || "";
-
-            const query = searchQuery.toLowerCase();
-            return (
-              conversationName.includes(query) ||
-              participantName.includes(query) ||
-              company.includes(query) ||
-              role.includes(query)
-            );
-          },
-        );
-
-  const selectedConversationData = filteredConversations.find(
+  const selectedConversationData = conversations.find(
     (c: Conversation) => c.id === selectedConversation,
   );
 
@@ -542,7 +518,7 @@ export default function ChatPage() {
                       </div>
                     ))}
                   </div>
-                ) : filteredConversations.length === 0 ? (
+                ) : conversations.length === 0 ? (
                   <div className="p-8 text-center text-gray-500">
                     <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                     <p className="font-medium mb-2">No conversations yet</p>
@@ -553,7 +529,7 @@ export default function ChatPage() {
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-100">
-                    {filteredConversations.map((conversation: Conversation) => (
+                    {conversations.map((conversation: Conversation) => (
                       <div
                         key={conversation.id}
                         onClick={() => {
