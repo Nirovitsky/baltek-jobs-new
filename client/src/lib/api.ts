@@ -28,11 +28,10 @@ const STATIC_FILTER_OPTIONS = {
     { value: "yearly", label: "Yearly" },
   ],
   EDUCATION_LEVELS: [
-    { value: "high_school", label: "High School" },
-    { value: "associate", label: "Associate Degree" },
-    { value: "bachelor", label: "Bachelor's Degree" },
-    { value: "master", label: "Master's Degree" },
-    { value: "doctorate", label: "Doctorate" },
+    { value: "Secondary", label: "Secondary" },
+    { value: "Undergraduate", label: "Undergraduate" },
+    { value: "Master", label: "Master" },
+    { value: "Doctorate", label: "Doctorate" },
   ],
 };
 
@@ -401,23 +400,8 @@ export class ApiClient {
   }
 
   static async getEducationLevels() {
-    try {
-      const response = await this.makeRequest<any>("/users/educations/");
-      const educations = response.results || response || [];
-      
-      // Extract unique levels from the education data
-      const uniqueLevels = Array.from(new Set(
-        educations.map((education: any) => education.level).filter(Boolean)
-      )) as string[];
-      
-      return uniqueLevels.map((level: string) => ({
-        value: level,
-        label: level.split('_').map((word: string) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
-      }));
-    } catch (error) {
-      console.warn('Failed to fetch education levels from API, using fallback');
-      return STATIC_FILTER_OPTIONS.EDUCATION_LEVELS;
-    }
+    // Use static education levels as specified: Secondary, Undergraduate, Master, Doctorate
+    return STATIC_FILTER_OPTIONS.EDUCATION_LEVELS;
   }
 
   static async getUniversities() {

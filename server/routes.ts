@@ -282,24 +282,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get education levels from users/educations/ API
-  app.get("/api/users/educations/", async (req, res) => {
-    try {
-      const response = await fetch("https://api.baltek.net/api/users/educations/", {
-        headers: {
-          Authorization: req.headers.authorization || "",
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch education levels: ${response.status}`);
-      }
-      const data = await response.json();
-      res.json(data);
-    } catch (error) {
-      console.error("Error fetching education levels:", error);
-      res.status(500).json({ error: "Failed to fetch education levels" });
-    }
-  });
+
 
   // Fetch all organizations (for company suggestions)
   app.get("/api/organizations", async (req, res) => {
