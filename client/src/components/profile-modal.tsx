@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -56,6 +56,7 @@ import {
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialTab?: "personal" | "education" | "experience" | "projects" | "resumes";
 }
 
 interface EducationFormData extends Omit<Education, 'university'> {
@@ -66,15 +67,22 @@ interface ExperienceFormData extends Experience {}
 
 interface ProjectFormData extends Project {}
 
-export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
+export default function ProfileModal({ isOpen, onClose, initialTab = "personal" }: ProfileModalProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [activeTab, setActiveTab] = useState<"personal" | "education" | "experience" | "projects" | "resumes">("personal");
+  const [activeTab, setActiveTab] = useState<"personal" | "education" | "experience" | "projects" | "resumes">(initialTab);
   const [editingEducation, setEditingEducation] = useState<any>(null);
   const [editingExperience, setEditingExperience] = useState<any>(null);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [uploadingResume, setUploadingResume] = useState<File | null>(null);
+
+  // Update active tab when initialTab prop changes
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   // Fetch additional data
   const { data: universities, isLoading: universitiesLoading } = useQuery({

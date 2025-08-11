@@ -139,6 +139,7 @@ function CompanySuggestions() {
 export default function Profile() {
   const { user } = useAuth();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [modalTab, setModalTab] = useState<"personal" | "education" | "experience" | "projects" | "resumes">("personal");
 
   // Use cached user profile from auth hook (avoids duplicate API call)
   const { data: fullProfile, isLoading: profileLoading, error: profileError } = useQuery({
@@ -292,7 +293,10 @@ export default function Profile() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsProfileModalOpen(true)}
+                      onClick={() => {
+                        setModalTab("personal");
+                        setIsProfileModalOpen(true);
+                      }}
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
@@ -377,7 +381,10 @@ export default function Profile() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsProfileModalOpen(true)}
+                      onClick={() => {
+                        setModalTab("experience");
+                        setIsProfileModalOpen(true);
+                      }}
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
@@ -419,7 +426,10 @@ export default function Profile() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsProfileModalOpen(true)}
+                      onClick={() => {
+                        setModalTab("education");
+                        setIsProfileModalOpen(true);
+                      }}
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
@@ -461,7 +471,10 @@ export default function Profile() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => setIsProfileModalOpen(true)}
+                      onClick={() => {
+                        setModalTab("projects");
+                        setIsProfileModalOpen(true);
+                      }}
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
@@ -510,7 +523,10 @@ export default function Profile() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => setIsProfileModalOpen(true)}
+                    onClick={() => {
+                      setModalTab("resumes");
+                      setIsProfileModalOpen(true);
+                    }}
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
@@ -553,7 +569,10 @@ export default function Profile() {
                       variant="outline"
                       size="sm"
                       className="mt-3"
-                      onClick={() => setIsProfileModalOpen(true)}
+                      onClick={() => {
+                        setModalTab("resumes");
+                        setIsProfileModalOpen(true);
+                      }}
                     >
                       Upload Resume
                     </Button>
@@ -573,6 +592,7 @@ export default function Profile() {
       <ProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
+        initialTab={modalTab}
       />
     </div>
   );
