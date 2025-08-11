@@ -89,10 +89,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     enabled: isOpen,
   });
 
-  // Use cached profile data from the profile page (avoids duplicate API call)
+  // Use cached profile data from auth hook (avoids duplicate API call)
   const { data: fullProfile } = useQuery({
-    queryKey: ["user", "profile", user?.id],
-    enabled: false, // Don't fetch - use cached data from profile page
+    queryKey: ["auth", "user"],
+    enabled: false, // Don't fetch - use cached data from useAuth hook
   });
 
   const userEducation = (fullProfile as any)?.educations || [];
@@ -165,8 +165,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const updateProfileMutation = useMutation({
     mutationFn: (data: Partial<UserProfile>) => ApiClient.updateProfile(user!.id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["auth"] });
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       toast({ title: "Profile updated", description: "Your profile has been updated successfully" });
     },
     onError: (error) => {
@@ -181,7 +180,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const addEducationMutation = useMutation({
     mutationFn: (data: any) => ApiClient.addEducation(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       educationForm.reset();
       toast({ title: "Education added", description: "Education record added successfully" });
     },
@@ -198,7 +197,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateEducation(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingEducation(null);
       educationForm.reset();
       toast({ title: "Education updated", description: "Education record updated successfully" });
@@ -215,7 +214,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const deleteEducationMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteEducation(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       toast({ title: "Education deleted", description: "Education record deleted successfully" });
     },
     onError: (error) => {
@@ -230,7 +229,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const addExperienceMutation = useMutation({
     mutationFn: (data: any) => ApiClient.addExperience(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       experienceForm.reset();
       toast({ title: "Experience added", description: "Work experience added successfully" });
     },
@@ -247,7 +246,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateExperience(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingExperience(null);
       experienceForm.reset();
       toast({ title: "Experience updated", description: "Work experience updated successfully" });
@@ -264,7 +263,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const deleteExperienceMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteExperience(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       toast({ title: "Experience deleted", description: "Work experience deleted successfully" });
     },
     onError: (error) => {
@@ -279,7 +278,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const addProjectMutation = useMutation({
     mutationFn: (data: any) => ApiClient.addProject(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       projectForm.reset();
       toast({ title: "Project added", description: "Project added successfully" });
     },
@@ -296,7 +295,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
     mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateProject(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingProject(null);
       projectForm.reset();
       toast({ title: "Project updated", description: "Project updated successfully" });
@@ -313,7 +312,7 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   const deleteProjectMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteProject(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", "profile", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       toast({ title: "Project deleted", description: "Project deleted successfully" });
     },
     onError: (error) => {

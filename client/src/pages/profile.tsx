@@ -140,11 +140,10 @@ export default function Profile() {
   const { user } = useAuth();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
-  // Fetch complete user profile from API
+  // Use cached user profile from auth hook (avoids duplicate API call)
   const { data: fullProfile, isLoading: profileLoading, error: profileError } = useQuery({
-    queryKey: ["user", "profile", user?.id],
-    queryFn: () => ApiClient.getProfile(user!.id),
-    enabled: !!user?.id,
+    queryKey: ["auth", "user"],
+    enabled: false, // Don't fetch - use cached data from useAuth hook
   });
 
   // Fetch user applications for stats
