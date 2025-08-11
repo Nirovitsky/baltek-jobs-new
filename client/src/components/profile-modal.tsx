@@ -1329,7 +1329,12 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                                     <span>
                                       Uploaded: {(() => {
                                         try {
-                                          return new Date(resume.created_at).toLocaleDateString();
+                                          // Handle both timestamp and date string formats
+                                          const date = typeof resume.created_at === 'number' 
+                                            ? new Date(resume.created_at * 1000) // Convert timestamp to milliseconds
+                                            : new Date(resume.created_at);
+                                          
+                                          return isNaN(date.getTime()) ? "Recently" : date.toLocaleDateString();
                                         } catch {
                                           return "Recently";
                                         }
