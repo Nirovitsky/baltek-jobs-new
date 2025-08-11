@@ -488,10 +488,10 @@ export default function ChatPage() {
                           setSelectedConversation(conversation.id);
                           markAsReadMutation.mutate(conversation.id);
                         }}
-                        className={`relative p-4 cursor-pointer transition-all duration-200 border-l-4 ${
+                        className={`relative p-4 cursor-pointer transition-all duration-200 ${
                           selectedConversation === conversation.id
-                            ? "bg-blue-50 border-l-blue-500 shadow-sm"
-                            : "border-transparent hover:bg-gray-50 hover:border-l-gray-300"
+                            ? "bg-blue-50 shadow-sm"
+                            : "hover:bg-gray-50"
                         } ${conversation.content_object?.status === "expired" ? "opacity-70" : ""}`}
                         data-testid={`conversation-${conversation.id}`}
                       >
