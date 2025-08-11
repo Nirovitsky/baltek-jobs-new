@@ -37,7 +37,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Filtering**: Comprehensive filtering by salary range, currency, payment frequency, minimum education level, job types, and workplace types. Filter options are dynamically generated from actual job data via API calls instead of hardcoded values.
 - **Pagination**: Offset-based pagination with smart prefetching for infinite scroll.
 - **Loading States**: Skeleton components for smooth visual feedback during loading.
-- **Job Application**: Streamlined form for cover letter and CV/resume upload (both required).
+- **Job Application**: Dual application system with Quick Apply (instant, no documents required) and regular Apply Now (optional cover letter and resume). Both applications use the same API endpoint with flexible document requirements.
 - **User Profile**: Comprehensive profile management with integration for professional links, education, experience, and projects. Real-time stats and profile completion percentage. Profile editing is fully integrated with CRUD operations.
 - **Resume Management**: Upload up to 3 resumes (PDF, DOC, DOCX, max 10MB) with drag-and-drop, validation, listing, view/download, and delete functionality.
 - **Settings Management**: Comprehensive settings page with profile configuration, notification preferences, privacy controls, and account management including password changes and data export.

@@ -394,6 +394,14 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             ) : (
               <>
                 <Button
+                  onClick={() => setIsApplicationModalOpen(true)}
+                  className="flex-1 bg-white text-gray-900 border border-gray-300 hover:bg-gray-50"
+                  size="lg"
+                >
+                  <Send className="w-4 h-4 mr-2" />
+                  Apply Now
+                </Button>
+                <Button
                   onClick={() => setIsQuickApplyModalOpen(true)}
                   className="flex-1"
                   size="lg"
@@ -401,14 +409,6 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                 >
                   <img src={baltekIcon} alt="" className="w-4 h-4 mr-2" />
                   Quick Apply
-                </Button>
-                <Button
-                  onClick={() => setIsApplicationModalOpen(true)}
-                  className="flex-1 bg-white text-gray-900 border border-gray-300 hover:bg-gray-50"
-                  size="lg"
-                >
-                  <Send className="w-4 h-4 mr-2" />
-                  Apply Now
                 </Button>
               </>
             )}
