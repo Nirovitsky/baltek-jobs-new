@@ -1,10 +1,14 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
+import multer from "multer";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // The backend API is already available at https://api.baltek.net/api/
   // Our Express server will only serve the frontend and proxy API requests if needed
+  
+  // Configure multer for handling multipart/form-data
+  const upload = multer();
   
   // Health check endpoint
   app.get("/api/health", (req, res) => {
@@ -279,6 +283,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching resumes:", error);
       res.status(500).json({ error: "Failed to fetch resumes" });
+    }
+  });
+
+  // Submit job application
+  app.post("/api/jobs/applications/", upload.any(), async (req, res) => {
+    try {
+      console.log("Received job application request");
+      console.log("Request body:", req.body);
+      console.log("Request files:", req.files);
+      
+      // Create FormData for the external API
+      const formData = new FormData();
+      
+      // Add form fields
+      if (req.body.job) {
+        formData.append("job", req.body.job);
+      }
+      if (req.body.cover_letter) {
+        formData.append("cover_letter", req.body.cover_letter);
+      }
+      if (req.body.resume_id) {
+        formData.append("resume_id", req.body.resume_id);
+      }
+      
+      // Handle file uploads
+      if (req.files && Array.isArray(req.files)) {
+        for (const file of req.files) {
+          if (file.fieldname === "resume") {
+            // Create a File-like object from the multer file
+            const blob = new Blob([file.buffer], { type: file.mimetype });
+            formData.append("resume", blob, file.originalname);
+          }
+        }
+      }
+      
+      console.log("Forwarding application to Baltek API...");
+      
+      // Forward the form data to Baltek API
+      const response = await fetch("https://api.baltek.net/api/jobs/applications/", {
+        method: "POST",
+        headers: {
+          Authorization: req.headers.authorization || "",
+          // Don't set Content-Type, let fetch handle it for FormData
+        },
+        body: formData
+      });
+      
+      console.log("Baltek API response status:", response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Application submission failed:", response.status, errorText);
+        return res.status(response.status).json({ error: "Failed to submit application" });
+      }
+      
+      const data = await response.json();
+      console.log("Application submitted successfully:", data);
+      res.json(data);
+    } catch (error) {
+      console.error("Error submitting application:", error);
+      res.status(500).json({ error: "Failed to submit application" });
+    }
+  });
+
+  // Get user applications
+  app.get("/api/jobs/applications/", async (req, res) => {
+    try {
+      const response = await fetch("https://api.baltek.net/api/jobs/applications/", {
+        headers: {
+          Authorization: req.headers.authorization || "",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to fetch applications: ${response.status}`);
+      }
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching applications:", error);
+      res.status(500).json({ error: "Failed to fetch applications" });
     }
   });
 
