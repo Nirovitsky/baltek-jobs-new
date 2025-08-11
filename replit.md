@@ -25,7 +25,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Performance Optimization**: Removed unnecessary network hops through local proxy server
 - **Code Simplification**: Removed all server-side API endpoint handlers and proxy configuration
 - **TypeScript Fixes**: Resolved all type errors and improved code reliability
-- **Chat File Attachments**: Added comprehensive file upload functionality with progress indicators, attachment previews, and WebSocket integration using `/files/` endpoint
+- **Chat File Attachments**: Added comprehensive file upload functionality with progress indicators, attachment previews, and WebSocket integration using `/files/` endpoint. Fixed API field name from "file" to "path" for uploads. Enhanced message filtering to show attachment-only messages. Added real-time upload progress with visual indicators and error handling.
 
 ## System Architecture
 

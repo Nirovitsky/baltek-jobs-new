@@ -209,20 +209,22 @@ export default function ChatPage() {
 
             if (data.type === "message_delivered") {
               // Message was successfully sent by me - add it to local messages as my message
-              console.log("Message delivered - adding as my message");
+              console.log("Message delivered - adding as my message", data);
               
               // Extract message data - could be in data.message or data directly
               const messageData = data.message || data.data?.message || data.data;
               const roomId = data.room || data.data?.room || selectedConversation;
+              
+              console.log("Extracted data:", { messageData, roomId, attachments: messageData?.attachments || data.attachments });
               
               if (roomId === selectedConversation && messageData) {
                 const formattedMessage = {
                   id: messageData.id || Date.now(), // Use timestamp if no ID
                   room: roomId,
                   owner: user?.id, // This message is from me
-                  text: messageData.text || messageData.content || data.text,
+                  text: messageData.text || messageData.content || data.text || "",
                   status: "delivered",
-                  attachments: messageData.attachments || [],
+                  attachments: messageData.attachments || data.attachments || [],
                   date_created: messageData.date_created || Math.floor(Date.now() / 1000),
                 };
                 
@@ -252,9 +254,9 @@ export default function ChatPage() {
                   id: messageData.id || Date.now(),
                   room: roomId,
                   owner: messageData.owner || messageData.sender_id, // This message is from them
-                  text: messageData.text || messageData.content || data.text,
+                  text: messageData.text || messageData.content || data.text || "",
                   status: messageData.status || "delivered",
-                  attachments: messageData.attachments || [],
+                  attachments: messageData.attachments || data.attachments || [],
                   date_created: messageData.date_created || Math.floor(Date.now() / 1000),
                 };
                 
@@ -795,7 +797,7 @@ export default function ChatPage() {
                         {messagesData?.results
                           ?.filter(
                             (message: Message) =>
-                              message && message.id && message.text,
+                              message && message.id && (message.text || (message.attachments && message.attachments.length > 0)),
                           )
                           .map((message: Message) => (
                             <div
