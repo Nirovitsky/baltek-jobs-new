@@ -28,10 +28,10 @@ const STATIC_FILTER_OPTIONS = {
     { value: "yearly", label: "Yearly" },
   ],
   EDUCATION_LEVELS: [
-    { value: "Secondary", label: "Secondary" },
-    { value: "Undergraduate", label: "Undergraduate" },
-    { value: "Master", label: "Master" },
-    { value: "Doctorate", label: "Doctorate" },
+    { value: "secondary", label: "Secondary" },
+    { value: "undergraduate", label: "Undergraduate" },
+    { value: "master", label: "Master" },
+    { value: "doctorate", label: "Doctorate" },
   ],
 };
 
@@ -337,7 +337,7 @@ export class ApiClient {
   // Dynamic filter options derived from actual job data
   static async getJobTypes() {
     try {
-      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const response = await this.makeRequest<any>("/jobs/");
       const jobs = response.results || [];
       const uniqueJobTypes = Array.from(new Set(jobs.map((job: any) => job.job_type).filter(Boolean))) as string[];
       
@@ -353,7 +353,7 @@ export class ApiClient {
 
   static async getWorkplaceTypes() {
     try {
-      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const response = await this.makeRequest<any>("/jobs/");
       const jobs = response.results || [];
       const uniqueWorkplaceTypes = Array.from(new Set(jobs.map((job: any) => job.workplace_type).filter(Boolean))) as string[];
       
@@ -369,7 +369,7 @@ export class ApiClient {
 
   static async getCurrencies() {
     try {
-      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const response = await this.makeRequest<any>("/jobs/");
       const jobs = response.results || [];
       const uniqueCurrencies = Array.from(new Set(jobs.map((job: any) => job.currency).filter(Boolean))) as string[];
       
@@ -385,7 +385,7 @@ export class ApiClient {
 
   static async getPaymentFrequencies() {
     try {
-      const response = await this.makeRequest<any>("/jobs/?limit=100");
+      const response = await this.makeRequest<any>("/jobs/");
       const jobs = response.results || [];
       const uniquePaymentFreqs = Array.from(new Set(jobs.map((job: any) => job.payment_frequency).filter(Boolean))) as string[];
       
