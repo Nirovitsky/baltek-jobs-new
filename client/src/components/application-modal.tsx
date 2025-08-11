@@ -128,20 +128,13 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <DialogTitle className="text-xl">
-                {isQuickApply ? "Quick Apply for" : "Apply for"} {job.title}
-              </DialogTitle>
-              <DialogDescription>
-                {job.organization?.display_name || job.organization?.name} • {job.location?.name}, {job.location?.country}
-                {isQuickApply && <span className="block text-sm text-blue-600 mt-1">Quick application - no cover letter or resume required</span>}
-              </DialogDescription>
-            </div>
-            <Button variant="ghost" size="sm" onClick={handleClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+          <DialogTitle className="text-xl">
+            {isQuickApply ? "Quick Apply for" : "Apply for"} {job.title}
+          </DialogTitle>
+          <DialogDescription>
+            {job.organization?.display_name || job.organization?.name} • {job.location?.name}, {job.location?.country}
+            {isQuickApply && <span className="block text-sm text-blue-600 mt-1">Quick application - no cover letter or resume required</span>}
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
