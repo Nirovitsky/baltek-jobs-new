@@ -905,7 +905,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     ws.on('message', (message) => {
       try {
         const data = JSON.parse(message.toString());
-        console.log(JSON.stringify(data, null, 2));
+        console.log('Received:', JSON.stringify(data, null, 2));
         
         // Handle different message types
         switch (data.type) {
