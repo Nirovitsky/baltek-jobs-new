@@ -58,9 +58,9 @@ function Router() {
   const { isAuthenticated } = useAuth();
 
   const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="h-screen bg-gray-50 flex flex-col overflow-hidden">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 overflow-hidden">
         {children}
       </main>
     </div>

@@ -259,7 +259,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="h-full overflow-y-auto">
+    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Two Column Layout */}

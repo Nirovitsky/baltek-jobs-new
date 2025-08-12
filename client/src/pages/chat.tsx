@@ -586,7 +586,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div>
+    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="max-w-7xl mx-auto px-4 py-8" data-testid="chat-page">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
