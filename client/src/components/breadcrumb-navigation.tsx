@@ -75,7 +75,7 @@ export default function BreadcrumbNavigation() {
   }
 
   return (
-    <div className="h-[72px] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center">
+    <div className="h-[72px] bg-background border-b border-border flex items-center">
       <div className="layout-container-body">
         <Breadcrumb className="breadcrumb-stable">
           <BreadcrumbList className="min-h-[20px] flex items-center gap-0 breadcrumb-stable">
@@ -86,7 +86,7 @@ export default function BreadcrumbNavigation() {
               return (
                 <BreadcrumbItem key={index} className="shrink-0 flex items-center">
                   {isLast ? (
-                    <BreadcrumbPage className="flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap">
+                    <BreadcrumbPage className="flex items-center gap-2 text-foreground font-medium whitespace-nowrap">
                       {Icon && <Icon className="h-4 w-4 shrink-0" />}
                       <span className="shrink-0">{item.label}</span>
                     </BreadcrumbPage>
@@ -95,7 +95,7 @@ export default function BreadcrumbNavigation() {
                       <BreadcrumbLink asChild>
                         <Link 
                           href={item.href!} 
-                          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors whitespace-nowrap"
+                          className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
                           data-testid={`breadcrumb-link-${item.label.toLowerCase()}`}
                         >
                           {Icon && <Icon className="h-4 w-4 shrink-0" />}

@@ -11,11 +11,11 @@ interface JobListSkeletonProps {
 export default function JobListSkeleton({ count = 8 }: JobListSkeletonProps) {
   return (
     <div className="h-full flex flex-col w-full">
-      <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
+      <div className="px-3 pt-6 pb-4 border-b bg-muted rounded-t-lg flex-shrink-0 space-y-4">
         {/* Job Count with Icon */}
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-            <Search className="h-4 w-4 text-gray-400" />
+          <div className="w-8 h-8 bg-muted-foreground/20 rounded-full flex items-center justify-center">
+            <Search className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
             <Skeleton className="h-6 w-24" />
@@ -26,13 +26,13 @@ export default function JobListSkeleton({ count = 8 }: JobListSkeletonProps) {
         <form className="relative">
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
+              <Search className="h-5 w-5 text-muted-foreground" />
             </div>
             <Input
               type="text"
               placeholder="Search jobs, companies, skills..."
               disabled
-              className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-lg shadow-sm text-sm placeholder:text-gray-500"
+              className="pl-12 pr-4 py-3 bg-background border-input rounded-lg shadow-sm text-sm placeholder:text-muted-foreground"
             />
           </div>
         </form>

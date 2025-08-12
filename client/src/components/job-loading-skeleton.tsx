@@ -8,7 +8,7 @@ export default function JobLoadingSkeleton({ count = 3 }: JobLoadingSkeletonProp
   return (
     <div className="flex-shrink-0">
       {Array.from({ length: count }).map((_, index) => (
-        <div key={index} className="w-full px-6 py-5 border-b border-gray-100">
+        <div key={index} className="w-full px-6 py-5 border-b border-border">
           <div className="relative w-full min-h-[120px]">
             <div className="flex justify-between items-start w-full">
               <div className="flex-1 pr-6 min-w-0">

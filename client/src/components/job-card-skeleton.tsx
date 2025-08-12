@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function JobCardSkeleton() {
   return (
-    <Card className="cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-gray-50/80">
+    <Card className="cursor-pointer transition-all duration-200 hover:shadow-md hover:bg-muted/50">
       <CardContent className="p-4">
         <div className="flex flex-col space-y-3">
           {/* Top Row: Job Title and Salary */}
@@ -20,7 +20,7 @@ export default function JobCardSkeleton() {
           </div>
           
           {/* Company Row */}
-          <div className="flex items-center justify-between bg-gradient-to-r from-gray-50/50 to-gray-50/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
+          <div className="flex items-center justify-between bg-muted/30 -mx-4 -mb-4 px-4 py-3 rounded-b-lg">
             <div className="flex items-center space-x-3">
               <Skeleton className="w-6 h-6 rounded-full" />
               <Skeleton className="h-4 w-32" />

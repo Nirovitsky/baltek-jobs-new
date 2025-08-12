@@ -29,6 +29,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import { useTheme } from "@/components/theme-provider";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import {
   Globe,
@@ -44,8 +45,8 @@ import {
 export default function SettingsPage() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
   const [language, setLanguage] = useState("english");
-  const [theme, setTheme] = useState("light");
 
   const handleLanguageChange = (value: string) => {
     setLanguage(value);
@@ -56,9 +57,9 @@ export default function SettingsPage() {
   };
 
   const handleThemeChange = (value: string) => {
-    setTheme(value);
+    setTheme(value as "light" | "dark" | "system");
     toast({
-      title: "Theme updated", 
+      title: "Theme updated",
       description: `Theme set to ${value}.`,
     });
   };
@@ -82,15 +83,10 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <div className="h-full overflow-y-auto bg-background">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4">
         <div className="space-y-6">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
-            <p className="text-gray-600">Manage your account preferences and settings</p>
-          </div>
-
           {/* Single Card containing all settings */}
           <Card>
             <CardContent className="p-6 space-y-8">
@@ -100,16 +96,19 @@ export default function SettingsPage() {
                   <Globe className="h-5 w-5 text-primary" />
                   <h2 className="text-lg font-semibold">Language & Theme</h2>
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Choose your preferred language and theme settings
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Language Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Language
                     </label>
-                    <Select value={language} onValueChange={handleLanguageChange}>
+                    <Select
+                      value={language}
+                      onValueChange={handleLanguageChange}
+                    >
                       <SelectTrigger className="w-full">
                         <SelectValue />
                       </SelectTrigger>
@@ -120,10 +119,10 @@ export default function SettingsPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   {/* Theme Selection */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-foreground mb-2">
                       Theme
                     </label>
                     <Select value={theme} onValueChange={handleThemeChange}>
@@ -133,7 +132,7 @@ export default function SettingsPage() {
                       <SelectContent>
                         <SelectItem value="light">Light</SelectItem>
                         <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="auto">Auto</SelectItem>
+                        <SelectItem value="system">System</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -144,9 +143,11 @@ export default function SettingsPage() {
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Info className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">Information & Support</h2>
+                  <h2 className="text-lg font-semibold">
+                    Information & Support
+                  </h2>
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Learn more about Baltek Jobs and get help
                 </p>
                 <div className="space-y-2">
@@ -187,10 +188,12 @@ export default function SettingsPage() {
               {/* Delete Account - moved to bottom */}
               <div className="border-t pt-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <Trash2 className="h-5 w-5 text-red-600" />
-                  <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
+                  <Trash2 className="h-5 w-5 text-destructive" />
+                  <h2 className="text-lg font-semibold text-destructive">
+                    Delete Account
+                  </h2>
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   Permanently delete your account and all associated data
                 </p>
                 <AlertDialog>
@@ -202,18 +205,21 @@ export default function SettingsPage() {
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogTitle>
+                        Are you absolutely sure?
+                      </AlertDialogTitle>
                       <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove all your data from our servers including your profile, 
-                        applications, and chat history.
+                        This action cannot be undone. This will permanently
+                        delete your account and remove all your data from our
+                        servers including your profile, applications, and chat
+                        history.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={handleDeleteAccount}
-                        className="bg-red-600 hover:bg-red-700"
+                        className="bg-destructive hover:bg-destructive/90"
                       >
                         Yes, delete my account
                       </AlertDialogAction>

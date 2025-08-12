@@ -5,7 +5,7 @@ import { Users, Target, Award, Heart } from "lucide-react";
 
 export default function AboutUs() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="layout-container-body py-6">
         <BreadcrumbNavigation
           items={[
@@ -17,8 +17,8 @@ export default function AboutUs() {
         <div className="mt-6 space-y-8">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">About Baltek Jobs</h1>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <h1 className="text-4xl font-bold text-foreground mb-4">About Baltek Jobs</h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Connecting talented professionals with exceptional career opportunities through innovative job matching technology.
             </p>
           </div>
@@ -33,7 +33,7 @@ export default function AboutUs() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed">
                   To revolutionize the job search experience by creating meaningful connections between job seekers and employers, 
                   making career advancement accessible, efficient, and rewarding for everyone.
                 </p>
@@ -48,7 +48,7 @@ export default function AboutUs() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed">
                   To become the leading global platform where talent meets opportunity, fostering professional growth and 
                   building thriving careers across all industries and skill levels.
                 </p>

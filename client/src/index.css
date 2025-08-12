@@ -129,7 +129,7 @@
   }
   
   .job-card.selected {
-    @apply bg-blue-50 border-primary;
+    @apply bg-primary bg-opacity-5 border-primary;
   }
   
   .infinite-scroll {
@@ -168,7 +168,7 @@
   .profile-experience-item:hover,
   .profile-education-item:hover,
   .profile-project-item:hover {
-    @apply bg-gray-50/50;
+    @apply bg-muted/50;
   }
   
   .line-clamp-2 {
@@ -179,11 +179,11 @@
   }
   
   .navbar-sticky {
-    @apply sticky top-0 z-50 bg-white shadow-sm border-b;
+    @apply sticky top-0 z-50 bg-background shadow-sm border-b;
   }
   
   .filter-bar {
-    @apply bg-white border-b shadow-sm;
+    @apply bg-background border-b shadow-sm;
   }
   
   /* Breadcrumb stability - prevent horizontal shifting */

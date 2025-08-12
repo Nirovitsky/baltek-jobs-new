@@ -102,7 +102,7 @@ export default function Navbar({}: NavbarProps) {
                   <p className="font-medium">
                     {user?.first_name} {user?.last_name}
                   </p>
-                  <p className="text-sm text-gray-500">{user?.phone}</p>
+                  <p className="text-sm text-muted-foreground">{user?.phone}</p>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
