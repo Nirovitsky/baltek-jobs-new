@@ -94,46 +94,50 @@ export default function SettingsPage() {
           {/* Single Card containing all settings */}
           <Card>
             <CardContent className="p-6 space-y-8">
-              {/* Language Settings */}
+              {/* Language and Theme Settings */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Globe className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">Language</h2>
+                  <h2 className="text-lg font-semibold">Language & Theme</h2>
                 </div>
                 <p className="text-sm text-gray-600 mb-4">
-                  Choose your preferred language for the interface
+                  Choose your preferred language and theme settings
                 </p>
-                <Select value={language} onValueChange={handleLanguageChange}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="turkmen">Türkmen</SelectItem>
-                    <SelectItem value="english">English</SelectItem>
-                    <SelectItem value="russian">Русский</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Theme Settings */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Palette className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">Theme</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Language Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Language
+                    </label>
+                    <Select value={language} onValueChange={handleLanguageChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="turkmen">Türkmen</SelectItem>
+                        <SelectItem value="english">English</SelectItem>
+                        <SelectItem value="russian">Русский</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  {/* Theme Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Theme
+                    </label>
+                    <Select value={theme} onValueChange={handleThemeChange}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="light">Light</SelectItem>
+                        <SelectItem value="dark">Dark</SelectItem>
+                        <SelectItem value="auto">Auto</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-600 mb-4">
-                  Choose how the interface appears
-                </p>
-                <Select value={theme} onValueChange={handleThemeChange}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="light">Light</SelectItem>
-                    <SelectItem value="dark">Dark</SelectItem>
-                    <SelectItem value="auto">Auto</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
 
               {/* Information & Support Links */}
