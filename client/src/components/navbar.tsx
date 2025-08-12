@@ -63,7 +63,7 @@ export default function Navbar({}: NavbarProps) {
             {/* Notifications */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="relative h-8 w-8 p-0">
+                <div className="relative w-8 h-8 flex items-center justify-center cursor-pointer">
                   <Bell className="h-5 w-5" />
                   {unreadCount > 0 && (
                     <Badge
@@ -73,7 +73,7 @@ export default function Navbar({}: NavbarProps) {
                       {unreadCount}
                     </Badge>
                   )}
-                </Button>
+                </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-80 p-0">
                 <div className="p-3 border-b">
@@ -140,9 +140,9 @@ export default function Navbar({}: NavbarProps) {
 
             {/* Messages */}
             <Link href="/chat">
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" data-testid="nav-messages">
+              <div className="w-8 h-8 flex items-center justify-center cursor-pointer" data-testid="nav-messages">
                 <MessageCircle className="h-5 w-5" />
-              </Button>
+              </div>
             </Link>
 
             {/* User Menu */}
