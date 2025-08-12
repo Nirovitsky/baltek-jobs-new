@@ -132,7 +132,7 @@ export default function ApplicationsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             <div className="lg:col-span-1 h-full flex-shrink-0">
               <div className="h-full flex flex-col w-full">
-                <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+                <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                       <Briefcase className="h-4 w-4 text-gray-400" />
@@ -186,7 +186,7 @@ export default function ApplicationsPage() {
           <div className="flex gap-6 h-full">
             <div className="w-[30%] h-full flex-shrink-0">
               <div className="h-full flex flex-col w-full">
-                <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+                <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                       <Briefcase className="h-4 w-4 text-gray-500" />
@@ -232,7 +232,7 @@ export default function ApplicationsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
           <div className="lg:col-span-1 h-full flex-shrink-0">
             <div className="h-full flex flex-col w-full">
-              <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+              <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                     <Briefcase className="h-4 w-4 text-white" />
