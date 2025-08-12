@@ -27,13 +27,20 @@ export default function AuthCallback() {
           throw new Error('Missing authorization code or state parameter');
         }
 
-        // Initialize OAuth service (you'll need to configure this with your OAuth provider settings)
+        // Initialize OAuth service with same config as auth flow
+        const scopesEnv = import.meta.env.VITE_OAUTH_SCOPES;
+        let scopes: string[] = [];
+        
+        if (scopesEnv && scopesEnv.trim()) {
+          scopes = scopesEnv.split(' ').filter((scope: string) => scope.trim());
+        }
+
         const oauthConfig = {
-          clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || 'your-client-id',
-          authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || 'https://your-oauth-provider.com/oauth/authorize',
-          tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || 'https://your-oauth-provider.com/oauth/token',
+          clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
+          authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
+          tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
           redirectUri: `${window.location.origin}/auth/callback`,
-          scopes: ['openid', 'profile', 'email'],
+          scopes: scopes,
         };
 
         const oauthService = new OAuth2PKCEService(oauthConfig);
@@ -46,10 +53,10 @@ export default function AuthCallback() {
         
         setStatus('success');
         
-        // Redirect to dashboard after successful login
+        // Redirect to main page immediately after successful login
         setTimeout(() => {
           setLocation('/jobs');
-        }, 2000);
+        }, 1000);
 
       } catch (error) {
         console.error('OAuth callback error:', error);
