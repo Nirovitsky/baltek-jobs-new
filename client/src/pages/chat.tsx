@@ -961,14 +961,14 @@ export default function ChatPage() {
                                 )}
 
                                 <div
-                                  className={`rounded-lg p-3 transition-all duration-200 ease-in-out hover:shadow-md transform hover:scale-[1.02] ${
+                                  className={`rounded-lg transition-all duration-200 ease-in-out hover:shadow-md ${
                                     message.status === "failed"
-                                      ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500"
+                                      ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500 p-3"
                                       : message.status === "sending"
-                                      ? "bg-primary/70 text-primary-foreground"
+                                      ? "bg-primary/70 text-primary-foreground p-3"
                                       : message.owner === user?.id
-                                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                                      : "bg-muted text-foreground hover:bg-muted"
+                                      ? "bg-primary text-primary-foreground hover:bg-primary/90 p-3"
+                                      : "bg-muted text-foreground hover:bg-muted p-3"
                                   }`}
                                 >
                                   {/* Display attachments first if present */}
@@ -1060,8 +1060,11 @@ export default function ChatPage() {
                                   
                                   {/* Display text message after attachments */}
                                   {message.text && (
-                                    <div className={`text-sm ${message.attachments && message.attachments.length > 0 ? 'mt-2' : ''}`}>
-                                      <MessageRenderer text={message.text} />
+                                    <div className={`${message.attachments && message.attachments.length > 0 ? 'mt-2' : ''}`}>
+                                      <MessageRenderer 
+                                        text={message.text} 
+                                        className={message.status === "failed" ? "text-white" : message.owner === user?.id ? "text-primary-foreground" : "text-foreground"}
+                                      />
                                     </div>
                                   )}
                                   

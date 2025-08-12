@@ -7,8 +7,8 @@ interface MessageRendererProps {
 }
 
 export default function MessageRenderer({ text, className }: MessageRendererProps) {
-  // Regular expression to match job URLs
-  const jobUrlRegex = /(https?:\/\/[^\s]+\/jobs\/\d+[^\s]*)/g;
+  // More comprehensive regex to match various job URL patterns
+  const jobUrlRegex = /(https?:\/\/[^\s]+(?:\/jobs?\/\d+|\/job\/\d+|\/position\/\d+|\/vacancy\/\d+)[^\s]*)/gi;
   
   // Check if the message contains any job URLs
   const jobUrls = text.match(jobUrlRegex);
@@ -16,7 +16,7 @@ export default function MessageRenderer({ text, className }: MessageRendererProp
   if (!jobUrls || jobUrls.length === 0) {
     // No job URLs found, render text normally with regular link detection
     return (
-      <div className={className}>
+      <div className={`text-sm ${className}`}>
         {renderTextWithLinks(text)}
       </div>
     );
@@ -26,21 +26,25 @@ export default function MessageRenderer({ text, className }: MessageRendererProp
   const parts = text.split(jobUrlRegex);
   
   return (
-    <div className={`space-y-2 ${className}`}>
+    <div className={`space-y-3 ${className}`}>
       {parts.map((part, index) => {
+        // Reset regex for testing each part
+        const testRegex = new RegExp(jobUrlRegex.source, jobUrlRegex.flags);
+        
         // Check if this part is a job URL
-        if (jobUrlRegex.test(part)) {
+        if (testRegex.test(part)) {
           return (
-            <LinkPreviewCard
-              key={index}
-              url={part}
-              className="not-prose"
-            />
+            <div key={index} className="my-3 -mx-3">
+              <LinkPreviewCard
+                url={part.trim()}
+                className="w-full max-w-none shadow-sm"
+              />
+            </div>
           );
         } else if (part.trim()) {
           // Render regular text with other links
           return (
-            <div key={index}>
+            <div key={index} className="break-words text-sm">
               {renderTextWithLinks(part)}
             </div>
           );

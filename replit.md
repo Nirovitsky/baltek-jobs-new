@@ -16,7 +16,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 
 - **Copy URL Feature**: Replaced the Share button in job details with a Copy URL button. Users can now easily copy the job URL to their clipboard with a single click and receive confirmation feedback.
 
-- **Rich Link Preview Cards**: Implemented intelligent link preview system that automatically detects job URLs in chat messages and renders them as attractive cards with job information (title, company, salary, location, skills) instead of plain text links. This creates a much better visual experience when sharing job opportunities in conversations.
+- **Rich Link Preview Cards**: Implemented intelligent link preview system that automatically detects job URLs in chat messages and renders them as attractive cards with job information (title, company, salary, location, skills) instead of plain text links. This creates a much better visual experience when sharing job opportunities in conversations. The system works like modern messaging platforms (Slack, Telegram, WhatsApp) with rich previews that expand job URLs into beautiful cards with company branding, gradient headers, and comprehensive job details. Supports various URL patterns including /jobs/, /job/, /position/, and /vacancy/ endpoints.
 
 - **Dark Mode Typography Fix**: Fixed title color contrast issue in Terms and Agreement and Privacy Policy pages. All h3 headings now use proper `text-foreground` class for optimal visibility in both light and dark modes.
 
