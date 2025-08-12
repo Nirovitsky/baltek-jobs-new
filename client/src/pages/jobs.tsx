@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useRoute, useLocation } from "wouter";
 import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
 import type { Job, JobFilters } from "@shared/schema";
@@ -15,16 +16,30 @@ import { Card, CardContent } from "@/components/ui/card";
 interface JobsProps {}
 
 export default function Jobs({}: JobsProps) {
+  // Handle routing
+  const [, setLocation] = useLocation();
+  const [matchJobId, paramsJobId] = useRoute("/jobs/:id");
+  const [matchJobs] = useRoute("/jobs");
+  
   // Get URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const organizationParam = urlParams.get("organization");
 
-  const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+  // Get selected job ID from URL parameter
+  const selectedJobIdFromUrl = matchJobId && paramsJobId?.id ? parseInt(paramsJobId.id) : null;
+  const [selectedJobId, setSelectedJobId] = useState<number | null>(selectedJobIdFromUrl);
   const [filters, setFilters] = useState<JobFilters>(
     organizationParam ? { organization: parseInt(organizationParam) } : {},
   );
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Sync selectedJobId with URL parameter changes
+  useEffect(() => {
+    if (selectedJobIdFromUrl !== selectedJobId) {
+      setSelectedJobId(selectedJobIdFromUrl);
+    }
+  }, [selectedJobIdFromUrl]);
   
   // Debounce search query with 500ms delay
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -140,12 +155,16 @@ export default function Jobs({}: JobsProps) {
 
   const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
-  }, []);
+    // Update URL to reflect selected job
+    setLocation(`/jobs/${job.id}`);
+  }, [setLocation]);
 
   const handleFiltersChange = (newFilters: JobFilters) => {
     setFilters(newFilters);
     // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
+    // Navigate back to jobs list without specific job ID
+    setLocation('/jobs');
   };
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,7 +173,9 @@ export default function Jobs({}: JobsProps) {
     setSearchQuery(newValue);
     // Clear job selection when search changes
     setSelectedJobId(null);
-  }, []);
+    // Navigate back to jobs list without specific job ID
+    setLocation('/jobs');
+  }, [setLocation]);
 
   const handleSearchSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
