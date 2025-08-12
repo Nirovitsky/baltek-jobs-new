@@ -212,7 +212,7 @@ export default function SettingsPage() {
     return (
       <div>
         <BreadcrumbNavigation />
-        <div className="layout-container-narrow py-8">
+        <div className="layout-container-body py-8">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-gray-200 rounded w-1/4"></div>
             <div className="h-64 bg-gray-200 rounded"></div>
@@ -225,7 +225,7 @@ export default function SettingsPage() {
   return (
     <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <BreadcrumbNavigation />
-      <div className="layout-container-narrow py-8" data-testid="settings-page">
+      <div className="layout-container-body py-8" data-testid="settings-page">
         <Tabs defaultValue="profile" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile" data-testid="tab-profile">

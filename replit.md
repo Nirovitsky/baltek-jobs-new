@@ -10,7 +10,7 @@ Preferred communication style: Simple, everyday language.
 UI/UX Requirements: Two-column layout (jobs left, details right), infinite scroll, primary color #1877F2, simple interface for average users. Enhanced date picker with easy year/month selection for better user experience in profile forms.
 Backend Integration: External Baltek API (https://api.baltek.net/api/) for all data operations.
 
-## Recent Changes (August 11, 2025)
+## Recent Changes (August 12, 2025)
 
 - **Migration Completed**: Successfully migrated project from Replit Agent to standard Replit environment
 - **Architecture Overhaul**: Completely removed Express proxy server that previously acted as middleware between frontend and external API
@@ -27,6 +27,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **TypeScript Fixes**: Resolved all type errors and improved code reliability
 - **Chat File Attachments**: Added comprehensive file upload functionality with progress indicators, attachment previews, and WebSocket integration using `/files/` endpoint. Fixed API field name from "file" to "path" for uploads. Enhanced message filtering to show attachment-only messages. Added real-time upload progress with visual indicators and error handling. Modernized attachment display with view/download buttons and proper ordering (attachments appear before text).
 - **Notification System**: Implemented comprehensive notification functionality with robust error handling. The notification endpoints (`/notifications/`, mark as read, mark all as read, delete) are fully integrated with the Baltek API. Features proper date validation, graceful API fallback with "Coming Soon" messages when endpoints return 500 errors, loading states, notification type mapping, and configurable pagination (set to 15 notifications per page). Added robust date parsing with fallbacks to prevent crashes from invalid date values.
+- **Layout Consistency Enhancement**: Implemented standardized layout system with consistent body widths across all pages to prevent page shifting during navigation. Created unified `.layout-container-body` and `.layout-container-narrow` CSS classes. Updated all major pages (jobs, profile, applications, settings, chat, notifications, bookmarks, company-profile) to use consistent container widths while maintaining navbar slightly wider than content for proper visual hierarchy.
 
 ## System Architecture
 
