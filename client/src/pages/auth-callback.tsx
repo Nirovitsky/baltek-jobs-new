@@ -54,7 +54,7 @@ export default function AuthCallback() {
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
         
         // Invalidate auth queries to refresh user state immediately
-        queryClient.invalidateQueries({ queryKey: ["auth"] });
+        queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
         
         setStatus('success');
         
