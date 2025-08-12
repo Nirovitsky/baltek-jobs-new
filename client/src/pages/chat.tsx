@@ -18,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
+import MessageRenderer from "@/components/message-renderer";
 import {
   MessageCircle,
   Send,
@@ -1059,9 +1060,9 @@ export default function ChatPage() {
                                   
                                   {/* Display text message after attachments */}
                                   {message.text && (
-                                    <p className={`text-sm ${message.attachments && message.attachments.length > 0 ? 'mt-2' : ''}`}>
-                                      {message.text}
-                                    </p>
+                                    <div className={`text-sm ${message.attachments && message.attachments.length > 0 ? 'mt-2' : ''}`}>
+                                      <MessageRenderer text={message.text} />
+                                    </div>
                                   )}
                                   
                                   <div className="flex items-center justify-end gap-1 mt-2">
