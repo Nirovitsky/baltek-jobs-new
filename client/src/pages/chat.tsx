@@ -662,9 +662,9 @@ export default function ChatPage() {
                           setSelectedConversation(conversation.id);
                           markAsReadMutation.mutate(conversation.id);
                         }}
-                        className={`relative p-4 cursor-pointer transition-all duration-200 ${
+                        className={`relative p-4 cursor-pointer transition-all duration-200 ease-in-out hover:shadow-sm transform hover:scale-[1.01] ${
                           selectedConversation === conversation.id
-                            ? "bg-blue-50 shadow-sm"
+                            ? "bg-blue-50 shadow-sm scale-[1.01]"
                             : "hover:bg-gray-50"
                         } ${conversation.content_object?.status === "expired" ? "opacity-70" : ""}`}
                         data-testid={`conversation-${conversation.id}`}
@@ -835,7 +835,7 @@ export default function ChatPage() {
                           .map((message: Message) => (
                             <div
                               key={message.id}
-                              className={`flex ${message.owner === user?.id ? "justify-end" : "justify-start"}`}
+                              className={`flex ${message.owner === user?.id ? "justify-end" : "justify-start"} animate-in fade-in-0 slide-in-from-bottom-2 duration-300`}
                             >
                               <div
                                 className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${
@@ -856,10 +856,10 @@ export default function ChatPage() {
                                 )}
 
                                 <div
-                                  className={`rounded-lg p-3 ${
+                                  className={`rounded-lg p-3 transition-all duration-200 ease-in-out hover:shadow-md transform hover:scale-[1.02] ${
                                     message.owner === user?.id
-                                      ? "bg-primary text-white"
-                                      : "bg-gray-100 text-gray-900"
+                                      ? "bg-primary text-white hover:bg-primary/90"
+                                      : "bg-gray-100 text-gray-900 hover:bg-gray-200"
                                   }`}
                                 >
                                   {/* Display attachments first if present */}
@@ -991,7 +991,7 @@ export default function ChatPage() {
                   <div className="p-4 border-t">
                     {/* Upload Progress */}
                     {uploadProgress.length > 0 && (
-                      <div className="mb-3 p-2 bg-blue-50 rounded-lg">
+                      <div className="mb-3 p-2 bg-blue-50 rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
                         <div className="text-xs text-blue-600 mb-2">Uploading files...</div>
                         <div className="space-y-1">
                           {uploadProgress.map((item, index) => (
@@ -1028,7 +1028,7 @@ export default function ChatPage() {
 
                     {/* File Attachments Preview */}
                     {attachedFiles.length > 0 && (
-                      <div className="mb-3 p-2 bg-gray-50 rounded-lg">
+                      <div className="mb-3 p-2 bg-gray-50 rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
                         <div className="text-xs text-gray-600 mb-2">Attachments:</div>
                         <div className="space-y-1">
                           {attachedFiles.map((file) => (
