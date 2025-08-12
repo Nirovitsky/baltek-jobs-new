@@ -86,7 +86,7 @@ export default function SettingsPage() {
       <div className="layout-container-body py-6">
         <BreadcrumbNavigation
           items={[
-            { label: "Home", href: "/" },
+            { label: "Jobs", href: "/" },
             { label: "Settings" },
           ]}
         />
@@ -97,19 +97,18 @@ export default function SettingsPage() {
             <p className="text-gray-600">Manage your account preferences and settings</p>
           </div>
 
-          <div className="grid gap-6">
-            {/* Language Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+          {/* Single Card containing all settings */}
+          <Card>
+            <CardContent className="p-6 space-y-8">
+              {/* Language Settings */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
                   <Globe className="h-5 w-5 text-primary" />
-                  Language
-                </CardTitle>
-                <CardDescription>
+                  <h2 className="text-lg font-semibold">Language</h2>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
                   Choose your preferred language for the interface
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
                 <Select value={language} onValueChange={handleLanguageChange}>
                   <SelectTrigger className="w-48">
                     <SelectValue />
@@ -120,21 +119,17 @@ export default function SettingsPage() {
                     <SelectItem value="russian">Русский</SelectItem>
                   </SelectContent>
                 </Select>
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Theme Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              {/* Theme Settings */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
                   <Palette className="h-5 w-5 text-primary" />
-                  Theme
-                </CardTitle>
-                <CardDescription>
+                  <h2 className="text-lg font-semibold">Theme</h2>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
                   Choose how the interface appears
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
                 <Select value={theme} onValueChange={handleThemeChange}>
                   <SelectTrigger className="w-48">
                     <SelectValue />
@@ -145,21 +140,61 @@ export default function SettingsPage() {
                     <SelectItem value="auto">Auto</SelectItem>
                   </SelectContent>
                 </Select>
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Account Management */}
-            <Card className="border-red-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-red-600">
-                  <Trash2 className="h-5 w-5" />
-                  Delete Account
-                </CardTitle>
-                <CardDescription>
+              {/* Information & Support Links */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Info className="h-5 w-5 text-primary" />
+                  <h2 className="text-lg font-semibold">Information & Support</h2>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
+                  Learn more about Baltek Jobs and get help
+                </p>
+                <div className="space-y-2">
+                  <Link href="/about-us">
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Info className="h-4 w-4 mr-2" />
+                      About Us
+                      <ExternalLink className="h-4 w-4 ml-auto" />
+                    </Button>
+                  </Link>
+
+                  <Link href="/contact-us">
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Contact Us
+                      <ExternalLink className="h-4 w-4 ml-auto" />
+                    </Button>
+                  </Link>
+
+                  <Link href="/terms">
+                    <Button variant="ghost" className="w-full justify-start">
+                      <FileText className="h-4 w-4 mr-2" />
+                      Terms and Agreement
+                      <ExternalLink className="h-4 w-4 ml-auto" />
+                    </Button>
+                  </Link>
+
+                  <Link href="/privacy-policy">
+                    <Button variant="ghost" className="w-full justify-start">
+                      <Shield className="h-4 w-4 mr-2" />
+                      Privacy Policy
+                      <ExternalLink className="h-4 w-4 ml-auto" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Delete Account - moved to bottom */}
+              <div className="border-t pt-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <Trash2 className="h-5 w-5 text-red-600" />
+                  <h2 className="text-lg font-semibold text-red-600">Delete Account</h2>
+                </div>
+                <p className="text-sm text-gray-600 mb-4">
                   Permanently delete your account and all associated data
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">
@@ -187,55 +222,9 @@ export default function SettingsPage() {
                     </AlertDialogFooter>
                   </AlertDialogContent>
                 </AlertDialog>
-              </CardContent>
-            </Card>
-
-            {/* Links Section */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Info className="h-5 w-5 text-primary" />
-                  Information & Support
-                </CardTitle>
-                <CardDescription>
-                  Learn more about Baltek Jobs and get help
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Link href="/about-us">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <Info className="h-4 w-4 mr-2" />
-                    About Us
-                    <ExternalLink className="h-4 w-4 ml-auto" />
-                  </Button>
-                </Link>
-
-                <Link href="/contact-us">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <Mail className="h-4 w-4 mr-2" />
-                    Contact Us
-                    <ExternalLink className="h-4 w-4 ml-auto" />
-                  </Button>
-                </Link>
-
-                <Link href="/terms">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <FileText className="h-4 w-4 mr-2" />
-                    Terms and Agreement
-                    <ExternalLink className="h-4 w-4 ml-auto" />
-                  </Button>
-                </Link>
-
-                <Link href="/privacy-policy">
-                  <Button variant="ghost" className="w-full justify-start">
-                    <Shield className="h-4 w-4 mr-2" />
-                    Privacy Policy
-                    <ExternalLink className="h-4 w-4 ml-auto" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
