@@ -82,11 +82,10 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="layout-container-body py-6">
-        <BreadcrumbNavigation />
-
-        <div className="mt-6 space-y-6">
+    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+      <BreadcrumbNavigation />
+      <div className="layout-container-body py-4">
+        <div className="space-y-6">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
             <p className="text-gray-600">Manage your account preferences and settings</p>
