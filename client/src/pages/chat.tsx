@@ -37,16 +37,21 @@ import {
   X,
   FileText,
   Download,
+  AlertTriangle,
+  RotateCcw,
+  Loader2,
 } from "lucide-react";
 
 interface Message {
-  id: number;
+  id: number | string;
   room: number;
   owner: number;
   text: string;
-  status: string;
+  status: "sending" | "delivered" | "failed" | "read";
   attachments: any[];
   date_created: number;
+  isOptimistic?: boolean;
+  error?: string;
 }
 
 interface Conversation {
@@ -106,7 +111,7 @@ export default function ChatPage() {
   // WebSocket connection
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  // Send message via WebSocket
+  // Send message via WebSocket with optimistic UI
   const sendMessageViaWebSocket = (content: string, attachments: number[] = []) => {
     if (!selectedConversation) {
       toast({
@@ -136,6 +141,23 @@ export default function ChatPage() {
       return;
     }
 
+    // Create optimistic message immediately
+    const optimisticId = `temp-${Date.now()}-${Math.random()}`;
+    const optimisticMessage: Message = {
+      id: optimisticId,
+      room: selectedConversation,
+      owner: user?.id || 0,
+      text: content,
+      status: "sending",
+      attachments: attachments.map(id => ({ id, file_name: attachedFiles.find(f => f.id === id)?.name || "File" })),
+      date_created: Math.floor(Date.now() / 1000),
+      isOptimistic: true,
+    };
+
+    // Add optimistic message to UI immediately
+    setLocalMessages(prev => [...prev, optimisticMessage]);
+    setTimeout(scrollToBottom, 100);
+
     const message = {
       type: "send_message",
       data: {
@@ -146,9 +168,92 @@ export default function ChatPage() {
     };
 
     console.log("Sending WebSocket message:", message);
-    socket.send(JSON.stringify(message));
-    setMessageInput("");
-    setAttachedFiles([]);
+    
+    try {
+      socket.send(JSON.stringify(message));
+      setMessageInput("");
+      setAttachedFiles([]);
+      
+      // Set a timeout to mark message as failed if no response received
+      setTimeout(() => {
+        setLocalMessages(prev => {
+          const messageExists = prev.find(msg => msg.id === optimisticId);
+          if (messageExists && messageExists.status === "sending") {
+            return prev.map(msg => 
+              msg.id === optimisticId 
+                ? { ...msg, status: "failed" as const, error: "Message timeout - please retry" }
+                : msg
+            );
+          }
+          return prev;
+        });
+      }, 30000); // 30 second timeout
+      
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      // Mark message as failed
+      setLocalMessages(prev => 
+        prev.map(msg => 
+          msg.id === optimisticId 
+            ? { ...msg, status: "failed" as const, error: "Failed to send message" }
+            : msg
+        )
+      );
+      toast({
+        title: "Failed to send message",
+        description: "Please check your connection and try again",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Retry failed message
+  const retryMessage = (messageId: string | number) => {
+    const failedMessage = localMessages.find(msg => msg.id === messageId);
+    if (!failedMessage) return;
+
+    // Update status to sending
+    setLocalMessages(prev => 
+      prev.map(msg => 
+        msg.id === messageId 
+          ? { ...msg, status: "sending" as const, error: undefined }
+          : msg
+      )
+    );
+
+    // Retry sending
+    if (!socket || socket.readyState !== WebSocket.OPEN) {
+      setLocalMessages(prev => 
+        prev.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, status: "failed" as const, error: "Not connected to chat server" }
+            : msg
+        )
+      );
+      return;
+    }
+
+    const message = {
+      type: "send_message",
+      data: {
+        room: selectedConversation,
+        text: failedMessage.text,
+        attachments: failedMessage.attachments?.map((att: any) => att.id) || [],
+      },
+    };
+
+    try {
+      socket.send(JSON.stringify(message));
+    } catch (error) {
+      console.error("Failed to retry message:", error);
+      setLocalMessages(prev => 
+        prev.map(msg => 
+          msg.id === messageId 
+            ? { ...msg, status: "failed" as const, error: "Failed to send message" }
+            : msg
+        )
+      );
+    }
   };
 
   // Mark conversation as read mutation
@@ -208,70 +313,49 @@ export default function ChatPage() {
             }
 
             if (data.type === "message_delivered") {
-              // Message was successfully sent by me - add it to local messages as my message
-              console.log("Message delivered - adding as my message", data);
+              // Message was successfully sent by me - update optimistic message or add new one
+              console.log("Message delivered - updating optimistic message", data);
               
-              // Extract message data - could be in data.message or data directly
+              // Extract message data
               const messageData = data.message || data.data?.message || data.data;
               const roomId = data.room || data.data?.room || selectedConversation;
               
-              console.log("Extracted data:", { messageData, roomId, attachments: messageData?.attachments || data.attachments });
-              
-              // Handle the case where data comes directly at root level
-              if (!messageData && data.text !== undefined) {
-                console.log("Using root-level data");
-                const rootMessage = {
-                  id: data.id || Date.now(),
-                  text: data.text || "",
-                  attachments: data.attachments || [],
-                  date_created: data.date_created || Math.floor(Date.now() / 1000),
-                };
-                
-                const formattedMessage = {
-                  id: rootMessage.id,
+              if (roomId === selectedConversation) {
+                const deliveredMessage = {
+                  id: messageData?.id || data.id || Date.now(),
                   room: roomId,
                   owner: user?.id,
-                  text: rootMessage.text,
-                  status: "delivered",
-                  attachments: rootMessage.attachments,
-                  date_created: rootMessage.date_created,
+                  text: messageData?.text || data.text || "",
+                  status: "delivered" as const,
+                  attachments: messageData?.attachments || data.attachments || [],
+                  date_created: messageData?.date_created || data.date_created || Math.floor(Date.now() / 1000),
                 };
                 
-                console.log("Adding root-level delivered message to UI:", formattedMessage);
-                
                 setLocalMessages(prev => {
-                  const exists = prev.some(msg => msg.id === formattedMessage.id);
-                  if (!exists) {
-                    return [...prev, formattedMessage];
+                  // First, try to find and update an optimistic message
+                  const optimisticIndex = prev.findIndex(msg => 
+                    msg.isOptimistic && 
+                    msg.text === deliveredMessage.text &&
+                    msg.status === "sending"
+                  );
+                  
+                  if (optimisticIndex !== -1) {
+                    // Update the optimistic message with real data
+                    const updated = [...prev];
+                    updated[optimisticIndex] = {
+                      ...deliveredMessage,
+                      isOptimistic: false,
+                    };
+                    return updated;
+                  } else {
+                    // No optimistic message found, add as new (shouldn't happen but safety)
+                    const exists = prev.some(msg => msg.id === deliveredMessage.id);
+                    if (!exists) {
+                      return [...prev, deliveredMessage];
+                    }
+                    return prev;
                   }
-                  return prev;
                 });
-                setTimeout(scrollToBottom, 100);
-                return;
-              }
-              
-              if (roomId === selectedConversation && messageData) {
-                const formattedMessage = {
-                  id: messageData.id || Date.now(), // Use timestamp if no ID
-                  room: roomId,
-                  owner: user?.id, // This message is from me
-                  text: messageData.text || messageData.content || data.text || "",
-                  status: "delivered",
-                  attachments: messageData.attachments || data.attachments || [],
-                  date_created: messageData.date_created || Math.floor(Date.now() / 1000),
-                };
-                
-                console.log("Adding delivered message to UI:", formattedMessage);
-                
-                setLocalMessages(prev => {
-                  // Check if message already exists to avoid duplicates
-                  const exists = prev.some(msg => msg.id === formattedMessage.id);
-                  if (!exists) {
-                    return [...prev, formattedMessage];
-                  }
-                  return prev;
-                });
-                // Scroll to bottom after adding message
                 setTimeout(scrollToBottom, 100);
               }
             } else if (data.type === "receive_message") {
@@ -310,8 +394,28 @@ export default function ChatPage() {
               // Only refresh rooms to update last message info
               queryClient.invalidateQueries({ queryKey: ["chat", "rooms"] });
             } else if (data.type === "message_error") {
-              // Handle message send error
+              // Handle message send error - mark optimistic message as failed
+              console.log("Message error - marking optimistic message as failed", data);
               const errorMsg = data.data?.error || data.error || "Unknown error occurred";
+              
+              // Find and update the most recent sending message
+              setLocalMessages(prev => {
+                const sendingIndex = prev.findLastIndex(msg => 
+                  msg.isOptimistic && msg.status === "sending"
+                );
+                
+                if (sendingIndex !== -1) {
+                  const updated = [...prev];
+                  updated[sendingIndex] = {
+                    ...updated[sendingIndex],
+                    status: "failed" as const,
+                    error: errorMsg,
+                  };
+                  return updated;
+                }
+                return prev;
+              });
+              
               toast({
                 title: "Failed to send message",
                 description: errorMsg,
@@ -857,7 +961,11 @@ export default function ChatPage() {
 
                                 <div
                                   className={`rounded-lg p-3 transition-all duration-200 ease-in-out hover:shadow-md transform hover:scale-[1.02] ${
-                                    message.owner === user?.id
+                                    message.status === "failed"
+                                      ? "bg-red-500 text-white border-2 border-red-400"
+                                      : message.status === "sending"
+                                      ? "bg-primary/70 text-white"
+                                      : message.owner === user?.id
                                       ? "bg-primary text-white hover:bg-primary/90"
                                       : "bg-gray-100 text-gray-900 hover:bg-gray-200"
                                   }`}
@@ -957,6 +1065,13 @@ export default function ChatPage() {
                                   )}
                                   
                                   <div className="flex items-center justify-end gap-1 mt-2">
+                                    {/* Show error message for failed messages */}
+                                    {message.status === "failed" && message.error && (
+                                      <span className="text-xs text-red-400 mr-2">
+                                        {message.error}
+                                      </span>
+                                    )}
+                                    
                                     <span
                                       className={`text-xs ${
                                         message.owner === user?.id
@@ -966,12 +1081,25 @@ export default function ChatPage() {
                                     >
                                       {formatTime(new Date(message.date_created * 1000).toISOString())}
                                     </span>
+                                    
                                     {message.owner === user?.id && (
-                                      <div className="text-white/70">
-                                        {message.status === "read" ? (
-                                          <CheckCheck className="w-3 h-3" />
+                                      <div className="flex items-center gap-1">
+                                        {message.status === "sending" ? (
+                                          <Loader2 className="w-3 h-3 text-white/70 animate-spin" />
+                                        ) : message.status === "failed" ? (
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-5 w-5 p-0 text-red-400 hover:text-red-300"
+                                            onClick={() => retryMessage(message.id)}
+                                            title="Retry message"
+                                          >
+                                            <RotateCcw className="w-3 h-3" />
+                                          </Button>
+                                        ) : message.status === "read" ? (
+                                          <CheckCheck className="w-3 h-3 text-white/70" />
                                         ) : (
-                                          <Check className="w-3 h-3" />
+                                          <Check className="w-3 h-3 text-white/70" />
                                         )}
                                       </div>
                                     )}
