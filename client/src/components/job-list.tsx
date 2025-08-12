@@ -84,7 +84,7 @@ export default function JobList({
 
   // Always render the search bar, even during loading
   const renderSearchBar = () => (
-    <div className="px-3 py-4 border-b bg-background dark:bg-black rounded-t-lg flex-shrink-0 space-y-4">
+    <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0 space-y-4">
       {/* Job Count with Icon */}
       <div className="flex items-center space-x-2">
         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
