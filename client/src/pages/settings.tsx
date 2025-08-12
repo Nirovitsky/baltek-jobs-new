@@ -84,12 +84,7 @@ export default function SettingsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="layout-container-body py-6">
-        <BreadcrumbNavigation
-          items={[
-            { label: "Jobs", href: "/" },
-            { label: "Settings" },
-          ]}
-        />
+        <BreadcrumbNavigation />
 
         <div className="mt-6 space-y-6">
           <div>
