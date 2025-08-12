@@ -758,7 +758,7 @@ export default function ChatPage() {
                     </p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-border">
                     {conversations.map((conversation: Conversation) => (
                       <div
                         key={conversation.id}
@@ -775,7 +775,7 @@ export default function ChatPage() {
                       >
                         <div className="flex items-start space-x-3">
                           <div className="relative flex-shrink-0">
-                            <Avatar className="w-14 h-14 ring-2 ring-white shadow-sm">
+                            <Avatar className="w-14 h-14 ring-2 ring-background shadow-sm">
                               <AvatarImage
                                 src={conversation.content_object?.job?.organization?.logo}
                                 className="object-cover"
@@ -787,12 +787,12 @@ export default function ChatPage() {
                               </AvatarFallback>
                             </Avatar>
                             {conversation.unread_message_count > 0 && (
-                              <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white shadow-md animate-pulse">
+                              <Badge className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-background shadow-md animate-pulse">
                                 {conversation.unread_message_count > 99 ? "99+" : conversation.unread_message_count}
                               </Badge>
                             )}
                             {conversation.unread_message_count === 0 && (
-                              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+                              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-background"></div>
                             )}
                           </div>
 
@@ -811,7 +811,7 @@ export default function ChatPage() {
                                 {conversation.content_object?.status === "expired" && (
                                   <Badge
                                     variant="destructive"
-                                    className="text-xs px-2 py-0.5 bg-red-50 text-red-700 border-red-200 font-medium flex-shrink-0"
+                                    className="text-xs px-2 py-0.5 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800 font-medium flex-shrink-0"
                                   >
                                     Expired
                                   </Badge>
@@ -888,7 +888,7 @@ export default function ChatPage() {
                         </div>
 
                         {selectedConversationData?.content_object?.status === "expired" && (
-                          <p className="text-xs text-yellow-600 mt-1">
+                          <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
                             This conversation has expired and is now read-only.
                           </p>
                         )}
@@ -962,11 +962,11 @@ export default function ChatPage() {
                                 <div
                                   className={`rounded-lg p-3 transition-all duration-200 ease-in-out hover:shadow-md transform hover:scale-[1.02] ${
                                     message.status === "failed"
-                                      ? "bg-red-500 text-white border-2 border-red-400"
+                                      ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500"
                                       : message.status === "sending"
-                                      ? "bg-primary/70 text-white"
+                                      ? "bg-primary/70 text-primary-foreground"
                                       : message.owner === user?.id
-                                      ? "bg-primary text-white hover:bg-primary/90"
+                                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
                                       : "bg-muted text-foreground hover:bg-muted"
                                   }`}
                                 >
@@ -979,7 +979,7 @@ export default function ChatPage() {
                                           className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
                                             message.owner === user?.id
                                               ? "bg-white/10 border-white/20 hover:bg-white/15"
-                                              : "bg-white border-gray-200 hover:border-input"
+                                              : "bg-card border-border hover:border-input"
                                           }`}
                                         >
                                           <div className="flex items-center space-x-3 flex-1 min-w-0">
@@ -989,18 +989,18 @@ export default function ChatPage() {
                                                 : "bg-primary/10"
                                             }`}>
                                               <FileText className={`w-5 h-5 ${
-                                                message.owner === user?.id ? "text-white" : "text-blue-600"
+                                                message.owner === user?.id ? "text-primary-foreground" : "text-blue-600 dark:text-blue-400"
                                               }`} />
                                             </div>
                                             <div className="flex-1 min-w-0">
                                               <div className={`text-sm font-medium truncate ${
-                                                message.owner === user?.id ? "text-white" : "text-foreground"
+                                                message.owner === user?.id ? "text-primary-foreground" : "text-foreground"
                                               }`}>
                                                 {attachment.file_name || attachment.name || `Attachment ${index + 1}`}
                                               </div>
                                               {attachment.size && (
                                                 <div className={`text-xs ${
-                                                  message.owner === user?.id ? "text-white/70" : "text-muted-foreground"
+                                                  message.owner === user?.id ? "text-primary-foreground/70" : "text-muted-foreground"
                                                 }`}>
                                                   {formatFileSize(attachment.size)}
                                                 </div>
@@ -1015,7 +1015,7 @@ export default function ChatPage() {
                                                   size="sm"
                                                   className={`h-8 w-8 p-0 ${
                                                     message.owner === user?.id 
-                                                      ? "text-white/70 hover:text-white hover:bg-white/20" 
+                                                      ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20" 
                                                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                                   }`}
                                                   onClick={() => window.open(attachment.file_url, '_blank')}
@@ -1028,7 +1028,7 @@ export default function ChatPage() {
                                                   size="sm"
                                                   className={`h-8 w-8 p-0 ${
                                                     message.owner === user?.id 
-                                                      ? "text-white/70 hover:text-white hover:bg-white/20" 
+                                                      ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20" 
                                                       : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                                   }`}
                                                   onClick={() => {
@@ -1045,7 +1045,7 @@ export default function ChatPage() {
                                             ) : (
                                               <div className={`text-xs px-2 py-1 rounded ${
                                                 message.owner === user?.id 
-                                                  ? "bg-white/10 text-white/70" 
+                                                  ? "bg-white/10 text-primary-foreground/70" 
                                                   : "bg-muted text-muted-foreground"
                                               }`}>
                                                 Processing...
