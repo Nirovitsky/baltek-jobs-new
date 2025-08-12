@@ -46,7 +46,7 @@ export default function Navbar({}: NavbarProps) {
 
   return (
     <nav className="navbar-sticky">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="layout-container-navbar">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center flex-1">

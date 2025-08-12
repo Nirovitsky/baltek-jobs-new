@@ -128,7 +128,7 @@ export default function ApplicationsPage() {
     return (
       <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
         <BreadcrumbNavigation />
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
+        <div className="layout-container-body py-4 overflow-hidden">
           <div className="flex gap-6 h-full">
             <div className="w-[30%] h-full flex-shrink-0">
               <div className="h-full flex flex-col w-full">
@@ -182,7 +182,7 @@ export default function ApplicationsPage() {
     return (
       <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
         <BreadcrumbNavigation />
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 overflow-hidden">
+        <div className="layout-container-body py-4 overflow-hidden">
           <div className="flex gap-6 h-full">
             <div className="w-[30%] h-full flex-shrink-0">
               <div className="h-full flex flex-col w-full">
@@ -228,7 +228,7 @@ export default function ApplicationsPage() {
   return (
     <div className="h-full overflow-hidden flex flex-col">
       <BreadcrumbNavigation />
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex-1 overflow-hidden">
+      <div className="layout-container-body py-4 flex-1 overflow-hidden">
         <div className="flex gap-6 h-full">
           <div className="w-[30%] h-full flex-shrink-0">
             <div className="h-full flex flex-col w-full">
