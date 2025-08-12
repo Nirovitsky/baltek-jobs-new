@@ -185,6 +185,17 @@
   .filter-bar {
     @apply bg-white border-b shadow-sm;
   }
+  
+  /* Breadcrumb stability - prevent horizontal shifting */
+  .breadcrumb-stable {
+    @apply flex items-center;
+    min-width: max-content;
+  }
+  
+  .breadcrumb-stable * {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
 }
 
 @layer utilities {

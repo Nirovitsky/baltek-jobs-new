@@ -77,21 +77,21 @@ export default function BreadcrumbNavigation() {
   return (
     <div className="h-[72px] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center">
       <div className="layout-container-body">
-        <Breadcrumb>
-          <BreadcrumbList className="min-h-[20px]">
+        <Breadcrumb className="breadcrumb-stable">
+          <BreadcrumbList className="min-h-[20px] flex items-center gap-0 breadcrumb-stable">
             {breadcrumbItems.map((item, index) => {
               const isLast = index === breadcrumbItems.length - 1;
               const Icon = item.icon;
               
               return (
-                <div key={index} className="flex items-center shrink-0">
-                  <BreadcrumbItem className="shrink-0">
-                    {isLast ? (
-                      <BreadcrumbPage className="flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap">
-                        {Icon && <Icon className="h-4 w-4 shrink-0" />}
-                        <span className="shrink-0">{item.label}</span>
-                      </BreadcrumbPage>
-                    ) : (
+                <BreadcrumbItem key={index} className="shrink-0 flex items-center">
+                  {isLast ? (
+                    <BreadcrumbPage className="flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap">
+                      {Icon && <Icon className="h-4 w-4 shrink-0" />}
+                      <span className="shrink-0">{item.label}</span>
+                    </BreadcrumbPage>
+                  ) : (
+                    <>
                       <BreadcrumbLink asChild>
                         <Link 
                           href={item.href!} 
@@ -102,10 +102,10 @@ export default function BreadcrumbNavigation() {
                           <span className="shrink-0">{item.label}</span>
                         </Link>
                       </BreadcrumbLink>
-                    )}
-                  </BreadcrumbItem>
-                  {!isLast && <BreadcrumbSeparator className="shrink-0" />}
-                </div>
+                      <BreadcrumbSeparator className="shrink-0 mx-2" />
+                    </>
+                  )}
+                </BreadcrumbItem>
               );
             })}
           </BreadcrumbList>
