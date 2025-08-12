@@ -129,8 +129,8 @@ export default function ApplicationsPage() {
       <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
         <BreadcrumbNavigation />
         <div className="layout-container-body py-4 overflow-hidden">
-          <div className="flex gap-6 h-full">
-            <div className="w-[30%] h-full flex-shrink-0">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+            <div className="lg:col-span-1 h-full flex-shrink-0">
               <div className="h-full flex flex-col w-full">
                 <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
@@ -151,7 +151,7 @@ export default function ApplicationsPage() {
               </div>
             </div>
 
-            <div className="w-[70%] h-full flex-shrink-0 min-w-0 pl-8">
+            <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
               <div className="h-full w-full">
                 <JobDetailsSkeleton />
               </div>
@@ -229,8 +229,8 @@ export default function ApplicationsPage() {
     <div className="h-full overflow-hidden flex flex-col">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4 flex-1 overflow-hidden">
-        <div className="flex gap-6 h-full">
-          <div className="w-[30%] h-full flex-shrink-0">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
+          <div className="lg:col-span-1 h-full flex-shrink-0">
             <div className="h-full flex flex-col w-full">
               <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                 <div className="flex items-center space-x-2">
@@ -261,12 +261,12 @@ export default function ApplicationsPage() {
             </div>
           </div>
 
-          <div className="w-[70%] h-full flex-shrink-0 min-w-0 pl-8">
+          <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
             <div className="h-full w-full">
               {selectedJobId ? (
                 <JobDetails jobId={selectedJobId} />
               ) : appliedJobs.length > 0 ? (
-                <div className="w-[70%] h-full flex items-center justify-center">
+                <div className="h-full flex items-center justify-center">
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
                       Select an application to view details

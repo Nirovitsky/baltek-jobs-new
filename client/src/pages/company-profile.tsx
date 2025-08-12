@@ -168,7 +168,7 @@ function CompanyProfileSkeleton() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
@@ -275,7 +275,7 @@ export default function CompanyProfile() {
     <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Company Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information */}
