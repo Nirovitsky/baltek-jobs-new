@@ -8,7 +8,7 @@ import {
   Clock,
   AlertCircle,
   Trash2,
-
+  RefreshCw,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -262,8 +262,44 @@ export default function Notifications() {
 
 
 
+  // Mark all notifications as read mutation - handled individually since API doesn't provide bulk endpoint
+  const markAllAsReadMutation = useMutation({
+    mutationFn: async () => {
+      if (!notificationsData?.results) return;
+      
+      const unreadNotifications = notificationsData.results.filter(n => !n.is_read);
+      
+      // Mark each unread notification individually
+      const promises = unreadNotifications.map(notification => 
+        ApiClient.markNotificationAsRead(notification.id)
+      );
+      
+      await Promise.all(promises);
+      return { message: "All notifications marked as read" };
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+      toast({
+        title: "Success",
+        description: "All notifications marked as read",
+      });
+    },
+    onError: (error: any) => {
+      console.error("Mark all as read error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to mark all notifications as read",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleMarkAsRead = (id: number) => {
     markAsReadMutation.mutate(id);
+  };
+
+  const handleMarkAllAsRead = () => {
+    markAllAsReadMutation.mutate();
   };
 
 
@@ -285,6 +321,25 @@ export default function Notifications() {
     <div className="h-full overflow-y-auto bg-muted dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4">
+        {/* Mark all as read button - top right */}
+        {unreadCount > 0 && (
+          <div className="flex justify-end mb-6">
+            <Button
+              onClick={handleMarkAllAsRead}
+              disabled={markAllAsReadMutation.isPending}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              {markAllAsReadMutation.isPending ? (
+                <>
+                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  Marking all...
+                </>
+              ) : (
+                "Mark all as read"
+              )}
+            </Button>
+          </div>
+        )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full max-w-md grid-cols-3 mb-8 bg-muted dark:bg-background p-1 rounded-xl">
