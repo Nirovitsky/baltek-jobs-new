@@ -190,11 +190,19 @@
   .breadcrumb-stable {
     @apply flex items-center;
     min-width: max-content;
+    position: relative;
   }
   
   .breadcrumb-stable * {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
+  }
+  
+  /* Force consistent positioning for breadcrumb text */
+  .breadcrumb-text {
+    display: inline-block;
+    min-width: 120px;
+    text-align: left;
   }
 }
 

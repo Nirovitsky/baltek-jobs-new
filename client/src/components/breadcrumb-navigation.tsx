@@ -88,7 +88,7 @@ export default function BreadcrumbNavigation() {
                   {isLast ? (
                     <BreadcrumbPage className="flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap">
                       {Icon && <Icon className="h-4 w-4 shrink-0" />}
-                      <span className="shrink-0">{item.label}</span>
+                      <span className="shrink-0 breadcrumb-text">{item.label}</span>
                     </BreadcrumbPage>
                   ) : (
                     <>
@@ -99,7 +99,7 @@ export default function BreadcrumbNavigation() {
                           data-testid={`breadcrumb-link-${item.label.toLowerCase()}`}
                         >
                           {Icon && <Icon className="h-4 w-4 shrink-0" />}
-                          <span className="shrink-0">{item.label}</span>
+                          <span className="shrink-0 breadcrumb-text">{item.label}</span>
                         </Link>
                       </BreadcrumbLink>
                       <BreadcrumbSeparator className="shrink-0 mx-2" />
