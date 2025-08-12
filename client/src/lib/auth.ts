@@ -98,10 +98,13 @@ export class AuthService {
   static async refreshToken(): Promise<string> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
+      console.warn("No refresh token available - user needs to login again");
+      this.clearTokens();
       throw new Error("No refresh token available");
     }
 
     try {
+      console.log("Attempting to refresh access token...");
       const response = await fetch(`${API_BASE}/token/refresh/`, {
         method: "POST",
         headers: {
@@ -111,13 +114,18 @@ export class AuthService {
       });
 
       if (!response.ok) {
-        console.warn('Token refresh failed, clearing tokens and redirecting to login');
+        if (response.status === 401) {
+          console.warn('Refresh token expired or invalid - user needs to login again');
+        } else {
+          console.warn(`Token refresh failed with status: ${response.status}`);
+        }
         this.clearTokens();
         throw new Error("Token refresh failed");
       }
 
       const { access } = await response.json();
       localStorage.setItem(this.TOKEN_KEY, access);
+      console.log("Access token refreshed successfully");
       return access;
     } catch (error) {
       console.warn('Token refresh error:', error);

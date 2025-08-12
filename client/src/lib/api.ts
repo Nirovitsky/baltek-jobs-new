@@ -63,23 +63,34 @@ export class ApiClient {
         headers,
       });
 
+      // Handle token expiration with automatic refresh
       if (response.status === 401 && token) {
-        console.warn("Received 401, attempting token refresh...");
+        console.log("Access token expired, attempting automatic refresh...");
         try {
-          await AuthService.refreshToken();
-          console.log("Token refresh successful, retrying request...");
-          // Retry with new token
-          const retryHeaders = {
+          const newToken = await AuthService.refreshToken();
+          console.log("Token refresh successful, retrying original request...");
+          
+          // Retry with new token - ensure proper headers
+          let retryHeaders = {
             ...headers,
             ...AuthService.getAuthHeaders(),
           };
+
+          // Handle FormData case for retry
+          if (options.body instanceof FormData) {
+            const filteredRetryHeaders = Object.fromEntries(
+              Object.entries(retryHeaders).filter(([key]) => key !== "Content-Type"),
+            );
+            retryHeaders = filteredRetryHeaders as typeof retryHeaders;
+          }
+          
           const retryResponse = await fetch(url, {
             ...options,
             headers: retryHeaders,
           });
 
           if (retryResponse.status === 401) {
-            console.warn("Still unauthorized after refresh, logging out...");
+            console.warn("Still unauthorized after token refresh - refresh token may be expired");
             AuthService.logout();
             throw new Error("Session expired, please login again");
           }
@@ -89,8 +100,8 @@ export class ApiClient {
           }
 
           return retryResponse.json();
-        } catch (error) {
-          console.warn("Token refresh failed, logging out:", error);
+        } catch (refreshError) {
+          console.warn("Automatic token refresh failed:", refreshError);
           AuthService.logout();
           throw new Error("Session expired, please login again");
         }
