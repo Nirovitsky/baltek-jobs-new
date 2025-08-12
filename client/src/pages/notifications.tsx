@@ -127,7 +127,7 @@ function NotificationCard({
   onMarkAsRead: (id: number) => void;
 }) {
   const priorityColors = {
-    low: "bg-muted text-foreground dark:bg-background dark:text-gray-200",
+    low: "bg-muted text-foreground",
     medium: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
     high: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
   };
@@ -137,7 +137,7 @@ function NotificationCard({
       className={`group relative border rounded-xl p-6 transition-all duration-200 hover:shadow-lg ${
         !notification.isRead
           ? "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800/50 shadow-sm"
-          : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:border-input dark:hover:border-gray-600"
+          : "bg-card border-border hover:border-input"
       }`}
     >
       <div className="flex items-start gap-4">
@@ -146,7 +146,7 @@ function NotificationCard({
           className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
             !notification.isRead
               ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 shadow-sm"
-              : "bg-muted text-muted-foreground dark:bg-background dark:text-muted-foreground/60"
+              : "bg-muted text-muted-foreground"
           }`}
         >
           <NotificationIcon type={notification.type} />
@@ -159,8 +159,8 @@ function NotificationCard({
               <h3
                 className={`font-semibold leading-tight ${
                   !notification.isRead
-                    ? "text-foreground dark:text-gray-100"
-                    : "text-foreground dark:text-muted-foreground/60"
+                    ? "text-foreground"
+                    : "text-muted-foreground"
                 }`}
               >
                 {notification.title}
