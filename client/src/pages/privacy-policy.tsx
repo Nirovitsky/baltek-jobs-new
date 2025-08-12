@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
             <CardContent className="prose max-w-none">
               <div className="space-y-6">
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">1. Information We Collect</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">1. Information We Collect</h3>
                   <p className="text-foreground leading-relaxed mb-3">
                     We collect information you provide directly to us, such as when you create an account, 
                     apply for jobs, or contact us for support. This includes:
@@ -33,7 +33,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">2. How We Use Your Information</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">2. How We Use Your Information</h3>
                   <p className="text-foreground leading-relaxed mb-3">We use the information we collect to:</p>
                   <ul className="list-disc pl-6 text-foreground space-y-1">
                     <li>Provide, maintain, and improve our services</li>
@@ -47,7 +47,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">3. Information Sharing</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">3. Information Sharing</h3>
                   <p className="text-foreground leading-relaxed mb-3">
                     We may share your information in the following circumstances:
                   </p>
@@ -65,7 +65,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">4. Data Security</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">4. Data Security</h3>
                   <p className="text-foreground leading-relaxed">
                     We implement appropriate technical and organizational measures to protect your personal information 
                     against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission 
@@ -76,7 +76,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">5. Data Retention</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">5. Data Retention</h3>
                   <p className="text-foreground leading-relaxed">
                     We retain your personal information for as long as your account is active or as needed to provide services. 
                     We will delete your information when you request account deletion, subject to legal obligations that may 
@@ -87,7 +87,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">6. Cookies and Tracking</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">6. Cookies and Tracking</h3>
                   <p className="text-foreground leading-relaxed mb-3">
                     We use cookies and similar tracking technologies to:
                   </p>
@@ -105,7 +105,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">7. Your Rights and Choices</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">7. Your Rights and Choices</h3>
                   <p className="text-foreground leading-relaxed mb-3">You have the right to:</p>
                   <ul className="list-disc pl-6 text-foreground space-y-1">
                     <li>Access and update your personal information</li>
@@ -119,7 +119,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">8. Third-Party Links</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">8. Third-Party Links</h3>
                   <p className="text-foreground leading-relaxed">
                     Our service may contain links to third-party websites. We are not responsible for the privacy practices 
                     or content of these external sites. We encourage you to review the privacy policies of any third-party 
@@ -130,7 +130,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">9. Children's Privacy</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">9. Children's Privacy</h3>
                   <p className="text-foreground leading-relaxed">
                     Our service is not intended for children under 16 years of age. We do not knowingly collect personal 
                     information from children under 16. If you are a parent or guardian and believe your child has provided 
@@ -141,7 +141,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">10. International Transfers</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">10. International Transfers</h3>
                   <p className="text-foreground leading-relaxed">
                     Your information may be transferred to and processed in countries other than your own. We ensure that 
                     such transfers comply with applicable data protection laws and implement appropriate safeguards.
@@ -151,7 +151,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">11. Changes to This Policy</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">11. Changes to This Policy</h3>
                   <p className="text-foreground leading-relaxed">
                     We may update this Privacy Policy from time to time. We will notify you of any changes by posting the 
                     new Privacy Policy on this page and updating the "Last updated" date. Changes are effective immediately 
@@ -162,7 +162,7 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3">12. Contact Us</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">12. Contact Us</h3>
                   <p className="text-foreground leading-relaxed">
                     If you have any questions about this Privacy Policy or our data practices, please contact us at:
                   </p>

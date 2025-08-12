@@ -12,6 +12,8 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 
 ## Recent Changes (August 12, 2025)
 
+- **Dark Mode Typography Fix**: Fixed title color contrast issue in Terms and Agreement and Privacy Policy pages. All h3 headings now use proper `text-foreground` class for optimal visibility in both light and dark modes.
+
 - **Migration Completed**: Successfully migrated project from Replit Agent to standard Replit environment
 - **Infinite Scroll Fix**: Fixed infinite scroll pagination logic in jobs list - was not loading jobs after initial 10 due to incorrect offset calculation and intersection observer issues
 - **Search Input Responsiveness**: Fixed critical search input locking issue during debounce period. Implemented uncontrolled input approach with local ref management to prevent React Query re-renders from interfering with typing. Set debounce delay to 500ms for optimal user experience. Added spinning loader visual feedback during search processing.
