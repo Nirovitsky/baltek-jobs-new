@@ -1,23 +1,19 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Home, Search, ArrowLeft, Briefcase } from "lucide-react";
-import { Link, useLocation } from "wouter";
+import { Home, SearchX, ArrowLeft, Briefcase } from "lucide-react";
+import { Link } from "wouter";
 
 export default function NotFound() {
-  const [, setLocation] = useLocation();
-
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-2xl mx-auto text-center">
-        {/* Large 404 Number */}
-        <div className="mb-8">
+        {/* Large 404 Number with Icon */}
+        <div className="mb-8 relative">
           <h1 className="text-9xl font-bold text-primary/20 leading-none select-none">
             404
           </h1>
-          <div className="relative -mt-8">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Search className="h-16 w-16 text-muted-foreground/50" />
-            </div>
+          <div className="flex justify-center mt-4">
+            <SearchX className="h-12 w-12 text-muted-foreground/60" />
           </div>
         </div>
 
@@ -64,7 +60,13 @@ export default function NotFound() {
               <Button 
                 variant="ghost" 
                 size="lg" 
-                onClick={() => window.history.back()}
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    window.history.back();
+                  } else {
+                    window.location.href = '/';
+                  }
+                }}
                 className="w-full sm:w-auto min-w-[160px]"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
