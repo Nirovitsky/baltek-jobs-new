@@ -60,6 +60,8 @@
 @layer base {
   * {
     @apply border-border;
+    /* Smooth transitions for theme switching */
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   }
   
   /* Remove default focus styles globally for better UX */
@@ -85,6 +87,21 @@
     @apply font-sans antialiased bg-background text-foreground;
     font-family: 'Roboto', sans-serif;
   }
+  
+  /* Enhanced theme transition support */
+  html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Ensure all interactive elements have smooth transitions */
+  button, a, input, textarea, select, [role="button"], [role="menuitem"], [role="tab"] {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease !important;
+  }
+  
+  /* Specific transitions for cards and panels */
+  [data-radix-select-content], [data-radix-dropdown-content], [data-radix-popover-content], .card {
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
+  }
 }
 
 @layer components {
@@ -99,6 +116,11 @@
   
   .layout-container-narrow {
     @apply w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  /* Theme transition utility class */
+  .theme-transition {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
   }
 
   .job-card {
