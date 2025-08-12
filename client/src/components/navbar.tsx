@@ -160,11 +160,8 @@ export default function Navbar({}: NavbarProps) {
             ) : (
               <>
                 {/* OAuth Login button for unauthenticated users */}
-                <Button variant="ghost" size="sm" onClick={handleOAuthLogin}>
-                  Login
-                </Button>
                 <Button size="sm" onClick={handleOAuthLogin}>
-                  Sign Up
+                  Login
                 </Button>
               </>
             )}
