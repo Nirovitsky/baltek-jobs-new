@@ -74,7 +74,7 @@ function CompanySuggestions() {
           {Array.from({ length: 10 }).map((_, i) => (
             <div key={i}>
               <div className="flex items-center gap-4 p-4">
-                <Skeleton className="h-12 w-12 rounded-full ring-2 ring-gray-100" />
+                <Skeleton className="h-12 w-12 rounded-full ring-2 ring-border" />
                 <div className="flex-1">
                   <Skeleton className="h-4 w-32 mb-2" />
                   <Skeleton className="h-3 w-24 mb-2" />
@@ -92,7 +92,7 @@ function CompanySuggestions() {
             <div key={company.id}>
               <Link href={`/company/${company.id}`}>
                 <div className="flex items-center gap-4 p-4 hover:bg-muted dark:hover:bg-muted/50 transition-all duration-200 cursor-pointer group">
-                  <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
+                  <Avatar className="h-12 w-12 ring-2 ring-border group-hover:ring-primary/30 transition-all duration-200">
                     <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
                     <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/20 text-primary text-sm font-bold border border-primary/20">
                       {(company.display_name || company.official_name || 'CO')
