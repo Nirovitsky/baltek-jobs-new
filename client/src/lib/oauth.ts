@@ -1,4 +1,4 @@
-// OAuth2 with PKCE implementation for Baltek Jobs Platform
+// OAuth2 with PKCE implementation - handles token exchange, OAuth server handles authentication
 
 interface OAuthConfig {
   clientId: string;
@@ -64,7 +64,7 @@ export class OAuth2PKCEService {
     return { verifier, challenge };
   }
 
-  // Generate authorization URL with PKCE
+  // Generate authorization URL with PKCE - OAuth server handles actual authentication
   async startAuthFlow(): Promise<string> {
     const { verifier, challenge } = await this.generatePKCEChallenge();
     const state = this.generateRandomString(32);
@@ -90,7 +90,7 @@ export class OAuth2PKCEService {
     return `${this.config.authorizationUrl}?${params.toString()}`;
   }
 
-  // Exchange authorization code for tokens
+  // Exchange authorization code for tokens - OAuth server validates and issues tokens
   async exchangeCodeForTokens(code: string, state: string): Promise<PKCETokens> {
     // Verify state parameter
     const storedState = localStorage.getItem(OAuth2PKCEService.STATE_KEY);

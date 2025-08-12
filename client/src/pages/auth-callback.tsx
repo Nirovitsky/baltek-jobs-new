@@ -45,10 +45,10 @@ export default function AuthCallback() {
 
         const oauthService = new OAuth2PKCEService(oauthConfig);
         
-        // Exchange code for tokens
+        // Exchange code for tokens with OAuth server
         const tokens = await oauthService.exchangeCodeForTokens(code, state);
         
-        // Store tokens using existing AuthService
+        // The OAuth server handles authentication - we just store the resulting tokens
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
         
         setStatus('success');

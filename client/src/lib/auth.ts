@@ -53,7 +53,7 @@ export class AuthService {
     }
   }
 
-  // OAuth2 PKCE login initiation
+  // OAuth2 PKCE login initiation - delegates authentication to OAuth server
   static async startOAuthLogin(): Promise<void> {
     const { OAuth2PKCEService } = await import('./oauth');
     
@@ -80,7 +80,7 @@ export class AuthService {
     const oauthService = new OAuth2PKCEService(oauthConfig);
     const authUrl = await oauthService.startAuthFlow();
     
-    // Redirect to OAuth provider
+    // Redirect to OAuth server for authentication - they handle the auth flow
     window.location.href = authUrl;
   }
 
