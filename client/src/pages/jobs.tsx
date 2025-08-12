@@ -26,8 +26,8 @@ export default function Jobs({}: JobsProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   
-  // Debounce search query with 400ms delay for better responsiveness
-  const debouncedSearchQuery = useDebounce(searchQuery, 400);
+  // Debounce search query with 7000ms delay as requested
+  const debouncedSearchQuery = useDebounce(searchQuery, 7000);
   
   // Track if we're currently searching (debounced query different from current query)
   const isSearching = searchQuery !== debouncedSearchQuery;

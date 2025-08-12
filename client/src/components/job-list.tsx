@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import type { Job } from "@shared/schema";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { Card } from "@/components/ui/card";
@@ -40,28 +40,38 @@ export default function JobList({
   isSearching = false,
   inputRef,
 }: JobListProps) {
-  // Local input state to prevent interference from React Query re-renders
+  // Use a ref to track the actual input value independently
+  const localInputRef = useRef<HTMLInputElement>(null);
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
 
-  // Sync local state with prop when it changes externally (like clearing)
+  // Update input value when searchQuery changes from outside (like clearing)
   useEffect(() => {
-    if (searchQuery !== localSearchQuery) {
+    if (localInputRef.current && searchQuery !== localInputRef.current.value) {
+      localInputRef.current.value = searchQuery;
       setLocalSearchQuery(searchQuery);
     }
   }, [searchQuery]);
 
   const handleLocalSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+    // Update local state for display purposes only
     setLocalSearchQuery(newValue);
-    // Call parent handler
+    // Call parent handler immediately to trigger debounce
     onSearchChange(e);
   };
 
   const handleClearSearch = () => {
+    if (localInputRef.current) {
+      localInputRef.current.value = "";
+    }
     setLocalSearchQuery("");
-    onSearchChange({
+    const clearEvent = {
       target: { value: "" },
-    } as React.ChangeEvent<HTMLInputElement>);
+      currentTarget: { value: "" },
+      preventDefault: () => {},
+      stopPropagation: () => {}
+    } as React.ChangeEvent<HTMLInputElement>;
+    onSearchChange(clearEvent);
   };
 
   const loadMoreRef = useInfiniteScroll({
@@ -161,16 +171,16 @@ export default function JobList({
               )}
             </div>
             <Input
-              ref={inputRef}
+              ref={localInputRef || inputRef}
               type="text"
               placeholder="Search jobs, companies, skills..."
-              value={localSearchQuery}
+              defaultValue={searchQuery}
               onChange={handleLocalSearchChange}
               className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-gray-500"
               autoComplete="off"
               spellCheck="false"
             />
-            {localSearchQuery && (
+            {(localInputRef.current?.value || localSearchQuery) && (
               <button
                 type="button"
                 onClick={handleClearSearch}
