@@ -4,8 +4,8 @@ import { Separator } from "@/components/ui/separator";
 
 export default function PrivacyPolicy() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="layout-container-narrow py-6">
+    <div className="bg-background">
+      <div className="layout-container-body py-6">
         <BreadcrumbNavigation
           items={[
             { label: "Home", href: "/" },
