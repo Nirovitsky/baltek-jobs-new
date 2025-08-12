@@ -168,8 +168,8 @@ export default function PrivacyPolicy() {
                   </p>
                   <div className="mt-3 p-4 bg-muted rounded-lg">
                     <p className="text-foreground">
-                      <strong>Email:</strong> privacy@baltek.net<br />
-                      <strong>Address:</strong> Ashgabat, Turkmenistan
+                      <strong className="text-foreground">Email:</strong> privacy@baltek.net<br />
+                      <strong className="text-foreground">Address:</strong> Ashgabat, Turkmenistan
                     </p>
                   </div>
                 </section>
