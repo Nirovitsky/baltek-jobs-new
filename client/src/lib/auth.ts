@@ -57,27 +57,12 @@ export class AuthService {
   static async startOAuthLogin(): Promise<void> {
     const { OAuth2PKCEService } = await import('./oauth');
     
-    // Get scopes from environment or use sensible defaults based on common providers
+    // Get scopes from environment - if not set, use empty array (no scope parameter)
     const scopesEnv = import.meta.env.VITE_OAUTH_SCOPES;
-    let scopes: string[];
+    let scopes: string[] = [];
     
-    if (scopesEnv) {
-      scopes = scopesEnv.split(' ');
-    } else {
-      // Default scopes that work with most providers
-      const authUrl = import.meta.env.VITE_OAUTH_AUTH_URL || '';
-      if (authUrl.includes('github.com')) {
-        scopes = ['user:email'];
-      } else if (authUrl.includes('accounts.google.com')) {
-        scopes = ['openid', 'profile', 'email'];
-      } else if (authUrl.includes('login.microsoftonline.com')) {
-        scopes = ['openid', 'profile', 'email'];
-      } else if (authUrl.includes('auth0.com')) {
-        scopes = ['openid', 'profile', 'email'];
-      } else {
-        // Generic fallback - try minimal scope first
-        scopes = ['read'];
-      }
+    if (scopesEnv && scopesEnv.trim()) {
+      scopes = scopesEnv.split(' ').filter((scope: string) => scope.trim());
     }
     
     const oauthConfig = {

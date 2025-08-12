@@ -77,11 +77,15 @@ export class OAuth2PKCEService {
       response_type: 'code',
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
-      scope: this.config.scopes.join(' '),
       state: state,
       code_challenge: challenge,
       code_challenge_method: 'S256',
     });
+
+    // Only add scope parameter if scopes are configured
+    if (this.config.scopes.length > 0) {
+      params.set('scope', this.config.scopes.join(' '));
+    }
 
     return `${this.config.authorizationUrl}?${params.toString()}`;
   }
