@@ -5,14 +5,9 @@ import { Users, Target, Award, Heart } from "lucide-react";
 
 export default function AboutUs() {
   return (
-    <div className="min-h-screen bg-background">
-      <div className="layout-container-body py-6">
-        <BreadcrumbNavigation
-          items={[
-            { label: "Home", href: "/" },
-            { label: "About Us" },
-          ]}
-        />
+    <div className="h-full overflow-y-auto bg-background">
+      <BreadcrumbNavigation />
+      <div className="layout-container-body py-4">
 
         <div className="mt-6 space-y-8">
           {/* Header */}

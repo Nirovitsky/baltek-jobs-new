@@ -43,11 +43,23 @@ const routeMap: Record<string, BreadcrumbItem[]> = {
   ],
   "/terms": [
     { label: "Home", href: "/", icon: Home },
+    { label: "Settings", href: "/settings", icon: Settings },
     { label: "Terms and Agreement" }
   ],
   "/privacy-policy": [
     { label: "Home", href: "/", icon: Home },
+    { label: "Settings", href: "/settings", icon: Settings },
     { label: "Privacy Policy" }
+  ],
+  "/about-us": [
+    { label: "Home", href: "/", icon: Home },
+    { label: "Settings", href: "/settings", icon: Settings },
+    { label: "About Us" }
+  ],
+  "/contact-us": [
+    { label: "Home", href: "/", icon: Home },
+    { label: "Settings", href: "/settings", icon: Settings },
+    { label: "Contact Us" }
   ]
 };
 
