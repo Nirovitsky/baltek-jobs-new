@@ -17,6 +17,10 @@ import Chat from "@/pages/chat";
 import Notifications from "@/pages/notifications";
 import CompanyProfile from "@/pages/company-profile";
 import NotFound from "@/pages/not-found";
+import AboutUs from "@/pages/about-us";
+import ContactUs from "@/pages/contact-us";
+import Terms from "@/pages/terms";
+import PrivacyPolicy from "@/pages/privacy-policy";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -124,6 +128,34 @@ function Router() {
         <ProtectedRoute>
           <ProtectedLayout>
             <CompanyProfile />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/about-us">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <AboutUs />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/contact-us">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <ContactUs />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/terms">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <Terms />
+          </ProtectedLayout>
+        </ProtectedRoute>
+      </Route>
+      <Route path="/privacy-policy">
+        <ProtectedRoute>
+          <ProtectedLayout>
+            <PrivacyPolicy />
           </ProtectedLayout>
         </ProtectedRoute>
       </Route>

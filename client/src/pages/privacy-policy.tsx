@@ -1,0 +1,188 @@
+import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
+export default function PrivacyPolicy() {
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="layout-container-narrow py-6">
+        <BreadcrumbNavigation
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Privacy Policy" },
+          ]}
+        />
+
+        <div className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-2xl">Privacy Policy</CardTitle>
+              <p className="text-sm text-gray-600">Last updated: August 12, 2025</p>
+            </CardHeader>
+            <CardContent className="prose max-w-none">
+              <div className="space-y-6">
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">1. Information We Collect</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    We collect information you provide directly to us, such as when you create an account, 
+                    apply for jobs, or contact us for support. This includes:
+                  </p>
+                  <ul className="list-disc pl-6 text-gray-700 space-y-1">
+                    <li>Personal information (name, email address, phone number)</li>
+                    <li>Professional information (resume, work experience, education)</li>
+                    <li>Account credentials and preferences</li>
+                    <li>Communications with us</li>
+                  </ul>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">2. How We Use Your Information</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">We use the information we collect to:</p>
+                  <ul className="list-disc pl-6 text-gray-700 space-y-1">
+                    <li>Provide, maintain, and improve our services</li>
+                    <li>Process job applications and connect you with employers</li>
+                    <li>Send you notifications about job opportunities</li>
+                    <li>Respond to your comments and questions</li>
+                    <li>Analyze usage patterns to improve our platform</li>
+                  </ul>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">3. Information Sharing</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    We may share your information in the following circumstances:
+                  </p>
+                  <ul className="list-disc pl-6 text-gray-700 space-y-1">
+                    <li>With employers when you apply for jobs (resume, application materials)</li>
+                    <li>With service providers who assist us in operating our platform</li>
+                    <li>When required by law or to protect our rights</li>
+                    <li>In connection with a merger, acquisition, or sale of assets</li>
+                  </ul>
+                  <p className="text-gray-700 leading-relaxed mt-3">
+                    We do not sell, rent, or trade your personal information to third parties for marketing purposes.
+                  </p>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">4. Data Security</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    We implement appropriate technical and organizational measures to protect your personal information 
+                    against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission 
+                    over the Internet or electronic storage is 100% secure.
+                  </p>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">5. Data Retention</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    We retain your personal information for as long as your account is active or as needed to provide services. 
+                    We will delete your information when you request account deletion, subject to legal obligations that may 
+                    require us to retain certain information.
+                  </p>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">6. Cookies and Tracking</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">
+                    We use cookies and similar tracking technologies to:
+                  </p>
+                  <ul className="list-disc pl-6 text-gray-700 space-y-1">
+                    <li>Remember your preferences and settings</li>
+                    <li>Analyze site traffic and usage patterns</li>
+                    <li>Personalize content and advertisements</li>
+                    <li>Improve our services</li>
+                  </ul>
+                  <p className="text-gray-700 leading-relaxed mt-3">
+                    You can control cookies through your browser settings, but disabling them may affect site functionality.
+                  </p>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">7. Your Rights and Choices</h3>
+                  <p className="text-gray-700 leading-relaxed mb-3">You have the right to:</p>
+                  <ul className="list-disc pl-6 text-gray-700 space-y-1">
+                    <li>Access and update your personal information</li>
+                    <li>Delete your account and associated data</li>
+                    <li>Opt out of marketing communications</li>
+                    <li>Request a copy of your data</li>
+                    <li>Object to processing of your personal information</li>
+                  </ul>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">8. Third-Party Links</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Our service may contain links to third-party websites. We are not responsible for the privacy practices 
+                    or content of these external sites. We encourage you to review the privacy policies of any third-party 
+                    sites you visit.
+                  </p>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">9. Children's Privacy</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Our service is not intended for children under 16 years of age. We do not knowingly collect personal 
+                    information from children under 16. If you are a parent or guardian and believe your child has provided 
+                    us with personal information, please contact us.
+                  </p>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">10. International Transfers</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    Your information may be transferred to and processed in countries other than your own. We ensure that 
+                    such transfers comply with applicable data protection laws and implement appropriate safeguards.
+                  </p>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">11. Changes to This Policy</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    We may update this Privacy Policy from time to time. We will notify you of any changes by posting the 
+                    new Privacy Policy on this page and updating the "Last updated" date. Changes are effective immediately 
+                    upon posting.
+                  </p>
+                </section>
+
+                <Separator />
+
+                <section>
+                  <h3 className="text-lg font-semibold mb-3">12. Contact Us</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    If you have any questions about this Privacy Policy or our data practices, please contact us at:
+                  </p>
+                  <div className="mt-3 p-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-700">
+                      <strong>Email:</strong> privacy@baltek.net<br />
+                      <strong>Address:</strong> Ashgabat, Turkmenistan
+                    </p>
+                  </div>
+                </section>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}

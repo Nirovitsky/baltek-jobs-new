@@ -33,6 +33,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Layout Consistency Enhancement**: Implemented standardized layout system with consistent body widths across all pages to prevent page shifting during navigation. Created unified `.layout-container-body` and `.layout-container-narrow` CSS classes. Updated all major pages (jobs, profile, applications, settings, chat, notifications, bookmarks, company-profile) to use consistent container widths while maintaining navbar slightly wider than content for proper visual hierarchy. Fixed breadcrumb navigation to use the same layout container, eliminating horizontal layout shifts between pages.
 - **Notification UX Improvement**: Removed popup notifications dropdown from navbar. Bell icon now directly links to `/notifications` page for cleaner user experience without popup interruptions.
 - **Navbar Width Alignment**: Aligned navbar container width to match body content width (1320px) for consistent layout alignment.
+- **Settings Page Redesign**: Completely simplified settings page by removing profile, notifications, privacy, account sections. Added language selection (Turkmen, English, Russian), theme selector (light, dark, auto), delete account functionality, and information links (About Us, Contact Us, Terms and Agreement, Privacy Policy). Created dedicated pages for About Us, Contact Us, Terms and Agreement, and Privacy Policy with comprehensive content and proper routing.
 
 ## System Architecture
 
