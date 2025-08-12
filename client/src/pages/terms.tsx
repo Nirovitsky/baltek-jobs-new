@@ -4,11 +4,11 @@ import { Separator } from "@/components/ui/separator";
 
 export default function Terms() {
   return (
-    <div className="bg-background">
-      <div className="layout-container-body py-6">
-        <BreadcrumbNavigation />
+    <div className="h-full overflow-y-auto bg-background">
+      <BreadcrumbNavigation />
+      <div className="layout-container-body py-4">
 
-        <div className="mt-6">
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-2xl">Terms and Agreement</CardTitle>
