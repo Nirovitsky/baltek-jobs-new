@@ -25,9 +25,10 @@ interface JobCardProps {
   onSelect: (job: Job) => void;
   showBookmark?: boolean;
   disableViewedOpacity?: boolean;
+  hideAppliedBadge?: boolean;
 }
 
-export default function JobCard({ job, isSelected = false, onSelect, showBookmark = true, disableViewedOpacity = false }: JobCardProps) {
+export default function JobCard({ job, isSelected = false, onSelect, showBookmark = true, disableViewedOpacity = false, hideAppliedBadge = false }: JobCardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -162,7 +163,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
               {job.title || 'Job Title'}
             </h3>
             <div className="flex items-center gap-2 flex-shrink-0">
-              {job.my_application_id && (
+              {job.my_application_id && !hideAppliedBadge && (
                 <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
                   <CheckCircle className="w-3 h-3" />
                   <span>Applied</span>

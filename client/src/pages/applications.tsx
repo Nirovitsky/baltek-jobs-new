@@ -254,6 +254,7 @@ export default function ApplicationsPage() {
                     onSelect={() => setSelectedJobId(job.id)}
                     showBookmark={false}
                     disableViewedOpacity={true}
+                    hideAppliedBadge={true}
                   />
                 ))}
               </div>
