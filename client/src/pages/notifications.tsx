@@ -318,7 +318,7 @@ export default function Notifications() {
   });
 
   return (
-    <div className="h-full overflow-y-auto bg-muted dark:bg-gray-900">
+    <div className="h-full overflow-y-auto bg-background">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4">
         {/* Mark all as read button - top right */}
