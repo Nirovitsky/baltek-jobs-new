@@ -8,8 +8,6 @@ import JobCard from "@/components/job-card";
 import JobCardSkeleton from "@/components/job-card-skeleton";
 import JobDetailsSkeleton from "@/components/job-details-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 export default function ApplicationsPage() {
@@ -133,8 +131,8 @@ export default function ApplicationsPage() {
         <div className="layout-container-body py-4 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             <div className="lg:col-span-1 h-full flex-shrink-0">
-              <Card className="h-full flex flex-col">
-                <CardHeader className="pb-4">
+              <div className="h-full flex flex-col w-full">
+                <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                       <Briefcase className="h-4 w-4 text-gray-400" />
@@ -143,18 +141,14 @@ export default function ApplicationsPage() {
                       <Skeleton className="h-6 w-32" />
                     </div>
                   </div>
-                </CardHeader>
+                </div>
                 
-                <CardContent className="p-0 flex-1 min-h-0">
-                  <ScrollArea className="h-full">
-                    <div className="space-y-3 p-3">
-                      {Array.from({ length: 6 }).map((_, i) => (
-                        <JobCardSkeleton key={i} />
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </CardContent>
-              </Card>
+                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <JobCardSkeleton key={i} />
+                  ))}
+                </div>
+              </div>
             </div>
 
             <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
@@ -237,38 +231,34 @@ export default function ApplicationsPage() {
       <div className="layout-container-body py-4 flex-1 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
           <div className="lg:col-span-1 h-full flex-shrink-0">
-            <Card className="h-full flex flex-col">
-              <CardHeader className="pb-4">
+            <div className="h-full flex flex-col w-full">
+              <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                     <Briefcase className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg text-primary">
+                    <h2 className="text-lg font-semibold text-primary">
                       {appliedJobs.length} Application{appliedJobs.length !== 1 ? "s" : ""}
-                    </CardTitle>
+                    </h2>
                   </div>
                 </div>
-              </CardHeader>
+              </div>
               
-              <CardContent className="p-0 flex-1 min-h-0">
-                <ScrollArea className="h-full">
-                  <div className="space-y-3 p-3">
-                    {appliedJobs.map((job: any) => (
-                      <JobCard
-                        key={job.id}
-                        job={job}
-                        isSelected={selectedJobId === job.id}
-                        onSelect={() => setSelectedJobId(job.id)}
-                        showBookmark={false}
-                        disableViewedOpacity={true}
-                        hideAppliedBadge={true}
-                      />
-                    ))}
-                  </div>
-                </ScrollArea>
-              </CardContent>
-            </Card>
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
+                {appliedJobs.map((job: any) => (
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    isSelected={selectedJobId === job.id}
+                    onSelect={() => setSelectedJobId(job.id)}
+                    showBookmark={false}
+                    disableViewedOpacity={true}
+                    hideAppliedBadge={true}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
