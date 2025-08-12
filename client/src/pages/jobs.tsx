@@ -46,13 +46,47 @@ export default function Jobs({}: JobsProps) {
       };
       return ApiClient.getJobs(params);
     },
-    getNextPageParam: (lastPage: any) => {
-      // Check if there's a next page URL, extract offset from it
-      if (lastPage?.next) {
-        const url = new URL(lastPage.next);
-        const nextOffset = url.searchParams.get("offset");
-        return nextOffset ? parseInt(nextOffset) : undefined;
+    getNextPageParam: (lastPage: any, allPages: any[]) => {
+      console.log("getNextPageParam - lastPage:", lastPage);
+      console.log("getNextPageParam - allPages length:", allPages.length);
+      
+      // Calculate the current offset based on pages loaded
+      const currentOffset = allPages.length * 10; // Each page has 10 items
+      
+      // Check if we have reached the total count
+      if (lastPage?.count && currentOffset >= lastPage.count) {
+        console.log("Reached end of results");
+        return undefined;
       }
+      
+      // Check if the current page has fewer items than the limit (indicating end)
+      if (lastPage?.results && lastPage.results.length < 10) {
+        console.log("Current page has fewer than 10 items, likely at end");
+        return undefined;
+      }
+      
+      // If we have a next URL, extract offset from it
+      if (lastPage?.next) {
+        try {
+          const url = new URL(lastPage.next);
+          const nextOffset = url.searchParams.get("offset");
+          const parsedOffset = nextOffset ? parseInt(nextOffset) : currentOffset;
+          console.log("Next offset from URL:", parsedOffset);
+          return parsedOffset;
+        } catch (error) {
+          console.error("Error parsing next URL:", error);
+          // Fallback to calculated offset
+          return currentOffset;
+        }
+      }
+      
+      // If no next URL but we still have results, continue with calculated offset
+      if (lastPage?.results && lastPage.results.length === 10) {
+        console.log("No next URL but page is full, continuing with calculated offset:", currentOffset);
+        return currentOffset;
+      }
+      
+      console.log("No more pages available");
       return undefined;
     },
     initialPageParam: 0,
