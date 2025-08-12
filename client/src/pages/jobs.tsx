@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -24,6 +24,7 @@ export default function Jobs({}: JobsProps) {
     organizationParam ? { organization: parseInt(organizationParam) } : {},
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   
   // Debounce search query with 400ms delay for better responsiveness
   const debouncedSearchQuery = useDebounce(searchQuery, 400);
@@ -137,9 +138,9 @@ export default function Jobs({}: JobsProps) {
       ? jobs[0].id
       : null;
 
-  const handleJobSelect = (job: Job) => {
+  const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
-  };
+  }, []);
 
   const handleFiltersChange = (newFilters: JobFilters) => {
     setFilters(newFilters);
@@ -147,16 +148,18 @@ export default function Jobs({}: JobsProps) {
     setSelectedJobId(null);
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+    // Immediately update the search query to keep input responsive
     setSearchQuery(newValue);
-    setSelectedJobId(null); // Clear selection when search changes
-  };
+    // Clear job selection when search changes
+    setSelectedJobId(null);
+  }, []);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     // Search is handled in real-time via onChange
-  };
+  }, []);
 
   if (error) {
     return (
@@ -196,6 +199,7 @@ export default function Jobs({}: JobsProps) {
               onSearchChange={handleSearchChange}
               onSearchSubmit={handleSearchSubmit}
               isSearching={isSearching}
+              inputRef={inputRef}
             />
           </div>
 

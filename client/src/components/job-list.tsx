@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import type { Job } from "@shared/schema";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { Card } from "@/components/ui/card";
@@ -21,6 +22,7 @@ interface JobListProps {
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearchSubmit: (e: React.FormEvent) => void;
   isSearching?: boolean;
+  inputRef?: React.RefObject<HTMLInputElement>;
 }
 
 export default function JobList({
@@ -36,7 +38,32 @@ export default function JobList({
   onSearchChange,
   onSearchSubmit,
   isSearching = false,
+  inputRef,
 }: JobListProps) {
+  // Local input state to prevent interference from React Query re-renders
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+
+  // Sync local state with prop when it changes externally (like clearing)
+  useEffect(() => {
+    if (searchQuery !== localSearchQuery) {
+      setLocalSearchQuery(searchQuery);
+    }
+  }, [searchQuery]);
+
+  const handleLocalSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setLocalSearchQuery(newValue);
+    // Call parent handler
+    onSearchChange(e);
+  };
+
+  const handleClearSearch = () => {
+    setLocalSearchQuery("");
+    onSearchChange({
+      target: { value: "" },
+    } as React.ChangeEvent<HTMLInputElement>);
+  };
+
   const loadMoreRef = useInfiniteScroll({
     hasNextPage,
     isFetchingNextPage,
@@ -134,21 +161,19 @@ export default function JobList({
               )}
             </div>
             <Input
+              ref={inputRef}
               type="text"
               placeholder="Search jobs, companies, skills..."
-              value={searchQuery}
-              onChange={onSearchChange}
-              disabled={false}
+              value={localSearchQuery}
+              onChange={handleLocalSearchChange}
               className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-gray-500"
+              autoComplete="off"
+              spellCheck="false"
             />
-            {searchQuery && (
+            {localSearchQuery && (
               <button
                 type="button"
-                onClick={() =>
-                  onSearchChange({
-                    target: { value: "" },
-                  } as React.ChangeEvent<HTMLInputElement>)
-                }
+                onClick={handleClearSearch}
                 className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <span className="text-lg">×</span>
