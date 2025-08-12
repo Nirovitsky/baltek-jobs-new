@@ -168,7 +168,7 @@ export default function JobList({
     <div className="h-full flex flex-col w-[400px]">
       {renderSearchBar()}
 
-      <div className="infinite-scroll flex-1 overflow-y-auto min-h-0 space-y-3 p-3">
+      <div className="infinite-scroll flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
         {jobs.map((job) => (
           <JobCard
             key={job.id}

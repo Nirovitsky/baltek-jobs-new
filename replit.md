@@ -12,6 +12,8 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 
 ## Recent Changes (August 12, 2025)
 
+- **Jobs Page UX Improvements**: Fixed critical navigation and scroll position issues. When users click a job, the navbar no longer updates unnecessarily and the job list maintains its scroll position. Implemented `window.history.replaceState()` instead of router navigation to prevent scroll resets and added caching controls to prevent unnecessary navbar re-renders.
+
 - **Dark Mode Typography Fix**: Fixed title color contrast issue in Terms and Agreement and Privacy Policy pages. All h3 headings now use proper `text-foreground` class for optimal visibility in both light and dark modes.
 
 - **Migration Completed**: Successfully migrated project from Replit Agent to standard Replit environment

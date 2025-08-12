@@ -39,6 +39,8 @@ export default function Navbar({}: NavbarProps) {
     queryFn: () => ApiClient.getNotifications({ page_size: 5 }),
     retry: false,
     enabled: !!user,
+    staleTime: 30000, // Cache for 30 seconds to prevent unnecessary re-fetches
+    refetchOnWindowFocus: false, // Prevent refetch on route changes
   });
 
   const notifications = notificationsData?.results || [];
