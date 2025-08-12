@@ -1,5 +1,4 @@
-import { apiRequest } from "./queryClient";
-import type { LoginRequest, RegisterRequest, UserProfile } from "@shared/schema";
+import type { UserProfile } from "@shared/schema";
 
 const API_BASE = "https://api.baltek.net/api";
 
@@ -29,29 +28,7 @@ export class AuthService {
     return !!this.getToken();
   }
 
-  static async login(credentials: LoginRequest): Promise<{ access: string; refresh: string }> {
-    try {
-      const response = await fetch(`${API_BASE}/token/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      });
 
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ detail: "Login failed" }));
-        throw new Error(error.detail || "Login failed");
-      }
-
-      const tokens = await response.json();
-      this.setTokens(tokens.access, tokens.refresh);
-      return tokens;
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
-  }
 
   // OAuth2 PKCE login initiation - delegates authentication to OAuth server
   static async startOAuthLogin(): Promise<void> {
@@ -84,41 +61,7 @@ export class AuthService {
     window.location.href = authUrl;
   }
 
-  static async register(userData: RegisterRequest): Promise<UserProfile> {
-    try {
-      const response = await fetch(`${API_BASE}/register/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
 
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ detail: "Registration failed" }));
-        throw new Error(error.detail || "Registration failed");
-      }
-
-      return response.json();
-    } catch (error) {
-      console.warn('External API unavailable, using demo registration:', error);
-      // Demo registration for when API is unavailable
-      return {
-        id: Math.floor(Math.random() * 1000),
-        phone: userData.phone,
-        email: userData.email,
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        bio: '',
-        location: '',
-        avatar: '',
-        skills: [],
-        linkedin_url: '',
-        github_url: '',
-        portfolio_url: ''
-      };
-    }
-  }
 
   static async refreshToken(): Promise<string> {
     const refreshToken = this.getRefreshToken();
@@ -161,9 +104,34 @@ export class AuthService {
 
   static async logout(): Promise<void> {
     console.log('Logging out user and clearing tokens...');
+    
+    // Try to revoke tokens via OAuth if available
+    try {
+      const accessToken = this.getToken();
+      const refreshToken = this.getRefreshToken();
+      
+      if (accessToken || refreshToken) {
+        const { OAuth2PKCEService } = await import('./oauth');
+        const oauthConfig = {
+          clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
+          authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
+          tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
+          redirectUri: `${window.location.origin}/auth/callback`,
+          scopes: [],
+        };
+        
+        if (oauthConfig.clientId && oauthConfig.tokenUrl && accessToken) {
+          const oauthService = new OAuth2PKCEService(oauthConfig);
+          await oauthService.logout(accessToken, refreshToken || undefined);
+        }
+      }
+    } catch (error) {
+      console.warn('Error during OAuth logout:', error);
+    }
+    
     this.clearTokens();
     // Use window.location to ensure a full page refresh and clear any cached state
-    window.location.href = "/login";
+    window.location.href = "/";
   }
 
   static getAuthHeaders(): Record<string, string> {

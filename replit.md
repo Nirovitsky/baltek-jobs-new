@@ -9,6 +9,7 @@ The Baltek Jobs Platform is a professional job search application built with Rea
 Preferred communication style: Simple, everyday language.
 UI/UX Requirements: Two-column layout (jobs left, details right), infinite scroll, primary color #1877F2, simple interface for average users. Enhanced date picker with easy year/month selection for better user experience in profile forms.
 Backend Integration: External Baltek API (https://api.baltek.net/api/) for all data operations.
+Authentication: OAuth2 backend handles all login/register functionality - no client-side authentication forms needed.
 
 ## System Architecture
 
@@ -20,7 +21,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **State Management**: TanStack Query (React Query) for server state management, caching, and background updates.
 - **Form Handling**: React Hook Form with Zod validation for type-safe form validation.
 - **User Interface Design**: Modular component architecture, mobile-first responsive design, CSS custom properties for theming, infinite scroll, modals, dropdowns, and real-time search with visual feedback and skeleton loaders. Consistent layout system with unified body widths across pages.
-- **Authentication Flow**: JWT-based authentication with access and refresh tokens, automatic token refresh, route protection, and local storage for session persistence. OAuth2 PKCE is implemented for enhanced security.
+- **Authentication Flow**: OAuth2 PKCE-based authentication with JWT tokens, automatic token refresh, route protection, and local storage for session persistence. All login/register handled by external OAuth2 server.
 - **Features**: Includes a "Copy URL" feature for job details, and rich link preview cards for job URLs in chat messages. Comprehensive file upload functionality for chat attachments. Robust notification system integrated with the Baltek API. Simplified settings page with language/theme selection, account deletion, and info links.
 
 ### Backend Architecture
