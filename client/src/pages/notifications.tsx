@@ -150,77 +150,75 @@ function NotificationCard({
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div
-        onClick={handleCardClick}
-        className={`group relative border rounded-xl p-5 transition-all duration-200 hover:shadow-lg ${
-          notification.actionUrl ? 'cursor-pointer' : ''
-        } ${
-          !notification.isRead
-            ? "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800/50 shadow-sm"
-            : "bg-card border-border hover:border-input"
-        }`}
-      >
-        <div className="flex items-start gap-4">
-          {/* Icon */}
-          <div
-            className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
-              !notification.isRead
-                ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 shadow-sm"
-                : "bg-muted text-muted-foreground"
-            }`}
-          >
-            <NotificationIcon type={notification.type} />
+    <div
+      onClick={handleCardClick}
+      className={`group relative border rounded-xl p-4 transition-all duration-200 hover:shadow-lg ${
+        notification.actionUrl ? 'cursor-pointer' : ''
+      } ${
+        !notification.isRead
+          ? "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800/50 shadow-sm"
+          : "bg-card border-border hover:border-input"
+      }`}
+    >
+      <div className="flex items-start gap-3">
+        {/* Icon */}
+        <div
+          className={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
+            !notification.isRead
+              ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 shadow-sm"
+              : "bg-muted text-muted-foreground"
+          }`}
+        >
+          <NotificationIcon type={notification.type} />
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-3 mb-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3
+                className={`font-semibold leading-tight text-sm ${
+                  !notification.isRead
+                    ? "text-foreground"
+                    : "text-muted-foreground"
+                }`}
+              >
+                {notification.title}
+              </h3>
+              {!notification.isRead && (
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse"></div>
+              )}
+              <Badge
+                variant="secondary"
+                className={`text-xs font-medium px-1.5 py-0.5 ${priorityColors[notification.priority]}`}
+              >
+                {notification.priority}
+              </Badge>
+            </div>
           </div>
 
-          {/* Content */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-3 mb-2">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3
-                  className={`font-semibold leading-tight ${
-                    !notification.isRead
-                      ? "text-foreground"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {notification.title}
-                </h3>
-                {!notification.isRead && (
-                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                )}
-                <Badge
-                  variant="secondary"
-                  className={`text-xs font-medium px-2 py-0.5 ${priorityColors[notification.priority]}`}
-                >
-                  {notification.priority}
-                </Badge>
-              </div>
-            </div>
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground/60 mb-2 leading-snug">
+            {notification.description}
+          </p>
 
-            <p className="text-sm text-muted-foreground dark:text-muted-foreground/60 mb-3 leading-relaxed">
-              {notification.description}
-            </p>
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
+              {notification.createdAt && !isNaN(notification.createdAt.getTime()) 
+                ? formatDistanceToNow(notification.createdAt, { addSuffix: true })
+                : "Unknown time"}
+            </span>
 
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
-                {notification.createdAt && !isNaN(notification.createdAt.getTime()) 
-                  ? formatDistanceToNow(notification.createdAt, { addSuffix: true })
-                  : "Unknown time"}
-              </span>
-
-              {!notification.isRead && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleMarkAsRead}
-                  data-action="mark-read"
-                  className="text-xs px-3 py-1 hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 transition-colors"
-                >
-                  Mark as read
-                </Button>
-              )}
-            </div>
+            {!notification.isRead && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleMarkAsRead}
+                data-action="mark-read"
+                className="text-xs px-2 py-1 hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 transition-colors"
+              >
+                Mark as read
+              </Button>
+            )}
           </div>
         </div>
       </div>
