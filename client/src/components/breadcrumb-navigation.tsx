@@ -18,46 +18,46 @@ interface BreadcrumbItem {
 
 const routeMap: Record<string, BreadcrumbItem[]> = {
   "/profile": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Profile", icon: User }
   ],
   "/applications": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Applications", icon: Briefcase }
   ],
   "/bookmarks": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Bookmarks", icon: Bookmark }
   ],
   "/settings": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Settings", icon: Settings }
   ],
   "/chat": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Chat", icon: MessageCircle }
   ],
   "/notifications": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Notifications", icon: Bell }
   ],
   "/terms": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Settings", href: "/settings", icon: Settings },
     { label: "Terms and Agreement" }
   ],
   "/privacy-policy": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Settings", href: "/settings", icon: Settings },
     { label: "Privacy Policy" }
   ],
   "/about-us": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Settings", href: "/settings", icon: Settings },
     { label: "About Us" }
   ],
   "/contact-us": [
-    { label: "Home", href: "/", icon: Home },
+    { label: "Home", href: "/jobs", icon: Home },
     { label: "Settings", href: "/settings", icon: Settings },
     { label: "Contact Us" }
   ]
@@ -68,8 +68,8 @@ const getCompanyBreadcrumb = (path: string): BreadcrumbItem[] => {
   const companyIdMatch = path.match(/^\/company\/(\d+)$/);
   if (companyIdMatch) {
     return [
-      { label: "Home", href: "/", icon: Home },
-      { label: "Companies", href: "/", icon: Building },
+      { label: "Home", href: "/jobs", icon: Home },
+      { label: "Companies", href: "/jobs", icon: Building },
       { label: "Company Profile", icon: Building }
     ];
   }

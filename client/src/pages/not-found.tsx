@@ -39,7 +39,7 @@ export default function NotFound() {
                 size="lg" 
                 className="w-full sm:w-auto min-w-[160px]"
               >
-                <Link href="/">
+                <Link href="/jobs">
                   <Home className="h-4 w-4 mr-2" />
                   Go Home
                 </Link>
@@ -64,7 +64,7 @@ export default function NotFound() {
                   if (window.history.length > 1) {
                     window.history.back();
                   } else {
-                    window.location.href = '/';
+                    window.location.href = '/jobs';
                   }
                 }}
                 className="w-full sm:w-auto min-w-[160px]"

@@ -53,7 +53,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (isAuthenticated) {
-    return <Redirect to="/" />;
+    return <Redirect to="/jobs" />;
   }
 
   return <>{children}</>;
@@ -169,9 +169,7 @@ function Router() {
       </Route>
       <Route path="/">
         <ProtectedRoute>
-          <ProtectedLayout>
-            <Jobs />
-          </ProtectedLayout>
+          <Redirect to="/jobs" />
         </ProtectedRoute>
       </Route>
       <Route component={NotFound} />

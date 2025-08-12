@@ -50,7 +50,7 @@ export default function Navbar({}: NavbarProps) {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center flex-1">
-            <Link href="/" className="flex-shrink-0">
+            <Link href="/jobs" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
                 <img src={baltekIcon} alt="Baltek" className="h-10 w-10" />
                 <h1 className="text-xl font-bold text-primary">baltek jobs</h1>
