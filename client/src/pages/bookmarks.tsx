@@ -89,7 +89,7 @@ export default function Bookmarks({}: BookmarksProps) {
                       <Bookmark className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-foreground">0 Bookmarks</h2>
+                      <h2 className="text-lg font-semibold text-primary">0 Bookmarks</h2>
                     </div>
                   </div>
                 </div>
