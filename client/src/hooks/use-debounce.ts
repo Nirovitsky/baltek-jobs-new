@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 /**
  * Custom hook that debounces a value by a given delay
@@ -8,15 +8,25 @@ import { useState, useEffect } from 'react';
  */
 export function useDebounce<T>(value: T, delay: number = 300): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
+  const timeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
+    // Clear existing timeout if it exists
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    
     // Set up a timer to update the debounced value after the delay
-    const timer = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       setDebouncedValue(value);
     }, delay);
 
     // Clean up the timer if value changes before delay completes
-    return () => clearTimeout(timer);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [value, delay]);
 
   return debouncedValue;

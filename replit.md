@@ -13,6 +13,9 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 ## Recent Changes (August 12, 2025)
 
 - **Migration Completed**: Successfully migrated project from Replit Agent to standard Replit environment
+- **Infinite Scroll Fix**: Fixed infinite scroll pagination logic in jobs list - was not loading jobs after initial 10 due to incorrect offset calculation and intersection observer issues
+- **Search Input Responsiveness**: Improved search input responsiveness during debounce period by reducing delay to 400ms, optimizing debounce hook with proper timeout management, and adding visual loading indicator to show search progress
+- **User Experience Enhancements**: Added visual feedback for search operations, improved intersection observer reliability, and ensured input field remains fully responsive during all search operations
 - **Architecture Overhaul**: Completely removed Express proxy server that previously acted as middleware between frontend and external API
 - **Direct API Integration**: All API requests now go directly to https://api.baltek.net/api from the React frontend
 - **Unified ApiClient**: Consolidated all API interactions into a single `ApiClient` class with comprehensive method coverage (40+ methods)

@@ -6,7 +6,7 @@ import JobCard from "@/components/job-card";
 import JobListSkeleton from "@/components/job-list-skeleton";
 import JobCardSkeleton from "@/components/job-card-skeleton";
 
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 
 interface JobListProps {
   jobs: Job[];
@@ -20,6 +20,7 @@ interface JobListProps {
   searchQuery: string;
   onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearchSubmit: (e: React.FormEvent) => void;
+  isSearching?: boolean;
 }
 
 export default function JobList({
@@ -34,6 +35,7 @@ export default function JobList({
   searchQuery,
   onSearchChange,
   onSearchSubmit,
+  isSearching = false,
 }: JobListProps) {
   const loadMoreRef = useInfiniteScroll({
     hasNextPage,
@@ -125,13 +127,18 @@ export default function JobList({
         <form onSubmit={onSearchSubmit} className="relative">
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" />
+              {isSearching ? (
+                <Loader2 className="h-5 w-5 text-primary animate-spin" />
+              ) : (
+                <Search className="h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" />
+              )}
             </div>
             <Input
               type="text"
               placeholder="Search jobs, companies, skills..."
               value={searchQuery}
               onChange={onSearchChange}
+              disabled={false}
               className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-gray-500"
             />
             {searchQuery && (

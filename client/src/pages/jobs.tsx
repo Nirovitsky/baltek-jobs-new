@@ -25,8 +25,11 @@ export default function Jobs({}: JobsProps) {
   );
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Debounce search query with 700ms delay
-  const debouncedSearchQuery = useDebounce(searchQuery, 700);
+  // Debounce search query with 400ms delay for better responsiveness
+  const debouncedSearchQuery = useDebounce(searchQuery, 400);
+  
+  // Track if we're currently searching (debounced query different from current query)
+  const isSearching = searchQuery !== debouncedSearchQuery;
 
   const {
     data,
@@ -145,7 +148,8 @@ export default function Jobs({}: JobsProps) {
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
+    const newValue = e.target.value;
+    setSearchQuery(newValue);
     setSelectedJobId(null); // Clear selection when search changes
   };
 
@@ -191,6 +195,7 @@ export default function Jobs({}: JobsProps) {
               searchQuery={searchQuery}
               onSearchChange={handleSearchChange}
               onSearchSubmit={handleSearchSubmit}
+              isSearching={isSearching}
             />
           </div>
 
