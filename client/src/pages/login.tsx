@@ -7,13 +7,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { AuthService } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
-import { Briefcase } from "lucide-react";
+import { Briefcase, LogIn, Shield } from "lucide-react";
 import { useState } from "react";
 
 export default function Login() {
   const { login, loginError, loginLoading } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [oauthLoading, setOauthLoading] = useState(false);
+  const { toast } = useToast();
 
   const {
     register,
@@ -34,6 +39,21 @@ export default function Login() {
 
   const onSubmit = (data: LoginRequest) => {
     login(data);
+  };
+
+  const handleOAuthLogin = async () => {
+    try {
+      setOauthLoading(true);
+      await AuthService.startOAuthLogin();
+    } catch (error) {
+      console.error('OAuth login failed:', error);
+      toast({
+        title: "OAuth Login Failed",
+        description: error instanceof Error ? error.message : "Failed to start OAuth login",
+        variant: "destructive",
+      });
+      setOauthLoading(false);
+    }
   };
 
   return (
@@ -99,11 +119,36 @@ export default function Login() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={loginLoading}
+                disabled={loginLoading || oauthLoading}
               >
                 {loginLoading ? "Signing in..." : "Sign in"}
               </Button>
             </form>
+
+            {/* OAuth Login Section */}
+            {import.meta.env.VITE_OAUTH_CLIENT_ID && (
+              <>
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <Separator className="w-full" />
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-background px-2 text-muted-foreground">Or continue with</span>
+                  </div>
+                </div>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleOAuthLogin}
+                  disabled={loginLoading || oauthLoading}
+                >
+                  <Shield className="mr-2 h-4 w-4" />
+                  {oauthLoading ? "Connecting..." : "OAuth Sign in"}
+                </Button>
+              </>
+            )}
 
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
