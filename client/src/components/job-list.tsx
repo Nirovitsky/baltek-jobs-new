@@ -50,7 +50,7 @@ export default function JobList({
   if (jobs.length === 0) {
     return (
       <div className="h-full flex flex-col w-[400px]">
-        <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
+        <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
           {/* Job Count with Icon */}
           <div className="flex items-center space-x-2">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
@@ -101,7 +101,7 @@ export default function JobList({
 
   return (
     <div className="h-full flex flex-col w-[400px]">
-      <div className="px-3 pt-6 pb-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
+      <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
         {/* Job Count with Icon */}
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
