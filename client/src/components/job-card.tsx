@@ -151,8 +151,8 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
         isSelected 
           ? "ring-2 ring-primary bg-primary/5" 
           : (isViewed && !disableViewedOpacity) 
-          ? "opacity-60 hover:bg-gray-50/80" 
-          : "hover:bg-gray-50/80"
+          ? "opacity-60 hover:bg-muted/80" 
+          : "hover:bg-muted/80"
       }`}
       onClick={() => handleJobSelect(job)}
     >
@@ -160,12 +160,12 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
         <div className="flex flex-col space-y-3">
           {/* Top Row: Job Title and Salary */}
           <div className="flex justify-between items-start">
-            <h3 className="font-semibold text-base text-gray-900 line-clamp-2 leading-tight flex-1 pr-4">
+            <h3 className="font-semibold text-base text-foreground line-clamp-2 leading-tight flex-1 pr-4">
               {job.title || 'Job Title'}
             </h3>
             <div className="flex items-center gap-2 flex-shrink-0">
               {job.my_application_id && !hideAppliedBadge && (
-                <div className="flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                <div className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 text-xs font-medium rounded-full">
                   <CheckCircle className="w-3 h-3" />
                   <span>Applied</span>
                 </div>
@@ -178,14 +178,14 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
           
           {/* Tags Row */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
+            <span className="px-2 py-0.5 bg-muted text-foreground text-xs font-medium rounded flex-shrink-0">
               {formatJobType(job.job_type)}
             </span>
-            <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
+            <span className="px-2 py-0.5 bg-muted text-foreground text-xs font-medium rounded flex-shrink-0">
               {formatWorkplaceType(job.workplace_type)}
             </span>
             {(job as any).minimum_education_level && (
-              <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs font-medium rounded flex-shrink-0">
+              <span className="px-2 py-0.5 bg-muted text-foreground text-xs font-medium rounded flex-shrink-0">
                 {(job as any).minimum_education_level}
               </span>
             )}
@@ -202,16 +202,16 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                     className="w-6 h-6 object-cover rounded-full"
                   />
                 ) : (
-                  <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border border-gray-200">
-                    <Building className="w-3 h-3 text-gray-500" />
+                  <div className="w-6 h-6 bg-muted rounded-full flex items-center justify-center border border-border">
+                    <Building className="w-3 h-3 text-muted-foreground" />
                   </div>
                 )}
               </div>
-              <span className="font-medium text-gray-900 text-sm truncate">
+              <span className="font-medium text-foreground text-sm truncate">
                 {job.organization?.display_name || job.organization?.name || 'Unknown'}
               </span>
             </div>
-            <span className="text-xs text-gray-500 flex-shrink-0">
+            <span className="text-xs text-muted-foreground flex-shrink-0">
               {job.location?.name || 'Unknown'}
             </span>
           </div>

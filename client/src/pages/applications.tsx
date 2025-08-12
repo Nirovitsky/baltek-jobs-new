@@ -96,15 +96,15 @@ export default function ApplicationsPage() {
     switch (status?.toLowerCase()) {
       case 'approved':
       case 'accepted':
-        return <CheckCircle className="w-4 h-4 text-green-600" />;
+        return <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-400" />;
       case 'rejected':
       case 'declined':
-        return <XCircle className="w-4 h-4 text-red-600" />;
+        return <XCircle className="w-4 h-4 text-destructive" />;
       case 'pending':
       case 'under_review':
-        return <Clock className="w-4 h-4 text-yellow-600" />;
+        return <Clock className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />;
       default:
-        return <AlertCircle className="w-4 h-4 text-gray-600" />;
+        return <AlertCircle className="w-4 h-4 text-muted-foreground" />;
     }
   };
 
@@ -112,15 +112,15 @@ export default function ApplicationsPage() {
     switch (status?.toLowerCase()) {
       case 'approved':
       case 'accepted':
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200";
       case 'rejected':
       case 'declined':
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 dark:bg-red-900/40 text-red-800 dark:text-red-200";
       case 'pending':
       case 'under_review':
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-200";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted text-foreground";
     }
   };
 
@@ -132,10 +132,10 @@ export default function ApplicationsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             <div className="lg:col-span-1 h-full flex-shrink-0">
               <div className="h-full flex flex-col w-full">
-                <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+                <div className="px-3 py-4 border-b bg-muted rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                      <Briefcase className="h-4 w-4 text-gray-400" />
+                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                      <Briefcase className="h-4 w-4 text-muted-foreground/60" />
                     </div>
                     <div>
                       <Skeleton className="h-6 w-32" />
@@ -166,10 +166,10 @@ export default function ApplicationsPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-foreground mb-2">
             Something went wrong
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {error instanceof Error ? error.message : "Failed to load applications"}
           </p>
         </div>
@@ -186,22 +186,22 @@ export default function ApplicationsPage() {
           <div className="flex gap-6 h-full">
             <div className="w-[30%] h-full flex-shrink-0">
               <div className="h-full flex flex-col w-full">
-                <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+                <div className="px-3 py-4 border-b bg-muted rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                      <Briefcase className="h-4 w-4 text-gray-500" />
+                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                      <Briefcase className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
-                      <h2 className="text-lg font-semibold text-gray-900">0 Applications</h2>
+                      <h2 className="text-lg font-semibold text-foreground">0 Applications</h2>
                     </div>
                   </div>
                 </div>
                 
                 <div className="flex-1 min-h-0 flex items-center justify-center">
                   <div className="text-center">
-                    <Briefcase className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">No applications yet</h3>
-                    <p className="text-gray-600">Jobs you apply to will appear here for tracking.</p>
+                    <Briefcase className="h-12 w-12 text-muted-foreground/60 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-foreground mb-2">No applications yet</h3>
+                    <p className="text-muted-foreground">Jobs you apply to will appear here for tracking.</p>
                   </div>
                 </div>
               </div>
@@ -210,10 +210,10 @@ export default function ApplicationsPage() {
             <div className="w-[70%] h-full flex-shrink-0 min-w-0 pl-8">
               <div className="h-full w-full flex items-center justify-center">
                 <div className="text-center">
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  <h3 className="text-lg font-medium text-foreground mb-2">
                     Select an application to view details
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-muted-foreground">
                     Choose an application from the list to see more information
                   </p>
                 </div>
@@ -232,7 +232,7 @@ export default function ApplicationsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
           <div className="lg:col-span-1 h-full flex-shrink-0">
             <div className="h-full flex flex-col w-full">
-              <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0">
+              <div className="px-3 py-4 border-b bg-muted rounded-t-lg flex-shrink-0">
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
                     <Briefcase className="h-4 w-4 text-white" />
@@ -268,10 +268,10 @@ export default function ApplicationsPage() {
               ) : appliedJobs.length > 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <h3 className="text-lg font-medium text-foreground mb-2">
                       Select an application to view details
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                       Choose an application from the list to see more information
                     </p>
                   </div>

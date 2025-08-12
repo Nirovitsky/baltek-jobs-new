@@ -58,9 +58,9 @@ function CompanySuggestions() {
   const suggestions = companiesWithCategories.slice(0, 10) || [];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden w-full">
-      <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+    <div className="bg-background dark:bg-background rounded-xl shadow-sm border border-border dark:border-border overflow-hidden w-full">
+      <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-border dark:border-border">
+        <h3 className="text-lg font-semibold text-foreground dark:text-foreground flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" />
           Suggested Companies
         </h3>
@@ -79,7 +79,7 @@ function CompanySuggestions() {
                 </div>
                 <Skeleton className="h-4 w-4" />
               </div>
-              {i < 9 && <hr className="border-gray-200 dark:border-gray-700" />}
+              {i < 9 && <hr className="border-border dark:border-border" />}
             </div>
           ))}
         </div>
@@ -88,7 +88,7 @@ function CompanySuggestions() {
           {suggestions.map((company: Organization, index: number) => (
             <div key={company.id}>
               <Link href={`/company/${company.id}`}>
-                <div className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group">
+                <div className="flex items-center gap-4 p-4 hover:bg-muted dark:hover:bg-muted/50 transition-all duration-200 cursor-pointer group">
                   <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
                     <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
                     <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/20 text-primary text-sm font-bold border border-primary/20">
@@ -102,31 +102,31 @@ function CompanySuggestions() {
                   </Avatar>
                   
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors text-sm">
+                    <h4 className="font-semibold text-foreground dark:text-foreground truncate group-hover:text-primary transition-colors text-sm">
                       {company.display_name || company.official_name}
                     </h4>
                     
                     <div className="flex items-center gap-1 mt-1">
-                      <Building2 className="h-3 w-3 text-gray-500" />
-                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                      <Building2 className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground dark:text-muted-foreground/60 font-medium">
                         {(company as any).mockCategory}
                       </span>
                     </div>
                     
                     {company.location?.name && (
                       <div className="flex items-center gap-1 mt-1">
-                        <MapPin className="h-3 w-3 text-gray-400" />
-                        <span className="text-xs text-gray-400 truncate">
+                        <MapPin className="h-3 w-3 text-muted-foreground/60" />
+                        <span className="text-xs text-muted-foreground/60 truncate">
                           {company.location.name}
                         </span>
                       </div>
                     )}
                   </div>
                   
-                  <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary transition-colors" />
+                  <ExternalLink className="h-4 w-4 text-muted-foreground/60 group-hover:text-primary transition-colors" />
                 </div>
               </Link>
-              {index < suggestions.length - 1 && <hr className="border-gray-200 dark:border-gray-700" />}
+              {index < suggestions.length - 1 && <hr className="border-border dark:border-border" />}
             </div>
           ))}
         </div>
@@ -359,8 +359,8 @@ export default function Profile() {
 
             {/* Right Column - Company Suggestions Skeleton */}
             <div className="lg:col-span-1">
-              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden w-full">
-                <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700">
+              <div className="bg-background dark:bg-background rounded-xl shadow-sm border border-border dark:border-border overflow-hidden w-full">
+                <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-border dark:border-border">
                   <Skeleton className="h-6 w-40" />
                 </div>
                 <div>
@@ -375,7 +375,7 @@ export default function Profile() {
                         </div>
                         <Skeleton className="h-4 w-4" />
                       </div>
-                      {i < 9 && <hr className="border-gray-200 dark:border-gray-700" />}
+                      {i < 9 && <hr className="border-border dark:border-border" />}
                     </div>
                   ))}
                 </div>
@@ -455,7 +455,7 @@ export default function Profile() {
                         <p className="text-muted-foreground">{displayProfile.profession}</p>
                       )}
                       {displayProfile.bio && (
-                        <p className="text-sm text-gray-600 mt-1">{displayProfile.bio}</p>
+                        <p className="text-sm text-muted-foreground mt-1">{displayProfile.bio}</p>
                       )}
                     </div>
                   </div>
@@ -465,7 +465,7 @@ export default function Profile() {
                     <div className="space-y-1">
                       <label className="text-sm font-medium text-foreground">Email</label>
                       <p className="text-foreground flex items-center">
-                        <Mail className="w-4 h-4 mr-2 text-gray-400" />
+                        <Mail className="w-4 h-4 mr-2 text-muted-foreground/60" />
                         {displayProfile.email || "Not provided"}
                       </p>
                     </div>
@@ -473,7 +473,7 @@ export default function Profile() {
                     <div className="space-y-1">
                       <label className="text-sm font-medium text-foreground">Phone</label>
                       <p className="text-foreground flex items-center">
-                        <Phone className="w-4 h-4 mr-2 text-gray-400" />
+                        <Phone className="w-4 h-4 mr-2 text-muted-foreground/60" />
                         {displayProfile.phone || "Not provided"}
                       </p>
                     </div>
@@ -481,7 +481,7 @@ export default function Profile() {
                     <div className="space-y-1">
                       <label className="text-sm font-medium text-foreground">Location</label>
                       <p className="text-foreground flex items-center">
-                        <MapPin className="w-4 h-4 mr-2 text-gray-400" />
+                        <MapPin className="w-4 h-4 mr-2 text-muted-foreground/60" />
                         {typeof displayProfile.location === 'string' 
                           ? displayProfile.location 
                           : displayProfile.location?.name || displayProfile.location || "Not provided"}
@@ -707,10 +707,10 @@ export default function Profile() {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 bg-gray-50 rounded-lg">
-                  <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-600 font-medium">No resumes uploaded</p>
-                  <p className="text-sm text-gray-500">Upload your resume to showcase your experience to employers.</p>
+                <div className="text-center py-8 bg-muted rounded-lg">
+                  <FileText className="w-12 h-12 text-muted-foreground/60 mx-auto mb-3" />
+                  <p className="text-muted-foreground font-medium">No resumes uploaded</p>
+                  <p className="text-sm text-muted-foreground">Upload your resume to showcase your experience to employers.</p>
                   <Button
                     variant="outline"
                     size="sm"

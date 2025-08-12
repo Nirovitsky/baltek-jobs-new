@@ -60,14 +60,14 @@ export default function ChatWidget() {
   return (
     <div className="fixed bottom-4 right-4 w-80 z-40">
       <Card className="shadow-lg">
-        <CardHeader className="bg-primary text-white rounded-t-lg">
+        <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg">Messages</CardTitle>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsOpen(false)}
-              className="text-white hover:bg-white/20"
+              className="text-primary-foreground hover:bg-background/20"
             >
               <X className="w-4 h-4" />
             </Button>
@@ -77,17 +77,17 @@ export default function ChatWidget() {
         <CardContent className="p-0">
           <div className="max-h-64 overflow-y-auto">
             {isLoading ? (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-muted-foreground">
                 Loading conversations...
               </div>
             ) : error ? (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-muted-foreground">
                 <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>Failed to load conversations</p>
                 <p className="text-xs">Please try again later</p>
               </div>
             ) : (chatRooms as any)?.results?.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">
+              <div className="p-4 text-center text-muted-foreground">
                 <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>No messages yet</p>
                 <p className="text-xs">Start applying to jobs to chat with employers</p>
@@ -96,25 +96,25 @@ export default function ChatWidget() {
               (chatRooms as any)?.results?.map((room: ChatRoom) => (
                 <div
                   key={room.id}
-                  className="p-3 border-b hover:bg-gray-50 cursor-pointer transition-colors"
+                  className="p-3 border-b hover:bg-muted cursor-pointer transition-colors"
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Building className="w-5 h-5 text-gray-400" />
+                    <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center flex-shrink-0">
+                      <Building className="w-5 h-5 text-muted-foreground/60" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold text-gray-900 text-sm truncate">
+                      <p className="font-semibold text-foreground text-sm truncate">
                         {room.name}
                       </p>
                       {room.last_message && (
-                        <p className="text-xs text-gray-500 truncate">
+                        <p className="text-xs text-muted-foreground truncate">
                           {room.last_message.content}
                         </p>
                       )}
                     </div>
                     <div className="flex flex-col items-end space-y-1">
                       {room.updated_at && (
-                        <div className="flex items-center text-xs text-gray-400">
+                        <div className="flex items-center text-xs text-muted-foreground/60">
                           <Clock className="w-3 h-3 mr-1" />
                           {getTimeAgo(room.updated_at)}
                         </div>

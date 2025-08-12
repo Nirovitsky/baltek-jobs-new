@@ -71,7 +71,7 @@ export default function AboutUs() {
                     <Users className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="font-semibold mb-2">People First</h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Every decision we make prioritizes the success and well-being of our users.
                   </p>
                 </div>
@@ -81,7 +81,7 @@ export default function AboutUs() {
                     <Target className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="font-semibold mb-2">Innovation</h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     We continuously evolve our technology to provide the best job matching experience.
                   </p>
                 </div>
@@ -91,7 +91,7 @@ export default function AboutUs() {
                     <Award className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="font-semibold mb-2">Excellence</h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     We strive for the highest quality in everything we do, from our platform to our support.
                   </p>
                 </div>
@@ -108,19 +108,19 @@ export default function AboutUs() {
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">50K+</div>
-                  <div className="text-sm text-gray-600">Active Job Seekers</div>
+                  <div className="text-sm text-muted-foreground">Active Job Seekers</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">5K+</div>
-                  <div className="text-sm text-gray-600">Partner Companies</div>
+                  <div className="text-sm text-muted-foreground">Partner Companies</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">100K+</div>
-                  <div className="text-sm text-gray-600">Job Placements</div>
+                  <div className="text-sm text-muted-foreground">Job Placements</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">95%</div>
-                  <div className="text-sm text-gray-600">Satisfaction Rate</div>
+                  <div className="text-sm text-muted-foreground">Satisfaction Rate</div>
                 </div>
               </div>
             </CardContent>
@@ -132,7 +132,7 @@ export default function AboutUs() {
               <CardTitle>Our Technology</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-600 mb-4 leading-relaxed">
+              <p className="text-muted-foreground mb-4 leading-relaxed">
                 Built with cutting-edge technology, Baltek Jobs leverages advanced algorithms and machine learning 
                 to deliver personalized job recommendations and streamline the hiring process.
               </p>
@@ -147,17 +147,17 @@ export default function AboutUs() {
           </Card>
 
           {/* Contact CTA */}
-          <Card className="text-center bg-primary text-white">
+          <Card className="text-center bg-primary text-primary-foreground">
             <CardContent className="py-8">
               <h3 className="text-2xl font-bold mb-2">Ready to Start Your Career Journey?</h3>
               <p className="mb-4 opacity-90">
                 Join thousands of professionals who have found their dream jobs through Baltek Jobs.
               </p>
               <div className="space-x-4">
-                <a href="/" className="inline-block bg-white text-primary px-6 py-2 rounded-lg font-medium hover:bg-gray-100 transition-colors">
+                <a href="/" className="inline-block bg-background text-primary px-6 py-2 rounded-lg font-medium hover:bg-muted transition-colors">
                   Browse Jobs
                 </a>
-                <a href="/contact-us" className="inline-block border border-white px-6 py-2 rounded-lg font-medium hover:bg-white/10 transition-colors">
+                <a href="/contact-us" className="inline-block border border-white px-6 py-2 rounded-lg font-medium hover:bg-background/10 transition-colors">
                   Contact Us
                 </a>
               </div>

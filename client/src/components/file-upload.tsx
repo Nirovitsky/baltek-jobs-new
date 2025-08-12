@@ -87,13 +87,13 @@ export default function FileUpload({
 
   if (selectedFile) {
     return (
-      <div className="border-2 border-green-200 bg-green-50 rounded-lg p-4">
+      <div className="border-2 border-green-200 dark:border-green-700 bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <CheckCircle className="w-5 h-5 text-green-600" />
+            <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
             <div>
-              <p className="font-medium text-green-900">{selectedFile.name}</p>
-              <p className="text-sm text-green-700">{formatFileSize(selectedFile.size)}</p>
+              <p className="font-medium text-green-900 dark:text-green-100">{selectedFile.name}</p>
+              <p className="text-sm text-green-700 dark:text-green-300">{formatFileSize(selectedFile.size)}</p>
             </div>
           </div>
           <Button
@@ -101,7 +101,7 @@ export default function FileUpload({
             variant="ghost"
             size="sm"
             onClick={removeFile}
-            className="text-green-700 hover:text-green-900"
+            className="text-green-700 dark:text-green-300 hover:text-green-900 dark:hover:text-green-100 dark:text-green-100"
           >
             <X className="w-4 h-4" />
           </Button>
@@ -116,18 +116,18 @@ export default function FileUpload({
       className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
         isDragActive
           ? "border-primary bg-primary/5"
-          : "border-gray-300 hover:border-primary"
+          : "border-input hover:border-primary"
       }`}
     >
       <input {...getInputProps()} />
       
       <div className="space-y-3">
         <div className="flex justify-center">
-          <Upload className={`w-8 h-8 ${isDragActive ? "text-primary" : "text-gray-400"}`} />
+          <Upload className={`w-8 h-8 ${isDragActive ? "text-primary" : "text-muted-foreground/60"}`} />
         </div>
         
         <div>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             Drag and drop your resume here, or{" "}
             <button
               type="button"
@@ -137,7 +137,7 @@ export default function FileUpload({
               browse files
             </button>
           </p>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             PDF, DOC, DOCX up to {Math.round(maxSize / 1024 / 1024)}MB
           </p>
         </div>

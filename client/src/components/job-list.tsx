@@ -84,11 +84,11 @@ export default function JobList({
 
   // Always render the search bar, even during loading
   const renderSearchBar = () => (
-    <div className="px-3 py-4 border-b bg-gray-50 rounded-t-lg flex-shrink-0 space-y-4">
+    <div className="px-3 py-4 border-b bg-muted rounded-t-lg flex-shrink-0 space-y-4">
       {/* Job Count with Icon */}
       <div className="flex items-center space-x-2">
         <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-          <Search className="h-4 w-4 text-white" />
+          <Search className="h-4 w-4 text-primary-foreground" />
         </div>
         <div>
           <h2 className="text-lg font-semibold text-primary">
@@ -109,7 +109,7 @@ export default function JobList({
             {isSearching ? (
               <Loader2 className="h-5 w-5 text-primary animate-spin" />
             ) : (
-              <Search className="h-5 w-5 text-gray-400 group-focus-within:text-primary transition-colors" />
+              <Search className="h-5 w-5 text-muted-foreground/60 group-focus-within:text-primary transition-colors" />
             )}
           </div>
           <Input
@@ -118,7 +118,7 @@ export default function JobList({
             placeholder="Search jobs, companies, skills..."
             defaultValue={searchQuery}
             onChange={handleLocalSearchChange}
-            className="pl-12 pr-4 py-3 bg-white border-gray-200 rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-gray-500"
+            className="pl-12 pr-4 py-3 bg-background border-border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-muted-foreground"
             autoComplete="off"
             spellCheck="false"
           />
@@ -126,7 +126,7 @@ export default function JobList({
             <button
               type="button"
               onClick={handleClearSearch}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute inset-y-0 right-0 pr-4 flex items-center text-muted-foreground/60 hover:text-muted-foreground transition-colors"
             >
               <span className="text-lg">×</span>
             </button>
@@ -156,8 +156,8 @@ export default function JobList({
         
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="text-center">
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
-            <p className="text-gray-600">Try adjusting your filters or search terms</p>
+            <h3 className="text-lg font-medium text-foreground mb-2">No jobs found</h3>
+            <p className="text-muted-foreground">Try adjusting your filters or search terms</p>
           </div>
         </div>
       </div>
@@ -187,11 +187,11 @@ export default function JobList({
         {/* Infinite scroll trigger */}
         <div ref={loadMoreRef} className="h-20 flex items-center justify-center">
           {hasNextPage && !isFetchingNextPage && (
-            <p className="text-sm text-gray-500">Scroll for more jobs...</p>
+            <p className="text-sm text-muted-foreground">Scroll for more jobs...</p>
           )}
           {!hasNextPage && jobs.length > 0 && (
             <div className="text-center">
-              <p className="text-sm text-gray-500">No more jobs to load</p>
+              <p className="text-sm text-muted-foreground">No more jobs to load</p>
             </div>
           )}
         </div>

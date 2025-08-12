@@ -127,7 +127,7 @@ function NotificationCard({
   onMarkAsRead: (id: number) => void;
 }) {
   const priorityColors = {
-    low: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
+    low: "bg-muted text-foreground dark:bg-background dark:text-gray-200",
     medium: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
     high: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
   };
@@ -137,7 +137,7 @@ function NotificationCard({
       className={`group relative border rounded-xl p-6 transition-all duration-200 hover:shadow-lg ${
         !notification.isRead
           ? "bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-blue-200 dark:border-blue-800/50 shadow-sm"
-          : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"
+          : "bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 hover:border-input dark:hover:border-gray-600"
       }`}
     >
       <div className="flex items-start gap-4">
@@ -146,7 +146,7 @@ function NotificationCard({
           className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
             !notification.isRead
               ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 shadow-sm"
-              : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+              : "bg-muted text-muted-foreground dark:bg-background dark:text-muted-foreground/60"
           }`}
         >
           <NotificationIcon type={notification.type} />
@@ -159,8 +159,8 @@ function NotificationCard({
               <h3
                 className={`font-semibold leading-tight ${
                   !notification.isRead
-                    ? "text-gray-900 dark:text-gray-100"
-                    : "text-gray-700 dark:text-gray-300"
+                    ? "text-foreground dark:text-gray-100"
+                    : "text-foreground dark:text-muted-foreground/60"
                 }`}
               >
                 {notification.title}
@@ -177,12 +177,12 @@ function NotificationCard({
             </div>
           </div>
 
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 leading-relaxed">
+          <p className="text-sm text-muted-foreground dark:text-muted-foreground/60 mb-4 leading-relaxed">
             {notification.description}
           </p>
 
           <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500 dark:text-gray-500 font-medium">
+            <span className="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               {notification.createdAt && !isNaN(notification.createdAt.getTime()) 
                 ? formatDistanceToNow(notification.createdAt, { addSuffix: true })
                 : "Unknown time"}
@@ -206,7 +206,7 @@ function NotificationCard({
                   onClick={() =>
                     (window.location.href = notification.actionUrl!)
                   }
-                  className="text-xs px-3 py-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                  className="text-xs px-3 py-1.5 hover:bg-muted dark:hover:bg-gray-800 transition-colors"
                 >
                   View
                 </Button>
@@ -313,17 +313,17 @@ export default function Notifications() {
   });
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <div className="h-full overflow-y-auto bg-muted dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <h1 className="text-3xl font-bold text-foreground dark:text-gray-100 mb-2">
                 Notifications
               </h1>
-              <p className="text-gray-600 dark:text-gray-400">
+              <p className="text-muted-foreground dark:text-muted-foreground/60">
                 Stay updated with your job applications and messages
               </p>
             </div>
@@ -360,7 +360,7 @@ export default function Notifications() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-3 mb-8 bg-gray-100 dark:bg-gray-800 p-1 rounded-xl">
+          <TabsList className="grid w-full max-w-md grid-cols-3 mb-8 bg-muted dark:bg-background p-1 rounded-xl">
             <TabsTrigger 
               value="all" 
               className="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700"
@@ -403,15 +403,15 @@ export default function Notifications() {
               <div className="text-center py-12">
                 <div className="max-w-md mx-auto">
                   <AlertCircle className="w-16 h-16 text-amber-400 mx-auto mb-6" />
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                  <h3 className="text-xl font-semibold text-foreground dark:text-gray-100 mb-3">
                     Notifications Coming Soon
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+                  <p className="text-muted-foreground dark:text-muted-foreground/60 mb-6 leading-relaxed">
                     The notification system is being set up on the server. This feature will be available soon!
                   </p>
-                  <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-left border border-gray-200 dark:border-gray-700">
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">In the meantime, you can:</p>
-                    <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="bg-white dark:bg-background rounded-xl p-6 text-left border border-gray-200 dark:border-gray-700">
+                    <p className="text-sm font-medium text-foreground dark:text-muted-foreground/60 mb-3">In the meantime, you can:</p>
+                    <ul className="space-y-2 text-sm text-muted-foreground dark:text-muted-foreground/60">
                       <li className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
                         Check your applications page for updates
@@ -430,11 +430,11 @@ export default function Notifications() {
               </div>
             ) : filteredNotifications.length === 0 ? (
               <div className="text-center py-12">
-                <Bell className="w-16 h-16 text-gray-400 dark:text-gray-600 mx-auto mb-6" />
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3">
+                <Bell className="w-16 h-16 text-muted-foreground/60 dark:text-muted-foreground mx-auto mb-6" />
+                <h3 className="text-xl font-semibold text-foreground dark:text-gray-100 mb-3">
                   No notifications
                 </h3>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-muted-foreground dark:text-muted-foreground/60">
                   {activeTab === "unread"
                     ? "You're all caught up! No unread notifications."
                     : activeTab === "read"

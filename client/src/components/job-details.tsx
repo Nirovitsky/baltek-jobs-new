@@ -174,10 +174,10 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     return (
       <Card className="h-full w-full">
         <CardContent className="p-6 text-center">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          <h3 className="text-lg font-semibold text-foreground mb-2">
             Failed to load job details
           </h3>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {error instanceof Error ? error.message : "Something went wrong"}
           </p>
         </CardContent>
@@ -245,13 +245,13 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   return (
     <Card className="h-full flex flex-col w-full overflow-hidden">
       {/* Fixed Header */}
-      <div className="p-6 border-b bg-white">
+      <div className="p-6 border-b bg-background">
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center space-x-4">
             <Link
               href={`/company/${job.organization?.id}`}
-              className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300 transition-colors cursor-pointer"
+              className="w-16 h-16 bg-muted rounded-full flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
             >
               {job.organization?.logo ? (
                 <img
@@ -264,17 +264,17 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   className="w-16 h-16 rounded-full object-cover"
                 />
               ) : (
-                <Building className="w-8 h-8 text-gray-400" />
+                <Building className="w-8 h-8 text-muted-foreground/60" />
               )}
             </Link>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">
+              <h1 className="text-2xl font-bold text-foreground">
                 {job.title || "Job Title"}
               </h1>
               <div className="flex items-center gap-2">
                 <Link
                   href={`/company/${job.organization?.id}`}
-                  className="text-lg text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+                  className="text-lg text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 >
                   {job.organization?.display_name ||
                     job.organization?.name ||
@@ -282,12 +282,12 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                 </Link>
                 <Link
                   href={`/company/${job.organization?.id}`}
-                  className="text-gray-400 hover:text-primary transition-colors"
+                  className="text-muted-foreground/60 hover:text-primary transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
                 </Link>
               </div>
-              <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
+              <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
                 <span className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
                   {job.location?.name || "Unknown"},{" "}
@@ -325,17 +325,17 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
         {/* Quick Info Cards */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Salary Range</h3>
+          <div className="bg-muted p-4 rounded-lg">
+            <h3 className="font-semibold text-foreground mb-2">Salary Range</h3>
             <p className="text-xl font-bold text-primary">
               {formatSalary(job)}
             </p>
-            <p className="text-sm text-gray-500">per year</p>
+            <p className="text-sm text-muted-foreground">per year</p>
           </div>
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-2">Job Type</h3>
+          <div className="bg-muted p-4 rounded-lg">
+            <h3 className="font-semibold text-foreground mb-2">Job Type</h3>
             <p className="text-lg">{formatJobType(job.job_type)}</p>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               {formatWorkplaceType(job.workplace_type)}
             </p>
           </div>
@@ -349,10 +349,10 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
           {/* Description */}
           <div className="mb-6">
-            <h3 className="font-semibold text-gray-900 mb-3">
+            <h3 className="font-semibold text-foreground mb-3">
               Job Description
             </h3>
-            <div className="prose max-w-none text-gray-700">
+            <div className="prose max-w-none text-foreground">
               <div className="whitespace-pre-wrap">
                 {job.description || "No description available"}
               </div>
@@ -362,8 +362,8 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
           {/* Requirements */}
           {job.requirements && (
             <div className="mb-6">
-              <h3 className="font-semibold text-gray-900 mb-3">Requirements</h3>
-              <div className="prose max-w-none text-gray-700">
+              <h3 className="font-semibold text-foreground mb-3">Requirements</h3>
+              <div className="prose max-w-none text-foreground">
                 <div className="whitespace-pre-wrap">{job.requirements}</div>
               </div>
             </div>
@@ -372,8 +372,8 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
           {/* Benefits */}
           {job.benefits && (
             <div className="mb-6">
-              <h3 className="font-semibold text-gray-900 mb-3">Benefits</h3>
-              <div className="prose max-w-none text-gray-700">
+              <h3 className="font-semibold text-foreground mb-3">Benefits</h3>
+              <div className="prose max-w-none text-foreground">
                 <div className="whitespace-pre-wrap">{job.benefits}</div>
               </div>
             </div>
@@ -395,7 +395,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               <>
                 <Button
                   onClick={() => setIsApplicationModalOpen(true)}
-                  className="flex-1 bg-white text-gray-900 border border-gray-300 hover:bg-gray-50"
+                  className="flex-1 bg-background text-foreground border border-input hover:bg-muted/50"
                   size="lg"
                 >
                   <Send className="w-4 h-4 mr-2" />

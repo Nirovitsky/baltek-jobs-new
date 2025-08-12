@@ -666,11 +666,11 @@ export default function ChatPage() {
         <BreadcrumbNavigation />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="text-center py-8">
-            <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
+            <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground/60" />
+            <h3 className="text-lg font-medium text-foreground mb-2">
               Unable to load conversations
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="text-muted-foreground mb-4">
               {roomsError instanceof Error
                 ? roomsError.message
                 : "Something went wrong"}
@@ -690,7 +690,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <div className="h-full overflow-y-auto bg-muted dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4" data-testid="chat-page">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-200px)]">
@@ -711,7 +711,7 @@ export default function ChatPage() {
                       <DialogTitle>Start New Conversation</DialogTitle>
                     </DialogHeader>
                     <div className="p-4">
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         New conversations are typically started when recruiters
                         contact you about job opportunities, or when you apply
                         to positions through the platform.
@@ -723,7 +723,7 @@ export default function ChatPage() {
 
               {/* Search */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground/60 w-4 h-4" />
                 <Input
                   placeholder="Search conversations..."
                   value={searchQuery}
@@ -740,17 +740,17 @@ export default function ChatPage() {
                   <div className="p-4 space-y-4">
                     {[...Array(5)].map((_, i) => (
                       <div key={i} className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse" />
+                        <div className="w-12 h-12 bg-muted rounded-full animate-pulse" />
                         <div className="flex-1">
-                          <div className="h-4 bg-gray-200 rounded animate-pulse mb-2" />
-                          <div className="h-3 bg-gray-200 rounded animate-pulse w-2/3" />
+                          <div className="h-4 bg-muted rounded animate-pulse mb-2" />
+                          <div className="h-3 bg-muted rounded animate-pulse w-2/3" />
                         </div>
                       </div>
                     ))}
                   </div>
                 ) : conversations.length === 0 ? (
-                  <div className="p-8 text-center text-gray-500">
-                    <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <div className="p-8 text-center text-muted-foreground">
+                    <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground/60" />
                     <p className="font-medium mb-2">No conversations yet</p>
                     <p className="text-sm">
                       When recruiters contact you about opportunities, your
@@ -768,8 +768,8 @@ export default function ChatPage() {
                         }}
                         className={`relative p-4 cursor-pointer transition-all duration-200 ease-in-out hover:shadow-sm transform hover:scale-[1.01] ${
                           selectedConversation === conversation.id
-                            ? "bg-blue-50 shadow-sm scale-[1.01]"
-                            : "hover:bg-gray-50"
+                            ? "bg-primary/10 shadow-sm scale-[1.01]"
+                            : "hover:bg-muted"
                         } ${conversation.content_object?.status === "expired" ? "opacity-70" : ""}`}
                         data-testid={`conversation-${conversation.id}`}
                       >
@@ -801,8 +801,8 @@ export default function ChatPage() {
                               <div className="flex items-start space-x-2 flex-1 min-w-0">
                                 <h3 className={`font-semibold text-base leading-5 ${
                                   conversation.unread_message_count > 0
-                                    ? "text-gray-900"
-                                    : "text-gray-700"
+                                    ? "text-foreground"
+                                    : "text-foreground"
                                 } break-words`}>
                                   {(conversation.content_object?.job?.organization?.display_name || 
                                     conversation.content_object?.job?.organization?.official_name || "Unknown Company") + 
@@ -817,7 +817,7 @@ export default function ChatPage() {
                                   </Badge>
                                 )}
                               </div>
-                              <span className="text-xs text-gray-500 flex-shrink-0 ml-2 font-medium">
+                              <span className="text-xs text-muted-foreground flex-shrink-0 ml-2 font-medium">
                                 {conversation.last_message_date_created 
                                   ? formatTime(new Date(conversation.last_message_date_created * 1000).toISOString())
                                   : "Recently"}
@@ -829,13 +829,13 @@ export default function ChatPage() {
                               {conversation.last_message_text ? (
                                 <p className={`text-sm truncate flex-1 leading-5 ${
                                   conversation.unread_message_count > 0
-                                    ? "text-gray-800 font-medium"
-                                    : "text-gray-600"
+                                    ? "text-foreground font-medium"
+                                    : "text-muted-foreground"
                                 }`}>
                                   {conversation.last_message_text}
                                 </p>
                               ) : (
-                                <p className="text-sm text-gray-400 italic flex-1">
+                                <p className="text-sm text-muted-foreground/60 italic flex-1">
                                   Start the conversation
                                 </p>
                               )}
@@ -845,7 +845,7 @@ export default function ChatPage() {
                         
                         {/* Active conversation indicator */}
                         {selectedConversation === conversation.id && (
-                          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-12 bg-blue-500 rounded-l-full"></div>
+                          <div className="absolute right-0 top-1/2 transform -translate-y-1/2 w-1 h-12 bg-primary/100 rounded-l-full"></div>
                         )}
                       </div>
                     ))}
@@ -875,7 +875,7 @@ export default function ChatPage() {
                       </Avatar>
                       <div>
                         <div className="flex items-center space-x-2">
-                          <h3 className="font-semibold text-gray-900">
+                          <h3 className="font-semibold text-foreground">
                             {(selectedConversationData?.content_object?.job?.organization?.display_name || 
                               selectedConversationData?.content_object?.job?.organization?.official_name || "Unknown Company") + 
                              (selectedConversationData?.content_object?.job?.title ? ` - ${selectedConversationData?.content_object?.job?.title}` : "")}
@@ -913,19 +913,19 @@ export default function ChatPage() {
                           >
                             <div className="flex items-end space-x-2 max-w-xs">
                               {i % 2 !== 0 && (
-                                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+                                <div className="w-8 h-8 bg-muted rounded-full animate-pulse" />
                               )}
-                              <div className="bg-gray-200 rounded-lg p-3 animate-pulse">
-                                <div className="h-4 bg-gray-300 rounded w-24" />
+                              <div className="bg-muted rounded-lg p-3 animate-pulse">
+                                <div className="h-4 bg-muted rounded w-24" />
                               </div>
                             </div>
                           </div>
                         ))}
                       </div>
                     ) : messagesData?.results?.length === 0 ? (
-                      <div className="flex items-center justify-center h-full text-gray-500">
+                      <div className="flex items-center justify-center h-full text-muted-foreground">
                         <div className="text-center">
-                          <MessageCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                          <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground/60" />
                           <p>Start the conversation!</p>
                         </div>
                       </div>
@@ -967,7 +967,7 @@ export default function ChatPage() {
                                       ? "bg-primary/70 text-white"
                                       : message.owner === user?.id
                                       ? "bg-primary text-white hover:bg-primary/90"
-                                      : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                                      : "bg-muted text-foreground hover:bg-muted"
                                   }`}
                                 >
                                   {/* Display attachments first if present */}
@@ -979,14 +979,14 @@ export default function ChatPage() {
                                           className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
                                             message.owner === user?.id
                                               ? "bg-white/10 border-white/20 hover:bg-white/15"
-                                              : "bg-white border-gray-200 hover:border-gray-300"
+                                              : "bg-white border-gray-200 hover:border-input"
                                           }`}
                                         >
                                           <div className="flex items-center space-x-3 flex-1 min-w-0">
                                             <div className={`p-2 rounded-lg ${
                                               message.owner === user?.id
                                                 ? "bg-white/10"
-                                                : "bg-blue-50"
+                                                : "bg-primary/10"
                                             }`}>
                                               <FileText className={`w-5 h-5 ${
                                                 message.owner === user?.id ? "text-white" : "text-blue-600"
@@ -994,13 +994,13 @@ export default function ChatPage() {
                                             </div>
                                             <div className="flex-1 min-w-0">
                                               <div className={`text-sm font-medium truncate ${
-                                                message.owner === user?.id ? "text-white" : "text-gray-900"
+                                                message.owner === user?.id ? "text-white" : "text-foreground"
                                               }`}>
                                                 {attachment.file_name || attachment.name || `Attachment ${index + 1}`}
                                               </div>
                                               {attachment.size && (
                                                 <div className={`text-xs ${
-                                                  message.owner === user?.id ? "text-white/70" : "text-gray-500"
+                                                  message.owner === user?.id ? "text-white/70" : "text-muted-foreground"
                                                 }`}>
                                                   {formatFileSize(attachment.size)}
                                                 </div>
@@ -1016,7 +1016,7 @@ export default function ChatPage() {
                                                   className={`h-8 w-8 p-0 ${
                                                     message.owner === user?.id 
                                                       ? "text-white/70 hover:text-white hover:bg-white/20" 
-                                                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                                                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                                   }`}
                                                   onClick={() => window.open(attachment.file_url, '_blank')}
                                                   title="View file"
@@ -1029,7 +1029,7 @@ export default function ChatPage() {
                                                   className={`h-8 w-8 p-0 ${
                                                     message.owner === user?.id 
                                                       ? "text-white/70 hover:text-white hover:bg-white/20" 
-                                                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-100"
+                                                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
                                                   }`}
                                                   onClick={() => {
                                                     const link = document.createElement('a');
@@ -1046,7 +1046,7 @@ export default function ChatPage() {
                                               <div className={`text-xs px-2 py-1 rounded ${
                                                 message.owner === user?.id 
                                                   ? "bg-white/10 text-white/70" 
-                                                  : "bg-gray-100 text-gray-500"
+                                                  : "bg-muted text-muted-foreground"
                                               }`}>
                                                 Processing...
                                               </div>
@@ -1076,7 +1076,7 @@ export default function ChatPage() {
                                       className={`text-xs ${
                                         message.owner === user?.id
                                           ? "text-white/70"
-                                          : "text-gray-500"
+                                          : "text-muted-foreground"
                                       }`}
                                     >
                                       {formatTime(new Date(message.date_created * 1000).toISOString())}
@@ -1119,7 +1119,7 @@ export default function ChatPage() {
                   <div className="p-4 border-t">
                     {/* Upload Progress */}
                     {uploadProgress.length > 0 && (
-                      <div className="mb-3 p-2 bg-blue-50 rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                      <div className="mb-3 p-2 bg-primary/10 rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
                         <div className="text-xs text-blue-600 mb-2">Uploading files...</div>
                         <div className="space-y-1">
                           {uploadProgress.map((item, index) => (
@@ -1127,19 +1127,19 @@ export default function ChatPage() {
                               <FileText className="w-4 h-4 text-blue-500" />
                               <div className="flex-1">
                                 <div className="text-sm font-medium">{item.name}</div>
-                                <div className="w-full bg-gray-200 rounded-full h-1.5">
+                                <div className="w-full bg-muted rounded-full h-1.5">
                                   <div
                                     className={`h-1.5 rounded-full transition-all duration-300 ${
                                       item.progress === -1 
                                         ? 'bg-red-500' 
                                         : item.progress === 100 
                                           ? 'bg-green-500' 
-                                          : 'bg-blue-500'
+                                          : 'bg-primary/100'
                                     }`}
                                     style={{ width: `${Math.max(0, item.progress)}%` }}
                                   ></div>
                                 </div>
-                                <div className="text-xs text-gray-500">
+                                <div className="text-xs text-muted-foreground">
                                   {item.progress === -1 
                                     ? 'Failed' 
                                     : item.progress === 100 
@@ -1156,16 +1156,16 @@ export default function ChatPage() {
 
                     {/* File Attachments Preview */}
                     {attachedFiles.length > 0 && (
-                      <div className="mb-3 p-2 bg-gray-50 rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-                        <div className="text-xs text-gray-600 mb-2">Attachments:</div>
+                      <div className="mb-3 p-2 bg-muted rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                        <div className="text-xs text-muted-foreground mb-2">Attachments:</div>
                         <div className="space-y-1">
                           {attachedFiles.map((file) => (
                             <div key={file.id} className="flex items-center justify-between bg-white p-2 rounded border">
                               <div className="flex items-center space-x-2">
-                                <FileText className="w-4 h-4 text-gray-500" />
+                                <FileText className="w-4 h-4 text-muted-foreground" />
                                 <div>
                                   <div className="text-sm font-medium">{file.name}</div>
-                                  <div className="text-xs text-gray-500">{formatFileSize(file.size)}</div>
+                                  <div className="text-xs text-muted-foreground">{formatFileSize(file.size)}</div>
                                 </div>
                               </div>
                               <Button
@@ -1226,10 +1226,10 @@ export default function ChatPage() {
                     </form>
                   </div>
                 ) : (
-                  <div className="p-4 border-t bg-gray-50">
+                  <div className="p-4 border-t bg-muted">
                     <div className="flex items-center justify-center py-3">
-                      <div className="text-center text-gray-500">
-                        <Clock className="w-5 h-5 mx-auto mb-2 text-gray-400" />
+                      <div className="text-center text-muted-foreground">
+                        <Clock className="w-5 h-5 mx-auto mb-2 text-muted-foreground/60" />
                         <p className="text-sm font-medium">
                           Conversation Expired
                         </p>
@@ -1244,8 +1244,8 @@ export default function ChatPage() {
             ) : (
               /* No Conversation Selected */
               <CardContent className="flex items-center justify-center h-full">
-                <div className="text-center text-gray-500">
-                  <Users className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+                <div className="text-center text-muted-foreground">
+                  <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground/60" />
                   <h3 className="font-medium mb-2">Select a conversation</h3>
                   <p className="text-sm">
                     Choose a conversation from the left to start messaging

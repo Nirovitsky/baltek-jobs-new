@@ -725,13 +725,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     ) : (
                       <User className="w-10 h-10 text-white" />
                     )}
-                    <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-background bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <Camera className="w-6 h-6 text-white" />
                     </div>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold">{user.first_name} {user.last_name}</h3>
-                    <p className="text-gray-600">{user.email}</p>
+                    <p className="text-muted-foreground">{user.email}</p>
                   </div>
                 </div>
 
@@ -931,14 +931,14 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="flex items-start justify-between">
                         <div>
                           <h4 className="font-semibold">{edu.degree}</h4>
-                          <p className="text-gray-600">{edu.university_name}</p>
-                          <p className="text-sm text-gray-500">{edu.field_of_study}</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-muted-foreground">{edu.university_name}</p>
+                          <p className="text-sm text-muted-foreground">{edu.field_of_study}</p>
+                          <p className="text-sm text-muted-foreground">
                             {edu.start_date} - {edu.end_date || "Present"}
                             {edu.grade && ` • ${edu.grade}`}
                           </p>
                           {edu.description && (
-                            <p className="text-sm text-gray-700 mt-2">{edu.description}</p>
+                            <p className="text-sm text-foreground mt-2">{edu.description}</p>
                           )}
                         </div>
                         <div className="flex gap-2">
@@ -1016,7 +1016,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           {experienceForm.watch("organization_name") && 
                            experienceForm.watch("organization_name").length > 0 && 
                            !organizationsLoading && (
-                            <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-md shadow-lg z-10 max-h-40 overflow-y-auto">
+                            <div className="absolute top-full left-0 right-0 bg-background border border-border rounded-md shadow-lg z-10 max-h-40 overflow-y-auto">
                               {(organizations as any)?.results
                                 ?.filter((org: any) => 
                                   (org.official_name || org.display_name)
@@ -1027,7 +1027,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                                 ?.map((org: any) => (
                                   <div
                                     key={org.id}
-                                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                    className="px-3 py-2 hover:bg-muted cursor-pointer text-sm"
                                     onClick={() => {
                                       experienceForm.setValue("organization_name", org.official_name || org.display_name);
                                       experienceForm.setValue("organization", org.id);
@@ -1110,12 +1110,12 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="flex items-start justify-between">
                         <div>
                           <h4 className="font-semibold">{exp.position}</h4>
-                          <p className="text-gray-600">{exp.organization_name}</p>
-                          <p className="text-sm text-gray-500">
+                          <p className="text-muted-foreground">{exp.organization_name}</p>
+                          <p className="text-sm text-muted-foreground">
                             {exp.date_started} - {exp.date_finished || "Present"}
                           </p>
                           {exp.description && (
-                            <p className="text-sm text-gray-700 mt-2">{exp.description}</p>
+                            <p className="text-sm text-foreground mt-2">{exp.description}</p>
                           )}
                         </div>
                         <div className="flex gap-2">
@@ -1246,7 +1246,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="flex items-start justify-between">
                         <div>
                           <h4 className="font-semibold">{project.title}</h4>
-                          <p className="text-sm text-gray-700 mt-1">{project.description}</p>
+                          <p className="text-sm text-foreground mt-1">{project.description}</p>
                           <div className="flex gap-4 mt-2 text-sm">
                             {project.url && (
                               <a href={project.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
@@ -1255,7 +1255,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                             )}
                           </div>
                           {(project.date_started || project.date_finished) && (
-                            <p className="text-sm text-gray-500 mt-1">
+                            <p className="text-sm text-muted-foreground mt-1">
                               {project.date_started} - {project.date_finished || "Ongoing"}
                             </p>
                           )}
@@ -1303,10 +1303,10 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         selectedFile={uploadingResume}
                       />
                     ) : (
-                      <div className="text-center p-6 bg-gray-50 rounded-lg">
-                        <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                        <p className="text-gray-600 font-medium">Resume limit reached</p>
-                        <p className="text-sm text-gray-500">You can upload up to 3 resumes. Delete one to upload another.</p>
+                      <div className="text-center p-6 bg-muted rounded-lg">
+                        <FileText className="w-12 h-12 text-muted-foreground/60 mx-auto mb-3" />
+                        <p className="text-muted-foreground font-medium">Resume limit reached</p>
+                        <p className="text-sm text-muted-foreground">You can upload up to 3 resumes. Delete one to upload another.</p>
                       </div>
                     )}
                   </CardContent>
@@ -1324,7 +1324,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               <FileText className="w-8 h-8 text-primary" />
                               <div>
                                 <h4 className="font-medium">{resume.title || resume.filename || "Resume"}</h4>
-                                <div className="flex items-center gap-4 text-sm text-gray-500">
+                                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                   {resume.created_at && (
                                     <span>
                                       Uploaded: {(() => {
@@ -1378,15 +1378,15 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
 
                 {resumesLoading && (
                   <div className="text-center py-8">
-                    <p className="text-gray-500">Loading resumes...</p>
+                    <p className="text-muted-foreground">Loading resumes...</p>
                   </div>
                 )}
 
                 {!resumesLoading && resumesList.length === 0 && (
-                  <div className="text-center py-8 bg-gray-50 rounded-lg">
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600 font-medium">No resumes uploaded</p>
-                    <p className="text-sm text-gray-500">Upload your first resume to get started.</p>
+                  <div className="text-center py-8 bg-muted rounded-lg">
+                    <FileText className="w-12 h-12 text-muted-foreground/60 mx-auto mb-3" />
+                    <p className="text-muted-foreground font-medium">No resumes uploaded</p>
+                    <p className="text-sm text-muted-foreground">Upload your first resume to get started.</p>
                   </div>
                 )}
               </div>

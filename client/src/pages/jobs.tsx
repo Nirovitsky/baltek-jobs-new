@@ -165,10 +165,10 @@ export default function Jobs({}: JobsProps) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          <h2 className="text-xl font-semibold text-foreground mb-2">
             Something went wrong
           </h2>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             {error instanceof Error ? error.message : "Failed to load jobs"}
           </p>
         </div>
@@ -212,10 +212,10 @@ export default function Jobs({}: JobsProps) {
               ) : jobs.length > 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <h3 className="text-lg font-medium text-foreground mb-2">
                       Select a job to view details
                     </h3>
-                    <p className="text-gray-600">
+                    <p className="text-muted-foreground">
                       Choose a job from the list to see more information
                     </p>
                   </div>

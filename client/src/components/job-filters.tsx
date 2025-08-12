@@ -159,7 +159,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   };
 
   return (
-    <div className="h-[72px] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center sticky top-0 z-40">
+    <div className="h-[72px] bg-background dark:bg-background border-b border-border dark:border-border flex items-center sticky top-0 z-40">
       <div className="layout-container-body">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-4">
@@ -239,7 +239,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               onChange={(e) => handleFilterChange("salary_min", e.target.value ? parseInt(e.target.value) : undefined)}
               className="w-[80px] h-8 text-xs focus-visible:ring-0"
             />
-            <span className="text-gray-500">-</span>
+            <span className="text-muted-foreground">-</span>
             <Input
               type="number"
               placeholder="Max"
@@ -402,7 +402,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               <Button
                 onClick={clearFilters}
                 variant="ghost"
-                className="text-gray-700 hover:text-gray-900 h-8 w-8 p-0 border-0"
+                className="text-foreground hover:text-foreground h-8 w-8 p-0 border-0"
                 title="Clear filters"
               >
                 <X className="h-4 w-4" />

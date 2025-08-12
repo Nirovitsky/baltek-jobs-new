@@ -45,7 +45,7 @@ export default function ContactUs() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="layout-container-body py-6">
         <BreadcrumbNavigation
           items={[
@@ -57,8 +57,8 @@ export default function ContactUs() {
         <div className="mt-6 space-y-8">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact Us</h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <h1 className="text-4xl font-bold text-foreground mb-4">Contact Us</h1>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Have questions or need support? We're here to help. Reach out to our team and we'll respond as soon as possible.
             </p>
           </div>
@@ -166,7 +166,7 @@ export default function ContactUs() {
                     </div>
                     <div>
                       <div className="font-medium">Email</div>
-                      <div className="text-sm text-gray-600">support@baltek.net</div>
+                      <div className="text-sm text-muted-foreground">support@baltek.net</div>
                     </div>
                   </div>
 
@@ -176,7 +176,7 @@ export default function ContactUs() {
                     </div>
                     <div>
                       <div className="font-medium">Phone</div>
-                      <div className="text-sm text-gray-600">+993 12 345 678</div>
+                      <div className="text-sm text-muted-foreground">+993 12 345 678</div>
                     </div>
                   </div>
 
@@ -186,7 +186,7 @@ export default function ContactUs() {
                     </div>
                     <div>
                       <div className="font-medium">Address</div>
-                      <div className="text-sm text-gray-600">Ashgabat, Turkmenistan</div>
+                      <div className="text-sm text-muted-foreground">Ashgabat, Turkmenistan</div>
                     </div>
                   </div>
                 </CardContent>
@@ -198,34 +198,34 @@ export default function ContactUs() {
                   <CardTitle>How can we help?</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
                     <HelpCircle className="h-5 w-5 text-primary" />
                     <div>
                       <div className="font-medium text-sm">General Support</div>
-                      <div className="text-xs text-gray-600">Account help, technical issues</div>
+                      <div className="text-xs text-muted-foreground">Account help, technical issues</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
                     <Briefcase className="h-5 w-5 text-primary" />
                     <div>
                       <div className="font-medium text-sm">For Employers</div>
-                      <div className="text-xs text-gray-600">Job posting, recruitment solutions</div>
+                      <div className="text-xs text-muted-foreground">Job posting, recruitment solutions</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
                     <MessageCircle className="h-5 w-5 text-primary" />
                     <div>
                       <div className="font-medium text-sm">Feedback</div>
-                      <div className="text-xs text-gray-600">Suggestions, feature requests</div>
+                      <div className="text-xs text-muted-foreground">Suggestions, feature requests</div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Response Time */}
-              <Card className="bg-primary text-white">
+              <Card className="bg-primary text-primary-foreground">
                 <CardContent className="p-6 text-center">
                   <h3 className="font-semibold mb-2">Quick Response</h3>
                   <p className="text-sm opacity-90">

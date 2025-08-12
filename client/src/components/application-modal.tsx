@@ -133,7 +133,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
           </DialogTitle>
           <DialogDescription>
             {job.organization?.display_name || job.organization?.name} • {job.location?.name}, {job.location?.country}
-            {isQuickApply && <span className="block text-sm text-blue-600 mt-1">Quick application - no cover letter or resume required</span>}
+            {isQuickApply && <span className="block text-sm text-primary mt-1">Quick application - no cover letter or resume required</span>}
           </DialogDescription>
         </DialogHeader>
 
@@ -141,7 +141,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
           {/* Cover Letter */}
           {!isQuickApply && (
             <div className="space-y-2">
-              <Label htmlFor="cover_letter">Cover Letter <span className="text-sm text-gray-500">(Optional)</span></Label>
+              <Label htmlFor="cover_letter">Cover Letter <span className="text-sm text-muted-foreground">(Optional)</span></Label>
               <Textarea
                 id="cover_letter"
                 rows={6}
@@ -150,7 +150,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
                 className="resize-none"
               />
               {errors.cover_letter && (
-                <p className="text-sm text-red-600">{errors.cover_letter.message}</p>
+                <p className="text-sm text-destructive">{errors.cover_letter.message}</p>
               )}
             </div>
           )}
@@ -158,12 +158,12 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
           {/* Resume Selection */}
           {!isQuickApply && (
             <div className="space-y-4">
-              <Label>Resume/CV <span className="text-sm text-gray-500">(Optional)</span></Label>
+              <Label>Resume/CV <span className="text-sm text-muted-foreground">(Optional)</span></Label>
               
               {/* Existing Resumes */}
               {!resumesLoading && (resumes as any)?.results?.length > 0 && (
                 <div className="space-y-2">
-                  <Label className="text-sm text-gray-600">Select from your resumes:</Label>
+                  <Label className="text-sm text-muted-foreground">Select from your resumes:</Label>
                   <Select value={selectedResumeId} onValueChange={setSelectedResumeId}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a resume (optional)" />
@@ -182,7 +182,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
 
               {/* File Upload */}
               <div className="space-y-2">
-                <Label className="text-sm text-gray-600">Or upload a new resume:</Label>
+                <Label className="text-sm text-muted-foreground">Or upload a new resume:</Label>
                 <FileUpload
                   onFileSelect={handleFileUpload}
                   accept=".pdf,.doc,.docx"
@@ -191,19 +191,19 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
                 />
               </div>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-muted-foreground">
                 You can apply without a resume, but including one improves your chances.
               </p>
             </div>
           )}
 
           {isQuickApply && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <div className="flex items-center space-x-2 text-blue-700">
+            <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+              <div className="flex items-center space-x-2 text-primary">
                 <img src={baltekIcon} alt="" className="w-5 h-5" />
                 <span className="font-medium">Quick Apply</span>
               </div>
-              <p className="text-sm text-blue-600 mt-1">
+              <p className="text-sm text-primary mt-1">
                 Your application will be submitted immediately without additional documents. 
                 You can always add a cover letter and resume later.
               </p>

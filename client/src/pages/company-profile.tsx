@@ -69,9 +69,9 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
   ).slice(0, 10) || [];
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden w-full">
+    <div className="bg-white dark:bg-background rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden w-full">
       <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-foreground dark:text-foreground flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" />
           Other Companies
         </h3>
@@ -99,7 +99,7 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
           {suggestions.map((company: Organization, index: number) => (
             <div key={company.id}>
               <Link href={`/company/${company.id}`}>
-                <div className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group">
+                <div className="flex items-center gap-4 p-4 hover:bg-muted dark:hover:bg-gray-700/50 transition-all duration-200 cursor-pointer group">
                   <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
                     <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
                     <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/20 text-primary text-sm font-bold border border-primary/20">
@@ -113,21 +113,21 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
                   </Avatar>
                   
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-primary transition-colors text-sm">
+                    <h4 className="font-semibold text-foreground dark:text-foreground truncate group-hover:text-primary transition-colors text-sm">
                       {company.display_name || company.official_name}
                     </h4>
                     
                     <div className="flex items-center gap-1 mt-1">
-                      <Building2 className="h-3 w-3 text-gray-500" />
-                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                      <Building2 className="h-3 w-3 text-muted-foreground" />
+                      <span className="text-xs text-muted-foreground dark:text-muted-foreground/60 font-medium">
                         {(company as any).mockCategory}
                       </span>
                     </div>
                     
                     {company.location?.name && (
                       <div className="flex items-center gap-1 mt-2">
-                        <MapPin className="h-3 w-3 text-gray-400" />
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        <MapPin className="h-3 w-3 text-muted-foreground/60" />
+                        <p className="text-xs text-muted-foreground dark:text-muted-foreground/60 truncate">
                           {company.location.name}
                         </p>
                       </div>
@@ -135,7 +135,7 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
                   </div>
                   
                   <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                    <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary" />
+                    <ExternalLink className="h-4 w-4 text-muted-foreground/60 group-hover:text-primary" />
                   </div>
                 </div>
               </Link>
@@ -145,13 +145,13 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
           
           {suggestions.length === 0 && (
             <div className="p-8 text-center">
-              <div className="bg-gray-100 dark:bg-gray-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                <Building2 className="h-8 w-8 text-gray-400" />
+              <div className="bg-muted dark:bg-gray-700 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                <Building2 className="h-8 w-8 text-muted-foreground/60" />
               </div>
-              <p className="text-sm text-gray-600 dark:text-gray-400 font-medium mb-1">
+              <p className="text-sm text-muted-foreground dark:text-muted-foreground/60 font-medium mb-1">
                 No other companies available
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-500">
+              <p className="text-xs text-muted-foreground dark:text-muted-foreground">
                 Check back later for more companies
               </p>
             </div>
@@ -165,7 +165,7 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
 // Loading Skeleton
 function CompanyProfileSkeleton() {
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-muted dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -236,14 +236,14 @@ export default function CompanyProfile() {
 
   if (companyError || !company) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-muted dark:bg-gray-900">
         <BreadcrumbNavigation />
         <div className="flex items-center justify-center">
           <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <h1 className="text-2xl font-bold text-foreground dark:text-foreground mb-2">
             Company Not Found
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-muted-foreground dark:text-muted-foreground/60 mb-4">
             The company you're looking for doesn't exist or has been removed.
           </p>
           <Link href="/jobs">
@@ -272,14 +272,14 @@ export default function CompanyProfile() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <div className="h-full overflow-y-auto bg-muted dark:bg-gray-900">
       <BreadcrumbNavigation />
       <div className="layout-container-body py-4">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left Column - Company Info */}
           <div className="lg:col-span-2 space-y-6">
             {/* Basic Information */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
+            <div className="bg-white dark:bg-background rounded-lg shadow-sm border dark:border-gray-700 p-6">
               <div className="flex items-start gap-6">
                 <Avatar className="h-20 w-20">
                   <AvatarImage src={organizationData?.logo} alt={organizationData?.display_name || organizationData?.official_name} />
@@ -290,7 +290,7 @@ export default function CompanyProfile() {
                 
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-2">
-                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                    <h1 className="text-3xl font-bold text-foreground dark:text-foreground">
                       {organizationData?.display_name || organizationData?.official_name}
                     </h1>
                     <Link href={`/jobs?organization=${companyId}`}>
@@ -303,12 +303,12 @@ export default function CompanyProfile() {
                   
                   {organizationData?.official_name && organizationData?.display_name && 
                    organizationData?.official_name !== organizationData?.display_name && (
-                    <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
+                    <p className="text-lg text-muted-foreground dark:text-muted-foreground/60 mb-2">
                       {organizationData.official_name}
                     </p>
                   )}
                   
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                  <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground dark:text-muted-foreground/60">
                     {(organizationData?.industry || organizationData?.category?.name) && (
                       <div className="flex items-center gap-1">
                         <Building2 className="h-4 w-4" />
@@ -363,21 +363,21 @@ export default function CompanyProfile() {
             </div>
 
             {/* About Us Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-background rounded-lg shadow-sm border dark:border-gray-700 p-6">
+              <h2 className="text-xl font-bold text-foreground dark:text-foreground mb-4 flex items-center gap-2">
                 <Building2 className="h-5 w-5" />
                 About Us
               </h2>
               
               {(organizationData?.description || organizationData?.about_us) ? (
                 <div className="prose prose-gray dark:prose-invert max-w-none">
-                  <div className="whitespace-pre-wrap text-gray-700 dark:text-gray-300 leading-relaxed">
+                  <div className="whitespace-pre-wrap text-foreground dark:text-muted-foreground/60 leading-relaxed">
                     {organizationData?.description || organizationData?.about_us}
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-gray-500 dark:text-gray-400 italic">
+                  <p className="text-muted-foreground dark:text-muted-foreground/60 italic">
                     No company description available. Stay tuned for updates!
                   </p>
                 </div>
@@ -385,8 +385,8 @@ export default function CompanyProfile() {
             </div>
 
             {/* Projects Section */}
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border dark:border-gray-700 p-6">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <div className="bg-white dark:bg-background rounded-lg shadow-sm border dark:border-gray-700 p-6">
+              <h2 className="text-xl font-bold text-foreground dark:text-foreground mb-4 flex items-center gap-2">
                 <FolderOpen className="h-5 w-5" />
                 Projects
               </h2>
@@ -396,7 +396,7 @@ export default function CompanyProfile() {
                   {organizationData.projects.map((project: any) => (
                     <div key={project.id} className="border rounded-lg p-4 dark:border-gray-700">
                       <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-semibold text-gray-900 dark:text-gray-100">{project.title}</h4>
+                        <h4 className="font-semibold text-foreground dark:text-foreground">{project.title}</h4>
                         {project.link && (
                           <a
                             href={project.link.startsWith('http') ? project.link : `https://${project.link}`}
@@ -410,12 +410,12 @@ export default function CompanyProfile() {
                       </div>
                       
                       {project.description && (
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                        <p className="text-sm text-muted-foreground dark:text-muted-foreground/60 mb-2">
                           {project.description}
                         </p>
                       )}
                       
-                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Calendar className="h-3 w-3" />
                         <span>
                           {project.date_started}
@@ -428,7 +428,7 @@ export default function CompanyProfile() {
                 </div>
               ) : (
                 <div className="text-center py-8">
-                  <p className="text-gray-500 dark:text-gray-400 italic">
+                  <p className="text-muted-foreground dark:text-muted-foreground/60 italic">
                     No projects available yet. Check back soon!
                   </p>
                 </div>

@@ -37,14 +37,14 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-muted flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
           <div className="flex justify-center items-center space-x-2 mb-4">
             <Briefcase className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-bold text-gray-900">Baltek Jobs</h1>
+            <h1 className="text-2xl font-bold text-foreground">Baltek Jobs</h1>
           </div>
-          <h2 className="text-xl text-gray-600">Sign in to your account</h2>
+          <h2 className="text-xl text-muted-foreground">Sign in to your account</h2>
         </div>
 
         <Card>
@@ -65,7 +65,7 @@ export default function Login() {
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
                 <div className="flex">
-                  <div className="flex items-center px-3 bg-gray-50 border border-r-0 border-gray-300 rounded-l-md text-sm text-gray-600">
+                  <div className="flex items-center px-3 bg-muted border border-r-0 border-input rounded-l-md text-sm text-muted-foreground">
                     +993
                   </div>
                   <Input
@@ -106,7 +106,7 @@ export default function Login() {
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-muted-foreground">
                 Don't have an account?{" "}
                 <Link href="/register" className="text-primary hover:underline">
                   Sign up
