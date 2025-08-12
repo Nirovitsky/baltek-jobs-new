@@ -130,7 +130,7 @@ export default function Jobs({}: JobsProps) {
   }
 
   return (
-    <div className="h-[calc(100vh-67px)] flex flex-col overflow-hidden">
+    <div className="h-[calc(100vh-64px)] flex flex-col overflow-hidden">
       <JobFiltersComponent
         filters={filters}
         onFiltersChange={handleFiltersChange}
