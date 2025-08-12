@@ -9,7 +9,7 @@ The Baltek Jobs Platform is a professional job search application built with Rea
 Preferred communication style: Simple, everyday language.
 UI/UX Requirements: Two-column layout (jobs left, details right), infinite scroll, primary color #1877F2, simple interface for average users. Enhanced date picker with easy year/month selection for better user experience in profile forms.
 Backend Integration: External Baltek API (https://api.baltek.net/api/) for all data operations.
-Authentication: OAuth2 backend handles all login/register functionality - no client-side authentication forms needed.
+Authentication: OAuth2-only authentication system - all login/register functionality delegated to OAuth2 backend. No dedicated login/register pages required.
 
 ## System Architecture
 
@@ -21,7 +21,7 @@ Authentication: OAuth2 backend handles all login/register functionality - no cli
 - **State Management**: TanStack Query (React Query) for server state management, caching, and background updates.
 - **Form Handling**: React Hook Form with Zod validation for type-safe form validation.
 - **User Interface Design**: Modular component architecture, mobile-first responsive design, CSS custom properties for theming, infinite scroll, modals, dropdowns, and real-time search with visual feedback and skeleton loaders. Consistent layout system with unified body widths across pages.
-- **Authentication Flow**: OAuth2 PKCE-based authentication with JWT tokens, automatic token refresh, route protection, and local storage for session persistence. All login/register handled by external OAuth2 server.
+- **Authentication Flow**: OAuth2 PKCE-based authentication with JWT tokens, automatic token refresh, route protection, and local storage for session persistence. Authentication handled exclusively by OAuth2 server - no client-side login/register forms. All POST actions require authentication.
 - **Features**: Includes a "Copy URL" feature for job details, and rich link preview cards for job URLs in chat messages. Comprehensive file upload functionality for chat attachments. Robust notification system integrated with the Baltek API. Simplified settings page with language/theme selection, account deletion, and info links.
 
 ### Backend Architecture
@@ -33,7 +33,7 @@ Authentication: OAuth2 backend handles all login/register functionality - no cli
 - **Security Model**: Client/server separation with all API credentials managed client-side.
 
 ### Technical Implementations & Features
-- **API Client**: A comprehensive `ApiClient` class containing 45+ methods covering all Baltek API endpoints, handling authentication, automatic token refresh, and robust error handling.
+- **API Client**: A comprehensive `ApiClient` class containing 45+ methods covering all Baltek API endpoints, handling authentication, automatic token refresh, and robust error handling. All POST/PATCH/DELETE operations require authentication.
 - **Job Display & Filtering**: Job cards display essential information with detailed views. Comprehensive filtering options are dynamically generated from API data.
 - **Job Application**: Supports both "Quick Apply" and regular "Apply Now" with optional cover letter and resume upload (up to 3 files, PDF, DOC, DOCX, max 10MB) with drag-and-drop.
 - **User Profile**: Comprehensive profile management with CRUD operations for professional links, education, experience, and projects.

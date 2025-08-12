@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { AuthService } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -32,6 +34,20 @@ interface NavbarProps {}
 
 export default function Navbar({}: NavbarProps) {
   const { user, logout } = useAuth();
+  const { toast } = useToast();
+
+  const handleOAuthLogin = async () => {
+    try {
+      await AuthService.startOAuthLogin();
+    } catch (error) {
+      console.error('OAuth login failed:', error);
+      toast({
+        title: "Login Failed",
+        description: error instanceof Error ? error.message : "Failed to start OAuth login",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Fetch notifications for the dropdown
   const { data: notificationsData } = useQuery({
@@ -143,17 +159,13 @@ export default function Navbar({}: NavbarProps) {
               </>
             ) : (
               <>
-                {/* Login/Register buttons for unauthenticated users */}
-                <Link href="/login">
-                  <Button variant="ghost" size="sm">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button size="sm">
-                    Sign Up
-                  </Button>
-                </Link>
+                {/* OAuth Login button for unauthenticated users */}
+                <Button variant="ghost" size="sm" onClick={handleOAuthLogin}>
+                  Login
+                </Button>
+                <Button size="sm" onClick={handleOAuthLogin}>
+                  Sign Up
+                </Button>
               </>
             )}
           </div>

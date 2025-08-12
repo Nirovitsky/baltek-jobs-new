@@ -7,8 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { useAuth } from "@/hooks/use-auth";
 import Navbar from "@/components/navbar";
-import Login from "@/pages/login";
-import Register from "@/pages/register";
+
 import Jobs from "@/pages/jobs";
 import Profile from "@/pages/profile";
 import Applications from "@/pages/applications";
@@ -36,29 +35,13 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated) {
-    return <Redirect to="/login" />;
-  }
-
-  return <>{children}</>;
-}
-
-function PublicRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  if (isAuthenticated) {
     return <Redirect to="/jobs" />;
   }
 
   return <>{children}</>;
 }
+
+
 
 function Router() {
   const { isAuthenticated } = useAuth();
@@ -83,16 +66,7 @@ function Router() {
 
   return (
     <Switch>
-      <Route path="/login">
-        <PublicRoute>
-          <Login />
-        </PublicRoute>
-      </Route>
-      <Route path="/register">
-        <PublicRoute>
-          <Register />
-        </PublicRoute>
-      </Route>
+
       <Route path="/auth/callback">
         <AuthCallback />
       </Route>
