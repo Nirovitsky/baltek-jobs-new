@@ -16,7 +16,7 @@ import {
   Clock,
   DollarSign,
   Bookmark,
-  Share,
+  Copy,
   Send,
   Building,
   Calendar,
@@ -148,19 +148,19 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     });
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!job) return;
-    if (navigator.share) {
-      navigator.share({
-        title: job.title,
-        text: `Check out this job at ${job.organization?.name || "this company"}`,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
+    try {
+      await navigator.clipboard.writeText(window.location.href);
       toast({
         title: "Link copied",
         description: "Job link copied to clipboard",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to copy link to clipboard",
+        variant: "destructive",
       });
     }
   };
@@ -318,7 +318,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               />
             </Button>
             <Button variant="outline" size="sm" onClick={handleShare}>
-              <Share className="w-4 h-4" />
+              <Copy className="w-4 h-4" />
             </Button>
           </div>
         </div>
