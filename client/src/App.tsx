@@ -22,6 +22,7 @@ import AboutUs from "@/pages/about-us";
 import ContactUs from "@/pages/contact-us";
 import Terms from "@/pages/terms";
 import PrivacyPolicy from "@/pages/privacy-policy";
+import AuthCallback from "@/pages/auth-callback";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -82,6 +83,9 @@ function Router() {
         <PublicRoute>
           <Register />
         </PublicRoute>
+      </Route>
+      <Route path="/auth/callback">
+        <AuthCallback />
       </Route>
       <Route path="/profile">
         <ProtectedRoute>

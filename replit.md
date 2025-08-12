@@ -18,6 +18,8 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 
 - **Rich Link Preview Cards**: Implemented intelligent link preview system that automatically detects job URLs in chat messages and renders them as attractive cards with job information (title, company, salary, location, skills) instead of plain text links. This creates a much better visual experience when sharing job opportunities in conversations. The system works like modern messaging platforms (Slack, Telegram, WhatsApp) with rich previews that expand job URLs into beautiful cards with company branding, gradient headers, and comprehensive job details. Supports various URL patterns including /jobs/, /job/, /position/, and /vacancy/ endpoints.
 
+- **OAuth2 PKCE Authentication**: Added OAuth2 authorization flow with PKCE (Proof Key for Code Exchange) for enhanced security. Implemented complete OAuth service with cryptographic challenge generation, state validation, automatic token exchange, and secure token refresh. Added dedicated callback page with loading states and error handling. The system supports modern OAuth providers and provides better security than traditional authentication flows.
+
 - **Dark Mode Typography Fix**: Fixed title color contrast issue in Terms and Agreement and Privacy Policy pages. All h3 headings now use proper `text-foreground` class for optimal visibility in both light and dark modes.
 
 - **Migration Completed**: Successfully migrated project from Replit Agent to standard Replit environment

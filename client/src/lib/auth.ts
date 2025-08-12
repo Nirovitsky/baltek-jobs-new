@@ -48,15 +48,32 @@ export class AuthService {
       this.setTokens(tokens.access, tokens.refresh);
       return tokens;
     } catch (error) {
-      console.warn('External API unavailable, using demo login:', error);
-      // Demo login for when API is unavailable
-      const mockTokens = {
-        access: 'demo_access_token_' + Date.now(),
-        refresh: 'demo_refresh_token_' + Date.now()
-      };
-      this.setTokens(mockTokens.access, mockTokens.refresh);
-      return mockTokens;
+      console.error('Login failed:', error);
+      throw error;
     }
+  }
+
+  // OAuth2 PKCE login initiation
+  static async startOAuthLogin(): Promise<void> {
+    const { OAuth2PKCEService } = await import('./oauth');
+    
+    const oauthConfig = {
+      clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
+      authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
+      tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
+      redirectUri: `${window.location.origin}/auth/callback`,
+      scopes: ['openid', 'profile', 'email'],
+    };
+
+    if (!oauthConfig.clientId || !oauthConfig.authorizationUrl) {
+      throw new Error('OAuth configuration missing. Please set VITE_OAUTH_CLIENT_ID and VITE_OAUTH_AUTH_URL environment variables.');
+    }
+
+    const oauthService = new OAuth2PKCEService(oauthConfig);
+    const authUrl = await oauthService.startAuthFlow();
+    
+    // Redirect to OAuth provider
+    window.location.href = authUrl;
   }
 
   static async register(userData: RegisterRequest): Promise<UserProfile> {
