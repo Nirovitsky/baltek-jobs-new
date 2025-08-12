@@ -63,6 +63,15 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 function Router() {
   const { isAuthenticated } = useAuth();
 
+  const Layout = ({ children }: { children: React.ReactNode }) => (
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
+      <Navbar />
+      <main className="flex-1 overflow-hidden">
+        {children}
+      </main>
+    </div>
+  );
+
   const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
       <Navbar />
@@ -130,58 +139,42 @@ function Router() {
         </ProtectedRoute>
       </Route>
       <Route path="/company/:id">
-        <ProtectedRoute>
-          <ProtectedLayout>
-            <CompanyProfile />
-          </ProtectedLayout>
-        </ProtectedRoute>
+        <Layout>
+          <CompanyProfile />
+        </Layout>
       </Route>
       <Route path="/about-us">
-        <ProtectedRoute>
-          <ProtectedLayout>
-            <AboutUs />
-          </ProtectedLayout>
-        </ProtectedRoute>
+        <Layout>
+          <AboutUs />
+        </Layout>
       </Route>
       <Route path="/contact-us">
-        <ProtectedRoute>
-          <ProtectedLayout>
-            <ContactUs />
-          </ProtectedLayout>
-        </ProtectedRoute>
+        <Layout>
+          <ContactUs />
+        </Layout>
       </Route>
       <Route path="/terms">
-        <ProtectedRoute>
-          <ProtectedLayout>
-            <Terms />
-          </ProtectedLayout>
-        </ProtectedRoute>
+        <Layout>
+          <Terms />
+        </Layout>
       </Route>
       <Route path="/privacy-policy">
-        <ProtectedRoute>
-          <ProtectedLayout>
-            <PrivacyPolicy />
-          </ProtectedLayout>
-        </ProtectedRoute>
+        <Layout>
+          <PrivacyPolicy />
+        </Layout>
       </Route>
       <Route path="/jobs/:id">
-        <ProtectedRoute>
-          <ProtectedLayout>
-            <Jobs />
-          </ProtectedLayout>
-        </ProtectedRoute>
+        <Layout>
+          <Jobs />
+        </Layout>
       </Route>
       <Route path="/jobs">
-        <ProtectedRoute>
-          <ProtectedLayout>
-            <Jobs />
-          </ProtectedLayout>
-        </ProtectedRoute>
+        <Layout>
+          <Jobs />
+        </Layout>
       </Route>
       <Route path="/">
-        <ProtectedRoute>
-          <Redirect to="/jobs" />
-        </ProtectedRoute>
+        <Redirect to="/jobs" />
       </Route>
       <Route component={NotFound} />
     </Switch>

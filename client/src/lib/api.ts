@@ -39,6 +39,7 @@ export class ApiClient {
   private static async makeRequest<T>(
     endpoint: string,
     options: RequestInit = {},
+    requireAuth: boolean = true,
   ): Promise<T> {
     try {
       const url = `${API_BASE}${endpoint}`;
@@ -46,7 +47,7 @@ export class ApiClient {
 
       let headers = {
         "Content-Type": "application/json",
-        ...AuthService.getAuthHeaders(),
+        ...(requireAuth || token ? AuthService.getAuthHeaders() : {}),
         ...options.headers,
       };
 
@@ -63,8 +64,8 @@ export class ApiClient {
         headers,
       });
 
-      // Handle token expiration with automatic refresh
-      if (response.status === 401 && token) {
+      // Handle token expiration with automatic refresh (only if auth was required)
+      if (response.status === 401 && token && requireAuth) {
         console.log("Access token expired, attempting automatic refresh...");
         try {
           const newToken = await AuthService.refreshToken();
@@ -132,11 +133,11 @@ export class ApiClient {
     });
 
     const query = searchParams.toString();
-    return this.makeRequest(`/jobs/${query ? `?${query}` : ""}`);
+    return this.makeRequest(`/jobs/${query ? `?${query}` : ""}`, {}, false); // Allow public access
   }
 
   static async getJob(id: number) {
-    return this.makeRequest(`/jobs/${id}/`);
+    return this.makeRequest(`/jobs/${id}/`, {}, false); // Allow public access
   }
 
   static async bookmarkJob(id: number, isBookmarked: boolean) {

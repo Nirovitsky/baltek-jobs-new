@@ -62,82 +62,100 @@ export default function Navbar({}: NavbarProps) {
 
           {/* Navigation Items */}
           <div className="flex items-center space-x-4">
-            {/* Notifications */}
-            <Link href="/notifications">
-              <div className="relative w-8 h-8 flex items-center justify-center cursor-pointer" data-testid="nav-notifications">
-                <Bell className="h-5 w-5" />
-                {unreadCount > 0 && (
-                  <Badge
-                    variant="destructive"
-                    className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs"
-                  >
-                    {unreadCount}
-                  </Badge>
-                )}
-              </div>
-            </Link>
+            {user ? (
+              <>
+                {/* Notifications */}
+                <Link href="/notifications">
+                  <div className="relative w-8 h-8 flex items-center justify-center cursor-pointer" data-testid="nav-notifications">
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                      <Badge
+                        variant="destructive"
+                        className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs"
+                      >
+                        {unreadCount}
+                      </Badge>
+                    )}
+                  </div>
+                </Link>
 
-            {/* Messages */}
-            <Link href="/chat">
-              <div className="w-8 h-8 flex items-center justify-center cursor-pointer" data-testid="nav-messages">
-                <MessageCircle className="h-5 w-5" />
-              </div>
-            </Link>
+                {/* Messages */}
+                <Link href="/chat">
+                  <div className="w-8 h-8 flex items-center justify-center cursor-pointer" data-testid="nav-messages">
+                    <MessageCircle className="h-5 w-5" />
+                  </div>
+                </Link>
 
-            {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center cursor-pointer">
-                  {user?.avatar ? (
-                    <img
-                      src={user.avatar}
-                      alt="User profile"
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                  ) : (
-                    <User className="w-5 h-5 text-white" />
-                  )}
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <div className="px-2 py-1.5">
-                  <p className="font-medium">
-                    {user?.first_name} {user?.last_name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{user?.phone}</p>
-                </div>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="flex items-center">
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/bookmarks" className="flex items-center">
-                    <Heart className="mr-2 h-4 w-4" />
-                    <span>Bookmarks</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/applications" className="flex items-center">
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>Applications</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="flex items-center">
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => logout()}>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                {/* User Menu */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center cursor-pointer">
+                      {user?.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt="User profile"
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <User className="w-5 h-5 text-white" />
+                      )}
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-1.5">
+                      <p className="font-medium">
+                        {user?.first_name} {user?.last_name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">{user?.phone}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile" className="flex items-center">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/bookmarks" className="flex items-center">
+                        <Heart className="mr-2 h-4 w-4" />
+                        <span>Bookmarks</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/applications" className="flex items-center">
+                        <FileText className="mr-2 h-4 w-4" />
+                        <span>Applications</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings" className="flex items-center">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => logout()}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <>
+                {/* Login/Register buttons for unauthenticated users */}
+                <Link href="/login">
+                  <Button variant="ghost" size="sm">
+                    Login
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button size="sm">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
