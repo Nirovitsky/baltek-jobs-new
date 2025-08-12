@@ -90,7 +90,7 @@
 @layer components {
   /* Layout containers for consistent widths */
   .layout-container-navbar {
-    @apply w-full max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8;
+    @apply w-full max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8;
   }
   
   .layout-container-body {
