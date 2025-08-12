@@ -50,18 +50,24 @@ export default function Jobs({}: JobsProps) {
       console.log("getNextPageParam - lastPage:", lastPage);
       console.log("getNextPageParam - allPages length:", allPages.length);
       
-      // Calculate the current offset based on pages loaded
-      const currentOffset = allPages.length * 10; // Each page has 10 items
-      
-      // Check if we have reached the total count
-      if (lastPage?.count && currentOffset >= lastPage.count) {
-        console.log("Reached end of results");
+      // If there are no results in this page, stop pagination
+      if (!lastPage?.results || lastPage.results.length === 0) {
+        console.log("No results in current page");
         return undefined;
       }
       
+      // Calculate the current offset based on pages loaded
+      const currentOffset = allPages.length * 10; // Each page has 10 items
+      
       // Check if the current page has fewer items than the limit (indicating end)
-      if (lastPage?.results && lastPage.results.length < 10) {
+      if (lastPage.results.length < 10) {
         console.log("Current page has fewer than 10 items, likely at end");
+        return undefined;
+      }
+      
+      // Check if we have reached the total count
+      if (lastPage?.count && currentOffset >= lastPage.count) {
+        console.log("Reached end of results based on total count");
         return undefined;
       }
       
@@ -80,8 +86,8 @@ export default function Jobs({}: JobsProps) {
         }
       }
       
-      // If no next URL but we still have results, continue with calculated offset
-      if (lastPage?.results && lastPage.results.length === 10) {
+      // If no next URL but we still have a full page of results, continue
+      if (lastPage.results.length === 10) {
         console.log("No next URL but page is full, continuing with calculated offset:", currentOffset);
         return currentOffset;
       }

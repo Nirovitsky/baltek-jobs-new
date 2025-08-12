@@ -168,9 +168,12 @@ export default function JobList({
         )}
 
         {/* Infinite scroll trigger */}
-        <div ref={loadMoreRef} className="h-1">
+        <div ref={loadMoreRef} className="h-20 flex items-center justify-center">
+          {hasNextPage && !isFetchingNextPage && (
+            <p className="text-sm text-gray-500">Scroll for more jobs...</p>
+          )}
           {!hasNextPage && jobs.length > 0 && (
-            <div className="p-4 text-center">
+            <div className="text-center">
               <p className="text-sm text-gray-500">No more jobs to load</p>
             </div>
           )}

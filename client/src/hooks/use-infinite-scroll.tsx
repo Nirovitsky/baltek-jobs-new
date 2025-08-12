@@ -15,47 +15,13 @@ export function useInfiniteScroll({
   isFetchingNextPage,
   fetchNextPage,
   jobs,
-  rootMargin = "100px",
+  rootMargin = "300px", // Increased for better UX
   threshold = 0.1,
   prefetchThreshold = 3, // Start prefetching when 3 jobs remain
 }: UseInfiniteScrollOptions) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
-  const prefetchTriggeredRef = useRef<boolean>(false);
 
-  // Create prefetch observer for smart prefetching
-  const createPrefetchObserver = useCallback(() => {
-    if (!hasNextPage || isFetchingNextPage || prefetchTriggeredRef.current) return null;
-
-    const jobElements = document.querySelectorAll('.job-card');
-    const totalJobs = jobElements.length;
-    
-    if (totalJobs < prefetchThreshold) return null;
-
-    const triggerIndex = totalJobs - prefetchThreshold;
-    const triggerElement = jobElements[triggerIndex];
-    
-    if (!triggerElement) return null;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && hasNextPage && !isFetchingNextPage && !prefetchTriggeredRef.current) {
-            prefetchTriggeredRef.current = true;
-            fetchNextPage();
-          }
-        });
-      },
-      {
-        rootMargin: "200px", // Larger margin for prefetching
-        threshold: 0.1,
-      }
-    );
-
-    observer.observe(triggerElement);
-    return observer;
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage, jobs.length, prefetchThreshold]);
-
-  // Regular intersection observer for the bottom loader
+  // Simplified intersection observer handler
   const handleIntersection = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const [entry] = entries;
@@ -64,35 +30,14 @@ export function useInfiniteScroll({
         hasNextPage &&
         !isFetchingNextPage
       ) {
+        console.log("Loading more jobs...");
         fetchNextPage();
       }
     },
     [hasNextPage, isFetchingNextPage, fetchNextPage]
   );
 
-  // Reset prefetch trigger when jobs change (new page loaded)
-  useEffect(() => {
-    prefetchTriggeredRef.current = false;
-  }, [jobs.length]);
-
-  // Set up prefetch observer
-  useEffect(() => {
-    let prefetchObserver: IntersectionObserver | null = null;
-    
-    // Small delay to ensure DOM is updated
-    const timeoutId = setTimeout(() => {
-      prefetchObserver = createPrefetchObserver();
-    }, 100);
-
-    return () => {
-      clearTimeout(timeoutId);
-      if (prefetchObserver) {
-        prefetchObserver.disconnect();
-      }
-    };
-  }, [createPrefetchObserver]);
-
-  // Set up bottom loader observer
+  // Set up intersection observer for the bottom trigger element
   useEffect(() => {
     const element = loadMoreRef.current;
     if (!element) return;
@@ -103,6 +48,7 @@ export function useInfiniteScroll({
     });
 
     observer.observe(element);
+    console.log("Infinite scroll observer set up with rootMargin:", rootMargin);
 
     return () => {
       observer.unobserve(element);

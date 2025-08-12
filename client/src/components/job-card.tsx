@@ -146,6 +146,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
 
   return (
     <Card 
+      data-testid={`card-job-${job.id}`}
       className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
         isSelected 
           ? "ring-2 ring-primary bg-primary/5" 
