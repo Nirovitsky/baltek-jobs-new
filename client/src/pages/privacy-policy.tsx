@@ -6,12 +6,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="bg-background">
       <div className="layout-container-body py-6">
-        <BreadcrumbNavigation
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Privacy Policy" },
-          ]}
-        />
+        <BreadcrumbNavigation />
 
         <div className="mt-6">
           <Card>

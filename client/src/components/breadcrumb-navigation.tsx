@@ -40,6 +40,14 @@ const routeMap: Record<string, BreadcrumbItem[]> = {
   "/notifications": [
     { label: "Home", href: "/", icon: Home },
     { label: "Notifications", icon: Bell }
+  ],
+  "/terms": [
+    { label: "Home", href: "/", icon: Home },
+    { label: "Terms and Agreement" }
+  ],
+  "/privacy-policy": [
+    { label: "Home", href: "/", icon: Home },
+    { label: "Privacy Policy" }
   ]
 };
 

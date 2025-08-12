@@ -6,12 +6,7 @@ export default function Terms() {
   return (
     <div className="bg-background">
       <div className="layout-container-body py-6">
-        <BreadcrumbNavigation
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Terms and Agreement" },
-          ]}
-        />
+        <BreadcrumbNavigation />
 
         <div className="mt-6">
           <Card>
