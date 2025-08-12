@@ -78,33 +78,33 @@ export default function BreadcrumbNavigation() {
     <div className="h-[72px] bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 flex items-center">
       <div className="layout-container-body">
         <Breadcrumb>
-          <BreadcrumbList>
+          <BreadcrumbList className="min-h-[20px]">
             {breadcrumbItems.map((item, index) => {
               const isLast = index === breadcrumbItems.length - 1;
               const Icon = item.icon;
               
               return (
-                <div key={index} className="flex items-center">
-                  <BreadcrumbItem>
+                <div key={index} className="flex items-center shrink-0">
+                  <BreadcrumbItem className="shrink-0">
                     {isLast ? (
-                      <BreadcrumbPage className="flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium">
-                        {Icon && <Icon className="h-4 w-4" />}
-                        {item.label}
+                      <BreadcrumbPage className="flex items-center gap-2 text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap">
+                        {Icon && <Icon className="h-4 w-4 shrink-0" />}
+                        <span className="shrink-0">{item.label}</span>
                       </BreadcrumbPage>
                     ) : (
                       <BreadcrumbLink asChild>
                         <Link 
                           href={item.href!} 
-                          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
+                          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 transition-colors whitespace-nowrap"
                           data-testid={`breadcrumb-link-${item.label.toLowerCase()}`}
                         >
-                          {Icon && <Icon className="h-4 w-4" />}
-                          {item.label}
+                          {Icon && <Icon className="h-4 w-4 shrink-0" />}
+                          <span className="shrink-0">{item.label}</span>
                         </Link>
                       </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
-                  {!isLast && <BreadcrumbSeparator />}
+                  {!isLast && <BreadcrumbSeparator className="shrink-0" />}
                 </div>
               );
             })}
