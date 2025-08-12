@@ -52,9 +52,12 @@ export default function AuthCallback() {
         
         // The OAuth server handles authentication - we just store the resulting tokens
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
+        console.log('Tokens stored successfully');
         
-        // Invalidate auth queries to refresh user state immediately
-        queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+        // Invalidate and refetch auth queries to refresh user state immediately
+        await queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+        await queryClient.refetchQueries({ queryKey: ["auth", "user"] });
+        console.log('Auth queries invalidated and refetched');
         
         setStatus('success');
         
