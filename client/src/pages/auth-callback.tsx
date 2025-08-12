@@ -5,13 +5,11 @@ import { AuthService } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useQueryClient } from "@tanstack/react-query";
 
 export default function AuthCallback() {
   const [, setLocation] = useLocation();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState<string>('');
-  const queryClient = useQueryClient();
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -52,12 +50,6 @@ export default function AuthCallback() {
         
         // The OAuth server handles authentication - we just store the resulting tokens
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
-        console.log('Tokens stored successfully');
-        
-        // Invalidate and refetch auth queries to refresh user state immediately
-        await queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
-        await queryClient.refetchQueries({ queryKey: ["auth", "user"] });
-        console.log('Auth queries invalidated and refetched');
         
         setStatus('success');
         
@@ -74,7 +66,7 @@ export default function AuthCallback() {
     };
 
     handleCallback();
-  }, [setLocation, queryClient]);
+  }, [setLocation]);
 
   const handleRetry = () => {
     setLocation('/login');

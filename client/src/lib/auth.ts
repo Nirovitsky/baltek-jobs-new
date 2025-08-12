@@ -15,10 +15,8 @@ export class AuthService {
   }
 
   static setTokens(accessToken: string, refreshToken: string): void {
-    console.log('Setting tokens in localStorage...');
     localStorage.setItem(this.TOKEN_KEY, accessToken);
     localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
-    console.log('Tokens set successfully. Authentication status:', this.isAuthenticated());
   }
 
   static clearTokens(): void {
@@ -27,10 +25,7 @@ export class AuthService {
   }
 
   static isAuthenticated(): boolean {
-    const token = this.getToken();
-    const isAuth = !!token;
-    console.log('Authentication check:', { hasToken: !!token, isAuthenticated: isAuth });
-    return isAuth;
+    return !!this.getToken();
   }
 
 

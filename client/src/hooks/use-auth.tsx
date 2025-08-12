@@ -11,32 +11,19 @@ export function useAuth() {
   const { data: user, isLoading, error } = useQuery({
     queryKey: ["auth", "user"],
     queryFn: async (): Promise<UserProfile | null> => {
-      console.log('useAuth query running - checking authentication...');
-      
       if (!AuthService.isAuthenticated()) {
-        console.log('Not authenticated - AuthService.isAuthenticated() returned false');
         return null;
       }
-      
-      console.log('Authenticated! Fetching user profile...');
-      
       try {
         // Get current user ID from token payload
         const token = AuthService.getToken();
-        if (!token) {
-          console.log('No token found');
-          return null;
-        }
+        if (!token) return null;
         
         const payload = JSON.parse(atob(token.split('.')[1]));
         const userId = payload.user_id;
-        console.log('User ID from token:', userId);
         
-        const profile = await ApiClient.getProfile(userId) as UserProfile;
-        console.log('Profile fetched successfully:', profile);
-        return profile;
+        return await ApiClient.getProfile(userId) as UserProfile;
       } catch (error) {
-        console.error('Error fetching user profile:', error);
         AuthService.clearTokens();
         return null;
       }
