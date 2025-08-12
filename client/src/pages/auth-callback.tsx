@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
-import { useQueryClient } from "@tanstack/react-query";
 import { OAuth2PKCEService } from "@/lib/oauth";
 import { AuthService } from "@/lib/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +8,6 @@ import { Button } from "@/components/ui/button";
 
 export default function AuthCallback() {
   const [, setLocation] = useLocation();
-  const queryClient = useQueryClient();
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [error, setError] = useState<string>('');
 
@@ -52,9 +50,6 @@ export default function AuthCallback() {
         
         // The OAuth server handles authentication - we just store the resulting tokens
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
-        
-        // Invalidate auth query to trigger user data refetch and update navbar
-        queryClient.invalidateQueries({ queryKey: ["auth"] });
         
         setStatus('success');
         
