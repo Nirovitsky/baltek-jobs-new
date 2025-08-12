@@ -315,7 +315,7 @@ export default function Notifications() {
   return (
     <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <BreadcrumbNavigation />
-      <div className="layout-container-body py-8">
+      <div className="layout-container-body py-4">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
