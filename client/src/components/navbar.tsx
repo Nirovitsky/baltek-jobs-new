@@ -21,14 +21,28 @@ import {
   ChevronDown,
   Heart,
   FileText,
+  ExternalLink,
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { ApiClient } from "@/lib/api";
+import { formatDistanceToNow } from "date-fns";
 import baltekIcon from "@/assets/baltek-icon.svg";
 
 interface NavbarProps {}
 
 export default function Navbar({}: NavbarProps) {
   const { user, logout } = useAuth();
-  const [notificationCount] = useState(3); // Mock unread notifications
+
+  // Fetch notifications for the dropdown
+  const { data: notificationsData } = useQuery({
+    queryKey: ["notifications", "navbar"],
+    queryFn: () => ApiClient.getNotifications({ page_size: 5 }),
+    retry: false,
+    enabled: !!user,
+  });
+
+  const notifications = notificationsData?.results || [];
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   return (
     <nav className="navbar-sticky">
@@ -47,19 +61,82 @@ export default function Navbar({}: NavbarProps) {
           {/* Navigation Items */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <Link href="/notifications">
-              <Button variant="ghost" size="sm" className="relative">
-                <Bell className="h-5 w-5" />
-                {notificationCount > 0 && (
-                  <Badge
-                    variant="destructive"
-                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-                  >
-                    {notificationCount}
-                  </Badge>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="relative h-8 w-8 p-0">
+                  <Bell className="h-4 w-4" />
+                  {unreadCount > 0 && (
+                    <Badge
+                      variant="destructive"
+                      className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs"
+                    >
+                      {unreadCount}
+                    </Badge>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-80 p-0">
+                <div className="p-3 border-b">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-sm">Notifications</h3>
+                    <Link href="/notifications" className="text-xs text-blue-600 hover:text-blue-700">
+                      View all
+                    </Link>
+                  </div>
+                </div>
+                <div className="max-h-96 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="p-4 text-center text-sm text-gray-500">
+                      No notifications
+                    </div>
+                  ) : (
+                    notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className={`p-3 border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer transition-colors ${
+                          !notification.is_read ? "bg-blue-50 dark:bg-blue-950/30" : ""
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                              !notification.is_read ? "bg-blue-500" : "bg-gray-300"
+                            }`}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                              {notification.title || "Notification"}
+                            </p>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 line-clamp-2">
+                              {notification.event?.type === "JOB_APPLICATION_CREATED" 
+                                ? "New job application submitted"
+                                : "Notification update"}
+                            </p>
+                            <p className="text-xs text-gray-500 mt-1">
+                              {notification.date_created
+                                ? formatDistanceToNow(new Date(notification.date_created * 1000), {
+                                    addSuffix: true,
+                                  })
+                                : "Unknown time"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+                {notifications.length > 0 && (
+                  <div className="p-3 border-t bg-gray-50 dark:bg-gray-800">
+                    <Link href="/notifications">
+                      <Button variant="ghost" size="sm" className="w-full text-xs">
+                        <ExternalLink className="w-3 h-3 mr-1" />
+                        View all notifications
+                      </Button>
+                    </Link>
+                  </div>
                 )}
-              </Button>
-            </Link>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
             {/* Messages */}
             <Link href="/chat">
