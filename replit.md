@@ -32,7 +32,7 @@ Backend Integration: External Baltek API (https://api.baltek.net/api/) for all d
 - **Notification System**: Implemented comprehensive notification functionality with robust error handling. The notification endpoints (`/notifications/`, mark as read, mark all as read, delete) are fully integrated with the Baltek API. Features proper date validation, graceful API fallback with "Coming Soon" messages when endpoints return 500 errors, loading states, notification type mapping, and configurable pagination (set to 15 notifications per page). Added robust date parsing with fallbacks to prevent crashes from invalid date values.
 - **Layout Consistency Enhancement**: Implemented standardized layout system with consistent body widths across all pages to prevent page shifting during navigation. Created unified `.layout-container-body` and `.layout-container-narrow` CSS classes. Updated all major pages (jobs, profile, applications, settings, chat, notifications, bookmarks, company-profile) to use consistent container widths while maintaining navbar slightly wider than content for proper visual hierarchy. Fixed breadcrumb navigation to use the same layout container, eliminating horizontal layout shifts between pages.
 - **Notification UX Improvement**: Removed popup notifications dropdown from navbar. Bell icon now directly links to `/notifications` page for cleaner user experience without popup interruptions.
-- **Navbar Width Reduction**: Reduced navbar container width from 1400px to 1280px for more compact design while maintaining proper hierarchy with body content (1320px).
+- **Navbar Width Alignment**: Aligned navbar container width to match body content width (1320px) for consistent layout alignment.
 
 ## System Architecture
 
