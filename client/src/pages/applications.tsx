@@ -6,8 +6,7 @@ import { Briefcase, Clock, CheckCircle, XCircle, AlertCircle, Building } from "l
 import JobDetails from "@/components/job-details";
 import JobList from "@/components/job-list";
 import JobDetailsSkeleton from "@/components/job-details-skeleton";
-import JobCardSkeleton from "@/components/job-card-skeleton";
-import { Skeleton } from "@/components/ui/skeleton";
+import JobListSkeleton from "@/components/job-list-skeleton";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 export default function ApplicationsPage() {
@@ -154,24 +153,7 @@ export default function ApplicationsPage() {
         <div className="layout-container-body py-4 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             <div className="lg:col-span-1 h-full flex-shrink-0">
-              <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
-                <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                      <Briefcase className="h-4 w-4 text-muted-foreground/60" />
-                    </div>
-                    <div>
-                      <Skeleton className="h-6 w-32" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <JobCardSkeleton key={i} />
-                  ))}
-                </div>
-              </div>
+              <JobListSkeleton count={6} />
             </div>
 
             <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
