@@ -38,7 +38,7 @@ export class AuthService {
       clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
       authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
       tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
-      redirectUri: `${window.location.origin}/jobs`,
+      redirectUri: `${window.location.origin}/auth/callback`,
       scopes: [],
     };
 

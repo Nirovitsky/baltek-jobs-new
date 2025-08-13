@@ -4,8 +4,6 @@ import { useRoute, useLocation } from "wouter";
 import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
-import { OAuth2PKCEService } from "@/lib/oauth";
-import { AuthService } from "@/lib/auth";
 import type { Job, JobFilters } from "@shared/schema";
 
 import JobFiltersComponent from "@/components/job-filters";
@@ -30,83 +28,6 @@ export default function Jobs({}: JobsProps) {
   const urlParams = new URLSearchParams(window.location.search);
   const organizationParam = urlParams.get("organization");
   const authError = urlParams.get("auth_error");
-  const authCode = urlParams.get("code");
-  const authState = urlParams.get("state");
-  const oauthError = urlParams.get("error");
-  
-  // Handle OAuth callback directly in jobs page
-  useEffect(() => {
-    const handleOAuthCallback = async () => {
-      if (oauthError) {
-        toast({
-          title: "Authentication Failed",
-          description: urlParams.get("error_description") || oauthError,
-          variant: "destructive",
-        });
-        // Clean up URL
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete('error');
-        newUrl.searchParams.delete('error_description');
-        window.history.replaceState({}, '', newUrl.toString());
-        return;
-      }
-
-      if (authCode && authState) {
-        try {
-          // Show loading toast
-          toast({
-            title: "Completing Login",
-            description: "Please wait while we sign you in...",
-          });
-
-          const oauthConfig = {
-            clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
-            authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
-            tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
-            redirectUri: `${window.location.origin}/jobs`,
-            scopes: [],
-          };
-
-          const oauthService = new OAuth2PKCEService(oauthConfig);
-          const tokens = await oauthService.exchangeCodeForTokens(authCode, authState);
-          
-          // Store tokens
-          AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
-          
-          // Clean up URL and reload to refresh authentication state
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete('code');
-          newUrl.searchParams.delete('state');
-          window.history.replaceState({}, '', newUrl.toString());
-          
-          // Show success and reload
-          toast({
-            title: "Login Successful",
-            description: "Welcome back! Refreshing your data...",
-          });
-          
-          // Reload to refresh all authentication-dependent components
-          setTimeout(() => window.location.reload(), 500);
-
-        } catch (error) {
-          console.error('OAuth error:', error);
-          toast({
-            title: "Authentication Failed",
-            description: error instanceof Error ? error.message : "Failed to complete login",
-            variant: "destructive",
-          });
-          
-          // Clean up URL
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete('code');
-          newUrl.searchParams.delete('state');
-          window.history.replaceState({}, '', newUrl.toString());
-        }
-      }
-    };
-
-    handleOAuthCallback();
-  }, [authCode, authState, oauthError, toast, urlParams]);
   
   // Show auth error toast if present
   useEffect(() => {
