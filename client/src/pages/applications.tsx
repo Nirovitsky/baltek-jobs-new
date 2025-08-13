@@ -255,9 +255,11 @@ export default function ApplicationsPage() {
           </div>
 
           <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
-            <div className="h-full w-full">
+            <div className="h-full w-full overflow-hidden">
               {selectedJobId ? (
-                <JobDetails jobId={selectedJobId} />
+                <div className="h-full overflow-y-auto">
+                  <JobDetails jobId={selectedJobId} />
+                </div>
               ) : filteredJobs.length > 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
