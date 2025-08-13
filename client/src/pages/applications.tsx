@@ -24,14 +24,7 @@ export default function ApplicationsPage() {
   const applicationsData = applications as any;
   const applicationsList = applicationsData?.results || applicationsData || [];
   
-  // Debug logging
-  console.log("Applications API response:", applicationsData);
-  console.log("Applications list:", applicationsList);
-  console.log("Applications list length:", applicationsList.length);
-  if (applicationsList.length > 0) {
-    console.log("First application:", applicationsList[0]);
-    console.log("Application structure:", Object.keys(applicationsList[0]));
-  }
+
   
   // Transform applications to job format expected by JobCard component
   const appliedJobs = applicationsList.map((application: any) => {
@@ -82,8 +75,7 @@ export default function ApplicationsPage() {
     };
   });
   
-  console.log("Transformed applied jobs:", appliedJobs);
-  console.log("Applied jobs length:", appliedJobs.length);
+
 
   // Auto-select first job when applications load (hook must be called consistently)
   useEffect(() => {
