@@ -152,6 +152,31 @@ export default function Navbar({}: NavbarProps) {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
+                    {/* Theme Switcher */}
+                    <div className="px-2 py-1.5">
+                      <p className="text-sm font-medium text-foreground mb-2">Theme</p>
+                      <div className="flex items-center justify-between">
+                        <Button
+                          variant={theme === "light" ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => setTheme("light")}
+                          className="flex-1 mr-1"
+                        >
+                          <Sun className="h-4 w-4 mr-1" />
+                          Light
+                        </Button>
+                        <Button
+                          variant={theme === "dark" ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => setTheme("dark")}
+                          className="flex-1 ml-1"
+                        >
+                          <Moon className="h-4 w-4 mr-1" />
+                          Dark
+                        </Button>
+                      </div>
+                    </div>
+                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => logout()}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>

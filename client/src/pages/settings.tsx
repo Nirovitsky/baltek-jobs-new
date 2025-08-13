@@ -29,11 +29,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
-import { useTheme } from "@/components/theme-provider";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import {
   Globe,
-  Palette,
   Trash2,
   Info,
   Mail,
@@ -45,7 +43,6 @@ import {
 export default function SettingsPage() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
-  const { theme, setTheme } = useTheme();
   const [language, setLanguage] = useState("english");
 
   const handleLanguageChange = (value: string) => {
@@ -53,14 +50,6 @@ export default function SettingsPage() {
     toast({
       title: "Language updated",
       description: `Language set to ${value}.`,
-    });
-  };
-
-  const handleThemeChange = (value: string) => {
-    setTheme(value as "light" | "dark" | "system");
-    toast({
-      title: "Theme updated",
-      description: `Theme set to ${value}.`,
     });
   };
 
@@ -90,16 +79,16 @@ export default function SettingsPage() {
           {/* Single Card containing all settings */}
           <Card>
             <CardContent className="p-6 space-y-8">
-              {/* Language and Theme Settings */}
+              {/* Language Settings */}
               <div>
                 <div className="flex items-center gap-2 mb-3">
                   <Globe className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">Language & Theme</h2>
+                  <h2 className="text-lg font-semibold">Language</h2>
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Choose your preferred language and theme settings
+                  Choose your preferred language
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="max-w-xs">
                   {/* Language Selection */}
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
@@ -116,23 +105,6 @@ export default function SettingsPage() {
                         <SelectItem value="turkmen">Türkmen</SelectItem>
                         <SelectItem value="english">English</SelectItem>
                         <SelectItem value="russian">Русский</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Theme Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Theme
-                    </label>
-                    <Select value={theme} onValueChange={handleThemeChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
