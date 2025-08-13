@@ -154,26 +154,26 @@ export default function Navbar({}: NavbarProps) {
                     <DropdownMenuSeparator />
                     {/* Theme Switcher */}
                     <div className="px-2 py-1.5">
-                      <p className="text-sm font-medium text-foreground mb-2">Theme</p>
                       <div className="flex items-center justify-between">
-                        <Button
-                          variant={theme === "light" ? "default" : "ghost"}
-                          size="sm"
-                          onClick={() => setTheme("light")}
-                          className="flex-1 mr-1"
-                        >
-                          <Sun className="h-4 w-4 mr-1" />
-                          Light
-                        </Button>
-                        <Button
-                          variant={theme === "dark" ? "default" : "ghost"}
-                          size="sm"
-                          onClick={() => setTheme("dark")}
-                          className="flex-1 ml-1"
-                        >
-                          <Moon className="h-4 w-4 mr-1" />
-                          Dark
-                        </Button>
+                        <p className="text-sm font-medium text-foreground">Theme</p>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant={theme === "light" ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setTheme("light")}
+                            className="h-6 w-6 p-0"
+                          >
+                            <Sun className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant={theme === "dark" ? "default" : "ghost"}
+                            size="sm"
+                            onClick={() => setTheme("dark")}
+                            className="h-6 w-6 p-0"
+                          >
+                            <Moon className="h-3 w-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
                     <DropdownMenuSeparator />
