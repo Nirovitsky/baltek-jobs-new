@@ -15,14 +15,8 @@ export function useAuth() {
         return null;
       }
       try {
-        // Get current user ID from token payload
-        const token = AuthService.getToken();
-        if (!token) return null;
-        
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const userId = payload.user_id;
-        
-        return await ApiClient.getProfile(userId) as UserProfile;
+        // Fetch current user from /users/me/ endpoint
+        return await ApiClient.getCurrentUser() as UserProfile;
       } catch (error) {
         AuthService.clearTokens();
         return null;
