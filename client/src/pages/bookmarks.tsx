@@ -65,7 +65,7 @@ export default function Bookmarks({}: BookmarksProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
           <div className="lg:col-span-1 h-full flex-shrink-0">
             {isLoading ? (
-              <div className="h-full flex flex-col w-full">
+              <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
                 <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <Skeleton className="w-8 h-8 rounded-full" />
@@ -82,7 +82,7 @@ export default function Bookmarks({}: BookmarksProps) {
                 </div>
               </div>
             ) : jobs.length === 0 ? (
-              <div className="h-full flex flex-col w-full">
+              <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
                 <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
@@ -103,7 +103,7 @@ export default function Bookmarks({}: BookmarksProps) {
                 </div>
               </div>
             ) : (
-              <div className="h-full flex flex-col w-full">
+              <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
                 <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
@@ -117,7 +117,7 @@ export default function Bookmarks({}: BookmarksProps) {
                   </div>
                 </div>
                 
-                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
+                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
                   {jobs.map((job: Job) => (
                     <JobCard
                       key={job.id}

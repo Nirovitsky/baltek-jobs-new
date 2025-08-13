@@ -131,8 +131,8 @@ export default function ApplicationsPage() {
         <div className="layout-container-body py-4 overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
             <div className="lg:col-span-1 h-full flex-shrink-0">
-              <div className="h-full flex flex-col w-full">
-                <div className="px-3 py-4 border-b bg-muted rounded-t-lg flex-shrink-0">
+              <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
+                <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
                   <div className="flex items-center space-x-2">
                     <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
                       <Briefcase className="h-4 w-4 text-muted-foreground/60" />
@@ -231,7 +231,7 @@ export default function ApplicationsPage() {
       <div className="layout-container-body py-4 flex-1 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
           <div className="lg:col-span-1 h-full flex-shrink-0">
-            <div className="h-full flex flex-col w-full">
+            <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
               <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
                 <div className="flex items-center space-x-2">
                   <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
@@ -245,7 +245,7 @@ export default function ApplicationsPage() {
                 </div>
               </div>
               
-              <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
+              <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
                 {appliedJobs.map((job: any) => (
                   <JobCard
                     key={job.id}
