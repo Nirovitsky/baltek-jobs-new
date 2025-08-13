@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { useAuth } from "@/hooks/use-auth";
 import Navbar from "@/components/navbar";
+import NavbarSkeleton from "@/components/navbar-skeleton";
 
 import Jobs from "@/pages/jobs";
 import Profile from "@/pages/profile";
@@ -45,11 +46,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 
 function Router() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
   const Layout = ({ children }: { children: React.ReactNode }) => (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
-      <Navbar />
+      {isLoading ? <NavbarSkeleton /> : <Navbar />}
       <main className="flex-1 overflow-hidden">
         {children}
       </main>
@@ -58,7 +59,7 @@ function Router() {
 
   const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
     <div className="h-screen bg-background flex flex-col overflow-hidden">
-      <Navbar />
+      {isLoading ? <NavbarSkeleton /> : <Navbar />}
       <main className="flex-1 overflow-hidden">
         {children}
       </main>
