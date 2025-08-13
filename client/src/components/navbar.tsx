@@ -29,6 +29,7 @@ import {
   Moon,
   Palette,
   Globe,
+  Monitor,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
@@ -216,6 +217,14 @@ export default function Navbar({}: NavbarProps) {
                           className="h-6 w-6 p-0"
                         >
                           <Moon className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant={theme === "system" ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => setTheme("system")}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Monitor className="h-3 w-3" />
                         </Button>
                       </div>
                     </div>
