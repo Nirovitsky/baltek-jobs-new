@@ -97,33 +97,28 @@ export class AuthService {
   static async logout(): Promise<void> {
     console.log('Logging out user and clearing tokens...');
     
-    // Try to revoke tokens via OAuth if available
+    // Clear local tokens first
+    this.clearTokens();
+    
+    // Redirect to Baltek OAuth logout endpoint
     try {
-      const accessToken = this.getToken();
-      const refreshToken = this.getRefreshToken();
+      const clientId = import.meta.env.VITE_OAUTH_CLIENT_ID;
+      const homeUrl = `${window.location.origin}/`;
       
-      if (accessToken || refreshToken) {
-        const { OAuth2PKCEService } = await import('./oauth');
-        const oauthConfig = {
-          clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
-          authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
-          tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
-          redirectUri: `${window.location.origin}/auth/callback`,
-          scopes: [],
-        };
-        
-        if (oauthConfig.clientId && oauthConfig.tokenUrl && accessToken) {
-          const oauthService = new OAuth2PKCEService(oauthConfig);
-          await oauthService.logout(accessToken, refreshToken || undefined);
-        }
+      if (clientId) {
+        const logoutUrl = `https://api.baltek.net/api/oauth2/logout/?client_id=${encodeURIComponent(clientId)}&post_logout_redirect_uri=${encodeURIComponent(homeUrl)}`;
+        console.log('Redirecting to Baltek logout:', logoutUrl);
+        window.location.href = logoutUrl;
+      } else {
+        // Fallback to local redirect if no client ID
+        console.warn('No OAuth client ID available, performing local logout only');
+        window.location.href = "/";
       }
     } catch (error) {
-      console.warn('Error during OAuth logout:', error);
+      console.warn('Error during logout redirect:', error);
+      // Fallback to local redirect
+      window.location.href = "/";
     }
-    
-    this.clearTokens();
-    // Use window.location to ensure a full page refresh and clear any cached state
-    window.location.href = "/";
   }
 
   static getAuthHeaders(): Record<string, string> {
