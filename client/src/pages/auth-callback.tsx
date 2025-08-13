@@ -28,19 +28,12 @@ export default function AuthCallback() {
         }
 
         // Initialize OAuth service with same config as auth flow
-        const scopesEnv = import.meta.env.VITE_OAUTH_SCOPES;
-        let scopes: string[] = [];
-        
-        if (scopesEnv && scopesEnv.trim()) {
-          scopes = scopesEnv.split(' ').filter((scope: string) => scope.trim());
-        }
-
         const oauthConfig = {
           clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
           authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
           tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
           redirectUri: `${window.location.origin}/auth/callback`,
-          scopes: scopes,
+          scopes: [],
         };
 
         const oauthService = new OAuth2PKCEService(oauthConfig);
