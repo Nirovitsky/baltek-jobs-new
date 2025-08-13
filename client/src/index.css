@@ -172,10 +172,10 @@
     scrollbar-width: none; /* Firefox */
     -ms-overflow-style: none; /* IE and Edge */
     @apply overflow-y-auto;
-    /* Ensure proper height calculation for scrolling */
-    max-height: calc(100vh - 300px);
+    /* Ensure height never exceeds screen and accounts for navbar + filters + header */
+    max-height: calc(100vh - 200px);
     min-height: 0;
-    height: 100%;
+    flex: 1;
   }
   
   .job-description-scroll::-webkit-scrollbar {

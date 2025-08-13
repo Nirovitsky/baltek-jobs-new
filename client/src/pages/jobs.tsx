@@ -244,8 +244,8 @@ export default function Jobs({}: JobsProps) {
             />
           </div>
 
-          <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
-            <div className="h-full w-full">
+          <div className="lg:col-span-2 h-full max-h-screen flex-shrink-0 min-w-0">
+            <div className="h-full max-h-screen w-full overflow-hidden">
               {isLoading ? (
                 <JobDetailsSkeleton />
               ) : currentSelectedJobId ? (
