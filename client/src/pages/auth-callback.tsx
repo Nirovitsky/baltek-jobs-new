@@ -46,9 +46,9 @@ export default function AuthCallback() {
         
         setStatus('success');
         
-        // Redirect to main page immediately after successful login
+        // Redirect to main page with full reload to ensure navbar updates
         setTimeout(() => {
-          setLocation('/jobs');
+          window.location.href = '/jobs';
         }, 1000);
 
       } catch (error) {
