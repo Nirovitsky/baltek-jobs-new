@@ -57,3 +57,18 @@ Authentication: OAuth2-only authentication system - all login/register functiona
 - **React Dropzone**: File upload functionality.
 - **Date-fns**: Date manipulation and formatting.
 - **Nanoid**: Unique ID generation.
+
+## Environment Variables Configuration
+
+The application requires the following environment variables configured in Replit Secrets:
+- **VITE_OAUTH_CLIENT_ID**: OAuth2 client identifier for Baltek API authentication
+- **VITE_OAUTH_AUTH_URL**: Authorization endpoint (https://api.baltek.net/oauth/authorize/)
+- **VITE_OAUTH_TOKEN_URL**: Token exchange endpoint (https://api.baltek.net/oauth/token/)
+- **PORT**: Server port (defaults to 5000)
+
+## Recent Migration Notes
+
+- Successfully migrated from Replit Agent to standard Replit environment (January 2025)
+- All OAuth environment variables properly configured and verified working
+- Application successfully connecting to Baltek API and loading job data
+- Vite development server running on port 5000 with proper client/server separation
