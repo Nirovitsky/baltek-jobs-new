@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "wouter";
 import {
   Card,
@@ -8,13 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +23,6 @@ import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import {
-  Globe,
   Trash2,
   Info,
   Mail,
@@ -43,15 +34,6 @@ import {
 export default function SettingsPage() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
-  const [language, setLanguage] = useState("english");
-
-  const handleLanguageChange = (value: string) => {
-    setLanguage(value);
-    toast({
-      title: "Language updated",
-      description: `Language set to ${value}.`,
-    });
-  };
 
   const handleDeleteAccount = async () => {
     try {
@@ -79,38 +61,6 @@ export default function SettingsPage() {
           {/* Single Card containing all settings */}
           <Card>
             <CardContent className="p-6 space-y-8">
-              {/* Language Settings */}
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <Globe className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">Language</h2>
-                </div>
-                <p className="text-sm text-muted-foreground mb-4">
-                  Choose your preferred language
-                </p>
-                <div className="max-w-xs">
-                  {/* Language Selection */}
-                  <div>
-                    <label className="block text-sm font-medium text-foreground mb-2">
-                      Language
-                    </label>
-                    <Select
-                      value={language}
-                      onValueChange={handleLanguageChange}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="turkmen">Türkmen</SelectItem>
-                        <SelectItem value="english">English</SelectItem>
-                        <SelectItem value="russian">Русский</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-
               {/* Information & Support Links */}
               <div>
                 <div className="flex items-center gap-2 mb-3">

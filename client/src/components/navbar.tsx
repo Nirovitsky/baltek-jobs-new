@@ -28,6 +28,7 @@ import {
   Sun,
   Moon,
   Palette,
+  Globe,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
@@ -38,6 +39,7 @@ export default function Navbar({}: NavbarProps) {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
+  const [language, setLanguage] = useState("english");
 
   const handleOAuthLogin = async () => {
     try {
@@ -64,6 +66,14 @@ export default function Navbar({}: NavbarProps) {
 
   const notifications = notificationsData?.results || [];
   const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  const handleLanguageChange = (newLanguage: string) => {
+    setLanguage(newLanguage);
+    toast({
+      title: "Language updated",
+      description: `Language set to ${newLanguage}.`,
+    });
+  };
 
   return (
     <nav className="navbar-sticky">
@@ -152,6 +162,40 @@ export default function Navbar({}: NavbarProps) {
                         <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
+                    {/* Language Switcher */}
+                    <div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                      <Globe className="mr-2 h-4 w-4" />
+                      <span className="flex-1">Language</span>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant={language === "turkmen" ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => handleLanguageChange("turkmen")}
+                          className="h-6 w-6 p-0 text-xs"
+                          title="Türkmen"
+                        >
+                          TM
+                        </Button>
+                        <Button
+                          variant={language === "english" ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => handleLanguageChange("english")}
+                          className="h-6 w-6 p-0 text-xs"
+                          title="English"
+                        >
+                          EN
+                        </Button>
+                        <Button
+                          variant={language === "russian" ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => handleLanguageChange("russian")}
+                          className="h-6 w-6 p-0 text-xs"
+                          title="Русский"
+                        >
+                          RU
+                        </Button>
+                      </div>
+                    </div>
                     {/* Theme Switcher */}
                     <div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
                       <Palette className="mr-2 h-4 w-4" />
