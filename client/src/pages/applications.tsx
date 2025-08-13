@@ -1,18 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { Briefcase, Clock, CheckCircle, XCircle, AlertCircle, Building } from "lucide-react";
 import JobDetails from "@/components/job-details";
-import JobCard from "@/components/job-card";
-import JobCardSkeleton from "@/components/job-card-skeleton";
+import JobList from "@/components/job-list";
 import JobDetailsSkeleton from "@/components/job-details-skeleton";
+import JobCardSkeleton from "@/components/job-card-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 export default function ApplicationsPage() {
   const { user } = useAuth();
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { data: applications, isLoading, error } = useQuery({
     queryKey: ["user", "applications"],
@@ -85,12 +87,33 @@ export default function ApplicationsPage() {
   console.log("Transformed applied jobs:", appliedJobs);
   console.log("Applied jobs length:", appliedJobs.length);
 
+  const handleJobSelect = useCallback((job: any) => {
+    setSelectedJobId(job.id);
+  }, []);
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, []);
+
+  const handleSearchSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    // Search is handled in real-time via onChange
+  }, []);
+
+  // Filter applications based on search query
+  const filteredJobs = appliedJobs.filter((job: any) => 
+    job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    job.organization?.display_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    job.company?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    job.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Auto-select first job when applications load (hook must be called consistently)
   useEffect(() => {
-    if (appliedJobs.length > 0 && !selectedJobId) {
-      setSelectedJobId(appliedJobs[0].id);
+    if (filteredJobs.length > 0 && !selectedJobId) {
+      setSelectedJobId(filteredJobs[0].id);
     }
-  }, [appliedJobs, selectedJobId]);
+  }, [filteredJobs, selectedJobId]);
 
   const getStatusIcon = (status?: string) => {
     switch (status?.toLowerCase()) {
@@ -231,41 +254,28 @@ export default function ApplicationsPage() {
       <div className="layout-container-body py-4 flex-1 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
           <div className="lg:col-span-1 h-full flex-shrink-0">
-            <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
-              <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <Briefcase className="h-4 w-4 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-semibold text-primary">
-                      {appliedJobs.length} Application{appliedJobs.length !== 1 ? "s" : ""}
-                    </h2>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
-                {appliedJobs.map((job: any) => (
-                  <JobCard
-                    key={job.id}
-                    job={job}
-                    isSelected={selectedJobId === job.id}
-                    onSelect={() => setSelectedJobId(job.id)}
-                    showBookmark={false}
-                    disableViewedOpacity={true}
-                    hideAppliedBadge={true}
-                  />
-                ))}
-              </div>
-            </div>
+            <JobList
+              jobs={filteredJobs}
+              selectedJobId={selectedJobId}
+              onJobSelect={handleJobSelect}
+              isLoading={isLoading}
+              hasNextPage={false}
+              isFetchingNextPage={false}
+              fetchNextPage={() => {}}
+              totalCount={appliedJobs.length}
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              onSearchSubmit={handleSearchSubmit}
+              isSearching={false}
+              inputRef={inputRef}
+            />
           </div>
 
           <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
             <div className="h-full w-full">
               {selectedJobId ? (
                 <JobDetails jobId={selectedJobId} />
-              ) : appliedJobs.length > 0 ? (
+              ) : filteredJobs.length > 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-foreground mb-2">

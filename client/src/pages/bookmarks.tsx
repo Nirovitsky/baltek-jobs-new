@@ -1,23 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import type { Job, JobsListResponse } from "@shared/schema";
 
 import JobDetails from "@/components/job-details";
-import JobCard from "@/components/job-card";
-import JobListSkeleton from "@/components/job-list-skeleton";
+import JobList from "@/components/job-list";
 import JobDetailsSkeleton from "@/components/job-details-skeleton";
-import JobCardSkeleton from "@/components/job-card-skeleton";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, Bookmark } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 interface BookmarksProps {}
 
 export default function Bookmarks({}: BookmarksProps) {
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const {
     data: bookmarkedJobs,
@@ -30,19 +28,35 @@ export default function Bookmarks({}: BookmarksProps) {
     },
   });
 
-  const handleJobSelect = (job: Job) => {
+  const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
-  };
+  }, []);
+
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  }, []);
+
+  const handleSearchSubmit = useCallback((e: React.FormEvent) => {
+    e.preventDefault();
+    // Search is handled in real-time via onChange
+  }, []);
 
   const jobs = bookmarkedJobs?.results || [];
   const totalCount = bookmarkedJobs?.count || 0;
 
+  // Filter jobs based on search query
+  const filteredJobs = jobs.filter((job: Job) => 
+    job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    job.organization?.display_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    job.description?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   // Auto-select first job when bookmarks load
   useEffect(() => {
-    if (jobs.length > 0 && !selectedJobId) {
-      setSelectedJobId(jobs[0].id);
+    if (filteredJobs.length > 0 && !selectedJobId) {
+      setSelectedJobId(filteredJobs[0].id);
     }
-  }, [jobs, selectedJobId]);
+  }, [filteredJobs, selectedJobId]);
 
   if (error) {
     return (
@@ -64,73 +78,21 @@ export default function Bookmarks({}: BookmarksProps) {
       <div className="layout-container-body py-4 flex-1 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
           <div className="lg:col-span-1 h-full flex-shrink-0">
-            {isLoading ? (
-              <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
-                <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
-                  <div className="flex items-center space-x-2">
-                    <Skeleton className="w-8 h-8 rounded-full" />
-                    <div>
-                      <Skeleton className="h-6 w-32" />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <JobCardSkeleton key={i} />
-                  ))}
-                </div>
-              </div>
-            ) : jobs.length === 0 ? (
-              <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
-                <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                      <Bookmark className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-semibold text-primary">0 Bookmarks</h2>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex-1 min-h-0 flex items-center justify-center">
-                  <div className="text-center">
-                    <Bookmark className="h-12 w-12 text-muted-foreground/60 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-foreground mb-2">No bookmarked jobs</h3>
-                    <p className="text-muted-foreground">Jobs you bookmark will appear here for easy access.</p>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
-                <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                      <Bookmark className="h-4 w-4 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-semibold text-primary">
-                        {totalCount.toLocaleString()} Bookmark{totalCount !== 1 ? "s" : ""}
-                      </h2>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
-                  {jobs.map((job: Job) => (
-                    <JobCard
-                      key={job.id}
-                      job={job}
-                      isSelected={selectedJobId === job.id}
-                      onSelect={handleJobSelect}
-                      showBookmark={false}
-                      disableViewedOpacity={true}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
+            <JobList
+              jobs={filteredJobs}
+              selectedJobId={selectedJobId}
+              onJobSelect={handleJobSelect}
+              isLoading={isLoading}
+              hasNextPage={false}
+              isFetchingNextPage={false}
+              fetchNextPage={() => {}}
+              totalCount={totalCount}
+              searchQuery={searchQuery}
+              onSearchChange={handleSearchChange}
+              onSearchSubmit={handleSearchSubmit}
+              isSearching={false}
+              inputRef={inputRef}
+            />
           </div>
           
           <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
@@ -139,7 +101,7 @@ export default function Bookmarks({}: BookmarksProps) {
                 <JobDetailsSkeleton />
               ) : selectedJobId ? (
                 <JobDetails jobId={selectedJobId} />
-              ) : jobs.length > 0 ? (
+              ) : filteredJobs.length > 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center">
                     <h3 className="text-lg font-medium text-foreground mb-2">
