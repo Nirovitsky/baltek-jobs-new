@@ -1,8 +1,7 @@
-import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import JobCardSkeleton from "@/components/job-card-skeleton";
-import { Search } from "lucide-react";
+import { Search, Briefcase } from "lucide-react";
 
 interface JobListSkeletonProps {
   count?: number;
@@ -10,15 +9,16 @@ interface JobListSkeletonProps {
 
 export default function JobListSkeleton({ count = 8 }: JobListSkeletonProps) {
   return (
-    <div className="h-full flex flex-col w-full">
-      <div className="px-3 pt-6 pb-4 border-b bg-muted rounded-t-lg flex-shrink-0 space-y-4">
+    <div className="h-full flex flex-col bg-background border border-border rounded-lg overflow-hidden">
+      {/* Header Section */}
+      <div className="px-3 py-4 border-b bg-background rounded-t-lg flex-shrink-0 space-y-4">
         {/* Job Count with Icon */}
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-muted-foreground/20 rounded-full flex items-center justify-center">
-            <Search className="h-4 w-4 text-muted-foreground" />
+          <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+            <Briefcase className="h-4 w-4 text-white" />
           </div>
           <div>
-            <Skeleton className="h-6 w-24" />
+            <Skeleton className="h-6 w-32" />
           </div>
         </div>
         
@@ -38,7 +38,8 @@ export default function JobListSkeleton({ count = 8 }: JobListSkeletonProps) {
         </form>
       </div>
       
-      <div className="infinite-scroll flex-1 overflow-y-auto min-h-0 space-y-3 p-3">
+      {/* Job List */}
+      <div className="flex-1 min-h-0 overflow-y-auto space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
         {Array.from({ length: count }).map((_, index) => (
           <JobCardSkeleton key={index} />
         ))}
