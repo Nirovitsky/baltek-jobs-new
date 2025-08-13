@@ -248,7 +248,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   };
 
   return (
-    <Card className="h-full max-h-screen flex flex-col w-full overflow-hidden">
+    <Card className="h-full max-h-[calc(100vh-120px)] flex flex-col w-full overflow-hidden">
       {/* Fixed Header */}
       <div className="p-6 border-b bg-background flex-shrink-0">
         {/* Header */}
