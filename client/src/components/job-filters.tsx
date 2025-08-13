@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import type { JobFilters, Location, Category, SavedFilter, CreateSavedFilter } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -34,11 +35,13 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   const [saveFilterName, setSaveFilterName] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
-  // Fetch saved filters
+  // Fetch saved filters - only for authenticated users
   const { data: savedFilters, isLoading: savedFiltersLoading } = useQuery({
     queryKey: ["savedFilters"],
     queryFn: () => ApiClient.getSavedFilters(),
+    enabled: isAuthenticated,
   });
 
   console.log("Saved filters data:", savedFilters);
@@ -346,18 +349,19 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               </Select>
             )}
 
-            {/* Save Filter Dialog */}
-            <Dialog open={saveFilterDialogOpen} onOpenChange={setSaveFilterDialogOpen}>
-              <DialogTrigger asChild>
-                <Button
-                  variant="default"
-                  className="bg-primary hover:bg-primary/90 h-8 text-xs px-3"
-                  disabled={!hasActiveFilters}
-                >
-                  <Save className="h-3 w-3 mr-1" />
-                  Save
-                </Button>
-              </DialogTrigger>
+            {/* Save Filter Dialog - Only show for authenticated users */}
+            {isAuthenticated && (
+              <Dialog open={saveFilterDialogOpen} onOpenChange={setSaveFilterDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="default"
+                    className="bg-primary hover:bg-primary/90 h-8 text-xs px-3"
+                    disabled={!hasActiveFilters}
+                  >
+                    <Save className="h-3 w-3 mr-1" />
+                    Save
+                  </Button>
+                </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                   <DialogTitle>Save Filter</DialogTitle>
@@ -397,6 +401,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+            )}
 
             {hasActiveFilters && (
               <Button
