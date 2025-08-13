@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { AuthService } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/components/theme-provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -23,18 +24,19 @@ import {
   ChevronDown,
   Heart,
   FileText,
-
+  Briefcase,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
-
-import baltekIcon from "@/assets/baltek-icon.svg";
 
 interface NavbarProps {}
 
 export default function Navbar({}: NavbarProps) {
   const { user, logout } = useAuth();
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
 
   const handleOAuthLogin = async () => {
     try {
@@ -70,7 +72,7 @@ export default function Navbar({}: NavbarProps) {
           <div className="flex items-center flex-1">
             <Link href="/jobs" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
-                <img src={baltekIcon} alt="Baltek" className="h-10 w-10" />
+                <Briefcase className="h-8 w-8 text-primary" />
                 <h1 className="text-xl font-bold text-primary">baltek jobs</h1>
               </div>
             </Link>
@@ -159,6 +161,21 @@ export default function Navbar({}: NavbarProps) {
               </>
             ) : (
               <>
+                {/* Dark/Light mode toggle for unauthenticated users */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+                  className="w-8 h-8 p-0"
+                  data-testid="theme-toggle"
+                >
+                  {theme === "light" ? (
+                    <Moon className="h-4 w-4" />
+                  ) : (
+                    <Sun className="h-4 w-4" />
+                  )}
+                </Button>
+                
                 {/* OAuth Login button for unauthenticated users */}
                 <Button size="sm" onClick={handleOAuthLogin}>
                   Login
