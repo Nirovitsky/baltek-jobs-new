@@ -238,13 +238,13 @@ export default function ApplicationsPage() {
           <div className="lg:col-span-1 h-full flex-shrink-0">
             <JobList
               jobs={filteredJobs}
-              selectedJobId={selectedJobId}
+              selectedJobId={null}
               onJobSelect={handleJobSelect}
               isLoading={isLoading}
               hasNextPage={false}
               isFetchingNextPage={false}
               fetchNextPage={() => {}}
-              totalCount={appliedJobs.length}
+              totalCount={filteredJobs.length}
               searchQuery={searchQuery}
               onSearchChange={handleSearchChange}
               onSearchSubmit={handleSearchSubmit}
