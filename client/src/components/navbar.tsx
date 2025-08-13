@@ -27,6 +27,7 @@ import {
   Briefcase,
   Sun,
   Moon,
+  Palette,
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
@@ -151,29 +152,27 @@ export default function Navbar({}: NavbarProps) {
                         <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
                     {/* Theme Switcher */}
-                    <div className="px-2 py-1.5">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-foreground">Theme</p>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant={theme === "light" ? "default" : "ghost"}
-                            size="sm"
-                            onClick={() => setTheme("light")}
-                            className="h-6 w-6 p-0"
-                          >
-                            <Sun className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            variant={theme === "dark" ? "default" : "ghost"}
-                            size="sm"
-                            onClick={() => setTheme("dark")}
-                            className="h-6 w-6 p-0"
-                          >
-                            <Moon className="h-3 w-3" />
-                          </Button>
-                        </div>
+                    <div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
+                      <Palette className="mr-2 h-4 w-4" />
+                      <span className="flex-1">Theme</span>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant={theme === "light" ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => setTheme("light")}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Sun className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant={theme === "dark" ? "default" : "ghost"}
+                          size="sm"
+                          onClick={() => setTheme("dark")}
+                          className="h-6 w-6 p-0"
+                        >
+                          <Moon className="h-3 w-3" />
+                        </Button>
                       </div>
                     </div>
                     <DropdownMenuSeparator />
