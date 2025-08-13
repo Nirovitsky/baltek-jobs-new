@@ -34,20 +34,12 @@ export class AuthService {
   static async startOAuthLogin(): Promise<void> {
     const { OAuth2PKCEService } = await import('./oauth');
     
-    // Get scopes from environment - if not set, use empty array (no scope parameter)
-    const scopesEnv = import.meta.env.VITE_OAUTH_SCOPES;
-    let scopes: string[] = [];
-    
-    if (scopesEnv && scopesEnv.trim()) {
-      scopes = scopesEnv.split(' ').filter((scope: string) => scope.trim());
-    }
-    
     const oauthConfig = {
       clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
       authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
       tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
       redirectUri: `${window.location.origin}/auth/callback`,
-      scopes: scopes,
+      scopes: [],
     };
 
     if (!oauthConfig.clientId || !oauthConfig.authorizationUrl) {
