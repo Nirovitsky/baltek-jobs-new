@@ -75,7 +75,7 @@ export default function Bookmarks({}: BookmarksProps) {
                   </div>
                 </div>
                 
-                <div className="flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
+                <div className="infinite-scroll flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
                   {Array.from({ length: 6 }).map((_, i) => (
                     <JobCardSkeleton key={i} />
                   ))}
@@ -116,8 +116,8 @@ export default function Bookmarks({}: BookmarksProps) {
                     </div>
                   </div>
                 </div>
-                
-                <div className="flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
+
+                <div className="infinite-scroll flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
                   {jobs.map((job: Job) => (
                     <JobCard
                       key={job.id}

@@ -143,7 +143,7 @@ export default function ApplicationsPage() {
                   </div>
                 </div>
                 
-                <div className="flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
+                <div className="infinite-scroll flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
                   {Array.from({ length: 6 }).map((_, i) => (
                     <JobCardSkeleton key={i} />
                   ))}
@@ -245,7 +245,7 @@ export default function ApplicationsPage() {
                 </div>
               </div>
               
-              <div className="flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
+              <div className="infinite-scroll flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>
                 {appliedJobs.map((job: any) => (
                   <JobCard
                     key={job.id}
