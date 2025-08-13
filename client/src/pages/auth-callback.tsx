@@ -1,16 +1,9 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
+import { useEffect } from "react";
 import { OAuth2PKCEService } from "@/lib/oauth";
 import { AuthService } from "@/lib/auth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Loader2, CheckCircle, XCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
 
 export default function AuthCallback() {
-  const [, setLocation] = useLocation();
-  const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
-  const [error, setError] = useState<string>('');
-
   useEffect(() => {
     const handleCallback = async () => {
       try {
@@ -20,11 +13,15 @@ export default function AuthCallback() {
         const error = urlParams.get('error');
 
         if (error) {
-          throw new Error(urlParams.get('error_description') || error);
+          console.error('OAuth error:', urlParams.get('error_description') || error);
+          window.location.href = '/jobs?auth_error=1';
+          return;
         }
 
         if (!code || !state) {
-          throw new Error('Missing authorization code or state parameter');
+          console.error('Missing authorization code or state parameter');
+          window.location.href = '/jobs?auth_error=1';
+          return;
         }
 
         // Initialize OAuth service with same config as auth flow
@@ -41,80 +38,26 @@ export default function AuthCallback() {
         // Exchange code for tokens with OAuth server
         const tokens = await oauthService.exchangeCodeForTokens(code, state);
         
-        // The OAuth server handles authentication - we just store the resulting tokens
+        // Store tokens and redirect immediately
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
-        
-        setStatus('success');
-        
-        // Redirect to main page with full reload to ensure navbar updates
-        setTimeout(() => {
-          window.location.href = '/jobs';
-        }, 1000);
+        window.location.href = '/jobs';
 
       } catch (error) {
         console.error('OAuth callback error:', error);
-        setError(error instanceof Error ? error.message : 'Authentication failed');
-        setStatus('error');
+        window.location.href = '/jobs?auth_error=1';
       }
     };
 
     handleCallback();
-  }, [setLocation]);
+  }, []);
 
-  const handleRetry = () => {
-    setLocation('/login');
-  };
-
+  // Minimal loading state while processing
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="flex items-center justify-center space-x-2">
-            {status === 'loading' && <Loader2 className="w-6 h-6 animate-spin text-primary" />}
-            {status === 'success' && <CheckCircle className="w-6 h-6 text-green-600" />}
-            {status === 'error' && <XCircle className="w-6 h-6 text-red-600" />}
-            <span>
-              {status === 'loading' && 'Completing Login...'}
-              {status === 'success' && 'Login Successful!'}
-              {status === 'error' && 'Login Failed'}
-            </span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-center space-y-4">
-          {status === 'loading' && (
-            <p className="text-muted-foreground">
-              Please wait while we complete your authentication...
-            </p>
-          )}
-          
-          {status === 'success' && (
-            <div className="space-y-2">
-              <p className="text-green-600 font-medium">
-                You have been successfully logged in!
-              </p>
-              <p className="text-muted-foreground text-sm">
-                Redirecting you to the jobs page...
-              </p>
-            </div>
-          )}
-          
-          {status === 'error' && (
-            <div className="space-y-4">
-              <p className="text-red-600 font-medium">
-                Authentication failed
-              </p>
-              {error && (
-                <p className="text-muted-foreground text-sm bg-red-50 dark:bg-red-950/30 p-3 rounded-lg border border-red-200 dark:border-red-800">
-                  {error}
-                </p>
-              )}
-              <Button onClick={handleRetry} className="w-full">
-                Try Again
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="flex items-center space-x-3">
+        <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <span className="text-muted-foreground">Completing login...</span>
+      </div>
     </div>
   );
 }

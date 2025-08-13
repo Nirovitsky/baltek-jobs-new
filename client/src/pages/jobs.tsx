@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRoute, useLocation } from "wouter";
 import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useToast } from "@/hooks/use-toast";
 import type { Job, JobFilters } from "@shared/schema";
 
 import JobFiltersComponent from "@/components/job-filters";
@@ -16,6 +17,8 @@ import { Card, CardContent } from "@/components/ui/card";
 interface JobsProps {}
 
 export default function Jobs({}: JobsProps) {
+  const { toast } = useToast();
+  
   // Handle routing
   const [, setLocation] = useLocation();
   const [matchJobId, paramsJobId] = useRoute("/jobs/:id");
@@ -24,6 +27,22 @@ export default function Jobs({}: JobsProps) {
   // Get URL parameters
   const urlParams = new URLSearchParams(window.location.search);
   const organizationParam = urlParams.get("organization");
+  const authError = urlParams.get("auth_error");
+  
+  // Show auth error toast if present
+  useEffect(() => {
+    if (authError) {
+      toast({
+        title: "Authentication Failed",
+        description: "There was an error during login. Please try again.",
+        variant: "destructive",
+      });
+      // Clean up URL
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete('auth_error');
+      window.history.replaceState({}, '', newUrl.toString());
+    }
+  }, [authError, toast]);
 
   // Get selected job ID from URL parameter
   const selectedJobIdFromUrl = matchJobId && paramsJobId?.id ? parseInt(paramsJobId.id) : null;
