@@ -44,7 +44,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     enabled: isAuthenticated,
   });
 
-
+  console.log("Saved filters data:", savedFilters);
 
   const { data: locations, isLoading: locationsLoading } = useQuery({
     queryKey: ["locations"],
