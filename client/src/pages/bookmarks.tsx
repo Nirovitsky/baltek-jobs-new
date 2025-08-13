@@ -80,7 +80,7 @@ export default function Bookmarks({}: BookmarksProps) {
           <div className="lg:col-span-1 h-full flex-shrink-0">
             <JobList
               jobs={filteredJobs}
-              selectedJobId={null}
+              selectedJobId={selectedJobId}
               onJobSelect={handleJobSelect}
               isLoading={isLoading}
               hasNextPage={false}
