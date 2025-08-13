@@ -23,6 +23,7 @@ interface JobListProps {
   onSearchSubmit: (e: React.FormEvent) => void;
   isSearching?: boolean;
   inputRef?: React.RefObject<HTMLInputElement>;
+  hideAppliedBadge?: boolean;
 }
 
 export default function JobList({
@@ -39,6 +40,7 @@ export default function JobList({
   onSearchSubmit,
   isSearching = false,
   inputRef,
+  hideAppliedBadge = false,
 }: JobListProps) {
   // Use a ref to track the actual input value independently
   const localInputRef = useRef<HTMLInputElement>(null);
@@ -176,6 +178,7 @@ export default function JobList({
             isSelected={selectedJobId === job.id}
             onSelect={onJobSelect}
             showBookmark={true}
+            hideAppliedBadge={hideAppliedBadge}
           />
         ))}
 

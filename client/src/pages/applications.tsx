@@ -250,6 +250,7 @@ export default function ApplicationsPage() {
               onSearchSubmit={handleSearchSubmit}
               isSearching={false}
               inputRef={inputRef}
+              hideAppliedBadge={true}
             />
           </div>
 
