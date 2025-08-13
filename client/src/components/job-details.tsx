@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
+import { AuthService } from "@/lib/auth";
 import type { Job } from "@shared/schema";
 import { Link } from "wouter";
+import { useAuth } from "@/hooks/use-auth";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,8 @@ import {
   Globe,
   CheckCircle,
   ExternalLink,
+  UserPlus,
+  LogIn,
 } from "lucide-react";
 import baltekIcon from "@/assets/baltek-icon.svg";
 
@@ -36,6 +40,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   const [isQuickApplyModalOpen, setIsQuickApplyModalOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isAuthenticated } = useAuth();
 
   // Fetch detailed job data
   const {
@@ -302,22 +307,25 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             </div>
           </div>
           <div className="flex space-x-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleBookmark}
-              disabled={bookmarkMutation.isPending}
-              className={
-                job.is_bookmarked
-                  ? "text-primary border-primary/20 hover:text-primary bg-primary/5"
-                  : ""
-              }
-            >
-              <Bookmark
-                className={`w-4 h-4 ${job.is_bookmarked ? "fill-primary" : ""}`}
-              />
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleShare}>
+            {isAuthenticated && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleBookmark}
+                disabled={bookmarkMutation.isPending}
+                className={
+                  job.is_bookmarked
+                    ? "text-primary border-primary/20 hover:text-primary bg-primary/5"
+                    : ""
+                }
+                data-testid="button-bookmark"
+              >
+                <Bookmark
+                  className={`w-4 h-4 ${job.is_bookmarked ? "fill-primary" : ""}`}
+                />
+              </Button>
+            )}
+            <Button variant="outline" size="sm" onClick={handleShare} data-testid="button-share">
               <Copy className="w-4 h-4" />
             </Button>
           </div>
@@ -381,7 +389,30 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
           {/* Action Buttons */}
           <div className="flex space-x-3">
-            {hasApplied ? (
+            {!isAuthenticated ? (
+              <>
+                <Button
+                  onClick={() => AuthService.startOAuthLogin()}
+                  className="flex-1"
+                  size="lg"
+                  variant="outline"
+                  data-testid="button-sign-in"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Sign In to Apply
+                </Button>
+                <Button
+                  onClick={() => AuthService.startOAuthLogin()}
+                  className="flex-1"
+                  size="lg"
+                  variant="default"
+                  data-testid="button-sign-up"
+                >
+                  <UserPlus className="w-4 h-4 mr-2" />
+                  Sign Up to Apply
+                </Button>
+              </>
+            ) : hasApplied ? (
               <Button
                 className="flex-1"
                 size="lg"
@@ -397,6 +428,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   onClick={() => setIsApplicationModalOpen(true)}
                   className="flex-1 bg-background text-foreground border border-input hover:bg-muted/50"
                   size="lg"
+                  data-testid="button-apply-now"
                 >
                   <Send className="w-4 h-4 mr-2" />
                   Apply Now
@@ -406,6 +438,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   className="flex-1"
                   size="lg"
                   variant="default"
+                  data-testid="button-quick-apply"
                 >
                   <img src={baltekIcon} alt="" className="w-4 h-4 mr-2" />
                   Quick Apply
