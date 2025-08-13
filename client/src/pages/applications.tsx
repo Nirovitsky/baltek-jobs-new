@@ -255,24 +255,20 @@ export default function ApplicationsPage() {
           </div>
 
           <div className="lg:col-span-2 h-full flex-shrink-0 min-w-0">
-            <div className="h-full w-full overflow-hidden">
-              {selectedJobId ? (
-                <div className="h-full overflow-y-auto">
-                  <JobDetails jobId={selectedJobId} />
+            {selectedJobId ? (
+              <JobDetails jobId={selectedJobId} />
+            ) : filteredJobs.length > 0 ? (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <h3 className="text-lg font-medium text-foreground mb-2">
+                    Select an application to view details
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Choose an application from the list to see more information
+                  </p>
                 </div>
-              ) : filteredJobs.length > 0 ? (
-                <div className="h-full flex items-center justify-center">
-                  <div className="text-center">
-                    <h3 className="text-lg font-medium text-foreground mb-2">
-                      Select an application to view details
-                    </h3>
-                    <p className="text-muted-foreground">
-                      Choose an application from the list to see more information
-                    </p>
-                  </div>
-                </div>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
