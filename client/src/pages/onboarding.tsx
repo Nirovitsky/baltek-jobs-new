@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { 
@@ -37,7 +37,7 @@ import {
   BookOpen,
   Award,
   Zap,
-  Calendar as CalendarIcon,
+
   Upload,
   Camera
 } from "lucide-react";
@@ -177,7 +177,8 @@ export default function Onboarding() {
   const handleDateChange = (date: Date | undefined) => {
     setBirthDate(date);
     if (date) {
-      personalForm.setValue('date_of_birth', format(date, 'yyyy-MM-dd'));
+      // Format as DD.MM.YYYY as required by the API
+      personalForm.setValue('date_of_birth', format(date, 'dd.MM.yyyy'));
     }
   };
 
@@ -520,8 +521,8 @@ export default function Onboarding() {
                           {loc.name}
                         </SelectItem>
                       ))
-                    ) : locations.results && Array.isArray(locations.results) ? (
-                      locations.results.map((loc: any) => (
+                    ) : (locations as any)?.results && Array.isArray((locations as any).results) ? (
+                      (locations as any).results.map((loc: any) => (
                         <SelectItem key={loc.id} value={loc.id.toString()}>
                           {loc.name}
                         </SelectItem>
