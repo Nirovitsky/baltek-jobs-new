@@ -49,7 +49,7 @@ const personalInfoSchema = z.object({
   profession: z.string().min(1, "Profession is required"),
   gender: z.enum(["m", "f"], { required_error: "Please select gender" }),
   date_of_birth: z.string().min(1, "Date of birth is required"),
-  location: z.number().min(1, "Please select a location"),
+  location: z.coerce.number().min(1, "Please select a location"),
   profile_picture: z.any().optional(),
 });
 
@@ -384,8 +384,12 @@ export default function Onboarding() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="first_name">First Name</Label>
-                <Input {...personalForm.register("first_name")} />
+                <Label htmlFor="first_name">First Name *</Label>
+                <Input 
+                  {...personalForm.register("first_name")} 
+                  placeholder="Enter your first name"
+                  required 
+                />
                 {personalForm.formState.errors.first_name && (
                   <p className="text-sm text-red-500 mt-1">
                     {personalForm.formState.errors.first_name.message}
@@ -393,8 +397,12 @@ export default function Onboarding() {
                 )}
               </div>
               <div>
-                <Label htmlFor="last_name">Last Name</Label>
-                <Input {...personalForm.register("last_name")} />
+                <Label htmlFor="last_name">Last Name *</Label>
+                <Input 
+                  {...personalForm.register("last_name")} 
+                  placeholder="Enter your last name"
+                  required 
+                />
                 {personalForm.formState.errors.last_name && (
                   <p className="text-sm text-red-500 mt-1">
                     {personalForm.formState.errors.last_name.message}
@@ -404,8 +412,12 @@ export default function Onboarding() {
             </div>
 
             <div>
-              <Label htmlFor="profession">Profession</Label>
-              <Input {...personalForm.register("profession")} placeholder="e.g., Software Developer, Marketing Manager" />
+              <Label htmlFor="profession">Profession *</Label>
+              <Input 
+                {...personalForm.register("profession")} 
+                placeholder="e.g., Software Developer, Marketing Manager" 
+                required
+              />
               {personalForm.formState.errors.profession && (
                 <p className="text-sm text-red-500 mt-1">
                   {personalForm.formState.errors.profession.message}
@@ -415,10 +427,11 @@ export default function Onboarding() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="gender">Gender</Label>
+                <Label htmlFor="gender">Gender *</Label>
                 <Select
                   value={personalForm.watch("gender")}
                   onValueChange={(value) => personalForm.setValue("gender", value as "m" | "f")}
+                  required
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select gender" />
@@ -435,7 +448,7 @@ export default function Onboarding() {
                 )}
               </div>
               <div>
-                <Label htmlFor="date_of_birth">Date of Birth</Label>
+                <Label htmlFor="date_of_birth">Date of Birth *</Label>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
                     <Label className="text-xs text-muted-foreground">Day</Label>
@@ -522,10 +535,11 @@ export default function Onboarding() {
             </div>
 
             <div>
-              <Label htmlFor="location">Location</Label>
+              <Label htmlFor="location">Location *</Label>
               <Select
                 value={personalForm.watch("location")?.toString()}
                 onValueChange={(value) => personalForm.setValue("location", parseInt(value))}
+                required
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a location" />
