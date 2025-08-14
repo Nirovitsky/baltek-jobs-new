@@ -289,6 +289,16 @@ export class ApiClient {
     });
   }
 
+  // Profile picture upload
+  static async uploadProfilePicture(file: File) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    return this.makeRequest('/users/me/', {
+      method: 'PATCH',
+      body: formData,
+    });
+  }
+
   // Chat API
   static async getChatRooms() {
     return this.makeRequest("/chat/rooms/");

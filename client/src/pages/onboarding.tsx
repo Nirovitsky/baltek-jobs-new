@@ -6,6 +6,7 @@ import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { format } from "date-fns";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -16,6 +17,9 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { 
   User, 
@@ -33,7 +37,10 @@ import {
   Target,
   BookOpen,
   Award,
-  Zap
+  Zap,
+  Calendar as CalendarIcon,
+  Upload,
+  Camera
 } from "lucide-react";
 
 // Onboarding step schemas
@@ -44,6 +51,7 @@ const personalInfoSchema = z.object({
   gender: z.enum(["m", "f"], { required_error: "Please select gender" }),
   date_of_birth: z.string().min(1, "Date of birth is required"),
   location: z.number().min(1, "Please select a location"),
+  profile_picture: z.any().optional(),
 });
 
 const experienceSchema = z.object({
@@ -116,6 +124,9 @@ export default function Onboarding() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const [profilePicturePreview, setProfilePicturePreview] = useState<string>("");
+  const [birthDate, setBirthDate] = useState<Date>();
 
   // Fetch data for forms
   const { data: universities } = useQuery({
@@ -146,8 +157,35 @@ export default function Onboarding() {
       gender: user?.gender || "m",
       date_of_birth: user?.date_of_birth || "",
       location: user?.location || 0,
+      profile_picture: undefined,
     },
   });
+
+  // Handle profile picture upload
+  const handleProfilePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      setProfilePicture(file);
+      const previewUrl = URL.createObjectURL(file);
+      setProfilePicturePreview(previewUrl);
+    }
+  };
+
+  // Handle date of birth change
+  const handleDateChange = (date: Date | undefined) => {
+    setBirthDate(date);
+    if (date) {
+      personalForm.setValue('date_of_birth', format(date, 'yyyy-MM-dd'));
+    }
+  };
+
+  // Initialize birth date from user data
+  useEffect(() => {
+    if (user?.date_of_birth) {
+      const date = new Date(user.date_of_birth);
+      setBirthDate(date);
+    }
+  }, [user?.date_of_birth]);
 
   // Experience form
   const experienceForm = useForm({
@@ -231,7 +269,29 @@ export default function Onboarding() {
       if (!isValid) return;
 
       const formData = personalForm.getValues();
-      await updateProfileMutation.mutateAsync(formData);
+      const profileData = { ...formData };
+      delete profileData.profile_picture; // Remove from main data since we handle it separately
+      
+      // Update profile data
+      await updateProfileMutation.mutateAsync(profileData);
+      
+      // Upload profile picture if selected
+      if (profilePicture) {
+        try {
+          await ApiClient.uploadProfilePicture(profilePicture);
+          toast({
+            title: "Profile picture uploaded",
+            description: "Your profile picture has been updated successfully",
+          });
+        } catch (error) {
+          console.error("Profile picture upload failed:", error);
+          toast({
+            title: "Upload failed",
+            description: "Failed to upload profile picture, but your other information was saved",
+            variant: "destructive",
+          });
+        }
+      }
     } else if (currentStep === 2) {
       // Validate and save experience
       const isValid = await experienceForm.trigger();
@@ -280,6 +340,31 @@ export default function Onboarding() {
               <p className="text-muted-foreground">Tell us about yourself so we can find the perfect opportunities</p>
             </div>
 
+            {/* Profile Picture Upload */}
+            <div className="flex justify-center mb-6">
+              <div className="relative">
+                <Avatar className="w-24 h-24 cursor-pointer border-4 border-blue-200 dark:border-blue-700">
+                  <AvatarImage src={profilePicturePreview || user?.profile_picture} />
+                  <AvatarFallback className="text-lg">
+                    {user?.first_name?.[0]}{user?.last_name?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <label 
+                  htmlFor="profile-upload" 
+                  className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 cursor-pointer hover:bg-blue-700 transition-colors"
+                >
+                  <Camera className="w-4 h-4" />
+                </label>
+                <input
+                  id="profile-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleProfilePictureChange}
+                  className="hidden"
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="first_name">First Name</Label>
@@ -314,13 +399,18 @@ export default function Onboarding() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="gender">Gender</Label>
-                <select 
-                  {...personalForm.register("gender")}
-                  className="w-full p-2 border rounded-md"
+                <Select
+                  value={personalForm.watch("gender")}
+                  onValueChange={(value) => personalForm.setValue("gender", value as "m" | "f")}
                 >
-                  <option value="m">Male</option>
-                  <option value="f">Female</option>
-                </select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="m">Male</SelectItem>
+                    <SelectItem value="f">Female</SelectItem>
+                  </SelectContent>
+                </Select>
                 {personalForm.formState.errors.gender && (
                   <p className="text-sm text-red-500 mt-1">
                     {personalForm.formState.errors.gender.message}
@@ -329,7 +419,100 @@ export default function Onboarding() {
               </div>
               <div>
                 <Label htmlFor="date_of_birth">Date of Birth</Label>
-                <Input {...personalForm.register("date_of_birth")} type="date" />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className={`w-full justify-start text-left font-normal ${!birthDate && "text-muted-foreground"}`}
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {birthDate ? format(birthDate, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <div className="p-3 border-b">
+                      <div className="flex items-center justify-between mb-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => {
+                            const newDate = new Date(birthDate || new Date());
+                            newDate.setFullYear(newDate.getFullYear() - 10);
+                            handleDateChange(newDate);
+                          }}
+                          className="h-7 w-7 p-0"
+                        >
+                          ‹‹
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => {
+                            const newDate = new Date(birthDate || new Date());
+                            newDate.setMonth(newDate.getMonth() - 1);
+                            handleDateChange(newDate);
+                          }}
+                          className="h-7 w-7 p-0"
+                        >
+                          ‹
+                        </Button>
+                        <div className="text-sm font-medium">
+                          {birthDate ? format(birthDate, "MMMM yyyy") : "Select year"}
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => {
+                            const newDate = new Date(birthDate || new Date());
+                            newDate.setMonth(newDate.getMonth() + 1);
+                            handleDateChange(newDate);
+                          }}
+                          className="h-7 w-7 p-0"
+                        >
+                          ›
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => {
+                            const newDate = new Date(birthDate || new Date());
+                            newDate.setFullYear(newDate.getFullYear() + 10);
+                            handleDateChange(newDate);
+                          }}
+                          className="h-7 w-7 p-0"
+                        >
+                          ››
+                        </Button>
+                      </div>
+                      <div className="flex gap-1 flex-wrap">
+                        {[1990, 1995, 2000, 2005, 2010].map((year) => (
+                          <Button
+                            key={year}
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const newDate = new Date(birthDate || new Date());
+                              newDate.setFullYear(year);
+                              handleDateChange(newDate);
+                            }}
+                            className="h-6 text-xs"
+                          >
+                            {year}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+                    <Calendar
+                      mode="single"
+                      selected={birthDate}
+                      onSelect={handleDateChange}
+                      initialFocus
+                      fromYear={1950}
+                      toYear={new Date().getFullYear()}
+                      captionLayout="dropdown"
+                    />
+                  </PopoverContent>
+                </Popover>
                 {personalForm.formState.errors.date_of_birth && (
                   <p className="text-sm text-red-500 mt-1">
                     {personalForm.formState.errors.date_of_birth.message}
@@ -340,17 +523,23 @@ export default function Onboarding() {
 
             <div>
               <Label htmlFor="location">Location</Label>
-              <select 
-                {...personalForm.register("location", { valueAsNumber: true })}
-                className="w-full p-2 border rounded-md"
+              <Select
+                value={personalForm.watch("location")?.toString()}
+                onValueChange={(value) => personalForm.setValue("location", parseInt(value))}
               >
-                <option value={0}>Select a location</option>
-                {locations && Array.isArray(locations) ? locations.map((loc: any) => (
-                  <option key={loc.id} value={loc.id}>
-                    {loc.name}
-                  </option>
-                )) : null}
-              </select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a location" />
+                </SelectTrigger>
+                <SelectContent>
+                  {locations && Array.isArray(locations) ? locations.map((loc: any) => (
+                    <SelectItem key={loc.id} value={loc.id.toString()}>
+                      {loc.name}
+                    </SelectItem>
+                  )) : (
+                    <SelectItem value="loading" disabled>Loading locations...</SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
               {personalForm.formState.errors.location && (
                 <p className="text-sm text-red-500 mt-1">
                   {personalForm.formState.errors.location.message}
@@ -380,7 +569,7 @@ export default function Onboarding() {
                     className="w-full p-2 border rounded-md"
                   >
                     <option value={0}>Select an organization</option>
-                    {organizations && organizations.results && Array.isArray(organizations.results) ? organizations.results.map((org: any) => (
+                    {organizations && 'results' in organizations && Array.isArray(organizations.results) ? organizations.results.map((org: any) => (
                       <option key={org.id} value={org.id}>
                         {org.display_name || org.official_name}
                       </option>
