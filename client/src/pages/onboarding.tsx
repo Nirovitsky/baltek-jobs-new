@@ -155,9 +155,9 @@ export default function Onboarding() {
       first_name: user?.first_name || "",
       last_name: user?.last_name || "",
       profession: user?.profession || "",
-      gender: user?.gender || "m",
+      gender: user?.gender || undefined,
       date_of_birth: user?.date_of_birth || "",
-      location: user?.location || 0,
+      location: user?.location || undefined,
       profile_picture: undefined,
     },
   });
@@ -193,7 +193,7 @@ export default function Onboarding() {
   const experienceForm = useForm({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
-      organization: 0,
+      organization: undefined,
       organization_name: "",
       position: "",
       description: "",
@@ -206,8 +206,8 @@ export default function Onboarding() {
   const educationForm = useForm({
     resolver: zodResolver(educationSchema),
     defaultValues: {
-      university: 0,
-      level: "secondary",
+      university: undefined,
+      level: undefined,
       date_started: "",
       date_finished: "",
     },
@@ -271,11 +271,18 @@ export default function Onboarding() {
       
       // Check if user has filled any personal information
       const hasPersonalData = formData.first_name || formData.last_name || formData.profession || 
-                             formData.gender || formData.date_of_birth || formData.location;
+                             formData.gender || formData.date_of_birth || (formData.location && Number(formData.location) > 0);
       
       if (hasPersonalData) {
-        const profileData = { ...formData };
-        delete profileData.profile_picture; // Remove from main data since we handle it separately
+        // Clean up data before sending to API
+        const profileData: any = {};
+        
+        if (formData.first_name) profileData.first_name = formData.first_name;
+        if (formData.last_name) profileData.last_name = formData.last_name;
+        if (formData.profession) profileData.profession = formData.profession;
+        if (formData.gender) profileData.gender = formData.gender;
+        if (formData.date_of_birth) profileData.date_of_birth = formData.date_of_birth;
+        if (formData.location && Number(formData.location) > 0) profileData.location = formData.location;
         
         console.log('Submitting profile data:', profileData);
         
@@ -316,15 +323,23 @@ export default function Onboarding() {
       const formData = experienceForm.getValues();
       
       // Check if user has filled any experience information
-      const hasExperienceData = formData.organization || formData.organization_name || 
-                               formData.position || formData.description || formData.date_started;
+      const hasExperienceData = (formData.organization && Number(formData.organization) > 0) || 
+                               formData.organization_name || formData.position || 
+                               formData.description || formData.date_started;
       
       if (hasExperienceData) {
         try {
-          await addExperienceMutation.mutateAsync({
-            ...formData,
-            date_finished: formData.date_finished || null,
-          });
+          // Clean up experience data
+          const experienceData: any = {};
+          
+          if (formData.organization && Number(formData.organization) > 0) experienceData.organization = formData.organization;
+          if (formData.organization_name) experienceData.organization_name = formData.organization_name;
+          if (formData.position) experienceData.position = formData.position;
+          if (formData.description) experienceData.description = formData.description;
+          if (formData.date_started) experienceData.date_started = formData.date_started;
+          if (formData.date_finished) experienceData.date_finished = formData.date_finished;
+          
+          await addExperienceMutation.mutateAsync(experienceData);
         } catch (error) {
           console.error("Experience save failed:", error);
           toast({
@@ -340,14 +355,20 @@ export default function Onboarding() {
       const formData = educationForm.getValues();
       
       // Check if user has filled any education information
-      const hasEducationData = formData.university || formData.level || formData.date_started;
+      const hasEducationData = (formData.university && Number(formData.university) > 0) || 
+                               formData.level || formData.date_started;
       
       if (hasEducationData) {
         try {
-          await addEducationMutation.mutateAsync({
-            ...formData,
-            date_finished: formData.date_finished || null,
-          });
+          // Clean up education data
+          const educationData: any = {};
+          
+          if (formData.university && Number(formData.university) > 0) educationData.university = formData.university;
+          if (formData.level) educationData.level = formData.level;
+          if (formData.date_started) educationData.date_started = formData.date_started;
+          if (formData.date_finished) educationData.date_finished = formData.date_finished;
+          
+          await addEducationMutation.mutateAsync(educationData);
         } catch (error) {
           console.error("Education save failed:", error);
           toast({
@@ -563,8 +584,12 @@ export default function Onboarding() {
             <div>
               <Label htmlFor="location">Location</Label>
               <Select
-                value={personalForm.watch("location")?.toString()}
-                onValueChange={(value) => personalForm.setValue("location", parseInt(value))}
+                value={personalForm.watch("location")?.toString() || ""}
+                onValueChange={(value) => {
+                  if (value && value !== "0") {
+                    personalForm.setValue("location", parseInt(value));
+                  }
+                }}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select a location (optional)" />
@@ -617,10 +642,13 @@ export default function Onboarding() {
                 <div>
                   <Label htmlFor="organization">Organization</Label>
                   <select 
-                    {...experienceForm.register("organization", { valueAsNumber: true })}
+                    {...experienceForm.register("organization", { 
+                      valueAsNumber: true,
+                      setValueAs: (value) => value === 0 ? undefined : value 
+                    })}
                     className="w-full p-2 border rounded-md"
                   >
-                    <option value={0}>Select an organization</option>
+                    <option value="">Select an organization (optional)</option>
                     {organizations && typeof organizations === 'object' && 'results' in organizations && Array.isArray(organizations.results) ? organizations.results.map((org: any) => (
                       <option key={org.id} value={org.id}>
                         {org.display_name || org.official_name}
@@ -705,10 +733,13 @@ export default function Onboarding() {
                 <div>
                   <Label htmlFor="university">University</Label>
                   <select 
-                    {...educationForm.register("university", { valueAsNumber: true })}
+                    {...educationForm.register("university", { 
+                      valueAsNumber: true,
+                      setValueAs: (value) => value === 0 ? undefined : value 
+                    })}
                     className="w-full p-2 border rounded-md"
                   >
-                    <option value={0}>Select a university</option>
+                    <option value="">Select a university (optional)</option>
                     {universities && Array.isArray(universities) ? universities.map((uni: any) => (
                       <option key={uni.id} value={uni.id}>
                         {uni.name}
@@ -727,6 +758,7 @@ export default function Onboarding() {
                     {...educationForm.register("level")}
                     className="w-full p-2 border rounded-md"
                   >
+                    <option value="">Select education level (optional)</option>
                     <option value="secondary">Secondary</option>
                     <option value="undergraduate">Undergraduate</option>
                     <option value="master">Master</option>
