@@ -79,10 +79,10 @@ The application requires the following environment variables configured in Repli
 
 ## New Onboarding System (January 2025)
 
-- Implemented comprehensive 5-step onboarding flow with progress tracking
+- Implemented comprehensive 4-step onboarding flow with progress tracking
 - Added `is_jobs_onboarding_completed` field to user profile schema
 - Created playful onboarding pages with visual progress indicators
-- Onboarding steps: Personal Info → Skills → Experience → Education → Completion
+- Onboarding steps: Personal Info → Experience → Education → Completion
 - Built OnboardingGuard component to protect authenticated routes
 - Users must complete onboarding before accessing protected pages
 - Onboarding completion sets `is_jobs_onboarding_completed` to true

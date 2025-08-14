@@ -40,35 +40,36 @@ import {
 const personalInfoSchema = z.object({
   first_name: z.string().min(1, "First name is required"),
   last_name: z.string().min(1, "Last name is required"),
-  bio: z.string().min(10, "Bio should be at least 10 characters"),
-  location: z.string().min(1, "Location is required"),
-  linkedin_url: z.string().url("Invalid LinkedIn URL").optional().or(z.literal("")),
-  github_url: z.string().url("Invalid GitHub URL").optional().or(z.literal("")),
-  portfolio_url: z.string().url("Invalid Portfolio URL").optional().or(z.literal("")),
-});
-
-const skillsSchema = z.object({
-  skills: z.array(z.string()).min(3, "Please add at least 3 skills"),
+  profession: z.string().min(1, "Profession is required"),
+  gender: z.enum(["m", "f"], { required_error: "Please select gender" }),
+  date_of_birth: z.string().min(1, "Date of birth is required"),
+  location: z.number().min(1, "Please select a location"),
 });
 
 const experienceSchema = z.object({
-  title: z.string().min(1, "Job title is required"),
-  company: z.string().min(1, "Company name is required"),
-  location: z.string().optional(),
-  start_date: z.string().min(1, "Start date is required"),
-  end_date: z.string().optional(),
+  organization: z.number().min(1, "Please select an organization"),
+  organization_name: z.string().min(1, "Organization name is required"),
+  position: z.string().min(1, "Position is required"),
   description: z.string().min(20, "Description should be at least 20 characters"),
-  is_current: z.boolean().optional(),
+  date_started: z.string().min(1, "Start date is required"),
+  date_finished: z.string().optional(),
 });
 
 const educationSchema = z.object({
   university: z.number().min(1, "Please select a university"),
-  degree: z.string().min(1, "Degree is required"),
-  field_of_study: z.string().min(1, "Field of study is required"),
-  start_date: z.string().min(1, "Start date is required"),
-  end_date: z.string().optional(),
-  grade: z.string().optional(),
-  description: z.string().optional(),
+  level: z.enum(["secondary", "undergraduate", "master", "doctorate"], { 
+    required_error: "Please select education level" 
+  }),
+  date_started: z.string().min(1, "Start date is required"),
+  date_finished: z.string().optional(),
+});
+
+const projectSchema = z.object({
+  title: z.string().min(1, "Project title is required"),
+  description: z.string().min(20, "Description should be at least 20 characters"),
+  link: z.string().url("Invalid project URL").optional().or(z.literal("")),
+  date_started: z.string().min(1, "Start date is required"),
+  date_finished: z.string().optional(),
 });
 
 type OnboardingStep = {
@@ -85,31 +86,24 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     title: "Personal Information",
     subtitle: "Tell us about yourself",
     icon: User,
-    progress: 20,
+    progress: 25,
   },
   {
     id: 2,
-    title: "Skills & Expertise",
-    subtitle: "What are you good at?",
-    icon: Code2,
-    progress: 40,
-  },
-  {
-    id: 3,
     title: "Work Experience",
     subtitle: "Your professional journey",
     icon: Briefcase,
-    progress: 60,
+    progress: 50,
   },
   {
-    id: 4,
+    id: 3,
     title: "Education",
     subtitle: "Your academic background",
     icon: GraduationCap,
-    progress: 80,
+    progress: 75,
   },
   {
-    id: 5,
+    id: 4,
     title: "Complete Profile",
     subtitle: "You're all set!",
     icon: Star,
@@ -119,17 +113,27 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 
 export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(1);
-  const [skillInput, setSkillInput] = useState("");
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
-  // Fetch universities for education step
+  // Fetch data for forms
   const { data: universities } = useQuery({
     queryKey: ["universities"],
     queryFn: () => ApiClient.getUniversities(),
-    enabled: currentStep === 4,
+    enabled: currentStep === 3,
+  });
+
+  const { data: locations } = useQuery({
+    queryKey: ["locations"],
+    queryFn: () => ApiClient.getLocations(),
+    enabled: currentStep === 1,
+  });
+
+  const { data: organizations } = useQuery({
+    queryKey: ["organizations"],
+    queryFn: () => ApiClient.getOrganizations({ limit: 100 }),
+    enabled: currentStep === 2,
   });
 
   // Personal info form
@@ -138,11 +142,10 @@ export default function Onboarding() {
     defaultValues: {
       first_name: user?.first_name || "",
       last_name: user?.last_name || "",
-      bio: user?.bio || "",
-      location: user?.location || "",
-      linkedin_url: user?.linkedin_url || "",
-      github_url: user?.github_url || "",
-      portfolio_url: user?.portfolio_url || "",
+      profession: user?.profession || "",
+      gender: user?.gender || "m",
+      date_of_birth: user?.date_of_birth || "",
+      location: user?.location || 0,
     },
   });
 
@@ -150,13 +153,12 @@ export default function Onboarding() {
   const experienceForm = useForm({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
-      title: "",
-      company: "",
-      location: "",
-      start_date: "",
-      end_date: "",
+      organization: 0,
+      organization_name: "",
+      position: "",
       description: "",
-      is_current: false,
+      date_started: "",
+      date_finished: "",
     },
   });
 
@@ -165,12 +167,21 @@ export default function Onboarding() {
     resolver: zodResolver(educationSchema),
     defaultValues: {
       university: 0,
-      degree: "",
-      field_of_study: "",
-      start_date: "",
-      end_date: "",
-      grade: "",
+      level: "secondary",
+      date_started: "",
+      date_finished: "",
+    },
+  });
+
+  // Project form
+  const projectForm = useForm({
+    resolver: zodResolver(projectSchema),
+    defaultValues: {
+      title: "",
       description: "",
+      link: "",
+      date_started: "",
+      date_finished: "",
     },
   });
 
@@ -192,6 +203,11 @@ export default function Onboarding() {
     mutationFn: (data: any) => ApiClient.addEducation(data),
   });
 
+  // Add project mutation
+  const addProjectMutation = useMutation({
+    mutationFn: (data: any) => ApiClient.addProject(data),
+  });
+
   // Complete onboarding mutation
   const completeOnboardingMutation = useMutation({
     mutationFn: () => 
@@ -206,16 +222,7 @@ export default function Onboarding() {
     },
   });
 
-  const handleAddSkill = () => {
-    if (skillInput.trim() && !selectedSkills.includes(skillInput.trim())) {
-      setSelectedSkills([...selectedSkills, skillInput.trim()]);
-      setSkillInput("");
-    }
-  };
 
-  const handleRemoveSkill = (skill: string) => {
-    setSelectedSkills(selectedSkills.filter(s => s !== skill));
-  };
 
   const handleNext = async () => {
     if (currentStep === 1) {
@@ -224,24 +231,8 @@ export default function Onboarding() {
       if (!isValid) return;
 
       const formData = personalForm.getValues();
-      await updateProfileMutation.mutateAsync({
-        ...formData,
-        linkedin_url: formData.linkedin_url || null,
-        github_url: formData.github_url || null,
-        portfolio_url: formData.portfolio_url || null,
-      });
+      await updateProfileMutation.mutateAsync(formData);
     } else if (currentStep === 2) {
-      // Validate and save skills
-      if (selectedSkills.length < 3) {
-        toast({
-          title: "Skills Required",
-          description: "Please add at least 3 skills to continue.",
-          variant: "destructive",
-        });
-        return;
-      }
-      await updateProfileMutation.mutateAsync({ skills: selectedSkills });
-    } else if (currentStep === 3) {
       // Validate and save experience
       const isValid = await experienceForm.trigger();
       if (!isValid) return;
@@ -249,11 +240,9 @@ export default function Onboarding() {
       const formData = experienceForm.getValues();
       await addExperienceMutation.mutateAsync({
         ...formData,
-        location: formData.location || null,
-        end_date: formData.end_date || null,
-        description: formData.description || null,
+        date_finished: formData.date_finished || null,
       });
-    } else if (currentStep === 4) {
+    } else if (currentStep === 3) {
       // Validate and save education
       const isValid = await educationForm.trigger();
       if (!isValid) return;
@@ -261,11 +250,9 @@ export default function Onboarding() {
       const formData = educationForm.getValues();
       await addEducationMutation.mutateAsync({
         ...formData,
-        end_date: formData.end_date || null,
-        grade: formData.grade || null,
-        description: formData.description || null,
+        date_finished: formData.date_finished || null,
       });
-    } else if (currentStep === 5) {
+    } else if (currentStep === 4) {
       // Complete onboarding
       await completeOnboardingMutation.mutateAsync();
       return;
@@ -315,127 +302,65 @@ export default function Onboarding() {
             </div>
 
             <div>
-              <Label htmlFor="bio">Bio</Label>
-              <Textarea 
-                {...personalForm.register("bio")} 
-                placeholder="Tell us about yourself, your interests, and career goals..."
-                rows={4}
-              />
-              {personalForm.formState.errors.bio && (
+              <Label htmlFor="profession">Profession</Label>
+              <Input {...personalForm.register("profession")} placeholder="e.g., Software Developer, Marketing Manager" />
+              {personalForm.formState.errors.profession && (
                 <p className="text-sm text-red-500 mt-1">
-                  {personalForm.formState.errors.bio.message}
+                  {personalForm.formState.errors.profession.message}
                 </p>
               )}
             </div>
 
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="gender">Gender</Label>
+                <select 
+                  {...personalForm.register("gender")}
+                  className="w-full p-2 border rounded-md"
+                >
+                  <option value="m">Male</option>
+                  <option value="f">Female</option>
+                </select>
+                {personalForm.formState.errors.gender && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {personalForm.formState.errors.gender.message}
+                  </p>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="date_of_birth">Date of Birth</Label>
+                <Input {...personalForm.register("date_of_birth")} type="date" />
+                {personalForm.formState.errors.date_of_birth && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {personalForm.formState.errors.date_of_birth.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
             <div>
               <Label htmlFor="location">Location</Label>
-              <Input 
-                {...personalForm.register("location")} 
-                placeholder="e.g., Ashgabat, Turkmenistan"
-              />
+              <select 
+                {...personalForm.register("location", { valueAsNumber: true })}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value={0}>Select a location</option>
+                {locations && Array.isArray(locations) ? locations.map((loc: any) => (
+                  <option key={loc.id} value={loc.id}>
+                    {loc.name}
+                  </option>
+                )) : null}
+              </select>
               {personalForm.formState.errors.location && (
                 <p className="text-sm text-red-500 mt-1">
                   {personalForm.formState.errors.location.message}
                 </p>
               )}
             </div>
-
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold">Professional Links (Optional)</h3>
-              <div className="grid gap-4">
-                <div>
-                  <Label htmlFor="linkedin_url">LinkedIn Profile</Label>
-                  <Input 
-                    {...personalForm.register("linkedin_url")} 
-                    placeholder="https://linkedin.com/in/yourname"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="github_url">GitHub Profile</Label>
-                  <Input 
-                    {...personalForm.register("github_url")} 
-                    placeholder="https://github.com/yourname"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="portfolio_url">Portfolio Website</Label>
-                  <Input 
-                    {...personalForm.register("portfolio_url")} 
-                    placeholder="https://yourportfolio.com"
-                  />
-                </div>
-              </div>
-            </div>
           </div>
         );
 
       case 2:
-        return (
-          <div className="space-y-6">
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Code2 className="w-8 h-8 text-green-600 dark:text-green-400" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2">What are your superpowers?</h2>
-              <p className="text-muted-foreground">Add your skills so employers can find you easily</p>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  value={skillInput}
-                  onChange={(e) => setSkillInput(e.target.value)}
-                  placeholder="Add a skill (e.g., JavaScript, Marketing, Design)"
-                  onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), handleAddSkill())}
-                />
-                <Button onClick={handleAddSkill} type="button">
-                  Add
-                </Button>
-              </div>
-
-              <div className="min-h-[120px] p-4 border rounded-lg">
-                {selectedSkills.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-8">
-                    <Target className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p>No skills added yet. Start by adding your top skills!</p>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap gap-2">
-                    {selectedSkills.map((skill, index) => (
-                      <Badge key={index} variant="secondary" className="px-3 py-1">
-                        {skill}
-                        <button
-                          onClick={() => handleRemoveSkill(skill)}
-                          className="ml-2 hover:text-red-500"
-                        >
-                          ×
-                        </button>
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <p className="text-sm text-muted-foreground">
-                Added {selectedSkills.length} skills. Minimum 3 required.
-              </p>
-            </div>
-
-            <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
-              <h4 className="font-semibold mb-2 flex items-center gap-2">
-                <Zap className="w-4 h-4" />
-                Pro Tip
-              </h4>
-              <p className="text-sm text-muted-foreground">
-                Add both technical and soft skills. Include programming languages, tools, 
-                frameworks, as well as communication, leadership, and problem-solving abilities.
-              </p>
-            </div>
-          </div>
-        );
-
-      case 3:
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
@@ -449,43 +374,58 @@ export default function Onboarding() {
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="title">Job Title</Label>
-                  <Input {...experienceForm.register("title")} placeholder="e.g., Software Developer" />
-                  {experienceForm.formState.errors.title && (
+                  <Label htmlFor="organization">Organization</Label>
+                  <select 
+                    {...experienceForm.register("organization", { valueAsNumber: true })}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value={0}>Select an organization</option>
+                    {organizations && organizations.results && Array.isArray(organizations.results) ? organizations.results.map((org: any) => (
+                      <option key={org.id} value={org.id}>
+                        {org.display_name || org.official_name}
+                      </option>
+                    )) : null}
+                  </select>
+                  {experienceForm.formState.errors.organization && (
                     <p className="text-sm text-red-500 mt-1">
-                      {experienceForm.formState.errors.title.message}
+                      {experienceForm.formState.errors.organization.message}
                     </p>
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="company">Company</Label>
-                  <Input {...experienceForm.register("company")} placeholder="e.g., Tech Corp" />
-                  {experienceForm.formState.errors.company && (
+                  <Label htmlFor="organization_name">Organization Name</Label>
+                  <Input {...experienceForm.register("organization_name")} placeholder="e.g., Tech Corp" />
+                  {experienceForm.formState.errors.organization_name && (
                     <p className="text-sm text-red-500 mt-1">
-                      {experienceForm.formState.errors.company.message}
+                      {experienceForm.formState.errors.organization_name.message}
                     </p>
                   )}
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="location">Location (Optional)</Label>
-                <Input {...experienceForm.register("location")} placeholder="e.g., Ashgabat, Turkmenistan" />
+                <Label htmlFor="position">Position</Label>
+                <Input {...experienceForm.register("position")} placeholder="e.g., Software Developer" />
+                {experienceForm.formState.errors.position && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {experienceForm.formState.errors.position.message}
+                  </p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="start_date">Start Date</Label>
-                  <Input {...experienceForm.register("start_date")} type="date" />
-                  {experienceForm.formState.errors.start_date && (
+                  <Label htmlFor="date_started">Start Date</Label>
+                  <Input {...experienceForm.register("date_started")} type="date" />
+                  {experienceForm.formState.errors.date_started && (
                     <p className="text-sm text-red-500 mt-1">
-                      {experienceForm.formState.errors.start_date.message}
+                      {experienceForm.formState.errors.date_started.message}
                     </p>
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="end_date">End Date (Optional)</Label>
-                  <Input {...experienceForm.register("end_date")} type="date" />
+                  <Label htmlFor="date_finished">End Date (Optional)</Label>
+                  <Input {...experienceForm.register("date_finished")} type="date" />
                   <p className="text-xs text-muted-foreground mt-1">Leave empty if this is your current job</p>
                 </div>
               </div>
@@ -507,7 +447,7 @@ export default function Onboarding() {
           </div>
         );
 
-      case 4:
+      case 3:
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
@@ -519,82 +459,66 @@ export default function Onboarding() {
             </div>
 
             <div className="space-y-4">
-              <div>
-                <Label htmlFor="university">University</Label>
-                <select 
-                  {...educationForm.register("university", { valueAsNumber: true })}
-                  className="w-full p-2 border rounded-md"
-                >
-                  <option value={0}>Select a university</option>
-                  {universities && Array.isArray(universities) ? universities.map((uni: any) => (
-                    <option key={uni.id} value={uni.id}>
-                      {uni.name}
-                    </option>
-                  )) : null}
-                </select>
-                {educationForm.formState.errors.university && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {educationForm.formState.errors.university.message}
-                  </p>
-                )}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="university">University</Label>
+                  <select 
+                    {...educationForm.register("university", { valueAsNumber: true })}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value={0}>Select a university</option>
+                    {universities && Array.isArray(universities) ? universities.map((uni: any) => (
+                      <option key={uni.id} value={uni.id}>
+                        {uni.name}
+                      </option>
+                    )) : null}
+                  </select>
+                  {educationForm.formState.errors.university && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {educationForm.formState.errors.university.message}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <Label htmlFor="level">Education Level</Label>
+                  <select 
+                    {...educationForm.register("level")}
+                    className="w-full p-2 border rounded-md"
+                  >
+                    <option value="secondary">Secondary</option>
+                    <option value="undergraduate">Undergraduate</option>
+                    <option value="master">Master</option>
+                    <option value="doctorate">Doctorate</option>
+                  </select>
+                  {educationForm.formState.errors.level && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {educationForm.formState.errors.level.message}
+                    </p>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="degree">Degree</Label>
-                  <Input {...educationForm.register("degree")} placeholder="e.g., Bachelor's Degree" />
-                  {educationForm.formState.errors.degree && (
+                  <Label htmlFor="date_started">Start Date</Label>
+                  <Input {...educationForm.register("date_started")} type="date" />
+                  {educationForm.formState.errors.date_started && (
                     <p className="text-sm text-red-500 mt-1">
-                      {educationForm.formState.errors.degree.message}
+                      {educationForm.formState.errors.date_started.message}
                     </p>
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="field_of_study">Field of Study</Label>
-                  <Input {...educationForm.register("field_of_study")} placeholder="e.g., Computer Science" />
-                  {educationForm.formState.errors.field_of_study && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {educationForm.formState.errors.field_of_study.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="start_date">Start Date</Label>
-                  <Input {...educationForm.register("start_date")} type="date" />
-                  {educationForm.formState.errors.start_date && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {educationForm.formState.errors.start_date.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="end_date">End Date (Optional)</Label>
-                  <Input {...educationForm.register("end_date")} type="date" />
+                  <Label htmlFor="date_finished">End Date (Optional)</Label>
+                  <Input {...educationForm.register("date_finished")} type="date" />
                   <p className="text-xs text-muted-foreground mt-1">Leave empty if still studying</p>
                 </div>
-              </div>
-
-              <div>
-                <Label htmlFor="grade">Grade/GPA (Optional)</Label>
-                <Input {...educationForm.register("grade")} placeholder="e.g., 3.8/4.0 or First Class" />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Description (Optional)</Label>
-                <Textarea 
-                  {...educationForm.register("description")} 
-                  placeholder="Mention relevant coursework, achievements, or projects..."
-                  rows={3}
-                />
               </div>
             </div>
           </div>
         );
 
-      case 5:
+      case 4:
         return (
           <div className="space-y-6 text-center">
             <div className="mb-8">
@@ -615,15 +539,15 @@ export default function Onboarding() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
-                  <span>Skills showcased</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
                   <span>Experience documented</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-5 h-5 text-green-500" />
                   <span>Education added</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Check className="w-5 h-5 text-green-500" />
+                  <span>Profile completed</span>
                 </div>
               </div>
 
@@ -719,11 +643,12 @@ export default function Onboarding() {
               updateProfileMutation.isPending ||
               addExperienceMutation.isPending ||
               addEducationMutation.isPending ||
+              addProjectMutation.isPending ||
               completeOnboardingMutation.isPending
             }
             className="px-6"
           >
-            {currentStep === 5 ? (
+            {currentStep === 4 ? (
               completeOnboardingMutation.isPending ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
