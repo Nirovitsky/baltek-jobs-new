@@ -23,6 +23,8 @@ import ContactUs from "@/pages/contact-us";
 import Terms from "@/pages/terms";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import AuthCallback from "@/pages/auth-callback";
+import Onboarding from "@/pages/onboarding";
+import { OnboardingGuard, OnboardingRouteGuard } from "@/components/onboarding-guard";
 
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -71,46 +73,65 @@ function Router() {
       <Route path="/auth/callback">
         <AuthCallback />
       </Route>
+      <Route path="/onboarding">
+        <ProtectedRoute>
+          <OnboardingRouteGuard>
+            <Onboarding />
+          </OnboardingRouteGuard>
+        </ProtectedRoute>
+      </Route>
       <Route path="/profile">
         <ProtectedRoute>
-          <ProtectedLayout>
-            <Profile />
-          </ProtectedLayout>
+          <OnboardingGuard>
+            <ProtectedLayout>
+              <Profile />
+            </ProtectedLayout>
+          </OnboardingGuard>
         </ProtectedRoute>
       </Route>
       <Route path="/applications">
         <ProtectedRoute>
-          <ProtectedLayout>
-            <Applications />
-          </ProtectedLayout>
+          <OnboardingGuard>
+            <ProtectedLayout>
+              <Applications />
+            </ProtectedLayout>
+          </OnboardingGuard>
         </ProtectedRoute>
       </Route>
       <Route path="/bookmarks">
         <ProtectedRoute>
-          <ProtectedLayout>
-            <Bookmarks />
-          </ProtectedLayout>
+          <OnboardingGuard>
+            <ProtectedLayout>
+              <Bookmarks />
+            </ProtectedLayout>
+          </OnboardingGuard>
         </ProtectedRoute>
       </Route>
       <Route path="/settings">
         <ProtectedRoute>
-          <ProtectedLayout>
-            <Settings />
-          </ProtectedLayout>
+          <OnboardingGuard>
+            <ProtectedLayout>
+              <Settings />
+            </ProtectedLayout>
+          </OnboardingGuard>
         </ProtectedRoute>
       </Route>
       <Route path="/chat">
         <ProtectedRoute>
-          <ProtectedLayout>
-            <Chat />
-          </ProtectedLayout>
+          <OnboardingGuard>
+            <ProtectedLayout>
+              <Chat />
+            </ProtectedLayout>
+          </OnboardingGuard>
         </ProtectedRoute>
       </Route>
       <Route path="/notifications">
         <ProtectedRoute>
-          <ProtectedLayout>
-            <Notifications />
-          </ProtectedLayout>
+          <OnboardingGuard>
+            <ProtectedLayout>
+              <Notifications />
+            </ProtectedLayout>
+          </OnboardingGuard>
         </ProtectedRoute>
       </Route>
       <Route path="/company/:id">
@@ -145,11 +166,17 @@ function Router() {
       </Route>
       <Route path="/jobs">
         <Layout>
-          <Jobs />
+          <OnboardingGuard>
+            <Jobs />
+          </OnboardingGuard>
         </Layout>
       </Route>
       <Route path="/">
-        <Redirect to="/jobs" />
+        <Layout>
+          <OnboardingGuard>
+            <Jobs />
+          </OnboardingGuard>
+        </Layout>
       </Route>
       <Route component={NotFound} />
     </Switch>

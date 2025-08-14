@@ -28,6 +28,7 @@ export const userProfileSchema = z.object({
   linkedin_url: z.string().optional(),
   github_url: z.string().optional(),
   portfolio_url: z.string().optional(),
+  is_jobs_onboarding_completed: z.boolean().optional(),
 });
 
 // Job schemas

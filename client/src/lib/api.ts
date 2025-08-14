@@ -317,6 +317,11 @@ export class ApiClient {
     });
   }
 
+  // Universities API
+  static async getUniversities() {
+    return this.makeRequest("/users/universities/");
+  }
+
   // Organizations API
   static async getOrganizations(params: Record<string, any> = {}) {
     const searchParams = new URLSearchParams();
@@ -398,9 +403,7 @@ export class ApiClient {
     return STATIC_FILTER_OPTIONS.EDUCATION_LEVELS;
   }
 
-  static async getUniversities() {
-    return this.makeRequest("/universities/");
-  }
+
 
   static async getLanguages() {
     return this.makeRequest("/languages/");
