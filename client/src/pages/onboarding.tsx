@@ -17,6 +17,8 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 import {
   Select,
@@ -45,6 +47,7 @@ import {
   Zap,
   Upload,
   Camera,
+  CalendarIcon,
 } from "lucide-react";
 
 // Onboarding step schemas - all fields are optional for flexible onboarding
@@ -122,6 +125,60 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     progress: 100,
   },
 ];
+
+// Date picker component for experience and education dates
+const DatePicker = ({ 
+  value, 
+  onChange, 
+  placeholder, 
+  maxDate, 
+  minDate 
+}: { 
+  value: string; 
+  onChange: (date: string) => void; 
+  placeholder: string;
+  maxDate?: Date;
+  minDate?: Date;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dateValue = value ? new Date(value) : undefined;
+
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      // Format as YYYY-MM-DD for form input
+      onChange(format(date, "yyyy-MM-dd"));
+    } else {
+      onChange("");
+    }
+    setIsOpen(false);
+  };
+
+  return (
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className={`w-full justify-start text-left font-normal ${!value && "text-muted-foreground"}`}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {value ? format(new Date(value), "PP") : <span>{placeholder}</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={dateValue}
+          onSelect={handleDateSelect}
+          disabled={(date) => {
+            if (maxDate && date > maxDate) return true;
+            if (minDate && date < minDate) return true;
+            return false;
+          }}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};
 
 export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -243,14 +300,66 @@ export default function Onboarding() {
     },
   });
 
+  // Date formatting helper functions
+  const formatDateForAPI = (dateString: string) => {
+    if (!dateString) return "";
+    // Convert from YYYY-MM-DD to DD.MM.YYYY
+    const [year, month, day] = dateString.split("-");
+    return `${day}.${month}.${year}`;
+  };
+
   // Add experience mutation
   const addExperienceMutation = useMutation({
-    mutationFn: (data: any) => ApiClient.addExperience(data),
+    mutationFn: (data: any) => {
+      // Convert dates to API format
+      const formattedData = {
+        ...data,
+        date_started: formatDateForAPI(data.date_started),
+        date_finished: formatDateForAPI(data.date_finished),
+      };
+      return ApiClient.addExperience(formattedData);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Experience added successfully",
+      });
+      experienceForm.reset();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: "Failed to add experience",
+        variant: "destructive",
+      });
+    },
   });
 
   // Add education mutation
   const addEducationMutation = useMutation({
-    mutationFn: (data: any) => ApiClient.addEducation(data),
+    mutationFn: (data: any) => {
+      // Convert dates to API format
+      const formattedData = {
+        ...data,
+        date_started: formatDateForAPI(data.date_started),
+        date_finished: formatDateForAPI(data.date_finished),
+      };
+      return ApiClient.addEducation(formattedData);
+    },
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Education added successfully",
+      });
+      educationForm.reset();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: "Failed to add education",
+        variant: "destructive",
+      });
+    },
   });
 
   // Add project mutation
@@ -828,9 +937,12 @@ export default function Onboarding() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="date_started">Start Date</Label>
-                  <Input
-                    {...experienceForm.register("date_started")}
-                    type="date"
+                  <DatePicker
+                    value={experienceForm.watch("date_started")}
+                    onChange={(date) => experienceForm.setValue("date_started", date)}
+                    placeholder="Select start date"
+                    maxDate={new Date()}
+                    minDate={new Date(1970, 0, 1)}
                   />
                   {experienceForm.formState.errors.date_started && (
                     <p className="text-sm text-red-500 mt-1">
@@ -840,9 +952,12 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <Label htmlFor="date_finished">End Date (Optional)</Label>
-                  <Input
-                    {...experienceForm.register("date_finished")}
-                    type="date"
+                  <DatePicker
+                    value={experienceForm.watch("date_finished")}
+                    onChange={(date) => experienceForm.setValue("date_finished", date)}
+                    placeholder="Select end date (optional)"
+                    maxDate={new Date()}
+                    minDate={new Date(1970, 0, 1)}
                   />
                   <p className="text-xs text-muted-foreground mt-1">
                     Leave empty if this is your current job
@@ -897,8 +1012,11 @@ export default function Onboarding() {
                     className="w-full p-2 border rounded-md"
                   >
                     <option value="">Select a university (optional)</option>
-                    {universities && Array.isArray(universities)
-                      ? universities.map((uni: any) => (
+                    {universities &&
+                    typeof universities === "object" &&
+                    "results" in universities &&
+                    Array.isArray(universities.results)
+                      ? universities.results.map((uni: any) => (
                           <option key={uni.id} value={uni.id}>
                             {uni.name}
                           </option>
@@ -934,9 +1052,12 @@ export default function Onboarding() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="date_started">Start Date</Label>
-                  <Input
-                    {...educationForm.register("date_started")}
-                    type="date"
+                  <DatePicker
+                    value={educationForm.watch("date_started")}
+                    onChange={(date) => educationForm.setValue("date_started", date)}
+                    placeholder="Select start date"
+                    maxDate={new Date()}
+                    minDate={new Date(1970, 0, 1)}
                   />
                   {educationForm.formState.errors.date_started && (
                     <p className="text-sm text-red-500 mt-1">
@@ -946,9 +1067,12 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <Label htmlFor="date_finished">End Date (Optional)</Label>
-                  <Input
-                    {...educationForm.register("date_finished")}
-                    type="date"
+                  <DatePicker
+                    value={educationForm.watch("date_finished")}
+                    onChange={(date) => educationForm.setValue("date_finished", date)}
+                    placeholder="Select end date (optional)"
+                    maxDate={new Date()}
+                    minDate={new Date(1970, 0, 1)}
                   />
                   <p className="text-xs text-muted-foreground mt-1">
                     Leave empty if still studying

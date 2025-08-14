@@ -96,3 +96,5 @@ The application requires the following environment variables configured in Repli
 - **User Experience**: Added clear messaging that all onboarding fields are optional and can be skipped
 - **Migration Completed**: Full migration from Replit Agent to standard Replit environment successful
 - **Design Consistency**: Updated onboarding pages with minimalistic design matching app's consistent styling - removed gradient backgrounds, simplified step indicators, used standard card components, and applied consistent spacing and colors throughout
+- **API Fixes**: Fixed universities endpoint in onboarding from `/users/universities/` to `/universities/` and made it accessible without authentication
+- **Enhanced Date Input**: Implemented shadcn date picker components for experience and education date fields with proper API date formatting (YYYY-MM-DD to DD.MM.YYYY conversion)
