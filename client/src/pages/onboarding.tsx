@@ -252,7 +252,7 @@ export default function Onboarding() {
   const completeOnboardingMutation = useMutation({
     mutationFn: () => {
       console.log('Completing onboarding for user:', user!.id);
-      return ApiClient.updateProfile(user!.id, { is_jobs_onboarding_completed: true });
+      return ApiClient.completeOnboarding();
     },
     onSuccess: (data) => {
       console.log('Onboarding completion successful:', data);

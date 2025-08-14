@@ -212,6 +212,37 @@ export class ApiClient {
     });
   }
 
+  static async completeOnboarding() {
+    // Try multiple approaches to ensure the onboarding completion works
+    console.log('API: Attempting to complete onboarding...');
+    
+    try {
+      // First try the /users/me/ endpoint
+      const result = await this.makeRequest('/users/me/', {
+        method: 'PATCH',
+        body: JSON.stringify({ is_jobs_onboarding_completed: true }),
+      });
+      console.log('API: Onboarding completion via /users/me/ successful:', result);
+      return result;
+    } catch (error) {
+      console.error('API: /users/me/ approach failed, trying alternative:', error);
+      
+      // Fallback to current user ID approach
+      try {
+        const currentUser = await this.getCurrentUser() as any;
+        const result = await this.makeRequest(`/users/${currentUser.id}/`, {
+          method: 'PATCH',
+          body: JSON.stringify({ is_jobs_onboarding_completed: true }),
+        });
+        console.log('API: Onboarding completion via /users/id/ successful:', result);
+        return result;
+      } catch (secondError) {
+        console.error('API: Both approaches failed:', secondError);
+        throw secondError;
+      }
+    }
+  }
+
   // Education API
   static async addEducation(data: any) {
     return this.makeRequest("/users/educations/", {
