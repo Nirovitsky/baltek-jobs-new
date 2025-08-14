@@ -248,49 +248,61 @@ export default function Onboarding() {
     mutationFn: (data: any) => ApiClient.addProject(data),
   });
 
-  // Complete onboarding mutation
-  const completeOnboardingMutation = useMutation({
-    mutationFn: () => {
-      console.log('Completing onboarding for user:', user!.id);
-      return ApiClient.completeOnboarding();
-    },
-    onSuccess: (data) => {
-      console.log('Onboarding completion successful:', data);
+  // Local state to track completion
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  // Simplified completion function following your pattern
+  const finishOnboarding = async () => {
+    try {
+      console.log('Starting onboarding completion process...');
       
-      // Multiple redirect attempts to ensure it works
-      console.log('Attempting redirect to /jobs page');
+      // Update locally first
+      setIsCompleted(true);
+      console.log('Local state updated to completed');
+
+      // Persist to backend using direct API call
+      console.log('Making API request to complete onboarding...');
+      const response = await fetch('https://api.baltek.net/api/users/me/', {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        },
+        body: JSON.stringify({ is_jobs_onboarding_completed: true }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('Backend update successful:', result);
       
-      // Method 1: Direct setLocation
-      setLocation("/jobs");
-      
-      // Method 2: Backup with window.location (if setLocation fails)
-      setTimeout(() => {
-        console.log('Backup redirect attempt using window.location');
-        if (window.location.pathname === '/onboarding') {
-          window.location.href = '/jobs';
-        }
-      }, 200);
-      
-      // Show success toast
-      setTimeout(() => {
-        toast({
-          title: "Welcome aboard! 🎉",
-          description: "Your profile is now complete. Let's find you amazing opportunities!",
-        });
-      }, 600);
-      
-      // Invalidate queries to refresh user data
+      // Show success message
+      toast({
+        title: "Welcome aboard! 🎉",
+        description: "Your profile is now complete. Let's find you amazing opportunities!",
+      });
+
+      // Refresh user data and redirect
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
-    },
-    onError: (error) => {
-      console.error('Onboarding completion failed:', error);
+      
+      // Redirect to jobs page
+      setTimeout(() => {
+        console.log('Redirecting to /jobs page');
+        setLocation("/jobs");
+      }, 1000);
+
+    } catch (error) {
+      console.error('Failed to complete onboarding:', error);
+      setIsCompleted(false); // rollback local state
       toast({
         title: "Completion failed",
         description: "Failed to complete onboarding. Please try again.",
         variant: "destructive",
       });
-    },
-  });
+    }
+  };
 
 
 
@@ -410,21 +422,10 @@ export default function Onboarding() {
         }
       }
     } else if (currentStep === 4) {
-      // Complete onboarding
+      // Complete onboarding using the simplified approach
       console.log('Step 4 - Completing onboarding...');
-      console.log('Button clicked, triggering completion mutation');
-      
-      try {
-        console.log('About to call completeOnboardingMutation.mutateAsync()');
-        const result = await completeOnboardingMutation.mutateAsync();
-        console.log('Onboarding completion call finished successfully:', result);
-      } catch (error) {
-        console.error('Error in completion step:', error);
-        // Don't return here - let the error be handled by the mutation's onError
-      }
-      
-      // Always return to prevent step increment
-      return;
+      await finishOnboarding();
+      return; // Always return to prevent step increment
     }
 
     setCurrentStep(currentStep + 1);
@@ -960,13 +961,13 @@ export default function Onboarding() {
               addExperienceMutation.isPending ||
               addEducationMutation.isPending ||
               addProjectMutation.isPending ||
-              completeOnboardingMutation.isPending
+              isCompleted
             }
             className="px-6"
             data-testid={currentStep === 4 ? "button-complete-onboarding" : "button-continue"}
           >
             {currentStep === 4 ? (
-              completeOnboardingMutation.isPending ? (
+              isCompleted ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
                   Completing...
