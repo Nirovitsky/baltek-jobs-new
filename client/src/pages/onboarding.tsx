@@ -17,7 +17,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
@@ -140,6 +139,9 @@ export default function Onboarding() {
     queryFn: () => ApiClient.getLocations(),
     enabled: currentStep === 1,
   });
+
+  // Debug locations data
+  console.log("Locations data:", locations);
 
   const { data: organizations } = useQuery({
     queryKey: ["organizations"],
@@ -419,100 +421,80 @@ export default function Onboarding() {
               </div>
               <div>
                 <Label htmlFor="date_of_birth">Date of Birth</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={`w-full justify-start text-left font-normal ${!birthDate && "text-muted-foreground"}`}
+                <div className="grid grid-cols-3 gap-2">
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Day</Label>
+                    <Select
+                      value={birthDate ? birthDate.getDate().toString() : ""}
+                      onValueChange={(value) => {
+                        const newDate = new Date(birthDate || new Date(2000, 0, 1));
+                        newDate.setDate(parseInt(value));
+                        handleDateChange(newDate);
+                      }}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {birthDate ? format(birthDate, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <div className="p-3 border-b">
-                      <div className="flex items-center justify-between mb-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => {
-                            const newDate = new Date(birthDate || new Date());
-                            newDate.setFullYear(newDate.getFullYear() - 10);
-                            handleDateChange(newDate);
-                          }}
-                          className="h-7 w-7 p-0"
-                        >
-                          ‹‹
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => {
-                            const newDate = new Date(birthDate || new Date());
-                            newDate.setMonth(newDate.getMonth() - 1);
-                            handleDateChange(newDate);
-                          }}
-                          className="h-7 w-7 p-0"
-                        >
-                          ‹
-                        </Button>
-                        <div className="text-sm font-medium">
-                          {birthDate ? format(birthDate, "MMMM yyyy") : "Select year"}
-                        </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => {
-                            const newDate = new Date(birthDate || new Date());
-                            newDate.setMonth(newDate.getMonth() + 1);
-                            handleDateChange(newDate);
-                          }}
-                          className="h-7 w-7 p-0"
-                        >
-                          ›
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          onClick={() => {
-                            const newDate = new Date(birthDate || new Date());
-                            newDate.setFullYear(newDate.getFullYear() + 10);
-                            handleDateChange(newDate);
-                          }}
-                          className="h-7 w-7 p-0"
-                        >
-                          ››
-                        </Button>
-                      </div>
-                      <div className="flex gap-1 flex-wrap">
-                        {[1990, 1995, 2000, 2005, 2010].map((year) => (
-                          <Button
-                            key={year}
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              const newDate = new Date(birthDate || new Date());
-                              newDate.setFullYear(year);
-                              handleDateChange(newDate);
-                            }}
-                            className="h-6 text-xs"
-                          >
-                            {year}
-                          </Button>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Day" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 31 }, (_, i) => (
+                          <SelectItem key={i + 1} value={(i + 1).toString()}>
+                            {i + 1}
+                          </SelectItem>
                         ))}
-                      </div>
-                    </div>
-                    <Calendar
-                      mode="single"
-                      selected={birthDate}
-                      onSelect={handleDateChange}
-                      initialFocus
-                      fromYear={1950}
-                      toYear={new Date().getFullYear()}
-                      captionLayout="dropdown"
-                    />
-                  </PopoverContent>
-                </Popover>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Month</Label>
+                    <Select
+                      value={birthDate ? (birthDate.getMonth() + 1).toString() : ""}
+                      onValueChange={(value) => {
+                        const newDate = new Date(birthDate || new Date(2000, 0, 1));
+                        newDate.setMonth(parseInt(value) - 1);
+                        handleDateChange(newDate);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Month" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[
+                          "January", "February", "March", "April", "May", "June",
+                          "July", "August", "September", "October", "November", "December"
+                        ].map((month, index) => (
+                          <SelectItem key={index + 1} value={(index + 1).toString()}>
+                            {month}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Year</Label>
+                    <Select
+                      value={birthDate ? birthDate.getFullYear().toString() : ""}
+                      onValueChange={(value) => {
+                        const newDate = new Date(birthDate || new Date(2000, 0, 1));
+                        newDate.setFullYear(parseInt(value));
+                        handleDateChange(newDate);
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Year" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Array.from({ length: 80 }, (_, i) => {
+                          const year = new Date().getFullYear() - i - 10;
+                          return (
+                            <SelectItem key={year} value={year.toString()}>
+                              {year}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
                 {personalForm.formState.errors.date_of_birth && (
                   <p className="text-sm text-red-500 mt-1">
                     {personalForm.formState.errors.date_of_birth.message}
@@ -531,11 +513,23 @@ export default function Onboarding() {
                   <SelectValue placeholder="Select a location" />
                 </SelectTrigger>
                 <SelectContent>
-                  {locations && Array.isArray(locations) ? locations.map((loc: any) => (
-                    <SelectItem key={loc.id} value={loc.id.toString()}>
-                      {loc.name}
-                    </SelectItem>
-                  )) : (
+                  {locations ? (
+                    Array.isArray(locations) ? (
+                      locations.map((loc: any) => (
+                        <SelectItem key={loc.id} value={loc.id.toString()}>
+                          {loc.name}
+                        </SelectItem>
+                      ))
+                    ) : locations.results && Array.isArray(locations.results) ? (
+                      locations.results.map((loc: any) => (
+                        <SelectItem key={loc.id} value={loc.id.toString()}>
+                          {loc.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="error" disabled>Error loading locations</SelectItem>
+                    )
+                  ) : (
                     <SelectItem value="loading" disabled>Loading locations...</SelectItem>
                   )}
                 </SelectContent>
