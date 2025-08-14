@@ -276,8 +276,21 @@ export default function Onboarding() {
       const profileData = { ...formData };
       delete profileData.profile_picture; // Remove from main data since we handle it separately
       
-      // Update profile data
-      await updateProfileMutation.mutateAsync(profileData);
+      console.log('Submitting profile data:', profileData);
+      
+      try {
+        // Update profile data
+        await updateProfileMutation.mutateAsync(profileData);
+        console.log('Profile update successful');
+      } catch (error) {
+        console.error('Profile update failed:', error);
+        toast({
+          title: "Update failed",
+          description: "Failed to update profile. Please check your connection and try again.",
+          variant: "destructive",
+        });
+        return;
+      }
       
       // Upload profile picture if selected
       if (profilePicture) {

@@ -59,12 +59,21 @@ export class ApiClient {
         headers = filteredHeaders as typeof headers;
       }
 
-      console.log('Making API request to:', url);
-      const response = await fetch(url, {
-        ...options,
-        headers,
-      });
-      console.log('API response status:', response.status);
+      console.log('Making API request to:', url, 'with options:', { ...options, headers });
+      
+      let response: Response;
+      try {
+        response = await fetch(url, {
+          ...options,
+          headers,
+        });
+        console.log('API response status:', response.status);
+      } catch (error) {
+        console.error('Fetch error details:', error);
+        console.error('Failed URL:', url);
+        console.error('Request options:', { ...options, headers });
+        throw error;
+      }
 
       // Handle token expiration with automatic refresh (only if auth was required)
       if (response.status === 401 && token && requireAuth) {
