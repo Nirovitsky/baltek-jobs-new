@@ -142,6 +142,7 @@ export default function Onboarding() {
 
   // Debug locations data
   console.log("Locations data:", locations);
+  console.log("Locations loading state:", { isLoading: false, isError: false });
 
   const { data: organizations } = useQuery({
     queryKey: ["organizations"],
@@ -428,8 +429,9 @@ export default function Onboarding() {
                     <Select
                       value={birthDate ? birthDate.getDate().toString() : ""}
                       onValueChange={(value) => {
-                        const newDate = new Date(birthDate || new Date(2000, 0, 1));
-                        newDate.setDate(parseInt(value));
+                        const currentYear = birthDate ? birthDate.getFullYear() : 2000;
+                        const currentMonth = birthDate ? birthDate.getMonth() : 0;
+                        const newDate = new Date(currentYear, currentMonth, parseInt(value));
                         handleDateChange(newDate);
                       }}
                     >
@@ -450,8 +452,9 @@ export default function Onboarding() {
                     <Select
                       value={birthDate ? (birthDate.getMonth() + 1).toString() : ""}
                       onValueChange={(value) => {
-                        const newDate = new Date(birthDate || new Date(2000, 0, 1));
-                        newDate.setMonth(parseInt(value) - 1);
+                        const currentYear = birthDate ? birthDate.getFullYear() : 2000;
+                        const currentDay = birthDate ? birthDate.getDate() : 1;
+                        const newDate = new Date(currentYear, parseInt(value) - 1, currentDay);
                         handleDateChange(newDate);
                       }}
                     >
@@ -475,8 +478,9 @@ export default function Onboarding() {
                     <Select
                       value={birthDate ? birthDate.getFullYear().toString() : ""}
                       onValueChange={(value) => {
-                        const newDate = new Date(birthDate || new Date(2000, 0, 1));
-                        newDate.setFullYear(parseInt(value));
+                        const currentMonth = birthDate ? birthDate.getMonth() : 0;
+                        const currentDay = birthDate ? birthDate.getDate() : 1;
+                        const newDate = new Date(parseInt(value), currentMonth, currentDay);
                         handleDateChange(newDate);
                       }}
                     >

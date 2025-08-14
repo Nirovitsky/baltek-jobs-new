@@ -59,10 +59,12 @@ export class ApiClient {
         headers = filteredHeaders as typeof headers;
       }
 
+      console.log('Making API request to:', url);
       const response = await fetch(url, {
         ...options,
         headers,
       });
+      console.log('API response status:', response.status);
 
       // Handle token expiration with automatic refresh (only if auth was required)
       if (response.status === 401 && token && requireAuth) {
