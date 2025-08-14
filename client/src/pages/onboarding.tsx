@@ -250,15 +250,27 @@ export default function Onboarding() {
 
   // Complete onboarding mutation
   const completeOnboardingMutation = useMutation({
-    mutationFn: () => 
-      ApiClient.updateProfile(user!.id, { is_jobs_onboarding_completed: true }),
-    onSuccess: () => {
+    mutationFn: () => {
+      console.log('Completing onboarding for user:', user!.id);
+      return ApiClient.updateProfile(user!.id, { is_jobs_onboarding_completed: true });
+    },
+    onSuccess: (data) => {
+      console.log('Onboarding completion successful:', data);
       toast({
         title: "Welcome aboard! 🎉",
         description: "Your profile is now complete. Let's find you amazing opportunities!",
       });
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+      console.log('Redirecting to /jobs page');
       setLocation("/jobs");
+    },
+    onError: (error) => {
+      console.error('Onboarding completion failed:', error);
+      toast({
+        title: "Completion failed",
+        description: "Failed to complete onboarding. Please try again.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -381,7 +393,13 @@ export default function Onboarding() {
       }
     } else if (currentStep === 4) {
       // Complete onboarding
-      await completeOnboardingMutation.mutateAsync();
+      console.log('Step 4 - Completing onboarding...');
+      try {
+        await completeOnboardingMutation.mutateAsync();
+        console.log('Onboarding completion call finished');
+      } catch (error) {
+        console.error('Error in completion step:', error);
+      }
       return;
     }
 
