@@ -42,40 +42,38 @@ import {
   Camera
 } from "lucide-react";
 
-// Onboarding step schemas
+// Onboarding step schemas - all fields are optional for flexible onboarding
 const personalInfoSchema = z.object({
-  first_name: z.string().min(1, "First name is required"),
-  last_name: z.string().min(1, "Last name is required"),
-  profession: z.string().min(1, "Profession is required"),
-  gender: z.enum(["m", "f"], { required_error: "Please select gender" }),
-  date_of_birth: z.string().min(1, "Date of birth is required"),
-  location: z.coerce.number().min(1, "Please select a location"),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  profession: z.string().optional(),
+  gender: z.enum(["m", "f"]).optional(),
+  date_of_birth: z.string().optional(),
+  location: z.coerce.number().optional(),
   profile_picture: z.any().optional(),
 });
 
 const experienceSchema = z.object({
-  organization: z.number().min(1, "Please select an organization"),
-  organization_name: z.string().min(1, "Organization name is required"),
-  position: z.string().min(1, "Position is required"),
-  description: z.string().min(20, "Description should be at least 20 characters"),
-  date_started: z.string().min(1, "Start date is required"),
+  organization: z.number().optional(),
+  organization_name: z.string().optional(),
+  position: z.string().optional(),
+  description: z.string().optional(),
+  date_started: z.string().optional(),
   date_finished: z.string().optional(),
 });
 
 const educationSchema = z.object({
-  university: z.number().min(1, "Please select a university"),
-  level: z.enum(["secondary", "undergraduate", "master", "doctorate"], { 
-    required_error: "Please select education level" 
-  }),
-  date_started: z.string().min(1, "Start date is required"),
+  university: z.number().optional(),
+  level: z.enum(["secondary", "undergraduate", "master", "doctorate"]).optional(),
+  date_started: z.string().optional(),
   date_finished: z.string().optional(),
 });
 
 const projectSchema = z.object({
-  title: z.string().min(1, "Project title is required"),
-  description: z.string().min(20, "Description should be at least 20 characters"),
+  title: z.string().optional(),
+  description: z.string().optional(),
   link: z.string().url("Invalid project URL").optional().or(z.literal("")),
-  date_started: z.string().min(1, "Start date is required"),
+  date_started: z.string().optional(),
   date_finished: z.string().optional(),
 });
 
@@ -268,67 +266,98 @@ export default function Onboarding() {
 
   const handleNext = async () => {
     if (currentStep === 1) {
-      // Validate and save personal info
-      const isValid = await personalForm.trigger();
-      if (!isValid) return;
-
+      // Save personal info if any data is provided
       const formData = personalForm.getValues();
-      const profileData = { ...formData };
-      delete profileData.profile_picture; // Remove from main data since we handle it separately
       
-      console.log('Submitting profile data:', profileData);
+      // Check if user has filled any personal information
+      const hasPersonalData = formData.first_name || formData.last_name || formData.profession || 
+                             formData.gender || formData.date_of_birth || formData.location;
       
-      try {
-        // Update profile data
-        await updateProfileMutation.mutateAsync(profileData);
-        console.log('Profile update successful');
-      } catch (error) {
-        console.error('Profile update failed:', error);
-        toast({
-          title: "Update failed",
-          description: "Failed to update profile. Please check your connection and try again.",
-          variant: "destructive",
-        });
-        return;
-      }
-      
-      // Upload profile picture if selected
-      if (profilePicture) {
+      if (hasPersonalData) {
+        const profileData = { ...formData };
+        delete profileData.profile_picture; // Remove from main data since we handle it separately
+        
+        console.log('Submitting profile data:', profileData);
+        
         try {
-          await ApiClient.uploadProfilePicture(profilePicture);
-          toast({
-            title: "Profile picture uploaded",
-            description: "Your profile picture has been updated successfully",
-          });
+          // Update profile data
+          await updateProfileMutation.mutateAsync(profileData);
+          console.log('Profile update successful');
         } catch (error) {
-          console.error("Profile picture upload failed:", error);
+          console.error('Profile update failed:', error);
           toast({
-            title: "Upload failed",
-            description: "Failed to upload profile picture, but your other information was saved",
+            title: "Update failed",
+            description: "Failed to update profile. Please check your connection and try again.",
             variant: "destructive",
           });
+          return;
+        }
+        
+        // Upload profile picture if selected
+        if (profilePicture) {
+          try {
+            await ApiClient.uploadProfilePicture(profilePicture);
+            toast({
+              title: "Profile picture uploaded",
+              description: "Your profile picture has been updated successfully",
+            });
+          } catch (error) {
+            console.error("Profile picture upload failed:", error);
+            toast({
+              title: "Upload failed",
+              description: "Failed to upload profile picture, but your other information was saved",
+              variant: "destructive",
+            });
+          }
         }
       }
     } else if (currentStep === 2) {
-      // Validate and save experience
-      const isValid = await experienceForm.trigger();
-      if (!isValid) return;
-
+      // Save experience if any data is provided
       const formData = experienceForm.getValues();
-      await addExperienceMutation.mutateAsync({
-        ...formData,
-        date_finished: formData.date_finished || null,
-      });
+      
+      // Check if user has filled any experience information
+      const hasExperienceData = formData.organization || formData.organization_name || 
+                               formData.position || formData.description || formData.date_started;
+      
+      if (hasExperienceData) {
+        try {
+          await addExperienceMutation.mutateAsync({
+            ...formData,
+            date_finished: formData.date_finished || null,
+          });
+        } catch (error) {
+          console.error("Experience save failed:", error);
+          toast({
+            title: "Save failed",
+            description: "Failed to save experience. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
     } else if (currentStep === 3) {
-      // Validate and save education
-      const isValid = await educationForm.trigger();
-      if (!isValid) return;
-
+      // Save education if any data is provided
       const formData = educationForm.getValues();
-      await addEducationMutation.mutateAsync({
-        ...formData,
-        date_finished: formData.date_finished || null,
-      });
+      
+      // Check if user has filled any education information
+      const hasEducationData = formData.university || formData.level || formData.date_started;
+      
+      if (hasEducationData) {
+        try {
+          await addEducationMutation.mutateAsync({
+            ...formData,
+            date_finished: formData.date_finished || null,
+          });
+        } catch (error) {
+          console.error("Education save failed:", error);
+          toast({
+            title: "Save failed",
+            description: "Failed to save education. Please try again.",
+            variant: "destructive",
+          });
+          return;
+        }
+      }
     } else if (currentStep === 4) {
       // Complete onboarding
       await completeOnboardingMutation.mutateAsync();
@@ -355,6 +384,7 @@ export default function Onboarding() {
               </div>
               <h2 className="text-2xl font-bold mb-2">Let's get to know you!</h2>
               <p className="text-muted-foreground">Tell us about yourself so we can find the perfect opportunities</p>
+              <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">All fields are optional - fill only what you'd like to share</p>
             </div>
 
             {/* Profile Picture Upload */}
@@ -384,11 +414,10 @@ export default function Onboarding() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="first_name">First Name *</Label>
+                <Label htmlFor="first_name">First Name</Label>
                 <Input 
                   {...personalForm.register("first_name")} 
                   placeholder="Enter your first name"
-                  required 
                 />
                 {personalForm.formState.errors.first_name && (
                   <p className="text-sm text-red-500 mt-1">
@@ -397,11 +426,10 @@ export default function Onboarding() {
                 )}
               </div>
               <div>
-                <Label htmlFor="last_name">Last Name *</Label>
+                <Label htmlFor="last_name">Last Name</Label>
                 <Input 
                   {...personalForm.register("last_name")} 
                   placeholder="Enter your last name"
-                  required 
                 />
                 {personalForm.formState.errors.last_name && (
                   <p className="text-sm text-red-500 mt-1">
@@ -412,11 +440,10 @@ export default function Onboarding() {
             </div>
 
             <div>
-              <Label htmlFor="profession">Profession *</Label>
+              <Label htmlFor="profession">Profession</Label>
               <Input 
                 {...personalForm.register("profession")} 
                 placeholder="e.g., Software Developer, Marketing Manager" 
-                required
               />
               {personalForm.formState.errors.profession && (
                 <p className="text-sm text-red-500 mt-1">
@@ -427,14 +454,13 @@ export default function Onboarding() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="gender">Gender *</Label>
+                <Label htmlFor="gender">Gender</Label>
                 <Select
                   value={personalForm.watch("gender")}
                   onValueChange={(value) => personalForm.setValue("gender", value as "m" | "f")}
-                  required
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select gender" />
+                    <SelectValue placeholder="Select gender (optional)" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="m">Male</SelectItem>
@@ -448,7 +474,7 @@ export default function Onboarding() {
                 )}
               </div>
               <div>
-                <Label htmlFor="date_of_birth">Date of Birth *</Label>
+                <Label htmlFor="date_of_birth">Date of Birth</Label>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
                     <Label className="text-xs text-muted-foreground">Day</Label>
@@ -535,14 +561,13 @@ export default function Onboarding() {
             </div>
 
             <div>
-              <Label htmlFor="location">Location *</Label>
+              <Label htmlFor="location">Location</Label>
               <Select
                 value={personalForm.watch("location")?.toString()}
                 onValueChange={(value) => personalForm.setValue("location", parseInt(value))}
-                required
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a location" />
+                  <SelectValue placeholder="Select a location (optional)" />
                 </SelectTrigger>
                 <SelectContent>
                   {locations ? (
@@ -584,6 +609,7 @@ export default function Onboarding() {
               </div>
               <h2 className="text-2xl font-bold mb-2">Your professional journey</h2>
               <p className="text-muted-foreground">Add your most recent or relevant work experience</p>
+              <p className="text-sm text-purple-600 dark:text-purple-400 mt-2">Skip this step if you prefer to add experience later</p>
             </div>
 
             <div className="grid gap-4">
@@ -671,6 +697,7 @@ export default function Onboarding() {
               </div>
               <h2 className="text-2xl font-bold mb-2">Your academic background</h2>
               <p className="text-muted-foreground">Tell us about your education to complete your profile</p>
+              <p className="text-sm text-orange-600 dark:text-orange-400 mt-2">Feel free to skip if you'd like to add education details later</p>
             </div>
 
             <div className="space-y-4">
