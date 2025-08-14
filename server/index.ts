@@ -1,31 +1,14 @@
-import express from 'express';
-import { createServer as createViteServer } from 'vite';
+import express from "express";
+import ViteExpress from "vite-express";
 
-const port = Number(process.env.PORT) || 5000;
+const app = express();
 
-console.log(`[express] serving on port ${port}`);
+app.get("/hello", (_, res) => {
+  res.send("Hello Vite + React + TypeScript!");
+});
 
-async function createServer() {
-  const app = express();
+const port = process.env.PORT || 5000;
 
-  try {
-    // Create Vite server in middleware mode
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa'
-    });
-
-    // Use vite's connect instance as middleware
-    app.use(vite.ssrFixStacktrace);
-    app.use(vite.middlewares);
-
-    app.listen(port, '0.0.0.0', () => {
-      console.log(`Server ready on port ${port}`);
-    });
-  } catch (error) {
-    console.error('Error starting server:', error);
-    process.exit(1);
-  }
-}
-
-createServer();
+ViteExpress.listen(app, port, () =>
+  console.log(`Server is listening on port ${port}...`),
+);

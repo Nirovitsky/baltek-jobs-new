@@ -569,7 +569,7 @@ export default function Onboarding() {
                     className="w-full p-2 border rounded-md"
                   >
                     <option value={0}>Select an organization</option>
-                    {organizations && 'results' in organizations && Array.isArray(organizations.results) ? organizations.results.map((org: any) => (
+                    {organizations && typeof organizations === 'object' && 'results' in organizations && Array.isArray(organizations.results) ? organizations.results.map((org: any) => (
                       <option key={org.id} value={org.id}>
                         {org.display_name || org.official_name}
                       </option>
