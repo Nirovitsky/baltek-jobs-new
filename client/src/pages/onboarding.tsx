@@ -256,13 +256,31 @@ export default function Onboarding() {
     },
     onSuccess: (data) => {
       console.log('Onboarding completion successful:', data);
-      toast({
-        title: "Welcome aboard! 🎉",
-        description: "Your profile is now complete. Let's find you amazing opportunities!",
-      });
-      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
-      console.log('Redirecting to /jobs page');
+      
+      // Multiple redirect attempts to ensure it works
+      console.log('Attempting redirect to /jobs page');
+      
+      // Method 1: Direct setLocation
       setLocation("/jobs");
+      
+      // Method 2: Backup with window.location (if setLocation fails)
+      setTimeout(() => {
+        console.log('Backup redirect attempt using window.location');
+        if (window.location.pathname === '/onboarding') {
+          window.location.href = '/jobs';
+        }
+      }, 200);
+      
+      // Show success toast
+      setTimeout(() => {
+        toast({
+          title: "Welcome aboard! 🎉",
+          description: "Your profile is now complete. Let's find you amazing opportunities!",
+        });
+      }, 600);
+      
+      // Invalidate queries to refresh user data
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
     },
     onError: (error) => {
       console.error('Onboarding completion failed:', error);
@@ -394,12 +412,18 @@ export default function Onboarding() {
     } else if (currentStep === 4) {
       // Complete onboarding
       console.log('Step 4 - Completing onboarding...');
+      console.log('Button clicked, triggering completion mutation');
+      
       try {
-        await completeOnboardingMutation.mutateAsync();
-        console.log('Onboarding completion call finished');
+        console.log('About to call completeOnboardingMutation.mutateAsync()');
+        const result = await completeOnboardingMutation.mutateAsync();
+        console.log('Onboarding completion call finished successfully:', result);
       } catch (error) {
         console.error('Error in completion step:', error);
+        // Don't return here - let the error be handled by the mutation's onError
       }
+      
+      // Always return to prevent step increment
       return;
     }
 
@@ -939,6 +963,7 @@ export default function Onboarding() {
               completeOnboardingMutation.isPending
             }
             className="px-6"
+            data-testid={currentStep === 4 ? "button-complete-onboarding" : "button-continue"}
           >
             {currentStep === 4 ? (
               completeOnboardingMutation.isPending ? (
