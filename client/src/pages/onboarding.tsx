@@ -18,15 +18,21 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { 
-  User, 
-  MapPin, 
-  Briefcase, 
-  GraduationCap, 
-  Code2, 
-  Globe, 
+import {
+  User,
+  MapPin,
+  Briefcase,
+  GraduationCap,
+  Code2,
+  Globe,
   Github,
   Linkedin,
   ChevronRight,
@@ -37,9 +43,8 @@ import {
   BookOpen,
   Award,
   Zap,
-
   Upload,
-  Camera
+  Camera,
 } from "lucide-react";
 
 // Onboarding step schemas - all fields are optional for flexible onboarding
@@ -64,7 +69,9 @@ const experienceSchema = z.object({
 
 const educationSchema = z.object({
   university: z.number().optional(),
-  level: z.enum(["secondary", "undergraduate", "master", "doctorate"]).optional(),
+  level: z
+    .enum(["secondary", "undergraduate", "master", "doctorate"])
+    .optional(),
   date_started: z.string().optional(),
   date_finished: z.string().optional(),
 });
@@ -122,7 +129,8 @@ export default function Onboarding() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const [profilePicturePreview, setProfilePicturePreview] = useState<string>("");
+  const [profilePicturePreview, setProfilePicturePreview] =
+    useState<string>("");
   const [birthDate, setBirthDate] = useState<Date>();
 
   // Fetch data for forms
@@ -163,9 +171,11 @@ export default function Onboarding() {
   });
 
   // Handle profile picture upload
-  const handleProfilePictureChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleProfilePictureChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith("image/")) {
       setProfilePicture(file);
       const previewUrl = URL.createObjectURL(file);
       setProfilePicturePreview(previewUrl);
@@ -177,7 +187,7 @@ export default function Onboarding() {
     setBirthDate(date);
     if (date) {
       // Format as DD.MM.YYYY as required by the API
-      personalForm.setValue('date_of_birth', format(date, 'dd.MM.yyyy'));
+      personalForm.setValue("date_of_birth", format(date, "dd.MM.yyyy"));
     }
   };
 
@@ -251,39 +261,40 @@ export default function Onboarding() {
   // Complete onboarding mutation
   const completeOnboardingMutation = useMutation({
     mutationFn: () => {
-      console.log('Completing onboarding for user:', user!.id);
+      console.log("Completing onboarding for user:", user!.id);
       return ApiClient.completeOnboarding();
     },
     onSuccess: (data) => {
-      console.log('Onboarding completion successful:', data);
-      
+      console.log("Onboarding completion successful:", data);
+
       // Multiple redirect attempts to ensure it works
-      console.log('Attempting redirect to /jobs page');
-      
+      console.log("Attempting redirect to /jobs page");
+
       // Method 1: Direct setLocation
       setLocation("/jobs");
-      
+
       // Method 2: Backup with window.location (if setLocation fails)
       setTimeout(() => {
-        console.log('Backup redirect attempt using window.location');
-        if (window.location.pathname === '/onboarding') {
-          window.location.href = '/jobs';
+        console.log("Backup redirect attempt using window.location");
+        if (window.location.pathname === "/onboarding") {
+          window.location.href = "/jobs";
         }
       }, 200);
-      
+
       // Show success toast
       setTimeout(() => {
         toast({
           title: "Welcome aboard! 🎉",
-          description: "Your profile is now complete. Let's find you amazing opportunities!",
+          description:
+            "Your profile is now complete. Let's find you amazing opportunities!",
         });
       }, 600);
-      
+
       // Invalidate queries to refresh user data
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
     },
     onError: (error) => {
-      console.error('Onboarding completion failed:', error);
+      console.error("Onboarding completion failed:", error);
       toast({
         title: "Completion failed",
         description: "Failed to complete onboarding. Please try again.",
@@ -292,44 +303,50 @@ export default function Onboarding() {
     },
   });
 
-
-
   const handleNext = async () => {
     if (currentStep === 1) {
       // Save personal info if any data is provided
       const formData = personalForm.getValues();
-      
+
       // Check if user has filled any personal information
-      const hasPersonalData = formData.first_name || formData.last_name || formData.profession || 
-                             formData.gender || formData.date_of_birth || (formData.location && Number(formData.location) > 0);
-      
+      const hasPersonalData =
+        formData.first_name ||
+        formData.last_name ||
+        formData.profession ||
+        formData.gender ||
+        formData.date_of_birth ||
+        (formData.location && Number(formData.location) > 0);
+
       if (hasPersonalData) {
         // Clean up data before sending to API
         const profileData: any = {};
-        
+
         if (formData.first_name) profileData.first_name = formData.first_name;
         if (formData.last_name) profileData.last_name = formData.last_name;
         if (formData.profession) profileData.profession = formData.profession;
         if (formData.gender) profileData.gender = formData.gender;
-        if (formData.date_of_birth) profileData.date_of_birth = formData.date_of_birth;
-        if (formData.location && Number(formData.location) > 0) profileData.location = formData.location;
-        
-        console.log('Submitting profile data:', profileData);
-        
+        if (formData.date_of_birth)
+          profileData.date_of_birth = formData.date_of_birth;
+        if (formData.location && Number(formData.location) > 0)
+          profileData.location = formData.location;
+
+        console.log("Submitting profile data:", profileData);
+
         try {
           // Update profile data
           await updateProfileMutation.mutateAsync(profileData);
-          console.log('Profile update successful');
+          console.log("Profile update successful");
         } catch (error) {
-          console.error('Profile update failed:', error);
+          console.error("Profile update failed:", error);
           toast({
             title: "Update failed",
-            description: "Failed to update profile. Please check your connection and try again.",
+            description:
+              "Failed to update profile. Please check your connection and try again.",
             variant: "destructive",
           });
           return;
         }
-        
+
         // Upload profile picture if selected
         if (profilePicture) {
           try {
@@ -342,7 +359,8 @@ export default function Onboarding() {
             console.error("Profile picture upload failed:", error);
             toast({
               title: "Upload failed",
-              description: "Failed to upload profile picture, but your other information was saved",
+              description:
+                "Failed to upload profile picture, but your other information was saved",
               variant: "destructive",
             });
           }
@@ -351,24 +369,32 @@ export default function Onboarding() {
     } else if (currentStep === 2) {
       // Save experience if any data is provided
       const formData = experienceForm.getValues();
-      
+
       // Check if user has filled any experience information
-      const hasExperienceData = (formData.organization && Number(formData.organization) > 0) || 
-                               formData.organization_name || formData.position || 
-                               formData.description || formData.date_started;
-      
+      const hasExperienceData =
+        (formData.organization && Number(formData.organization) > 0) ||
+        formData.organization_name ||
+        formData.position ||
+        formData.description ||
+        formData.date_started;
+
       if (hasExperienceData) {
         try {
           // Clean up experience data
           const experienceData: any = {};
-          
-          if (formData.organization && Number(formData.organization) > 0) experienceData.organization = formData.organization;
-          if (formData.organization_name) experienceData.organization_name = formData.organization_name;
+
+          if (formData.organization && Number(formData.organization) > 0)
+            experienceData.organization = formData.organization;
+          if (formData.organization_name)
+            experienceData.organization_name = formData.organization_name;
           if (formData.position) experienceData.position = formData.position;
-          if (formData.description) experienceData.description = formData.description;
-          if (formData.date_started) experienceData.date_started = formData.date_started;
-          if (formData.date_finished) experienceData.date_finished = formData.date_finished;
-          
+          if (formData.description)
+            experienceData.description = formData.description;
+          if (formData.date_started)
+            experienceData.date_started = formData.date_started;
+          if (formData.date_finished)
+            experienceData.date_finished = formData.date_finished;
+
           await addExperienceMutation.mutateAsync(experienceData);
         } catch (error) {
           console.error("Experience save failed:", error);
@@ -383,21 +409,26 @@ export default function Onboarding() {
     } else if (currentStep === 3) {
       // Save education if any data is provided
       const formData = educationForm.getValues();
-      
+
       // Check if user has filled any education information
-      const hasEducationData = (formData.university && Number(formData.university) > 0) || 
-                               formData.level || formData.date_started;
-      
+      const hasEducationData =
+        (formData.university && Number(formData.university) > 0) ||
+        formData.level ||
+        formData.date_started;
+
       if (hasEducationData) {
         try {
           // Clean up education data
           const educationData: any = {};
-          
-          if (formData.university && Number(formData.university) > 0) educationData.university = formData.university;
+
+          if (formData.university && Number(formData.university) > 0)
+            educationData.university = formData.university;
           if (formData.level) educationData.level = formData.level;
-          if (formData.date_started) educationData.date_started = formData.date_started;
-          if (formData.date_finished) educationData.date_finished = formData.date_finished;
-          
+          if (formData.date_started)
+            educationData.date_started = formData.date_started;
+          if (formData.date_finished)
+            educationData.date_finished = formData.date_finished;
+
           await addEducationMutation.mutateAsync(educationData);
         } catch (error) {
           console.error("Education save failed:", error);
@@ -411,18 +442,21 @@ export default function Onboarding() {
       }
     } else if (currentStep === 4) {
       // Complete onboarding
-      console.log('Step 4 - Completing onboarding...');
-      console.log('Button clicked, triggering completion mutation');
-      
+      console.log("Step 4 - Completing onboarding...");
+      console.log("Button clicked, triggering completion mutation");
+
       try {
-        console.log('About to call completeOnboardingMutation.mutateAsync()');
+        console.log("About to call completeOnboardingMutation.mutateAsync()");
         const result = await completeOnboardingMutation.mutateAsync();
-        console.log('Onboarding completion call finished successfully:', result);
+        console.log(
+          "Onboarding completion call finished successfully:",
+          result,
+        );
       } catch (error) {
-        console.error('Error in completion step:', error);
+        console.error("Error in completion step:", error);
         // Don't return here - let the error be handled by the mutation's onError
       }
-      
+
       // Always return to prevent step increment
       return;
     }
@@ -442,25 +476,31 @@ export default function Onboarding() {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <User className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2">Let's get to know you!</h2>
-              <p className="text-muted-foreground">Tell us about yourself so we can find the perfect opportunities</p>
-              <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">All fields are optional - fill only what you'd like to share</p>
+              <h2 className="text-2xl font-bold mb-2">
+                Let's get to know you!
+              </h2>
+              <p className="text-muted-foreground">
+                Tell us about yourself so we can find the perfect opportunities
+              </p>
+              <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
+                All fields are optional - fill only what you'd like to share
+              </p>
             </div>
 
             {/* Profile Picture Upload */}
             <div className="flex justify-center mb-6">
               <div className="relative">
                 <Avatar className="w-24 h-24 cursor-pointer border-4 border-blue-200 dark:border-blue-700">
-                  <AvatarImage src={profilePicturePreview || user?.profile_picture} />
+                  <AvatarImage
+                    src={profilePicturePreview || user?.profile_picture}
+                  />
                   <AvatarFallback className="text-lg">
-                    {user?.first_name?.[0]}{user?.last_name?.[0]}
+                    {user?.first_name?.[0]}
+                    {user?.last_name?.[0]}
                   </AvatarFallback>
                 </Avatar>
-                <label 
-                  htmlFor="profile-upload" 
+                <label
+                  htmlFor="profile-upload"
                   className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 cursor-pointer hover:bg-blue-700 transition-colors"
                 >
                   <Camera className="w-4 h-4" />
@@ -478,8 +518,8 @@ export default function Onboarding() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="first_name">First Name</Label>
-                <Input 
-                  {...personalForm.register("first_name")} 
+                <Input
+                  {...personalForm.register("first_name")}
                   placeholder="Enter your first name"
                 />
                 {personalForm.formState.errors.first_name && (
@@ -490,8 +530,8 @@ export default function Onboarding() {
               </div>
               <div>
                 <Label htmlFor="last_name">Last Name</Label>
-                <Input 
-                  {...personalForm.register("last_name")} 
+                <Input
+                  {...personalForm.register("last_name")}
                   placeholder="Enter your last name"
                 />
                 {personalForm.formState.errors.last_name && (
@@ -504,9 +544,9 @@ export default function Onboarding() {
 
             <div>
               <Label htmlFor="profession">Profession</Label>
-              <Input 
-                {...personalForm.register("profession")} 
-                placeholder="e.g., Software Developer, Marketing Manager" 
+              <Input
+                {...personalForm.register("profession")}
+                placeholder="e.g., Software Developer, Marketing Manager"
               />
               {personalForm.formState.errors.profession && (
                 <p className="text-sm text-red-500 mt-1">
@@ -520,7 +560,9 @@ export default function Onboarding() {
                 <Label htmlFor="gender">Gender</Label>
                 <Select
                   value={personalForm.watch("gender")}
-                  onValueChange={(value) => personalForm.setValue("gender", value as "m" | "f")}
+                  onValueChange={(value) =>
+                    personalForm.setValue("gender", value as "m" | "f")
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select gender (optional)" />
@@ -540,13 +582,20 @@ export default function Onboarding() {
                 <Label htmlFor="date_of_birth">Date of Birth</Label>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <Label className="text-xs text-muted-foreground">Day</Label>
                     <Select
                       value={birthDate ? birthDate.getDate().toString() : ""}
                       onValueChange={(value) => {
-                        const currentYear = birthDate ? birthDate.getFullYear() : 2000;
-                        const currentMonth = birthDate ? birthDate.getMonth() : 0;
-                        const newDate = new Date(currentYear, currentMonth, parseInt(value));
+                        const currentYear = birthDate
+                          ? birthDate.getFullYear()
+                          : 2000;
+                        const currentMonth = birthDate
+                          ? birthDate.getMonth()
+                          : 0;
+                        const newDate = new Date(
+                          currentYear,
+                          currentMonth,
+                          parseInt(value),
+                        );
                         handleDateChange(newDate);
                       }}
                     >
@@ -563,13 +612,20 @@ export default function Onboarding() {
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Month</Label>
                     <Select
-                      value={birthDate ? (birthDate.getMonth() + 1).toString() : ""}
+                      value={
+                        birthDate ? (birthDate.getMonth() + 1).toString() : ""
+                      }
                       onValueChange={(value) => {
-                        const currentYear = birthDate ? birthDate.getFullYear() : 2000;
+                        const currentYear = birthDate
+                          ? birthDate.getFullYear()
+                          : 2000;
                         const currentDay = birthDate ? birthDate.getDate() : 1;
-                        const newDate = new Date(currentYear, parseInt(value) - 1, currentDay);
+                        const newDate = new Date(
+                          currentYear,
+                          parseInt(value) - 1,
+                          currentDay,
+                        );
                         handleDateChange(newDate);
                       }}
                     >
@@ -578,10 +634,23 @@ export default function Onboarding() {
                       </SelectTrigger>
                       <SelectContent>
                         {[
-                          "January", "February", "March", "April", "May", "June",
-                          "July", "August", "September", "October", "November", "December"
+                          "January",
+                          "February",
+                          "March",
+                          "April",
+                          "May",
+                          "June",
+                          "July",
+                          "August",
+                          "September",
+                          "October",
+                          "November",
+                          "December",
                         ].map((month, index) => (
-                          <SelectItem key={index + 1} value={(index + 1).toString()}>
+                          <SelectItem
+                            key={index + 1}
+                            value={(index + 1).toString()}
+                          >
                             {month}
                           </SelectItem>
                         ))}
@@ -589,13 +658,20 @@ export default function Onboarding() {
                     </Select>
                   </div>
                   <div>
-                    <Label className="text-xs text-muted-foreground">Year</Label>
                     <Select
-                      value={birthDate ? birthDate.getFullYear().toString() : ""}
+                      value={
+                        birthDate ? birthDate.getFullYear().toString() : ""
+                      }
                       onValueChange={(value) => {
-                        const currentMonth = birthDate ? birthDate.getMonth() : 0;
+                        const currentMonth = birthDate
+                          ? birthDate.getMonth()
+                          : 0;
                         const currentDay = birthDate ? birthDate.getDate() : 1;
-                        const newDate = new Date(parseInt(value), currentMonth, currentDay);
+                        const newDate = new Date(
+                          parseInt(value),
+                          currentMonth,
+                          currentDay,
+                        );
                         handleDateChange(newDate);
                       }}
                     >
@@ -644,17 +720,22 @@ export default function Onboarding() {
                           {loc.name}
                         </SelectItem>
                       ))
-                    ) : (locations as any)?.results && Array.isArray((locations as any).results) ? (
+                    ) : (locations as any)?.results &&
+                      Array.isArray((locations as any).results) ? (
                       (locations as any).results.map((loc: any) => (
                         <SelectItem key={loc.id} value={loc.id.toString()}>
                           {loc.name}
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="error" disabled>Error loading locations</SelectItem>
+                      <SelectItem value="error" disabled>
+                        Error loading locations
+                      </SelectItem>
                     )
                   ) : (
-                    <SelectItem value="loading" disabled>Loading locations...</SelectItem>
+                    <SelectItem value="loading" disabled>
+                      Loading locations...
+                    </SelectItem>
                   )}
                 </SelectContent>
               </Select>
@@ -674,28 +755,39 @@ export default function Onboarding() {
               <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="w-8 h-8 text-purple-600 dark:text-purple-400" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Your professional journey</h2>
-              <p className="text-muted-foreground">Add your most recent or relevant work experience</p>
-              <p className="text-sm text-purple-600 dark:text-purple-400 mt-2">Skip this step if you prefer to add experience later</p>
+              <h2 className="text-2xl font-bold mb-2">
+                Your professional journey
+              </h2>
+              <p className="text-muted-foreground">
+                Add your most recent or relevant work experience
+              </p>
+              <p className="text-sm text-purple-600 dark:text-purple-400 mt-2">
+                Skip this step if you prefer to add experience later
+              </p>
             </div>
 
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="organization">Organization</Label>
-                  <select 
-                    {...experienceForm.register("organization", { 
+                  <select
+                    {...experienceForm.register("organization", {
                       valueAsNumber: true,
-                      setValueAs: (value) => value === 0 ? undefined : value 
+                      setValueAs: (value) => (value === 0 ? undefined : value),
                     })}
                     className="w-full p-2 border rounded-md"
                   >
                     <option value="">Select an organization (optional)</option>
-                    {organizations && typeof organizations === 'object' && 'results' in organizations && Array.isArray(organizations.results) ? organizations.results.map((org: any) => (
-                      <option key={org.id} value={org.id}>
-                        {org.display_name || org.official_name}
-                      </option>
-                    )) : null}
+                    {organizations &&
+                    typeof organizations === "object" &&
+                    "results" in organizations &&
+                    Array.isArray(organizations.results)
+                      ? organizations.results.map((org: any) => (
+                          <option key={org.id} value={org.id}>
+                            {org.display_name || org.official_name}
+                          </option>
+                        ))
+                      : null}
                   </select>
                   {experienceForm.formState.errors.organization && (
                     <p className="text-sm text-red-500 mt-1">
@@ -705,10 +797,16 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <Label htmlFor="organization_name">Organization Name</Label>
-                  <Input {...experienceForm.register("organization_name")} placeholder="e.g., Tech Corp" />
+                  <Input
+                    {...experienceForm.register("organization_name")}
+                    placeholder="e.g., Tech Corp"
+                  />
                   {experienceForm.formState.errors.organization_name && (
                     <p className="text-sm text-red-500 mt-1">
-                      {experienceForm.formState.errors.organization_name.message}
+                      {
+                        experienceForm.formState.errors.organization_name
+                          .message
+                      }
                     </p>
                   )}
                 </div>
@@ -716,7 +814,10 @@ export default function Onboarding() {
 
               <div>
                 <Label htmlFor="position">Position</Label>
-                <Input {...experienceForm.register("position")} placeholder="e.g., Software Developer" />
+                <Input
+                  {...experienceForm.register("position")}
+                  placeholder="e.g., Software Developer"
+                />
                 {experienceForm.formState.errors.position && (
                   <p className="text-sm text-red-500 mt-1">
                     {experienceForm.formState.errors.position.message}
@@ -727,7 +828,10 @@ export default function Onboarding() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="date_started">Start Date</Label>
-                  <Input {...experienceForm.register("date_started")} type="date" />
+                  <Input
+                    {...experienceForm.register("date_started")}
+                    type="date"
+                  />
                   {experienceForm.formState.errors.date_started && (
                     <p className="text-sm text-red-500 mt-1">
                       {experienceForm.formState.errors.date_started.message}
@@ -736,15 +840,20 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <Label htmlFor="date_finished">End Date (Optional)</Label>
-                  <Input {...experienceForm.register("date_finished")} type="date" />
-                  <p className="text-xs text-muted-foreground mt-1">Leave empty if this is your current job</p>
+                  <Input
+                    {...experienceForm.register("date_finished")}
+                    type="date"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Leave empty if this is your current job
+                  </p>
                 </div>
               </div>
 
               <div>
                 <Label htmlFor="description">Description</Label>
-                <Textarea 
-                  {...experienceForm.register("description")} 
+                <Textarea
+                  {...experienceForm.register("description")}
                   placeholder="Describe your responsibilities, achievements, and key projects..."
                   rows={4}
                 />
@@ -765,28 +874,36 @@ export default function Onboarding() {
               <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
                 <GraduationCap className="w-8 h-8 text-orange-600 dark:text-orange-400" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Your academic background</h2>
-              <p className="text-muted-foreground">Tell us about your education to complete your profile</p>
-              <p className="text-sm text-orange-600 dark:text-orange-400 mt-2">Feel free to skip if you'd like to add education details later</p>
+              <h2 className="text-2xl font-bold mb-2">
+                Your academic background
+              </h2>
+              <p className="text-muted-foreground">
+                Tell us about your education to complete your profile
+              </p>
+              <p className="text-sm text-orange-600 dark:text-orange-400 mt-2">
+                Feel free to skip if you'd like to add education details later
+              </p>
             </div>
 
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="university">University</Label>
-                  <select 
-                    {...educationForm.register("university", { 
+                  <select
+                    {...educationForm.register("university", {
                       valueAsNumber: true,
-                      setValueAs: (value) => value === 0 ? undefined : value 
+                      setValueAs: (value) => (value === 0 ? undefined : value),
                     })}
                     className="w-full p-2 border rounded-md"
                   >
                     <option value="">Select a university (optional)</option>
-                    {universities && Array.isArray(universities) ? universities.map((uni: any) => (
-                      <option key={uni.id} value={uni.id}>
-                        {uni.name}
-                      </option>
-                    )) : null}
+                    {universities && Array.isArray(universities)
+                      ? universities.map((uni: any) => (
+                          <option key={uni.id} value={uni.id}>
+                            {uni.name}
+                          </option>
+                        ))
+                      : null}
                   </select>
                   {educationForm.formState.errors.university && (
                     <p className="text-sm text-red-500 mt-1">
@@ -796,7 +913,7 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <Label htmlFor="level">Education Level</Label>
-                  <select 
+                  <select
                     {...educationForm.register("level")}
                     className="w-full p-2 border rounded-md"
                   >
@@ -817,7 +934,10 @@ export default function Onboarding() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="date_started">Start Date</Label>
-                  <Input {...educationForm.register("date_started")} type="date" />
+                  <Input
+                    {...educationForm.register("date_started")}
+                    type="date"
+                  />
                   {educationForm.formState.errors.date_started && (
                     <p className="text-sm text-red-500 mt-1">
                       {educationForm.formState.errors.date_started.message}
@@ -826,8 +946,13 @@ export default function Onboarding() {
                 </div>
                 <div>
                   <Label htmlFor="date_finished">End Date (Optional)</Label>
-                  <Input {...educationForm.register("date_finished")} type="date" />
-                  <p className="text-xs text-muted-foreground mt-1">Leave empty if still studying</p>
+                  <Input
+                    {...educationForm.register("date_finished")}
+                    type="date"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Leave empty if still studying
+                  </p>
                 </div>
               </div>
             </div>
@@ -886,18 +1011,16 @@ export default function Onboarding() {
               {currentStep} of {ONBOARDING_STEPS.length}
             </div>
           </div>
-          
-          <Progress 
-            value={ONBOARDING_STEPS[currentStep - 1]?.progress || 0} 
+
+          <Progress
+            value={ONBOARDING_STEPS[currentStep - 1]?.progress || 0}
             className="h-1"
           />
         </div>
 
         {/* Main Content */}
         <Card>
-          <CardContent className="p-6">
-            {renderStepContent()}
-          </CardContent>
+          <CardContent className="p-6">{renderStepContent()}</CardContent>
         </Card>
 
         {/* Navigation */}
@@ -920,7 +1043,11 @@ export default function Onboarding() {
               addProjectMutation.isPending ||
               completeOnboardingMutation.isPending
             }
-            data-testid={currentStep === 4 ? "button-complete-onboarding" : "button-continue"}
+            data-testid={
+              currentStep === 4
+                ? "button-complete-onboarding"
+                : "button-continue"
+            }
           >
             {currentStep === 4 ? (
               completeOnboardingMutation.isPending ? (

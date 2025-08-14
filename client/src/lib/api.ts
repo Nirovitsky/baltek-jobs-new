@@ -371,7 +371,7 @@ export class ApiClient {
 
   // Universities API
   static async getUniversities() {
-    return this.makeRequest("/users/universities/");
+    return this.makeRequest("/universities/", {}, false);
   }
 
   // Organizations API
