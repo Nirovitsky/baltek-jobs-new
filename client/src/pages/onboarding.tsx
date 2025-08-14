@@ -62,7 +62,6 @@ const personalInfoSchema = z.object({
 });
 
 const experienceSchema = z.object({
-  organization: z.number().optional(),
   organization_name: z.string().optional(),
   position: z.string().optional(),
   description: z.string().optional(),
@@ -126,7 +125,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   },
 ];
 
-// Date picker component for experience and education dates
+// Date picker component for experience and education dates with year/month navigation
 const DatePicker = ({ 
   value, 
   onChange, 
@@ -161,7 +160,7 @@ const DatePicker = ({
           className={`w-full justify-start text-left font-normal ${!value && "text-muted-foreground"}`}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(new Date(value), "PP") : <span>{placeholder}</span>}
+          {value ? format(new Date(value), "PPP") : <span>{placeholder}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
@@ -174,6 +173,10 @@ const DatePicker = ({
             if (minDate && date < minDate) return true;
             return false;
           }}
+          defaultMonth={dateValue || new Date(2020, 0)}
+          captionLayout="dropdown-buttons"
+          fromYear={1970}
+          toYear={new Date().getFullYear()}
         />
       </PopoverContent>
     </Popover>
@@ -207,11 +210,7 @@ export default function Onboarding() {
   console.log("Locations data:", locations);
   console.log("Locations loading state:", { isLoading: false, isError: false });
 
-  const { data: organizations } = useQuery({
-    queryKey: ["organizations"],
-    queryFn: () => ApiClient.getOrganizations({ limit: 100 }),
-    enabled: currentStep === 2,
-  });
+
 
   // Personal info form
   const personalForm = useForm({
@@ -260,7 +259,6 @@ export default function Onboarding() {
   const experienceForm = useForm({
     resolver: zodResolver(experienceSchema),
     defaultValues: {
-      organization: undefined,
       organization_name: "",
       position: "",
       description: "",
@@ -876,49 +874,17 @@ export default function Onboarding() {
             </div>
 
             <div className="grid gap-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="organization">Organization</Label>
-                  <select
-                    {...experienceForm.register("organization", {
-                      valueAsNumber: true,
-                      setValueAs: (value) => (value === 0 ? undefined : value),
-                    })}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="">Select an organization (optional)</option>
-                    {organizations &&
-                    typeof organizations === "object" &&
-                    "results" in organizations &&
-                    Array.isArray(organizations.results)
-                      ? organizations.results.map((org: any) => (
-                          <option key={org.id} value={org.id}>
-                            {org.display_name || org.official_name}
-                          </option>
-                        ))
-                      : null}
-                  </select>
-                  {experienceForm.formState.errors.organization && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {experienceForm.formState.errors.organization.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="organization_name">Organization Name</Label>
-                  <Input
-                    {...experienceForm.register("organization_name")}
-                    placeholder="e.g., Tech Corp"
-                  />
-                  {experienceForm.formState.errors.organization_name && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {
-                        experienceForm.formState.errors.organization_name
-                          .message
-                      }
-                    </p>
-                  )}
-                </div>
+              <div>
+                <Label htmlFor="organization_name">Company Name</Label>
+                <Input
+                  {...experienceForm.register("organization_name")}
+                  placeholder="Enter company name (optional)"
+                />
+                {experienceForm.formState.errors.organization_name && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {experienceForm.formState.errors.organization_name.message}
+                  </p>
+                )}
               </div>
 
               <div>
