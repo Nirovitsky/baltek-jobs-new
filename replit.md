@@ -97,4 +97,7 @@ The application requires the following environment variables configured in Repli
 - **Migration Completed**: Full migration from Replit Agent to standard Replit environment successful
 - **Design Consistency**: Updated onboarding pages with minimalistic design matching app's consistent styling - removed gradient backgrounds, simplified step indicators, used standard card components, and applied consistent spacing and colors throughout
 - **API Fixes**: Fixed universities endpoint in onboarding from `/users/universities/` to `/universities/` and made it accessible without authentication
-- **Enhanced Date Input**: Implemented shadcn date picker components for experience and education date fields with proper API date formatting (YYYY-MM-DD to DD.MM.YYYY conversion)
+- **Enhanced Date Input**: Implemented simple month/year dropdown date picker for better user experience
+- **Multiple Entries**: Users can now add multiple work experiences and education entries during onboarding
+- **Improved UX**: Simplified company name to text input only, better visual feedback with cards for added entries
+- **Clean UI**: Consistent card-based layout with easy-to-use add/remove functionality

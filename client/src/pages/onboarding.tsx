@@ -125,61 +125,66 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   },
 ];
 
-// Date picker component for experience and education dates with year/month navigation
+// Simple month/year date picker component
 const DatePicker = ({ 
   value, 
   onChange, 
-  placeholder, 
-  maxDate, 
-  minDate 
+  placeholder 
 }: { 
   value: string; 
   onChange: (date: string) => void; 
   placeholder: string;
-  maxDate?: Date;
-  minDate?: Date;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dateValue = value ? new Date(value) : undefined;
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1970 + 1 }, (_, i) => currentYear - i);
+  const months = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
 
-  const handleDateSelect = (date: Date | undefined) => {
-    if (date) {
-      // Format as YYYY-MM-DD for form input
-      onChange(format(date, "yyyy-MM-dd"));
-    } else {
-      onChange("");
-    }
-    setIsOpen(false);
+  const [month, year] = value 
+    ? [parseInt(value.split('-')[1]) - 1, parseInt(value.split('-')[0])]
+    : [-1, currentYear];
+
+  const handleMonthChange = (newMonth: number) => {
+    const selectedYear = year || currentYear;
+    const dateString = `${selectedYear}-${String(newMonth + 1).padStart(2, '0')}-01`;
+    onChange(dateString);
+  };
+
+  const handleYearChange = (newYear: number) => {
+    const selectedMonth = month >= 0 ? month : 0;
+    const dateString = `${newYear}-${String(selectedMonth + 1).padStart(2, '0')}-01`;
+    onChange(dateString);
   };
 
   return (
-    <Popover open={isOpen} onOpenChange={setIsOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={`w-full justify-start text-left font-normal ${!value && "text-muted-foreground"}`}
-        >
-          <CalendarIcon className="mr-2 h-4 w-4" />
-          {value ? format(new Date(value), "PPP") : <span>{placeholder}</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={dateValue}
-          onSelect={handleDateSelect}
-          disabled={(date) => {
-            if (maxDate && date > maxDate) return true;
-            if (minDate && date < minDate) return true;
-            return false;
-          }}
-          defaultMonth={dateValue || new Date(2020, 0)}
-          captionLayout="dropdown-buttons"
-          fromYear={1970}
-          toYear={new Date().getFullYear()}
-        />
-      </PopoverContent>
-    </Popover>
+    <div className="grid grid-cols-2 gap-2">
+      <select
+        value={month >= 0 ? month : ""}
+        onChange={(e) => handleMonthChange(parseInt(e.target.value))}
+        className="w-full p-2 border rounded-md text-sm"
+      >
+        <option value="">Month</option>
+        {months.map((monthName, index) => (
+          <option key={index} value={index}>
+            {monthName}
+          </option>
+        ))}
+      </select>
+      <select
+        value={year || ""}
+        onChange={(e) => handleYearChange(parseInt(e.target.value))}
+        className="w-full p-2 border rounded-md text-sm"
+      >
+        <option value="">Year</option>
+        {years.map((yearOption) => (
+          <option key={yearOption} value={yearOption}>
+            {yearOption}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 };
 
@@ -192,6 +197,12 @@ export default function Onboarding() {
   const [profilePicturePreview, setProfilePicturePreview] =
     useState<string>("");
   const [birthDate, setBirthDate] = useState<Date>();
+  
+  // Experience and education lists
+  const [experiences, setExperiences] = useState<any[]>([]);
+  const [educations, setEducations] = useState<any[]>([]);
+  const [showExperienceForm, setShowExperienceForm] = useState(false);
+  const [showEducationForm, setShowEducationForm] = useState(false);
 
   // Fetch data for forms
   const { data: universities } = useQuery({
@@ -306,58 +317,66 @@ export default function Onboarding() {
     return `${day}.${month}.${year}`;
   };
 
+  // Handle adding experience to local list
+  const handleAddExperience = (data: any) => {
+    if (!data.organization_name && !data.position) return;
+    
+    const newExperience = {
+      id: Date.now(), // temporary ID
+      ...data,
+      date_started: formatDateForAPI(data.date_started),
+      date_finished: formatDateForAPI(data.date_finished),
+    };
+    
+    setExperiences([...experiences, newExperience]);
+    experienceForm.reset();
+    setShowExperienceForm(false);
+    
+    toast({
+      title: "Experience added",
+      description: "Experience added to your profile",
+    });
+  };
+
+  // Handle adding education to local list  
+  const handleAddEducation = (data: any) => {
+    if (!data.university && !data.level) return;
+    
+    const newEducation = {
+      id: Date.now(), // temporary ID
+      ...data,
+      date_started: formatDateForAPI(data.date_started), 
+      date_finished: formatDateForAPI(data.date_finished),
+    };
+    
+    setEducations([...educations, newEducation]);
+    educationForm.reset();
+    setShowEducationForm(false);
+    
+    toast({
+      title: "Education added",
+      description: "Education added to your profile", 
+    });
+  };
+
+  // Remove experience
+  const removeExperience = (id: number) => {
+    setExperiences(experiences.filter(exp => exp.id !== id));
+  };
+
+  // Remove education
+  const removeEducation = (id: number) => {
+    setEducations(educations.filter(edu => edu.id !== id));
+  };
+
   // Add experience mutation
   const addExperienceMutation = useMutation({
-    mutationFn: (data: any) => {
-      // Convert dates to API format
-      const formattedData = {
-        ...data,
-        date_started: formatDateForAPI(data.date_started),
-        date_finished: formatDateForAPI(data.date_finished),
-      };
-      return ApiClient.addExperience(formattedData);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Experience added successfully",
-      });
-      experienceForm.reset();
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: "Failed to add experience",
-        variant: "destructive",
-      });
-    },
+    mutationFn: (data: any) => ApiClient.addExperience(data),
   });
 
   // Add education mutation
   const addEducationMutation = useMutation({
-    mutationFn: (data: any) => {
-      // Convert dates to API format
-      const formattedData = {
-        ...data,
-        date_started: formatDateForAPI(data.date_started),
-        date_finished: formatDateForAPI(data.date_finished),
-      };
-      return ApiClient.addEducation(formattedData);
-    },
-    onSuccess: () => {
-      toast({
-        title: "Success",
-        description: "Education added successfully",
-      });
-      educationForm.reset();
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error",
-        description: "Failed to add education",
-        variant: "destructive",
-      });
-    },
+    mutationFn: (data: any) => ApiClient.addEducation(data),
   });
 
   // Add project mutation
@@ -479,7 +498,6 @@ export default function Onboarding() {
 
       // Check if user has filled any experience information
       const hasExperienceData =
-        (formData.organization && Number(formData.organization) > 0) ||
         formData.organization_name ||
         formData.position ||
         formData.description ||
@@ -490,8 +508,6 @@ export default function Onboarding() {
           // Clean up experience data
           const experienceData: any = {};
 
-          if (formData.organization && Number(formData.organization) > 0)
-            experienceData.organization = formData.organization;
           if (formData.organization_name)
             experienceData.organization_name = formData.organization_name;
           if (formData.position) experienceData.position = formData.position;
