@@ -837,42 +837,34 @@ export default function Onboarding() {
       case 4:
         return (
           <div className="space-y-6 text-center">
-            <div className="mb-8">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Star className="w-10 h-10 text-white" />
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                <Check className="w-8 h-8 text-primary-foreground" />
               </div>
-              <h2 className="text-3xl font-bold mb-4">Congratulations! 🎉</h2>
-              <p className="text-lg text-muted-foreground">
-                Your profile is now 100% complete and ready to attract amazing opportunities!
+              <h2 className="text-2xl font-semibold mb-2">Profile Complete</h2>
+              <p className="text-muted-foreground">
+                Your profile is ready for job opportunities
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 p-8 rounded-xl">
-              <div className="grid grid-cols-2 gap-6 text-left mb-6">
+            <div className="bg-muted/30 p-6 rounded-lg">
+              <div className="space-y-3 text-left mb-4">
                 <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Personal information added</span>
+                  <Check className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Personal information added</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Experience documented</span>
+                  <Check className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Experience documented</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Education added</span>
+                  <Check className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Education added</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Check className="w-5 h-5 text-green-500" />
-                  <span>Profile completed</span>
+                  <Check className="w-4 h-4 text-primary" />
+                  <span className="text-sm">Profile completed</span>
                 </div>
-              </div>
-
-              <div className="text-center">
-                <Award className="w-12 h-12 text-yellow-500 mx-auto mb-3" />
-                <h3 className="text-xl font-semibold mb-2">Profile Completion Badge Earned!</h3>
-                <p className="text-muted-foreground">
-                  You're now ready to discover and apply for amazing job opportunities
-                </p>
               </div>
             </div>
           </div>
@@ -884,70 +876,36 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Progress Header */}
+    <div className="min-h-screen bg-background">
+      <div className="max-w-2xl mx-auto px-4 py-8">
+        {/* Simple Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl font-bold">Complete Your Profile</h1>
+          <div className="flex items-center justify-between mb-6">
+            <h1 className="text-xl font-semibold">Complete Your Profile</h1>
             <div className="text-sm text-muted-foreground">
-              Step {currentStep} of {ONBOARDING_STEPS.length}
+              {currentStep} of {ONBOARDING_STEPS.length}
             </div>
           </div>
           
           <Progress 
             value={ONBOARDING_STEPS[currentStep - 1]?.progress || 0} 
-            className="h-2 mb-6"
+            className="h-1"
           />
-
-          {/* Step indicators */}
-          <div className="flex justify-between">
-            {ONBOARDING_STEPS.map((step) => {
-              const StepIcon = step.icon;
-              const isActive = step.id === currentStep;
-              const isCompleted = step.id < currentStep;
-              
-              return (
-                <div 
-                  key={step.id} 
-                  className={`flex flex-col items-center text-center ${
-                    isActive ? 'text-blue-600 dark:text-blue-400' : 
-                    isCompleted ? 'text-green-600 dark:text-green-400' : 
-                    'text-gray-400 dark:text-gray-600'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 ${
-                    isActive ? 'bg-blue-100 dark:bg-blue-900' :
-                    isCompleted ? 'bg-green-100 dark:bg-green-900' :
-                    'bg-gray-100 dark:bg-gray-800'
-                  }`}>
-                    {isCompleted ? (
-                      <Check className="w-5 h-5" />
-                    ) : (
-                      <StepIcon className="w-5 h-5" />
-                    )}
-                  </div>
-                  <div className="text-xs font-medium hidden sm:block">{step.title}</div>
-                </div>
-              );
-            })}
-          </div>
         </div>
 
         {/* Main Content */}
-        <Card className="shadow-lg border-0">
-          <CardContent className="p-8">
+        <Card>
+          <CardContent className="p-6">
             {renderStepContent()}
           </CardContent>
         </Card>
 
         {/* Navigation */}
-        <div className="flex justify-between mt-8">
+        <div className="flex justify-between mt-6">
           <Button
             variant="outline"
             onClick={handleBack}
             disabled={currentStep === 1}
-            className="px-6"
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Back
@@ -962,7 +920,6 @@ export default function Onboarding() {
               addProjectMutation.isPending ||
               completeOnboardingMutation.isPending
             }
-            className="px-6"
             data-testid={currentStep === 4 ? "button-complete-onboarding" : "button-continue"}
           >
             {currentStep === 4 ? (
