@@ -173,10 +173,18 @@ export default function Jobs({}: JobsProps) {
       : null;
 
   const handleJobSelect = useCallback((job: Job) => {
+    // Store current scroll position before URL change
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
     setSelectedJobId(job.id);
     // Update URL to reflect selected job without triggering a full navigation
-    // Use setLocation with replace to avoid adding to history stack and prevent scroll reset
+    // Use setLocation with replace to avoid adding to history stack
     setLocation(`/jobs/${job.id}`, { replace: true });
+    
+    // Restore scroll position after URL change
+    requestAnimationFrame(() => {
+      window.scrollTo(0, scrollTop);
+    });
   }, [setLocation]);
 
   const handleFiltersChange = (newFilters: JobFilters) => {
