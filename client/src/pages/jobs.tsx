@@ -188,15 +188,13 @@ export default function Jobs({}: JobsProps) {
 
   const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
-    // Update URL manually without triggering scroll behavior
+    // Update URL using replaceState to avoid navigation history and scroll behavior
     const newUrl = `/jobs/${job.id}`;
     if (window.location.pathname !== newUrl) {
-      // Use pushState with scroll restoration disabled
-      window.history.pushState(
-        { scrollRestoration: 'manual' }, 
-        '', 
-        newUrl
-      );
+      // Use setTimeout to ensure DOM updates happen first, then update URL
+      setTimeout(() => {
+        window.history.replaceState(null, '', newUrl);
+      }, 0);
     }
   }, []);
 
