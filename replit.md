@@ -69,13 +69,14 @@ The application requires the following environment variables configured in Repli
 ## Recent Migration Notes
 
 - Successfully migrated from Replit Agent to standard Replit environment (January 2025)
-- All OAuth environment variables properly configured and verified working
+- All OAuth environment variables properly configured and verified working (VITE_OAUTH_CLIENT_ID, VITE_OAUTH_AUTH_URL, VITE_OAUTH_TOKEN_URL)
 - Application successfully connecting to Baltek API and loading job data
 - Vite development server running on port 5000 with proper client/server separation
 - Updated bookmarks and applications pages to use consistent JobList component with search functionality
 - Implemented proper scrollable layout matching the main jobs page design
 - Migration completed with all pages using unified job list interface
 - Project import completed: All checklist items verified and environment fully configured
+- **Migration Completed (January 15, 2025)**: Full migration from Replit Agent environment to standard Replit completed successfully with all dependencies installed, OAuth secrets configured, and application verified working
 
 ## New Onboarding System (January 2025)
 
