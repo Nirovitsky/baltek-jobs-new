@@ -339,12 +339,19 @@ export default function Onboarding() {
     mutationFn: () => ApiClient.completeOnboarding(),
     onSuccess: (data) => {
       console.log("Onboarding completed successfully:", data);
-      setLocation("/jobs");
-      toast({
-        title: "Welcome aboard!",
-        description: "Your profile is now complete. Let's find you amazing opportunities!",
-      });
+      console.log("Redirecting to /jobs page...");
+      
+      // Force invalidate auth queries and wait a moment for cache to update
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+      
+      // Small delay to ensure state updates before redirect
+      setTimeout(() => {
+        setLocation("/jobs");
+        toast({
+          title: "Welcome aboard!",
+          description: "Your profile is now complete. Let's find you amazing opportunities!",
+        });
+      }, 100);
     },
     onError: (error) => {
       console.error("Onboarding completion failed:", error);

@@ -220,20 +220,32 @@ export class ApiClient {
     console.log('API: Completing onboarding...');
     
     try {
-      // Get the current user first to get their ID
+      // Get the current user first 
       const currentUser = await this.getCurrentUser() as any;
-      console.log('API: Current user ID:', currentUser.id);
+      console.log('API: Current user:', currentUser);
       
-      // Use the updateProfile method to properly update the onboarding status
-      const result = await this.updateProfile(currentUser.id, { 
-        is_jobs_onboarding_completed: true 
-      });
-      console.log('API: Onboarding completion successful:', result);
-      return result;
+      // Since the API doesn't have is_jobs_onboarding_completed field,
+      // we'll use localStorage to track completion status
+      const onboardingKey = `onboarding_completed_${currentUser.id}`;
+      localStorage.setItem(onboardingKey, 'true');
+      console.log('API: Onboarding completion stored in localStorage');
+      
+      // Return a success response
+      return { 
+        success: true, 
+        message: 'Onboarding completed',
+        user: { ...currentUser, is_jobs_onboarding_completed: true }
+      };
     } catch (error) {
       console.error('API: Onboarding completion failed:', error);
       throw error;
     }
+  }
+
+  // Helper method to check if onboarding is completed
+  static isOnboardingCompleted(userId: number): boolean {
+    const onboardingKey = `onboarding_completed_${userId}`;
+    return localStorage.getItem(onboardingKey) === 'true';
   }
 
   // Education API
