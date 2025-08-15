@@ -42,12 +42,12 @@ export function OnboardingRouteGuard({ children }: OnboardingRouteGuardProps) {
 
   // If user is not authenticated, redirect to jobs
   if (!isAuthenticated) {
-    return <Redirect to="/jobs" />;
+    return <Navigate to="/jobs" replace />;
   }
 
   // If user is authenticated and already completed onboarding, redirect to jobs
   if (user && user.is_jobs_onboarding_completed === true) {
-    return <Redirect to="/jobs" />;
+    return <Navigate to="/jobs" replace />;
   }
 
   return <>{children}</>;
