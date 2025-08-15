@@ -62,6 +62,7 @@ export default function Jobs({}: JobsProps) {
   useEffect(() => {
     if (selectedJobIdFromUrl !== lastUrlJobId) {
       // This is a real URL change (browser navigation, direct URL entry)
+      console.log('URL navigation detected:', selectedJobIdFromUrl, 'vs last:', lastUrlJobId);
       setSelectedJobId(selectedJobIdFromUrl);
       setLastUrlJobId(selectedJobIdFromUrl);
     }
@@ -184,8 +185,19 @@ export default function Jobs({}: JobsProps) {
     : jobs.length > 0
       ? jobs[0].id
       : null;
+  
+  // Debug logging
+  console.log('Job selection state:', {
+    selectedJobId,
+    selectedJobIdFromUrl,
+    lastUrlJobId,
+    isSelectedJobInResults,
+    currentSelectedJobId,
+    jobsCount: jobs.length
+  });
 
   const handleJobSelect = useCallback((job: Job) => {
+    console.log('Job selected:', job.id);
     setSelectedJobId(job.id);
     // Mark this as a job selection to preserve scroll position
     markJobSelection();
