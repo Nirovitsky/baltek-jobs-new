@@ -4,6 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiClient } from "@/lib/api";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 import { 
   userProfileSchema, 
   educationSchema, 
@@ -36,8 +40,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import FileUpload from "@/components/file-upload";
 import { format } from "date-fns";
 import { 
@@ -88,151 +90,70 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     }
   }, [isOpen, initialTab]);
 
-  // Enhanced DatePicker component with improved year navigation
+  // MUI DatePicker component for start and end dates
   const DatePicker = ({ 
     value, 
     onChange, 
-    placeholder, 
+    label,
     maxDate, 
     minDate 
   }: { 
     value: string; 
     onChange: (date: string) => void; 
-    placeholder: string;
+    label: string;
     maxDate?: Date;
     minDate?: Date;
   }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [currentMonth, setCurrentMonth] = useState(() => {
-      return value ? new Date(value) : new Date();
-    });
-    const dateValue = value ? new Date(value) : undefined;
+    const selectedDate = value
+      ? dayjs(value)
+      : null;
 
-    // Quick year selection buttons - adjust based on date restrictions
-    const currentYear = new Date().getFullYear();
-    const maxYear = maxDate ? maxDate.getFullYear() : currentYear + 5;
-    const minYear = minDate ? minDate.getFullYear() : currentYear - 50;
-    
-    // Generate appropriate year buttons based on date constraints
-    const years = maxDate 
-      ? [minYear, currentYear - 30, currentYear - 20, currentYear - 10, maxYear]
-      : [currentYear - 30, currentYear - 20, currentYear - 10, currentYear, currentYear + 5];
-
-    const handleYearSelect = (year: number) => {
-      const newDate = new Date(currentMonth);
-      newDate.setFullYear(year);
-      setCurrentMonth(newDate);
-    };
-
-    const handleMonthSelect = (increment: number) => {
-      const newDate = new Date(currentMonth);
-      newDate.setMonth(newDate.getMonth() + increment);
-      setCurrentMonth(newDate);
+    const handleDateChange = (date: any) => {
+      if (date) {
+        // Check if date is within allowed range
+        const jsDate = date.toDate();
+        const isValid = (!maxDate || jsDate <= maxDate) && (!minDate || jsDate >= minDate);
+        
+        if (isValid) {
+          onChange(date.format('YYYY-MM-DD'));
+        } else {
+          // Show toast for invalid date selection
+          if (maxDate && jsDate > maxDate) {
+            toast({
+              title: "Invalid Date",
+              description: "Date cannot be in the future",
+              variant: "destructive",
+            });
+          } else if (minDate && jsDate < minDate) {
+            toast({
+              title: "Invalid Date", 
+              description: "Please select a valid date",
+              variant: "destructive",
+            });
+          }
+        }
+      } else {
+        onChange("");
+      }
     };
 
     return (
-      <Popover open={isOpen} onOpenChange={setIsOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            className={`w-full justify-start text-left font-normal ${!value && "text-muted-foreground"}`}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {value ? format(new Date(value), "PP") : <span>{placeholder}</span>}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <div className="p-3 border-b">
-            <div className="flex items-center justify-between mb-2">
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => handleMonthSelect(-12)}
-                className="h-7 w-7 p-0"
-              >
-                ‹‹
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => handleMonthSelect(-1)}
-                className="h-7 w-7 p-0"
-              >
-                ‹
-              </Button>
-              <div className="text-sm font-medium">
-                {format(currentMonth, "MMMM yyyy")}
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => handleMonthSelect(1)}
-                className="h-7 w-7 p-0"
-              >
-                ›
-              </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={() => handleMonthSelect(12)}
-                className="h-7 w-7 p-0"
-              >
-                ››
-              </Button>
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {years.map((year) => (
-                <Button
-                  key={year}
-                  variant={currentMonth.getFullYear() === year ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleYearSelect(year)}
-                  className="h-6 px-2 text-xs"
-                >
-                  {year}
-                </Button>
-              ))}
-            </div>
-          </div>
-          <Calendar
-            mode="single"
-            selected={dateValue}
-            onSelect={(date) => {
-              if (date) {
-                // Check if date is within allowed range
-                const isValid = (!maxDate || date <= maxDate) && (!minDate || date >= minDate);
-                if (isValid) {
-                  onChange(format(date, "yyyy-MM-dd"));
-                  setIsOpen(false);
-                } else {
-                  // Show toast for invalid date selection
-                  if (maxDate && date > maxDate) {
-                    toast({
-                      title: "Invalid Date",
-                      description: "Birth date cannot be in the future",
-                      variant: "destructive",
-                    });
-                  } else if (minDate && date < minDate) {
-                    toast({
-                      title: "Invalid Date", 
-                      description: "Please select a valid date",
-                      variant: "destructive",
-                    });
-                  }
-                }
-              }
-            }}
-            month={currentMonth}
-            onMonthChange={setCurrentMonth}
-            disabled={(date) => {
-              if (maxDate && date > maxDate) return true;
-              if (minDate && date < minDate) return true;
-              return false;
-            }}
-            initialFocus
-          />
-        </PopoverContent>
-      </Popover>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <MUIDatePicker
+          label={label}
+          value={selectedDate}
+          onChange={handleDateChange}
+          maxDate={maxDate ? dayjs(maxDate) : undefined}
+          minDate={minDate ? dayjs(minDate) : undefined}
+          slotProps={{
+            textField: {
+              fullWidth: true,
+              variant: "outlined",
+              size: "small"
+            }
+          }}
+        />
+      </LocalizationProvider>
     );
   };
 
@@ -791,7 +712,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <DatePicker
                         value={personalForm.watch("date_of_birth") || ""}
                         onChange={(date) => personalForm.setValue("date_of_birth", date)}
-                        placeholder="Select date of birth"
+                        label="Date of Birth"
                         maxDate={new Date()}
                         minDate={new Date(1900, 0, 1)}
                       />
@@ -885,7 +806,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           <DatePicker
                             value={educationForm.watch("date_started") || ""}
                             onChange={(date) => educationForm.setValue("date_started", date)}
-                            placeholder="Select start date"
+                            label="Start Date"
                           />
                         </div>
                         <div className="space-y-2">
@@ -893,7 +814,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           <DatePicker
                             value={educationForm.watch("date_finished") || ""}
                             onChange={(date) => educationForm.setValue("date_finished", date)}
-                            placeholder="Select end date"
+                            label="End Date"
                           />
                         </div>
                       </div>
@@ -1056,7 +977,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           <DatePicker
                             value={experienceForm.watch("date_started") || ""}
                             onChange={(date) => experienceForm.setValue("date_started", date)}
-                            placeholder="Select start date"
+                            label="Start Date"
                           />
                         </div>
                         <div className="space-y-2">
@@ -1064,7 +985,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           <DatePicker
                             value={experienceForm.watch("date_finished") || ""}
                             onChange={(date) => experienceForm.setValue("date_finished", date)}
-                            placeholder="Select end date"
+                            label="End Date"
                           />
                         </div>
                       </div>
@@ -1202,7 +1123,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           <DatePicker
                             value={projectForm.watch("date_started") || ""}
                             onChange={(date) => projectForm.setValue("date_started", date)}
-                            placeholder="Select start date"
+                            label="Start Date"
                           />
                         </div>
                         <div className="space-y-2">
@@ -1210,7 +1131,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           <DatePicker
                             value={projectForm.watch("date_finished") || ""}
                             onChange={(date) => projectForm.setValue("date_finished", date)}
-                            placeholder="Select end date"
+                            label="End Date"
                           />
                         </div>
                       </div>
