@@ -1,0 +1,35 @@
+Next offset from URL: 30
+jobs.tsx:91 getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=30', previous: 'https://api.baltek.net/api/jobs/?limit=10&offset=10', results: Array(10)}
+jobs.tsx:92 getNextPageParam - allPages length: 3
+jobs.tsx:121 Next offset from URL: 30
+job-filters.tsx:47 Saved filters data: undefined
+job-details.tsx:61 Job application check: {jobId: 69, my_application_id: null, hasApplied: false}
+use-infinite-scroll.tsx:51 Infinite scroll observer set up with rootMargin: 300px
+jobs.tsx:91 getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=30', previous: 'https://api.baltek.net/api/jobs/?limit=10&offset=10', results: Array(10)}
+jobs.tsx:92 getNextPageParam - allPages length: 3
+jobs.tsx:121 Next offset from URL: 30
+jobs.tsx:192 handleFiltersChange - old filters: {}
+jobs.tsx:193 handleFiltersChange - new filters: {category: 2}
+job-filters.tsx:47 Saved filters data: undefined
+jobs.tsx:86 useInfiniteQuery - Making API call with params: {offset: 0, limit: 10, search: undefined, category: 2}
+jobs.tsx:87 useInfiniteQuery - Current filters state: {category: 2}
+api.ts:62 Making API request to: https://api.baltek.net/api/jobs/?offset=0&limit=10&category=2 with options: {headers: {…}}
+jobs.tsx:91 getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=30', previous: 'https://api.baltek.net/api/jobs/?limit=10&offset=10', results: Array(10)}
+jobs.tsx:92 getNextPageParam - allPages length: 3
+jobs.tsx:121 Next offset from URL: 30
+jobs.tsx:91 getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=30', previous: 'https://api.baltek.net/api/jobs/?limit=10&offset=10', results: Array(10)}
+jobs.tsx:92 getNextPageParam - allPages length: 3
+jobs.tsx:121 Next offset from URL: 30
+job-filters.tsx:47 Saved filters data: undefined
+job-details.tsx:61 Job application check: {jobId: 69, my_application_id: null, hasApplied: false}
+use-infinite-scroll.tsx:51 Infinite scroll observer set up with rootMargin: 300px
+jobs.tsx:91 getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=30', previous: 'https://api.baltek.net/api/jobs/?limit=10&offset=10', results: Array(10)}
+jobs.tsx:92 getNextPageParam - allPages length: 3
+jobs.tsx:121 Next offset from URL: 30
+jobs.tsx:91 getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=30', previous: 'https://api.baltek.net/api/jobs/?limit=10&offset=10', results: Array(10)}
+jobs.tsx:92 getNextPageParam - allPages length: 3
+jobs.tsx:121 Next offset from URL: 30
+jobs.tsx:91 getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=30', previous: 'https://api.baltek.net/api/jobs/?limit=10&offset=10', results: Array(10)}
+jobs.tsx:92 getNextPageParam - allPages length: 3
+jobs.tsx:121 Next offset from URL: 30
+api.ts:70 API response status: 200

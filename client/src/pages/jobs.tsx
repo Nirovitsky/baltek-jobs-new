@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -18,6 +18,7 @@ interface JobsProps {}
 
 export default function Jobs({}: JobsProps) {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
   // Handle routing
   const navigate = useNavigate();
@@ -191,6 +192,10 @@ export default function Jobs({}: JobsProps) {
   const handleFiltersChange = (newFilters: JobFilters) => {
     console.log("handleFiltersChange - old filters:", filters);
     console.log("handleFiltersChange - new filters:", newFilters);
+    
+    // Reset infinite query data when filters change to prevent stale pagination
+    queryClient.removeQueries({ queryKey: ["jobs"] });
+    
     setFilters(newFilters);
     // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
@@ -201,6 +206,10 @@ export default function Jobs({}: JobsProps) {
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
+    
+    // Reset infinite query data when search changes to prevent stale pagination
+    queryClient.removeQueries({ queryKey: ["jobs"] });
+    
     // Immediately update the search query to keep input responsive
     setSearchQuery(newValue);
     // Clear job selection when search changes
@@ -208,7 +217,7 @@ export default function Jobs({}: JobsProps) {
     // Navigate back to jobs list without specific job ID, maintaining other URL params if any
     const searchParams = new URLSearchParams(location.search);
     navigate(`/jobs${searchParams.toString() ? `?${searchParams.toString()}` : ''}`);
-  }, [navigate, location.search]);
+  }, [navigate, location.search, queryClient]);
 
   const handleSearchSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
