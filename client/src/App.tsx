@@ -23,7 +23,7 @@ import ContactUs from "@/pages/contact-us";
 import Terms from "@/pages/terms";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import AuthCallback from "@/pages/auth-callback";
-import Onboarding from "@/pages/onboarding-new";
+import Onboarding from "@/pages/onboarding";
 import { OnboardingGuard, OnboardingRouteGuard } from "@/components/onboarding-guard";
 
 

@@ -1,12 +1,15 @@
-import { useState, useEffect } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import React, { useState, useEffect } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
-import { ApiClient } from "@/lib/api";
 import { useLocation } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,9 +20,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-
 import {
   Select,
   SelectContent,
@@ -33,24 +33,20 @@ import {
   MapPin,
   Briefcase,
   GraduationCap,
-  Code2,
-  Globe,
-  Github,
-  Linkedin,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
   Check,
   Star,
-  Target,
-  BookOpen,
-  Award,
-  Zap,
   Upload,
   Camera,
-  CalendarIcon,
+  Plus,
+  X,
 } from "lucide-react";
 
-// Onboarding step schemas - all fields are optional for flexible onboarding
+import { ApiClient } from "@/lib/api";
+
+// Schemas - all fields optional for flexible onboarding
 const personalInfoSchema = z.object({
   first_name: z.string().optional(),
   last_name: z.string().optional(),
@@ -78,13 +74,58 @@ const educationSchema = z.object({
   date_finished: z.string().optional(),
 });
 
-const projectSchema = z.object({
-  title: z.string().optional(),
-  description: z.string().optional(),
-  link: z.string().url("Invalid project URL").optional().or(z.literal("")),
-  date_started: z.string().optional(),
-  date_finished: z.string().optional(),
-});
+// MUI Date Picker Component
+const MUIDatePicker = ({
+  value,
+  onChange,
+  label,
+}: {
+  value: string;
+  onChange: (date: string) => void;
+  label: string;
+}) => {
+  const selectedDate = value
+    ? (() => {
+        if (value.includes(".")) {
+          // DD.MM.YYYY format
+          const [day, month, year] = value.split(".");
+          return dayjs(new Date(parseInt(year), parseInt(month) - 1, parseInt(day)));
+        } else {
+          return dayjs(value);
+        }
+      })()
+    : null;
+
+  const handleDateChange = (date: any) => {
+    if (date) {
+      // Format as DD.MM.YYYY for API compatibility
+      const jsDate = date.toDate();
+      const year = jsDate.getFullYear();
+      const month = String(jsDate.getMonth() + 1).padStart(2, "0");
+      const day = String(jsDate.getDate()).padStart(2, "0");
+      onChange(`${day}.${month}.${year}`);
+    } else {
+      onChange("");
+    }
+  };
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DatePicker
+        label={label}
+        value={selectedDate}
+        onChange={handleDateChange}
+        slotProps={{
+          textField: {
+            fullWidth: true,
+            variant: "outlined",
+            size: "small"
+          }
+        }}
+      />
+    </LocalizationProvider>
+  );
+};
 
 type OnboardingStep = {
   id: number;
@@ -125,69 +166,6 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   },
 ];
 
-// Simple month/year date picker component
-const DatePicker = ({ 
-  value, 
-  onChange, 
-  placeholder 
-}: { 
-  value: string; 
-  onChange: (date: string) => void; 
-  placeholder: string;
-}) => {
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1970 + 1 }, (_, i) => currentYear - i);
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
-
-  const [month, year] = value 
-    ? [parseInt(value.split('-')[1]) - 1, parseInt(value.split('-')[0])]
-    : [-1, currentYear];
-
-  const handleMonthChange = (newMonth: number) => {
-    const selectedYear = year || currentYear;
-    const dateString = `${selectedYear}-${String(newMonth + 1).padStart(2, '0')}-01`;
-    onChange(dateString);
-  };
-
-  const handleYearChange = (newYear: number) => {
-    const selectedMonth = month >= 0 ? month : 0;
-    const dateString = `${newYear}-${String(selectedMonth + 1).padStart(2, '0')}-01`;
-    onChange(dateString);
-  };
-
-  return (
-    <div className="grid grid-cols-2 gap-2">
-      <select
-        value={month >= 0 ? month : ""}
-        onChange={(e) => handleMonthChange(parseInt(e.target.value))}
-        className="w-full p-2 border rounded-md text-sm"
-      >
-        <option value="">Month</option>
-        {months.map((monthName, index) => (
-          <option key={index} value={index}>
-            {monthName}
-          </option>
-        ))}
-      </select>
-      <select
-        value={year || ""}
-        onChange={(e) => handleYearChange(parseInt(e.target.value))}
-        className="w-full p-2 border rounded-md text-sm"
-      >
-        <option value="">Year</option>
-        {years.map((yearOption) => (
-          <option key={yearOption} value={yearOption}>
-            {yearOption}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-};
-
 export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const { user } = useAuth();
@@ -197,7 +175,7 @@ export default function Onboarding() {
   const [profilePicturePreview, setProfilePicturePreview] =
     useState<string>("");
   const [birthDate, setBirthDate] = useState<Date>();
-  
+
   // Experience and education lists
   const [experiences, setExperiences] = useState<any[]>([]);
   const [educations, setEducations] = useState<any[]>([]);
@@ -211,17 +189,26 @@ export default function Onboarding() {
     enabled: currentStep === 3,
   });
 
-  const { data: locations } = useQuery({
+  const { data: locations, isLoading: locationsLoading } = useQuery({
     queryKey: ["locations"],
     queryFn: () => ApiClient.getLocations(),
     enabled: currentStep === 1,
   });
 
   // Debug locations data
-  console.log("Locations data:", locations);
-  console.log("Locations loading state:", { isLoading: false, isError: false });
+  useEffect(() => {
+    if (locations) {
+      console.log("Locations data received:", locations);
+      console.log("Is locations an array?", Array.isArray(locations));
+      console.log(
+        "Locations structure:",
+        typeof locations,
+        Object.keys(locations || {}),
+      );
+    }
+  }, [locations]);
 
-
+  // Date formatting is now handled directly in DatePicker component
 
   // Personal info form
   const personalForm = useForm({
@@ -236,35 +223,6 @@ export default function Onboarding() {
       profile_picture: undefined,
     },
   });
-
-  // Handle profile picture upload
-  const handleProfilePictureChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const file = event.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      setProfilePicture(file);
-      const previewUrl = URL.createObjectURL(file);
-      setProfilePicturePreview(previewUrl);
-    }
-  };
-
-  // Handle date of birth change
-  const handleDateChange = (date: Date | undefined) => {
-    setBirthDate(date);
-    if (date) {
-      // Format as DD.MM.YYYY as required by the API
-      personalForm.setValue("date_of_birth", format(date, "dd.MM.yyyy"));
-    }
-  };
-
-  // Initialize birth date from user data
-  useEffect(() => {
-    if (user?.date_of_birth) {
-      const date = new Date(user.date_of_birth);
-      setBirthDate(date);
-    }
-  }, [user?.date_of_birth]);
 
   // Experience form
   const experienceForm = useForm({
@@ -289,17 +247,77 @@ export default function Onboarding() {
     },
   });
 
-  // Project form
-  const projectForm = useForm({
-    resolver: zodResolver(projectSchema),
-    defaultValues: {
-      title: "",
-      description: "",
-      link: "",
-      date_started: "",
-      date_finished: "",
-    },
-  });
+  // Handle date of birth change
+  const handleDateChange = (date: Date | undefined) => {
+    setBirthDate(date);
+    if (date) {
+      // Manually format as DD.MM.YYYY to ensure correct format
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const year = date.getFullYear();
+      const dateString = `${day}.${month}.${year}`;
+
+      personalForm.setValue("date_of_birth", dateString);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.date_of_birth) {
+      const [day, month, year] = user.date_of_birth.split(".");
+      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      setBirthDate(date);
+    }
+  }, [user?.date_of_birth]);
+
+  // Handle adding experience to local list
+  const handleAddExperience = (data: any) => {
+    if (!data.organization_name && !data.position) return;
+
+    const newExperience = {
+      id: Date.now(), // temporary ID
+      ...data,
+      // dates are already in DD.MM.YYYY format from DatePicker
+    };
+
+    setExperiences([...experiences, newExperience]);
+    experienceForm.reset();
+    setShowExperienceForm(false);
+
+    toast({
+      title: "Experience added",
+      description: "Experience added to your profile",
+    });
+  };
+
+  // Handle adding education to local list
+  const handleAddEducation = (data: any) => {
+    if (!data.university && !data.level) return;
+
+    const newEducation = {
+      id: Date.now(), // temporary ID
+      ...data,
+      // dates are already in DD.MM.YYYY format from DatePicker
+    };
+
+    setEducations([...educations, newEducation]);
+    educationForm.reset();
+    setShowEducationForm(false);
+
+    toast({
+      title: "Education added",
+      description: "Education added to your profile",
+    });
+  };
+
+  // Remove experience
+  const removeExperience = (id: number) => {
+    setExperiences(experiences.filter((exp) => exp.id !== id));
+  };
+
+  // Remove education
+  const removeEducation = (id: number) => {
+    setEducations(educations.filter((edu) => edu.id !== id));
+  };
 
   // Update profile mutation
   const updateProfileMutation = useMutation({
@@ -308,66 +326,6 @@ export default function Onboarding() {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
     },
   });
-
-  // Date formatting helper functions
-  const formatDateForAPI = (dateString: string) => {
-    if (!dateString) return "";
-    // Convert from YYYY-MM-DD to DD.MM.YYYY
-    const [year, month, day] = dateString.split("-");
-    return `${day}.${month}.${year}`;
-  };
-
-  // Handle adding experience to local list
-  const handleAddExperience = (data: any) => {
-    if (!data.organization_name && !data.position) return;
-    
-    const newExperience = {
-      id: Date.now(), // temporary ID
-      ...data,
-      date_started: formatDateForAPI(data.date_started),
-      date_finished: formatDateForAPI(data.date_finished),
-    };
-    
-    setExperiences([...experiences, newExperience]);
-    experienceForm.reset();
-    setShowExperienceForm(false);
-    
-    toast({
-      title: "Experience added",
-      description: "Experience added to your profile",
-    });
-  };
-
-  // Handle adding education to local list  
-  const handleAddEducation = (data: any) => {
-    if (!data.university && !data.level) return;
-    
-    const newEducation = {
-      id: Date.now(), // temporary ID
-      ...data,
-      date_started: formatDateForAPI(data.date_started), 
-      date_finished: formatDateForAPI(data.date_finished),
-    };
-    
-    setEducations([...educations, newEducation]);
-    educationForm.reset();
-    setShowEducationForm(false);
-    
-    toast({
-      title: "Education added",
-      description: "Education added to your profile", 
-    });
-  };
-
-  // Remove experience
-  const removeExperience = (id: number) => {
-    setExperiences(experiences.filter(exp => exp.id !== id));
-  };
-
-  // Remove education
-  const removeEducation = (id: number) => {
-    setEducations(educations.filter(edu => edu.id !== id));
-  };
 
   // Add experience mutation
   const addExperienceMutation = useMutation({
@@ -379,45 +337,25 @@ export default function Onboarding() {
     mutationFn: (data: any) => ApiClient.addEducation(data),
   });
 
-  // Add project mutation
-  const addProjectMutation = useMutation({
-    mutationFn: (data: any) => ApiClient.addProject(data),
-  });
-
   // Complete onboarding mutation
   const completeOnboardingMutation = useMutation({
-    mutationFn: () => {
-      console.log("Completing onboarding for user:", user!.id);
-      return ApiClient.completeOnboarding();
-    },
+    mutationFn: () => ApiClient.completeOnboarding(),
     onSuccess: (data) => {
-      console.log("Onboarding completion successful:", data);
+      console.log("Onboarding completed successfully:", data);
+      console.log("Redirecting to /jobs page...");
 
-      // Multiple redirect attempts to ensure it works
-      console.log("Attempting redirect to /jobs page");
+      // Force invalidate auth queries and wait a moment for cache to update
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
 
-      // Method 1: Direct setLocation
-      setLocation("/jobs");
-
-      // Method 2: Backup with window.location (if setLocation fails)
+      // Small delay to ensure state updates before redirect
       setTimeout(() => {
-        console.log("Backup redirect attempt using window.location");
-        if (window.location.pathname === "/onboarding") {
-          window.location.href = "/jobs";
-        }
-      }, 200);
-
-      // Show success toast
-      setTimeout(() => {
+        setLocation("/jobs");
         toast({
-          title: "Welcome aboard! 🎉",
+          title: "Welcome aboard!",
           description:
             "Your profile is now complete. Let's find you amazing opportunities!",
         });
-      }, 600);
-
-      // Invalidate queries to refresh user data
-      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+      }, 100);
     },
     onError: (error) => {
       console.error("Onboarding completion failed:", error);
@@ -429,165 +367,79 @@ export default function Onboarding() {
     },
   });
 
+  // Handle profile picture upload
+  const handleProfilePictureChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith("image/")) {
+      setProfilePicture(file);
+      const previewUrl = URL.createObjectURL(file);
+      setProfilePicturePreview(previewUrl);
+    }
+  };
+
   const handleNext = async () => {
     if (currentStep === 1) {
-      // Save personal info if any data is provided
+      // Handle personal info
       const formData = personalForm.getValues();
-
-      // Check if user has filled any personal information
-      const hasPersonalData =
-        formData.first_name ||
-        formData.last_name ||
-        formData.profession ||
-        formData.gender ||
-        formData.date_of_birth ||
-        (formData.location && Number(formData.location) > 0);
-
-      if (hasPersonalData) {
-        // Clean up data before sending to API
-        const profileData: any = {};
-
-        if (formData.first_name) profileData.first_name = formData.first_name;
-        if (formData.last_name) profileData.last_name = formData.last_name;
-        if (formData.profession) profileData.profession = formData.profession;
-        if (formData.gender) profileData.gender = formData.gender;
-        if (formData.date_of_birth)
-          profileData.date_of_birth = formData.date_of_birth;
-        if (formData.location && Number(formData.location) > 0)
-          profileData.location = formData.location;
-
-        console.log("Submitting profile data:", profileData);
-
+      if (Object.values(formData).some((value) => value)) {
         try {
-          // Update profile data
+          const profileData = { ...formData };
+          delete profileData.profile_picture;
+
+          // Only include date_of_birth if it's not empty
+          if (
+            !profileData.date_of_birth ||
+            profileData.date_of_birth.trim() === ""
+          ) {
+            delete (profileData as any).date_of_birth;
+          }
+
           await updateProfileMutation.mutateAsync(profileData);
-          console.log("Profile update successful");
+
+          if (profilePicture) {
+            await ApiClient.uploadProfilePicture(profilePicture);
+          }
         } catch (error) {
           console.error("Profile update failed:", error);
           toast({
             title: "Update failed",
             description:
-              "Failed to update profile. Please check your connection and try again.",
+              "Failed to update profile. Please check your connection.",
             variant: "destructive",
           });
           return;
-        }
-
-        // Upload profile picture if selected
-        if (profilePicture) {
-          try {
-            await ApiClient.uploadProfilePicture(profilePicture);
-            toast({
-              title: "Profile picture uploaded",
-              description: "Your profile picture has been updated successfully",
-            });
-          } catch (error) {
-            console.error("Profile picture upload failed:", error);
-            toast({
-              title: "Upload failed",
-              description:
-                "Failed to upload profile picture, but your other information was saved",
-              variant: "destructive",
-            });
-          }
         }
       }
     } else if (currentStep === 2) {
-      // Save experience if any data is provided
-      const formData = experienceForm.getValues();
-
-      // Check if user has filled any experience information
-      const hasExperienceData =
-        formData.organization_name ||
-        formData.position ||
-        formData.description ||
-        formData.date_started;
-
-      if (hasExperienceData) {
+      // Submit all experiences to API
+      for (const experience of experiences) {
         try {
-          // Clean up experience data
-          const experienceData: any = {};
-
-          if (formData.organization_name)
-            experienceData.organization_name = formData.organization_name;
-          if (formData.position) experienceData.position = formData.position;
-          if (formData.description)
-            experienceData.description = formData.description;
-          if (formData.date_started)
-            experienceData.date_started = formData.date_started;
-          if (formData.date_finished)
-            experienceData.date_finished = formData.date_finished;
-
-          await addExperienceMutation.mutateAsync(experienceData);
+          await addExperienceMutation.mutateAsync(experience);
         } catch (error) {
-          console.error("Experience save failed:", error);
-          toast({
-            title: "Save failed",
-            description: "Failed to save experience. Please try again.",
-            variant: "destructive",
-          });
-          return;
+          console.error("Experience submission failed:", error);
         }
       }
     } else if (currentStep === 3) {
-      // Save education if any data is provided
-      const formData = educationForm.getValues();
-
-      // Check if user has filled any education information
-      const hasEducationData =
-        (formData.university && Number(formData.university) > 0) ||
-        formData.level ||
-        formData.date_started;
-
-      if (hasEducationData) {
+      // Submit all educations to API
+      for (const education of educations) {
         try {
-          // Clean up education data
-          const educationData: any = {};
-
-          if (formData.university && Number(formData.university) > 0)
-            educationData.university = formData.university;
-          if (formData.level) educationData.level = formData.level;
-          if (formData.date_started)
-            educationData.date_started = formData.date_started;
-          if (formData.date_finished)
-            educationData.date_finished = formData.date_finished;
-
-          await addEducationMutation.mutateAsync(educationData);
+          await addEducationMutation.mutateAsync(education);
         } catch (error) {
-          console.error("Education save failed:", error);
-          toast({
-            title: "Save failed",
-            description: "Failed to save education. Please try again.",
-            variant: "destructive",
-          });
-          return;
+          console.error("Education submission failed:", error);
         }
       }
-    } else if (currentStep === 4) {
-      // Complete onboarding
-      console.log("Step 4 - Completing onboarding...");
-      console.log("Button clicked, triggering completion mutation");
-
-      try {
-        console.log("About to call completeOnboardingMutation.mutateAsync()");
-        const result = await completeOnboardingMutation.mutateAsync();
-        console.log(
-          "Onboarding completion call finished successfully:",
-          result,
-        );
-      } catch (error) {
-        console.error("Error in completion step:", error);
-        // Don't return here - let the error be handled by the mutation's onError
-      }
-
-      // Always return to prevent step increment
-      return;
     }
 
-    setCurrentStep(currentStep + 1);
+    if (currentStep < 4) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      completeOnboardingMutation.mutate();
+    }
   };
 
-  const handleBack = () => {
+  const handlePrevious = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
@@ -599,90 +451,77 @@ export default function Onboarding() {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">
-                Let's get to know you!
-              </h2>
-              <p className="text-muted-foreground">
-                Tell us about yourself so we can find the perfect opportunities
-              </p>
+              <h2 className="text-2xl font-bold mb-2">Personal Information</h2>
+              <p className="text-muted-foreground">Tell us about yourself</p>
               <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
-                All fields are optional - fill only what you'd like to share
+                All fields are optional - share what you're comfortable with
               </p>
             </div>
 
-            {/* Profile Picture Upload */}
-            <div className="flex justify-center mb-6">
-              <div className="relative">
-                <Avatar className="w-24 h-24 cursor-pointer border-4 border-blue-200 dark:border-blue-700">
-                  <AvatarImage
-                    src={profilePicturePreview || user?.profile_picture}
+            <div className="space-y-4">
+              {/* Profile Picture */}
+              <div className="flex flex-col items-center mb-6">
+                <div className="relative">
+                  <Avatar className="w-24 h-24 mb-4">
+                    <AvatarImage
+                      src={profilePicturePreview || user?.profile_picture}
+                      alt="Profile"
+                    />
+                    <AvatarFallback>
+                      <User className="w-8 h-8" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <label
+                    htmlFor="profile-picture"
+                    className="absolute bottom-4 right-0 bg-primary text-primary-foreground rounded-full p-2 cursor-pointer hover:bg-primary/90"
+                  >
+                    <Camera className="w-4 h-4" />
+                  </label>
+                  <input
+                    id="profile-picture"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleProfilePictureChange}
+                    className="hidden"
                   />
-                  <AvatarFallback className="text-lg">
-                    {user?.first_name?.[0]}
-                    {user?.last_name?.[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <label
-                  htmlFor="profile-upload"
-                  className="absolute bottom-0 right-0 bg-blue-600 text-white rounded-full p-2 cursor-pointer hover:bg-blue-700 transition-colors"
-                >
-                  <Camera className="w-4 h-4" />
-                </label>
-                <input
-                  id="profile-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleProfilePictureChange}
-                  className="hidden"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="first_name">First Name</Label>
-                <Input
-                  {...personalForm.register("first_name")}
-                  placeholder="Enter your first name"
-                />
-                {personalForm.formState.errors.first_name && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {personalForm.formState.errors.first_name.message}
-                  </p>
-                )}
-              </div>
-              <div>
-                <Label htmlFor="last_name">Last Name</Label>
-                <Input
-                  {...personalForm.register("last_name")}
-                  placeholder="Enter your last name"
-                />
-                {personalForm.formState.errors.last_name && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {personalForm.formState.errors.last_name.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <Label htmlFor="profession">Profession</Label>
-              <Input
-                {...personalForm.register("profession")}
-                placeholder="e.g., Software Developer, Marketing Manager"
-              />
-              {personalForm.formState.errors.profession && (
-                <p className="text-sm text-red-500 mt-1">
-                  {personalForm.formState.errors.profession.message}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Upload a profile photo
                 </p>
-              )}
-            </div>
+              </div>
 
-            <div className="grid grid-cols-2 gap-4">
+              {/* Name Fields */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="first_name">First Name</Label>
+                  <Input
+                    {...personalForm.register("first_name")}
+                    placeholder="First name"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="last_name">Last Name</Label>
+                  <Input
+                    {...personalForm.register("last_name")}
+                    placeholder="Last name"
+                  />
+                </div>
+              </div>
+
+              {/* Profession */}
               <div>
-                <Label htmlFor="gender">Gender</Label>
+                <Label htmlFor="profession">Profession</Label>
+                <Input
+                  {...personalForm.register("profession")}
+                  placeholder="Your profession"
+                />
+              </div>
+
+              {/* Gender */}
+              <div>
+                <Label>Gender</Label>
                 <Select
-                  value={personalForm.watch("gender")}
+                  value={personalForm.watch("gender") || ""}
                   onValueChange={(value) =>
                     personalForm.setValue("gender", value as "m" | "f")
                   }
@@ -695,178 +534,80 @@ export default function Onboarding() {
                     <SelectItem value="f">Female</SelectItem>
                   </SelectContent>
                 </Select>
-                {personalForm.formState.errors.gender && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {personalForm.formState.errors.gender.message}
-                  </p>
-                )}
               </div>
-              <div>
-                <Label htmlFor="date_of_birth">Date of Birth</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  <div>
-                    <Select
-                      value={birthDate ? birthDate.getDate().toString() : ""}
-                      onValueChange={(value) => {
-                        const currentYear = birthDate
-                          ? birthDate.getFullYear()
-                          : 2000;
-                        const currentMonth = birthDate
-                          ? birthDate.getMonth()
-                          : 0;
-                        const newDate = new Date(
-                          currentYear,
-                          currentMonth,
-                          parseInt(value),
-                        );
-                        handleDateChange(newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Day" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 31 }, (_, i) => (
-                          <SelectItem key={i + 1} value={(i + 1).toString()}>
-                            {i + 1}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Select
-                      value={
-                        birthDate ? (birthDate.getMonth() + 1).toString() : ""
-                      }
-                      onValueChange={(value) => {
-                        const currentYear = birthDate
-                          ? birthDate.getFullYear()
-                          : 2000;
-                        const currentDay = birthDate ? birthDate.getDate() : 1;
-                        const newDate = new Date(
-                          currentYear,
-                          parseInt(value) - 1,
-                          currentDay,
-                        );
-                        handleDateChange(newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Month" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {[
-                          "January",
-                          "February",
-                          "March",
-                          "April",
-                          "May",
-                          "June",
-                          "July",
-                          "August",
-                          "September",
-                          "October",
-                          "November",
-                          "December",
-                        ].map((month, index) => (
-                          <SelectItem
-                            key={index + 1}
-                            value={(index + 1).toString()}
-                          >
-                            {month}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Select
-                      value={
-                        birthDate ? birthDate.getFullYear().toString() : ""
-                      }
-                      onValueChange={(value) => {
-                        const currentMonth = birthDate
-                          ? birthDate.getMonth()
-                          : 0;
-                        const currentDay = birthDate ? birthDate.getDate() : 1;
-                        const newDate = new Date(
-                          parseInt(value),
-                          currentMonth,
-                          currentDay,
-                        );
-                        handleDateChange(newDate);
-                      }}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Year" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Array.from({ length: 80 }, (_, i) => {
-                          const year = new Date().getFullYear() - i - 10;
-                          return (
-                            <SelectItem key={year} value={year.toString()}>
-                              {year}
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                {personalForm.formState.errors.date_of_birth && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {personalForm.formState.errors.date_of_birth.message}
-                  </p>
-                )}
-              </div>
-            </div>
 
-            <div>
-              <Label htmlFor="location">Location</Label>
-              <Select
-                value={personalForm.watch("location")?.toString() || ""}
-                onValueChange={(value) => {
-                  if (value && value !== "0") {
-                    personalForm.setValue("location", parseInt(value));
+              {/* Date of Birth */}
+              <div>
+                <Label>Date of Birth</Label>
+                <MUIDatePicker
+                  value={
+                    birthDate
+                      ? `${String(birthDate.getDate()).padStart(2, "0")}.${String(birthDate.getMonth() + 1).padStart(2, "0")}.${birthDate.getFullYear()}`
+                      : ""
                   }
-                }}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a location (optional)" />
-                </SelectTrigger>
-                <SelectContent>
-                  {locations ? (
-                    Array.isArray(locations) ? (
-                      locations.map((loc: any) => (
-                        <SelectItem key={loc.id} value={loc.id.toString()}>
-                          {loc.name}
+                  onChange={(dateString) => {
+                    if (dateString) {
+                      // Parse DD.MM.YYYY format
+                      const [day, month, year] = dateString.split(".");
+                      const date = new Date(
+                        parseInt(year),
+                        parseInt(month) - 1,
+                        parseInt(day),
+                      );
+                      handleDateChange(date);
+                    } else {
+                      handleDateChange(undefined);
+                    }
+                  }}
+                  label="Date of Birth (optional)"
+                />
+              </div>
+
+              {/* Location */}
+              <div>
+                <Label>Location</Label>
+                <Select
+                  value={personalForm.watch("location")?.toString() || ""}
+                  onValueChange={(value) =>
+                    personalForm.setValue("location", parseInt(value))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select your location (optional)" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {locationsLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Loading locations...
+                      </SelectItem>
+                    ) : locations && Array.isArray(locations) ? (
+                      locations.map((location: any) => (
+                        <SelectItem
+                          key={location.id}
+                          value={location.id.toString()}
+                        >
+                          {location.name}
                         </SelectItem>
                       ))
-                    ) : (locations as any)?.results &&
+                    ) : locations &&
+                      (locations as any).results &&
                       Array.isArray((locations as any).results) ? (
-                      (locations as any).results.map((loc: any) => (
-                        <SelectItem key={loc.id} value={loc.id.toString()}>
-                          {loc.name}
+                      (locations as any).results.map((location: any) => (
+                        <SelectItem
+                          key={location.id}
+                          value={location.id.toString()}
+                        >
+                          {location.name}
                         </SelectItem>
                       ))
                     ) : (
-                      <SelectItem value="error" disabled>
-                        Error loading locations
+                      <SelectItem value="no-data" disabled>
+                        No locations available
                       </SelectItem>
-                    )
-                  ) : (
-                    <SelectItem value="loading" disabled>
-                      Loading locations...
-                    </SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
-              {personalForm.formState.errors.location && (
-                <p className="text-sm text-red-500 mt-1">
-                  {personalForm.formState.errors.location.message}
-                </p>
-              )}
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
         );
@@ -878,89 +619,140 @@ export default function Onboarding() {
               <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Briefcase className="w-8 h-8 text-purple-600 dark:text-purple-400" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">
-                Your professional journey
-              </h2>
+              <h2 className="text-2xl font-bold mb-2">Work Experience</h2>
               <p className="text-muted-foreground">
-                Add your most recent or relevant work experience
+                Add your professional experience
               </p>
               <p className="text-sm text-purple-600 dark:text-purple-400 mt-2">
-                Skip this step if you prefer to add experience later
+                All fields are optional - add what you want to share
               </p>
             </div>
 
-            <div className="grid gap-4">
-              <div>
-                <Label htmlFor="organization_name">Company Name</Label>
-                <Input
-                  {...experienceForm.register("organization_name")}
-                  placeholder="Enter company name (optional)"
-                />
-                {experienceForm.formState.errors.organization_name && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {experienceForm.formState.errors.organization_name.message}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label htmlFor="position">Position</Label>
-                <Input
-                  {...experienceForm.register("position")}
-                  placeholder="e.g., Software Developer"
-                />
-                {experienceForm.formState.errors.position && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {experienceForm.formState.errors.position.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="date_started">Start Date</Label>
-                  <DatePicker
-                    value={experienceForm.watch("date_started")}
-                    onChange={(date) => experienceForm.setValue("date_started", date)}
-                    placeholder="Select start date"
-                    maxDate={new Date()}
-                    minDate={new Date(1970, 0, 1)}
-                  />
-                  {experienceForm.formState.errors.date_started && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {experienceForm.formState.errors.date_started.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="date_finished">End Date (Optional)</Label>
-                  <DatePicker
-                    value={experienceForm.watch("date_finished")}
-                    onChange={(date) => experienceForm.setValue("date_finished", date)}
-                    placeholder="Select end date (optional)"
-                    maxDate={new Date()}
-                    minDate={new Date(1970, 0, 1)}
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Leave empty if this is your current job
-                  </p>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  {...experienceForm.register("description")}
-                  placeholder="Describe your responsibilities, achievements, and key projects..."
-                  rows={4}
-                />
-                {experienceForm.formState.errors.description && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {experienceForm.formState.errors.description.message}
-                  </p>
-                )}
-              </div>
+            {/* Experience List */}
+            <div className="space-y-4">
+              {experiences.map((exp, index) => (
+                <Card key={exp.id} className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h4 className="font-medium">
+                        {exp.position || "Position"}
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {exp.organization_name || "Company"}
+                      </p>
+                      {(exp.date_started || exp.date_finished) && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {exp.date_started || "Start"} -{" "}
+                          {exp.date_finished || "Present"}
+                        </p>
+                      )}
+                      {exp.description && (
+                        <p className="text-sm mt-2 text-muted-foreground">
+                          {exp.description}
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeExperience(exp.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
             </div>
+
+            {/* Add Experience Button */}
+            {!showExperienceForm && (
+              <Button
+                variant="outline"
+                onClick={() => setShowExperienceForm(true)}
+                className="w-full"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Experience
+              </Button>
+            )}
+
+            {/* Experience Form */}
+            {showExperienceForm && (
+              <Card className="p-6">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="organization_name">Company Name</Label>
+                      <Input
+                        {...experienceForm.register("organization_name")}
+                        placeholder="Company name"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="position">Position</Label>
+                      <Input
+                        {...experienceForm.register("position")}
+                        placeholder="Job title"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Start Date</Label>
+                      <MUIDatePicker
+                        value={experienceForm.watch("date_started")}
+                        onChange={(date) =>
+                          experienceForm.setValue("date_started", date)
+                        }
+                        label="Start Date (optional)"
+                      />
+                    </div>
+                    <div>
+                      <Label>End Date</Label>
+                      <MUIDatePicker
+                        value={experienceForm.watch("date_finished")}
+                        onChange={(date) =>
+                          experienceForm.setValue("date_finished", date)
+                        }
+                        label="End Date (optional)"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label htmlFor="description">Description (Optional)</Label>
+                    <Textarea
+                      {...experienceForm.register("description")}
+                      placeholder="What did you do in this role?"
+                      rows={3}
+                    />
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        handleAddExperience(experienceForm.getValues())
+                      }
+                    >
+                      Add Experience
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        setShowExperienceForm(false);
+                        experienceForm.reset();
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
           </div>
         );
 
@@ -968,100 +760,153 @@ export default function Onboarding() {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
-                <GraduationCap className="w-8 h-8 text-orange-600 dark:text-orange-400" />
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                <GraduationCap className="w-8 h-8 text-green-600 dark:text-green-400" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">
-                Your academic background
-              </h2>
+              <h2 className="text-2xl font-bold mb-2">Education</h2>
               <p className="text-muted-foreground">
-                Tell us about your education to complete your profile
+                Add your academic background
               </p>
-              <p className="text-sm text-orange-600 dark:text-orange-400 mt-2">
-                Feel free to skip if you'd like to add education details later
+              <p className="text-sm text-green-600 dark:text-green-400 mt-2">
+                All fields are optional - add what you want to share
               </p>
             </div>
 
+            {/* Education List */}
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="university">University</Label>
-                  <select
-                    {...educationForm.register("university", {
-                      valueAsNumber: true,
-                      setValueAs: (value) => (value === 0 ? undefined : value),
-                    })}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="">Select a university (optional)</option>
-                    {universities &&
-                    typeof universities === "object" &&
-                    "results" in universities &&
-                    Array.isArray(universities.results)
-                      ? universities.results.map((uni: any) => (
-                          <option key={uni.id} value={uni.id}>
-                            {uni.name}
-                          </option>
-                        ))
-                      : null}
-                  </select>
-                  {educationForm.formState.errors.university && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {educationForm.formState.errors.university.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="level">Education Level</Label>
-                  <select
-                    {...educationForm.register("level")}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="">Select education level (optional)</option>
-                    <option value="secondary">Secondary</option>
-                    <option value="undergraduate">Undergraduate</option>
-                    <option value="master">Master</option>
-                    <option value="doctorate">Doctorate</option>
-                  </select>
-                  {educationForm.formState.errors.level && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {educationForm.formState.errors.level.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="date_started">Start Date</Label>
-                  <DatePicker
-                    value={educationForm.watch("date_started")}
-                    onChange={(date) => educationForm.setValue("date_started", date)}
-                    placeholder="Select start date"
-                    maxDate={new Date()}
-                    minDate={new Date(1970, 0, 1)}
-                  />
-                  {educationForm.formState.errors.date_started && (
-                    <p className="text-sm text-red-500 mt-1">
-                      {educationForm.formState.errors.date_started.message}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <Label htmlFor="date_finished">End Date (Optional)</Label>
-                  <DatePicker
-                    value={educationForm.watch("date_finished")}
-                    onChange={(date) => educationForm.setValue("date_finished", date)}
-                    placeholder="Select end date (optional)"
-                    maxDate={new Date()}
-                    minDate={new Date(1970, 0, 1)}
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Leave empty if still studying
-                  </p>
-                </div>
-              </div>
+              {educations.map((edu, index) => (
+                <Card key={edu.id} className="p-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <h4 className="font-medium">
+                        {edu.level || "Education Level"}
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {(universities as any)?.results?.find(
+                          (u: any) => u.id === edu.university,
+                        )?.name || "University"}
+                      </p>
+                      {(edu.date_started || edu.date_finished) && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {edu.date_started || "Start"} -{" "}
+                          {edu.date_finished || "Present"}
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeEducation(edu.id)}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </Card>
+              ))}
             </div>
+
+            {/* Add Education Button */}
+            {!showEducationForm && (
+              <Button
+                variant="outline"
+                onClick={() => setShowEducationForm(true)}
+                className="w-full"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Education
+              </Button>
+            )}
+
+            {/* Education Form */}
+            {showEducationForm && (
+              <Card className="p-6">
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="university">University</Label>
+                      <select
+                        {...educationForm.register("university", {
+                          valueAsNumber: true,
+                          setValueAs: (value) =>
+                            value === 0 ? undefined : value,
+                        })}
+                        className="w-full p-2 border rounded-md"
+                      >
+                        <option value="">Select a university</option>
+                        {universities &&
+                        typeof universities === "object" &&
+                        "results" in universities &&
+                        Array.isArray(universities.results)
+                          ? universities.results.map((uni: any) => (
+                              <option key={uni.id} value={uni.id}>
+                                {uni.name}
+                              </option>
+                            ))
+                          : null}
+                      </select>
+                    </div>
+                    <div>
+                      <Label htmlFor="level">Education Level</Label>
+                      <select
+                        {...educationForm.register("level")}
+                        className="w-full p-2 border rounded-md"
+                      >
+                        <option value="">Select education level</option>
+                        <option value="secondary">Secondary</option>
+                        <option value="undergraduate">Undergraduate</option>
+                        <option value="master">Master</option>
+                        <option value="doctorate">Doctorate</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Start Date</Label>
+                      <MUIDatePicker
+                        value={educationForm.watch("date_started")}
+                        onChange={(date) =>
+                          educationForm.setValue("date_started", date)
+                        }
+                        label="Start Date (optional)"
+                      />
+                    </div>
+                    <div>
+                      <Label>End Date</Label>
+                      <MUIDatePicker
+                        value={educationForm.watch("date_finished")}
+                        onChange={(date) =>
+                          educationForm.setValue("date_finished", date)
+                        }
+                        label="End Date (optional)"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        handleAddEducation(educationForm.getValues())
+                      }
+                    >
+                      Add Education
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => {
+                        setShowEducationForm(false);
+                        educationForm.reset();
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
+              </Card>
+            )}
           </div>
         );
 
@@ -1086,17 +931,24 @@ export default function Onboarding() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-4 h-4 text-primary" />
-                  <span className="text-sm">Experience documented</span>
+                  <span className="text-sm">
+                    {experiences.length > 0
+                      ? `${experiences.length} work experience${experiences.length > 1 ? "s" : ""} added`
+                      : "Experience section completed"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Check className="w-4 h-4 text-primary" />
-                  <span className="text-sm">Education added</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Check className="w-4 h-4 text-primary" />
-                  <span className="text-sm">Profile completed</span>
+                  <span className="text-sm">
+                    {educations.length > 0
+                      ? `${educations.length} education entr${educations.length > 1 ? "ies" : "y"} added`
+                      : "Education section completed"}
+                  </span>
                 </div>
               </div>
+              <p className="text-sm text-muted-foreground">
+                Click "Complete Profile" to start exploring job opportunities
+              </p>
             </div>
           </div>
         );
@@ -1108,36 +960,79 @@ export default function Onboarding() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        {/* Simple Header */}
+      <div className="max-w-2xl mx-auto p-6">
+        {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-xl font-semibold">Complete Your Profile</h1>
-            <div className="text-sm text-muted-foreground">
-              {currentStep} of {ONBOARDING_STEPS.length}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 rounded bg-primary flex items-center justify-center">
+              <span className="text-primary-foreground font-bold text-sm">
+                B
+              </span>
             </div>
+            <span className="font-semibold">Baltek Jobs</span>
           </div>
 
-          <Progress
-            value={ONBOARDING_STEPS[currentStep - 1]?.progress || 0}
-            className="h-1"
-          />
+          {/* Progress */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium">
+                Step {currentStep} of {ONBOARDING_STEPS.length}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {ONBOARDING_STEPS[currentStep - 1]?.progress}% complete
+              </span>
+            </div>
+            <Progress
+              value={ONBOARDING_STEPS[currentStep - 1]?.progress}
+              className="h-2"
+            />
+          </div>
+
+          {/* Step Indicators */}
+          <div className="flex items-center justify-between mb-8">
+            {ONBOARDING_STEPS.map((step, index) => (
+              <div key={step.id} className="flex items-center">
+                <div
+                  className={`w-8 h-8 rounded-full border-2 flex items-center justify-center ${
+                    currentStep >= step.id
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-muted-foreground/30 text-muted-foreground"
+                  }`}
+                >
+                  {currentStep > step.id ? (
+                    <Check className="w-4 h-4" />
+                  ) : (
+                    <step.icon className="w-4 h-4" />
+                  )}
+                </div>
+                {index < ONBOARDING_STEPS.length - 1 && (
+                  <div
+                    className={`w-12 h-0.5 mx-2 ${
+                      currentStep > step.id
+                        ? "bg-primary"
+                        : "bg-muted-foreground/30"
+                    }`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Main Content */}
-        <Card>
-          <CardContent className="p-6">{renderStepContent()}</CardContent>
+        {/* Content */}
+        <Card className="mb-8">
+          <CardContent className="p-8">{renderStepContent()}</CardContent>
         </Card>
 
         {/* Navigation */}
-        <div className="flex justify-between mt-6">
+        <div className="flex justify-between">
           <Button
             variant="outline"
-            onClick={handleBack}
+            onClick={handlePrevious}
             disabled={currentStep === 1}
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
-            Back
+            Previous
           </Button>
 
           <Button
@@ -1146,30 +1041,18 @@ export default function Onboarding() {
               updateProfileMutation.isPending ||
               addExperienceMutation.isPending ||
               addEducationMutation.isPending ||
-              addProjectMutation.isPending ||
               completeOnboardingMutation.isPending
-            }
-            data-testid={
-              currentStep === 4
-                ? "button-complete-onboarding"
-                : "button-continue"
             }
           >
             {currentStep === 4 ? (
               completeOnboardingMutation.isPending ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Completing...
-                </>
+                "Completing..."
               ) : (
-                <>
-                  Complete Profile
-                  <Star className="w-4 h-4 ml-2" />
-                </>
+                "Complete Profile"
               )
             ) : (
               <>
-                Continue
+                Next
                 <ChevronRight className="w-4 h-4 ml-2" />
               </>
             )}
