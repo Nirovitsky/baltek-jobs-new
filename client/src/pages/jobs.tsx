@@ -51,19 +51,21 @@ export default function Jobs({}: JobsProps) {
   // Get selected job ID from URL parameter
   const selectedJobIdFromUrl = params.id ? parseInt(params.id) : null;
   const [selectedJobId, setSelectedJobId] = useState<number | null>(selectedJobIdFromUrl);
-  const [urlUpdateInProgress, setUrlUpdateInProgress] = useState(false);
+  const [lastUrlJobId, setLastUrlJobId] = useState<number | null>(selectedJobIdFromUrl);
   const [filters, setFilters] = useState<JobFilters>(
     organizationParam ? { organization: parseInt(organizationParam) } : {},
   );
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   
-  // Sync selectedJobId with URL parameter changes, but not when we're updating the URL ourselves
+  // Only sync with URL when it's a genuine navigation (not programmatic update)
   useEffect(() => {
-    if (selectedJobIdFromUrl !== selectedJobId && !urlUpdateInProgress) {
+    if (selectedJobIdFromUrl !== lastUrlJobId) {
+      // This is a real URL change (browser navigation, direct URL entry)
       setSelectedJobId(selectedJobIdFromUrl);
+      setLastUrlJobId(selectedJobIdFromUrl);
     }
-  }, [selectedJobIdFromUrl, selectedJobId, urlUpdateInProgress]);
+  }, [selectedJobIdFromUrl, lastUrlJobId]);
   
   // Debounce search query with 500ms delay
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -191,10 +193,9 @@ export default function Jobs({}: JobsProps) {
     const searchParams = new URLSearchParams(location.search);
     const newUrl = `/jobs/${job.id}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
     // Use history.replaceState instead of navigate to avoid scroll reset
-    setUrlUpdateInProgress(true);
     window.history.replaceState(null, '', newUrl);
-    // Reset the flag after a brief delay to allow URL parsing
-    setTimeout(() => setUrlUpdateInProgress(false), 100);
+    // Track that we updated the URL programmatically
+    setLastUrlJobId(job.id);
   }, [location.search, markJobSelection]);
 
   const handleFiltersChange = useCallback((newFilters: JobFilters) => {
