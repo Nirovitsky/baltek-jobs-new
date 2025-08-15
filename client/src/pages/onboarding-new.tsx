@@ -29,16 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
 import { toast } from "@/hooks/use-toast";
-import { useDebounce } from "@/hooks/use-debounce";
 import {
   User,
   MapPin,
@@ -53,7 +44,6 @@ import {
   Camera,
   Plus,
   X,
-  Search,
 } from "lucide-react";
 
 import { ApiClient } from "@/lib/api";
@@ -202,11 +192,6 @@ export default function Onboarding() {
   const [showExperienceForm, setShowExperienceForm] = useState(false);
   const [showEducationForm, setShowEducationForm] = useState(false);
 
-  // Profession autocomplete
-  const [professionSearch, setProfessionSearch] = useState("");
-  const [showProfessionDropdown, setShowProfessionDropdown] = useState(false);
-  const debouncedProfessionSearch = useDebounce(professionSearch, 300);
-
   // Fetch data for forms
   const { data: universities } = useQuery({
     queryKey: ["universities"],
@@ -218,20 +203,6 @@ export default function Onboarding() {
     queryKey: ["locations"],
     queryFn: () => ApiClient.getLocations(),
     enabled: currentStep === 1,
-  });
-
-  // Fetch profession suggestions based on search
-  const { data: professionSuggestions, isLoading: professionsLoading } = useQuery({
-    queryKey: ["professions", debouncedProfessionSearch],
-    queryFn: () => ApiClient.getJobs({ search: debouncedProfessionSearch, limit: 10 }),
-    enabled: !!debouncedProfessionSearch && debouncedProfessionSearch.length >= 2,
-    select: (data: any) => {
-      // Extract unique job titles from search results
-      const jobs = data?.results || [];
-      const titleSet = new Set<string>();
-      jobs.forEach((job: any) => titleSet.add(job.title));
-      return Array.from(titleSet).slice(0, 8); // Limit to 8 suggestions
-    },
   });
 
   // Debug locations data
@@ -258,13 +229,6 @@ export default function Onboarding() {
       profile_picture: undefined,
     },
   });
-
-  // Initialize profession search with user's current profession
-  useEffect(() => {
-    if (user?.profession && !professionSearch) {
-      setProfessionSearch(user.profession);
-    }
-  }, [user?.profession, professionSearch]);
 
   // Experience form
   const experienceForm = useForm({
@@ -540,62 +504,7 @@ export default function Onboarding() {
               {/* Profession */}
               <div>
                 <Label htmlFor="profession">Profession</Label>
-                <Popover open={showProfessionDropdown} onOpenChange={setShowProfessionDropdown}>
-                  <PopoverTrigger asChild>
-                    <div className="relative">
-                      <Input
-                        {...personalForm.register("profession")}
-                        placeholder="Start typing your profession..."
-                        value={professionSearch}
-                        onChange={(e) => {
-                          const value = e.target.value;
-                          setProfessionSearch(value);
-                          personalForm.setValue("profession", value);
-                          setShowProfessionDropdown(value.length >= 2);
-                        }}
-                        onFocus={() => {
-                          if (professionSearch.length >= 2) {
-                            setShowProfessionDropdown(true);
-                          }
-                        }}
-                        className="pr-8"
-                      />
-                      <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    </div>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full p-0" align="start">
-                    <Command>
-                      <CommandList>
-                        {professionsLoading ? (
-                          <CommandEmpty>Loading suggestions...</CommandEmpty>
-                        ) : professionSuggestions && professionSuggestions.length > 0 ? (
-                          <CommandGroup>
-                            {professionSuggestions.map((title: string, index: number) => (
-                              <CommandItem
-                                key={index}
-                                value={title}
-                                onSelect={(value) => {
-                                  setProfessionSearch(value);
-                                  personalForm.setValue("profession", value);
-                                  setShowProfessionDropdown(false);
-                                }}
-                                className="cursor-pointer"
-                              >
-                                <Briefcase className="mr-2 h-4 w-4" />
-                                {title}
-                              </CommandItem>
-                            ))}
-                          </CommandGroup>
-                        ) : professionSearch.length >= 2 ? (
-                          <CommandEmpty>No matching professions found</CommandEmpty>
-                        ) : null}
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Type to see suggestions or enter your own profession
-                </p>
+                <Input {...personalForm.register("profession")} placeholder="Your profession" />
               </div>
 
               {/* Gender */}
@@ -655,8 +564,8 @@ export default function Onboarding() {
                           {location.name}
                         </SelectItem>
                       ))
-                    ) : locations && (locations as any).results && Array.isArray((locations as any).results) ? (
-                      (locations as any).results.map((location: any) => (
+                    ) : locations && locations.results && Array.isArray(locations.results) ? (
+                      locations.results.map((location: any) => (
                         <SelectItem key={location.id} value={location.id.toString()}>
                           {location.name}
                         </SelectItem>
