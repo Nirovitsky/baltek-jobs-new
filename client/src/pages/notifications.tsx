@@ -9,6 +9,13 @@ import {
   AlertCircle,
   Trash2,
   RefreshCw,
+  Calendar,
+  CalendarX,
+  User,
+  Settings,
+  ThumbsUp,
+  ThumbsDown,
+  Sparkles,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -42,36 +49,110 @@ interface Notification {
   createdAt: Date;
   actionUrl?: string;
   priority: "low" | "medium" | "high";
+  eventType?: string; // Original API event type for more specific handling
+}
+
+// Generate a better description based on notification type and content
+function generateNotificationDescription(apiNotification: ApiNotification): string {
+  const eventType = apiNotification.event.type;
+  const title = apiNotification.title;
+
+  switch (eventType) {
+    case "JOB_APPLICATION_CREATED":
+      return "Your job application has been submitted successfully";
+    case "JOB_APPLICATION_STATUS_CHANGED":
+      return "There's an update on your job application status";
+    case "JOB_APPLICATION_APPROVED":
+      return "Congratulations! Your job application has been approved";
+    case "JOB_APPLICATION_REJECTED":
+      return "Your job application status has been updated";
+    case "JOB_MATCH_CREATED":
+    case "JOB_RECOMMENDATION":
+      return "New job opportunities that match your profile";
+    case "MESSAGE_RECEIVED":
+    case "CHAT_MESSAGE":
+      return "You have received a new message";
+    case "INTERVIEW_SCHEDULED":
+      return "An interview has been scheduled for you";
+    case "INTERVIEW_REMINDER":
+      return "Reminder about your upcoming interview";
+    case "INTERVIEW_CANCELLED":
+      return "Your interview has been cancelled";
+    case "PROFILE_UPDATE":
+      return "Your profile has been updated";
+    case "ACCOUNT_UPDATE":
+      return "Your account settings have been updated";
+    default:
+      return title || "You have a new notification";
+  }
 }
 
 // Transform API notification to UI notification format
 function transformNotification(apiNotification: ApiNotification): Notification {
+  // Debug: Log API notification data to understand structure
+  console.log('API Notification:', apiNotification);
   // Map notification types to UI types and determine priority
   const typeMapping: Record<string, { type: Notification["type"]; priority: Notification["priority"] }> = {
+    // Job application notifications
     JOB_APPLICATION_CREATED: { type: "job_application", priority: "high" },
+    JOB_APPLICATION_STATUS_CHANGED: { type: "job_application", priority: "high" },
+    JOB_APPLICATION_APPROVED: { type: "job_application", priority: "high" },
+    JOB_APPLICATION_REJECTED: { type: "job_application", priority: "medium" },
+    
+    // Job match notifications
     JOB_MATCH_CREATED: { type: "job_match", priority: "medium" },
+    JOB_RECOMMENDATION: { type: "job_match", priority: "medium" },
+    
+    // Message notifications
     MESSAGE_RECEIVED: { type: "message", priority: "high" },
+    CHAT_MESSAGE: { type: "message", priority: "high" },
+    
+    // Interview notifications
     INTERVIEW_SCHEDULED: { type: "interview", priority: "high" },
+    INTERVIEW_REMINDER: { type: "interview", priority: "high" },
+    INTERVIEW_CANCELLED: { type: "interview", priority: "medium" },
+    
+    // System notifications
     SYSTEM_NOTIFICATION: { type: "system", priority: "low" },
     PROFILE_UPDATE: { type: "system", priority: "low" },
+    ACCOUNT_UPDATE: { type: "system", priority: "low" },
+    
     default: { type: "system", priority: "medium" },
   };
 
   const mapping = typeMapping[apiNotification.event.type] || typeMapping.default;
   
+  console.log('Notification type mapping:', {
+    eventType: apiNotification.event.type,
+    contentType: apiNotification.event.content_type,
+    mappedType: mapping.type,
+    priority: mapping.priority
+  });
+  
   // Determine action URL based on notification type and related object
   let actionUrl: string | undefined;
   switch (apiNotification.event.type) {
     case "JOB_APPLICATION_CREATED":
+    case "JOB_APPLICATION_STATUS_CHANGED":
+    case "JOB_APPLICATION_APPROVED":
+    case "JOB_APPLICATION_REJECTED":
       actionUrl = "/applications";
       break;
     case "MESSAGE_RECEIVED":
+    case "CHAT_MESSAGE":
       actionUrl = "/chat";
       break;
     case "JOB_MATCH_CREATED":
-      actionUrl = "/";
+    case "JOB_RECOMMENDATION":
+      actionUrl = "/jobs";
+      break;
+    case "INTERVIEW_SCHEDULED":
+    case "INTERVIEW_REMINDER":
+    case "INTERVIEW_CANCELLED":
+      actionUrl = "/applications"; // Interview details usually in applications
       break;
     case "PROFILE_UPDATE":
+    case "ACCOUNT_UPDATE":
       actionUrl = "/profile";
       break;
     default:
@@ -94,26 +175,49 @@ function transformNotification(apiNotification: ApiNotification): Notification {
     id: apiNotification.id,
     type: mapping.type,
     title: apiNotification.title,
-    description: apiNotification.title, // Use title as description since there's no separate message field
+    description: generateNotificationDescription(apiNotification),
     isRead: apiNotification.is_read,
     createdAt,
     actionUrl,
     priority: mapping.priority,
+    eventType: apiNotification.event.type, // Preserve original event type
   };
 }
 
-function NotificationIcon({ type }: { type: Notification["type"] }) {
+function NotificationIcon({ type, eventType }: { type: Notification["type"]; eventType?: string }) {
+  // More specific icons based on event type
+  if (eventType) {
+    switch (eventType) {
+      case "JOB_APPLICATION_APPROVED":
+        return <ThumbsUp className="w-4 h-4" />;
+      case "JOB_APPLICATION_REJECTED":
+        return <ThumbsDown className="w-4 h-4" />;
+      case "INTERVIEW_SCHEDULED":
+        return <Calendar className="w-4 h-4" />;
+      case "INTERVIEW_CANCELLED":
+        return <CalendarX className="w-4 h-4" />;
+      case "JOB_RECOMMENDATION":
+      case "JOB_MATCH_CREATED":
+        return <Sparkles className="w-4 h-4" />;
+      case "PROFILE_UPDATE":
+        return <User className="w-4 h-4" />;
+      case "ACCOUNT_UPDATE":
+        return <Settings className="w-4 h-4" />;
+    }
+  }
+  
+  // Fallback to type-based icons
   switch (type) {
     case "job_application":
       return <BriefcaseIcon className="w-4 h-4" />;
     case "message":
       return <MessageCircle className="w-4 h-4" />;
     case "job_match":
-      return <CheckCircle className="w-4 h-4" />;
+      return <Sparkles className="w-4 h-4" />;
     case "interview":
-      return <Clock className="w-4 h-4" />;
+      return <Calendar className="w-4 h-4" />;
     case "system":
-      return <AlertCircle className="w-4 h-4" />;
+      return <Settings className="w-4 h-4" />;
     default:
       return <Bell className="w-4 h-4" />;
   }
@@ -122,14 +226,24 @@ function NotificationIcon({ type }: { type: Notification["type"] }) {
 function NotificationCard({
   notification,
   onMarkAsRead,
+  eventType,
 }: {
   notification: Notification;
   onMarkAsRead: (id: number) => void;
+  eventType?: string;
 }) {
   const priorityColors = {
-    low: "bg-muted text-foreground",
+    low: "bg-muted text-muted-foreground",
     medium: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
     high: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  };
+  
+  const typeColors = {
+    job_application: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+    message: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+    job_match: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
+    interview: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200",
+    system: "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200",
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
@@ -165,11 +279,11 @@ function NotificationCard({
         <div
           className={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${
             !notification.isRead
-              ? "bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-400 shadow-sm"
+              ? typeColors[notification.type] + " shadow-sm"
               : "bg-muted text-muted-foreground"
           }`}
         >
-          <NotificationIcon type={notification.type} />
+          <NotificationIcon type={notification.type} eventType={eventType} />
         </div>
 
         {/* Content */}
@@ -190,9 +304,9 @@ function NotificationCard({
               )}
               <Badge
                 variant="secondary"
-                className={`text-xs font-medium px-1.5 py-0.5 ${priorityColors[notification.priority]}`}
+                className={`text-xs font-medium px-1.5 py-0.5 ${typeColors[notification.type]}`}
               >
-                {notification.priority}
+                {notification.type.replace('_', ' ')}
               </Badge>
             </div>
           </div>
@@ -438,6 +552,7 @@ export default function Notifications() {
                     key={notification.id}
                     notification={notification}
                     onMarkAsRead={handleMarkAsRead}
+                    eventType={notification.eventType}
                   />
                 ))}
               </div>
