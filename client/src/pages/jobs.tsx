@@ -51,18 +51,19 @@ export default function Jobs({}: JobsProps) {
   // Get selected job ID from URL parameter
   const selectedJobIdFromUrl = params.id ? parseInt(params.id) : null;
   const [selectedJobId, setSelectedJobId] = useState<number | null>(selectedJobIdFromUrl);
+  const [urlUpdateInProgress, setUrlUpdateInProgress] = useState(false);
   const [filters, setFilters] = useState<JobFilters>(
     organizationParam ? { organization: parseInt(organizationParam) } : {},
   );
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   
-  // Sync selectedJobId with URL parameter changes
+  // Sync selectedJobId with URL parameter changes, but not when we're updating the URL ourselves
   useEffect(() => {
-    if (selectedJobIdFromUrl !== selectedJobId) {
+    if (selectedJobIdFromUrl !== selectedJobId && !urlUpdateInProgress) {
       setSelectedJobId(selectedJobIdFromUrl);
     }
-  }, [selectedJobIdFromUrl, selectedJobId]);
+  }, [selectedJobIdFromUrl, selectedJobId, urlUpdateInProgress]);
   
   // Debounce search query with 500ms delay
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -190,7 +191,10 @@ export default function Jobs({}: JobsProps) {
     const searchParams = new URLSearchParams(location.search);
     const newUrl = `/jobs/${job.id}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
     // Use history.replaceState instead of navigate to avoid scroll reset
+    setUrlUpdateInProgress(true);
     window.history.replaceState(null, '', newUrl);
+    // Reset the flag after a brief delay to allow URL parsing
+    setTimeout(() => setUrlUpdateInProgress(false), 100);
   }, [location.search, markJobSelection]);
 
   const handleFiltersChange = useCallback((newFilters: JobFilters) => {
