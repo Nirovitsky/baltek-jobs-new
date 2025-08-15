@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -200,7 +200,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
 export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const { user } = useAuth();
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [profilePicturePreview, setProfilePicturePreview] =
@@ -380,7 +380,7 @@ export default function Onboarding() {
 
       // Small delay to ensure state updates before redirect
       setTimeout(() => {
-        setLocation("/jobs");
+        navigate("/jobs");
         toast({
           title: "Welcome aboard!",
           description:

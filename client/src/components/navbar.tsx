@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import {
   Search,
   Bell,

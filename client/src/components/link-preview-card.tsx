@@ -11,7 +11,7 @@ import {
   Clock,
   ExternalLink,
 } from "lucide-react";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 
 interface LinkPreviewCardProps {
   url: string;

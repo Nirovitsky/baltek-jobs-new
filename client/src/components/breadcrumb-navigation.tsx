@@ -1,4 +1,4 @@
-import { useLocation, Link } from "wouter";
+import { useLocation, Link } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -77,16 +77,16 @@ const getCompanyBreadcrumb = (path: string): BreadcrumbItem[] => {
 };
 
 export default function BreadcrumbNavigation() {
-  const [location] = useLocation();
+  const location = useLocation();
   
   // Get breadcrumb items for current route
   let breadcrumbItems: BreadcrumbItem[] = [];
   
-  if (routeMap[location]) {
-    breadcrumbItems = routeMap[location];
+  if (routeMap[location.pathname]) {
+    breadcrumbItems = routeMap[location.pathname];
   } else {
     // Check for dynamic routes like company profiles
-    breadcrumbItems = getCompanyBreadcrumb(location);
+    breadcrumbItems = getCompanyBreadcrumb(location.pathname);
   }
 
   // Don't render if no breadcrumb items found
@@ -114,7 +114,7 @@ export default function BreadcrumbNavigation() {
                     <>
                       <BreadcrumbLink asChild>
                         <Link 
-                          href={item.href!} 
+                          to={item.href!} 
                           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
                           data-testid={`breadcrumb-link-${item.label.toLowerCase()}`}
                         >

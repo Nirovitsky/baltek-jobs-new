@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiClient } from "@/lib/api";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 import type { Organization } from "@shared/schema";
 
 import ProfileModal from "@/components/profile-modal";

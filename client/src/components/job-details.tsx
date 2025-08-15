@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import { AuthService } from "@/lib/auth";
 import type { Job } from "@shared/schema";
-import { Link as RouterLink } from "wouter";
+import { Link as RouterLink } from "react-router-dom";
 import { useAuth } from "@/hooks/use-auth";
 
 import { Card, CardContent } from "@/components/ui/card";

@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/use-auth";
-import { Redirect } from "wouter";
+import { Navigate } from "react-router-dom";
 
 interface OnboardingGuardProps {
   children: React.ReactNode;
@@ -19,7 +19,7 @@ export function OnboardingGuard({ children }: OnboardingGuardProps) {
   // Only check onboarding status for authenticated users
   // If user is authenticated but hasn't completed onboarding, redirect to onboarding
   if (isAuthenticated && user && user.is_jobs_onboarding_completed === false) {
-    return <Redirect to="/onboarding" />;
+    return <Navigate to="/onboarding" replace />;
   }
 
   return <>{children}</>;

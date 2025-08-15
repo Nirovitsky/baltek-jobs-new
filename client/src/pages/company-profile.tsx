@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { useRoute, Link } from "wouter";
+import { useParams, Link } from "react-router-dom";
 import type { Organization } from "@shared/schema";
 import { ApiClient } from "@/lib/api";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
@@ -221,8 +221,7 @@ function CompanyProfileSkeleton() {
 }
 
 export default function CompanyProfile() {
-  const [match, params] = useRoute("/company/:id");
-  const companyId = params?.id;
+  const { id: companyId } = useParams();
 
   const { data: company, isLoading: companyLoading, error: companyError } = useQuery({
     queryKey: ["organization", companyId],
@@ -246,7 +245,7 @@ export default function CompanyProfile() {
           <p className="text-muted-foreground dark:text-muted-foreground/60 mb-4">
             The company you're looking for doesn't exist or has been removed.
           </p>
-          <Link href="/jobs">
+          <Link to="/jobs">
             <Button variant="outline">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Jobs
@@ -293,7 +292,7 @@ export default function CompanyProfile() {
                     <h1 className="text-3xl font-bold text-foreground dark:text-foreground">
                       {organizationData?.display_name || organizationData?.official_name}
                     </h1>
-                    <Link href={`/jobs?organization=${companyId}`}>
+                    <Link to={`/jobs?organization=${companyId}`}>
                       <Button size="sm" className="ml-4">
                         <Briefcase className="h-3 w-3 mr-1.5" />
                         Open Positions

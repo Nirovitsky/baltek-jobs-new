@@ -1,4 +1,4 @@
-import { Switch, Route, Redirect } from "wouter";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -39,7 +39,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (!isAuthenticated) {
-    return <Redirect to="/jobs" />;
+    return <Navigate to="/jobs" replace />;
   }
 
   return <>{children}</>;
@@ -69,117 +69,160 @@ function Router() {
   );
 
   return (
-    <Switch>
-      <Route path="/auth/callback">
-        <AuthCallback />
-      </Route>
-      <Route path="/onboarding">
-        <ProtectedRoute>
-          <OnboardingRouteGuard>
-            <Onboarding />
-          </OnboardingRouteGuard>
-        </ProtectedRoute>
-      </Route>
-      <Route path="/profile">
-        <ProtectedRoute>
-          <OnboardingGuard>
-            <ProtectedLayout>
-              <Profile />
-            </ProtectedLayout>
-          </OnboardingGuard>
-        </ProtectedRoute>
-      </Route>
-      <Route path="/applications">
-        <ProtectedRoute>
-          <OnboardingGuard>
-            <ProtectedLayout>
-              <Applications />
-            </ProtectedLayout>
-          </OnboardingGuard>
-        </ProtectedRoute>
-      </Route>
-      <Route path="/bookmarks">
-        <ProtectedRoute>
-          <OnboardingGuard>
-            <ProtectedLayout>
-              <Bookmarks />
-            </ProtectedLayout>
-          </OnboardingGuard>
-        </ProtectedRoute>
-      </Route>
-      <Route path="/settings">
-        <ProtectedRoute>
-          <OnboardingGuard>
-            <ProtectedLayout>
-              <Settings />
-            </ProtectedLayout>
-          </OnboardingGuard>
-        </ProtectedRoute>
-      </Route>
-      <Route path="/chat">
-        <ProtectedRoute>
-          <OnboardingGuard>
-            <ProtectedLayout>
-              <Chat />
-            </ProtectedLayout>
-          </OnboardingGuard>
-        </ProtectedRoute>
-      </Route>
-      <Route path="/notifications">
-        <ProtectedRoute>
-          <OnboardingGuard>
-            <ProtectedLayout>
-              <Notifications />
-            </ProtectedLayout>
-          </OnboardingGuard>
-        </ProtectedRoute>
-      </Route>
-      <Route path="/company/:id">
-        <Layout>
-          <CompanyProfile />
-        </Layout>
-      </Route>
-      <Route path="/about-us">
-        <Layout>
-          <AboutUs />
-        </Layout>
-      </Route>
-      <Route path="/contact-us">
-        <Layout>
-          <ContactUs />
-        </Layout>
-      </Route>
-      <Route path="/terms">
-        <Layout>
-          <Terms />
-        </Layout>
-      </Route>
-      <Route path="/privacy-policy">
-        <Layout>
-          <PrivacyPolicy />
-        </Layout>
-      </Route>
-      <Route path="/jobs/:id">
-        <Layout>
-          <Jobs />
-        </Layout>
-      </Route>
-      <Route path="/jobs">
-        <Layout>
-          <OnboardingGuard>
+    <Routes>
+      <Route path="/auth/callback" element={<AuthCallback />} />
+      <Route 
+        path="/onboarding" 
+        element={
+          <ProtectedRoute>
+            <OnboardingRouteGuard>
+              <Onboarding />
+            </OnboardingRouteGuard>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute>
+            <OnboardingGuard>
+              <ProtectedLayout>
+                <Profile />
+              </ProtectedLayout>
+            </OnboardingGuard>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/applications" 
+        element={
+          <ProtectedRoute>
+            <OnboardingGuard>
+              <ProtectedLayout>
+                <Applications />
+              </ProtectedLayout>
+            </OnboardingGuard>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/bookmarks" 
+        element={
+          <ProtectedRoute>
+            <OnboardingGuard>
+              <ProtectedLayout>
+                <Bookmarks />
+              </ProtectedLayout>
+            </OnboardingGuard>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/settings" 
+        element={
+          <ProtectedRoute>
+            <OnboardingGuard>
+              <ProtectedLayout>
+                <Settings />
+              </ProtectedLayout>
+            </OnboardingGuard>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/chat" 
+        element={
+          <ProtectedRoute>
+            <OnboardingGuard>
+              <ProtectedLayout>
+                <Chat />
+              </ProtectedLayout>
+            </OnboardingGuard>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/notifications" 
+        element={
+          <ProtectedRoute>
+            <OnboardingGuard>
+              <ProtectedLayout>
+                <Notifications />
+              </ProtectedLayout>
+            </OnboardingGuard>
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/company/:id" 
+        element={
+          <Layout>
+            <CompanyProfile />
+          </Layout>
+        } 
+      />
+      <Route 
+        path="/about-us" 
+        element={
+          <Layout>
+            <AboutUs />
+          </Layout>
+        } 
+      />
+      <Route 
+        path="/contact-us" 
+        element={
+          <Layout>
+            <ContactUs />
+          </Layout>
+        } 
+      />
+      <Route 
+        path="/terms" 
+        element={
+          <Layout>
+            <Terms />
+          </Layout>
+        } 
+      />
+      <Route 
+        path="/privacy-policy" 
+        element={
+          <Layout>
+            <PrivacyPolicy />
+          </Layout>
+        } 
+      />
+      <Route 
+        path="/jobs/:id" 
+        element={
+          <Layout>
             <Jobs />
-          </OnboardingGuard>
-        </Layout>
-      </Route>
-      <Route path="/">
-        <Layout>
-          <OnboardingGuard>
-            <Jobs />
-          </OnboardingGuard>
-        </Layout>
-      </Route>
-      <Route component={NotFound} />
-    </Switch>
+          </Layout>
+        } 
+      />
+      <Route 
+        path="/jobs" 
+        element={
+          <Layout>
+            <OnboardingGuard>
+              <Jobs />
+            </OnboardingGuard>
+          </Layout>
+        } 
+      />
+      <Route 
+        path="/" 
+        element={
+          <Layout>
+            <OnboardingGuard>
+              <Jobs />
+            </OnboardingGuard>
+          </Layout>
+        } 
+      />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 

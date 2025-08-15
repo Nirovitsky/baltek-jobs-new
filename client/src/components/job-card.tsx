@@ -6,7 +6,7 @@ import type { Job } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
+import { Link } from "react-router-dom";
 
 import { 
   MapPin, 

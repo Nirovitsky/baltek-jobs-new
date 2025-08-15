@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useRoute, useLocation } from "wouter";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
@@ -20,9 +20,9 @@ export default function Jobs({}: JobsProps) {
   const { toast } = useToast();
   
   // Handle routing
-  const [, setLocation] = useLocation();
-  const [matchJobId, paramsJobId] = useRoute("/jobs/:id");
-  const [matchJobs] = useRoute("/jobs");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const params = useParams();
   
   // Get URL parameters
   const urlParams = new URLSearchParams(window.location.search);
@@ -45,7 +45,7 @@ export default function Jobs({}: JobsProps) {
   }, [authError, toast]);
 
   // Get selected job ID from URL parameter
-  const selectedJobIdFromUrl = matchJobId && paramsJobId?.id ? parseInt(paramsJobId.id) : null;
+  const selectedJobIdFromUrl = params.id ? parseInt(params.id) : null;
   const [selectedJobId, setSelectedJobId] = useState<number | null>(selectedJobIdFromUrl);
   const [filters, setFilters] = useState<JobFilters>(
     organizationParam ? { organization: parseInt(organizationParam) } : {},
@@ -175,16 +175,16 @@ export default function Jobs({}: JobsProps) {
   const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
     // Update URL to reflect selected job without triggering a full navigation
-    // Use setLocation with replace to avoid adding to history stack and prevent scroll reset
-    setLocation(`/jobs/${job.id}`, { replace: true });
-  }, [setLocation]);
+    // Use navigate with replace to avoid adding to history stack and prevent scroll reset
+    navigate(`/jobs/${job.id}`, { replace: true });
+  }, [navigate]);
 
   const handleFiltersChange = (newFilters: JobFilters) => {
     setFilters(newFilters);
     // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
     // Navigate back to jobs list without specific job ID
-    setLocation('/jobs');
+    navigate('/jobs');
   };
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -194,8 +194,8 @@ export default function Jobs({}: JobsProps) {
     // Clear job selection when search changes
     setSelectedJobId(null);
     // Navigate back to jobs list without specific job ID
-    setLocation('/jobs');
-  }, [setLocation]);
+    navigate('/jobs');
+  }, [navigate]);
 
   const handleSearchSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();

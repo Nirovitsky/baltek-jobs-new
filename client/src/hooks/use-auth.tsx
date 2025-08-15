@@ -2,10 +2,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AuthService } from "@/lib/auth";
 import { ApiClient } from "@/lib/api";
 import type { UserProfile } from "@shared/schema";
-import { useLocation } from "wouter";
+import { useNavigate } from "react-router-dom";
 
 export function useAuth() {
-  const [, setLocation] = useLocation();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { data: user, isLoading, error } = useQuery({
@@ -32,7 +32,7 @@ export function useAuth() {
     },
     onSuccess: () => {
       queryClient.clear();
-      setLocation("/");
+      navigate("/");
     },
   });
 
