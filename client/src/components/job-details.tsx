@@ -296,8 +296,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
                 <span className="flex items-center">
                   <MapPin className="w-4 h-4 mr-1" />
-                  {job.location?.name || "Unknown"},{" "}
-                  {job.location?.country || "Unknown"}
+                  {job.location?.name || "Unknown"}
                 </span>
                 <span className="flex items-center">
                   <Calendar className="w-4 h-4 mr-1" />
