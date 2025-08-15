@@ -15,7 +15,7 @@ export function useAuth() {
         return null;
       }
       try {
-        // Fetch current user from /users/me/ endpoint
+        // Fetch current user from /users/short/ endpoint
         return await ApiClient.getCurrentUser() as UserProfile;
       } catch (error) {
         AuthService.clearTokens();

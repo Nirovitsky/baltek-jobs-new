@@ -202,7 +202,7 @@ export class ApiClient {
   }
 
   static async getCurrentUser() {
-    return this.makeRequest("/users/me/", {}, true);
+    return this.makeRequest("/users/short/", {}, true);
   }
 
   static async updateProfile(id: number, data: any) {
@@ -217,15 +217,15 @@ export class ApiClient {
     console.log('API: Attempting to complete onboarding...');
     
     try {
-      // First try the /users/me/ endpoint
-      const result = await this.makeRequest('/users/me/', {
+      // First try the /users/short/ endpoint
+      const result = await this.makeRequest('/users/short/', {
         method: 'PATCH',
         body: JSON.stringify({ is_jobs_onboarding_completed: true }),
       });
-      console.log('API: Onboarding completion via /users/me/ successful:', result);
+      console.log('API: Onboarding completion via /users/short/ successful:', result);
       return result;
     } catch (error) {
-      console.error('API: /users/me/ approach failed, trying alternative:', error);
+      console.error('API: /users/short/ approach failed, trying alternative:', error);
       
       // Fallback to current user ID approach
       try {
@@ -335,7 +335,7 @@ export class ApiClient {
   static async uploadProfilePicture(file: File) {
     const formData = new FormData();
     formData.append('avatar', file);
-    return this.makeRequest('/users/me/', {
+    return this.makeRequest('/users/short/', {
       method: 'PATCH',
       body: formData,
     });

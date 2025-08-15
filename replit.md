@@ -75,7 +75,7 @@ The application requires the following environment variables configured in Repli
 - Updated bookmarks and applications pages to use consistent JobList component with search functionality
 - Implemented proper scrollable layout matching the main jobs page design
 - Migration completed with all pages using unified job list interface
-- **Fixed API Endpoint Issue**: Corrected `/users/me` endpoint to `/users/me/` with proper authentication requirement to resolve 404 errors during login
+- **Updated API Endpoint**: Changed from `/users/me/` to `/users/short/` due to API changes, updating all references including authentication, onboarding, and profile picture upload
 - Project import completed: All checklist items verified and environment fully configured
 - **Migration Completed (January 15, 2025)**: Full migration from Replit Agent environment to standard Replit completed successfully with all dependencies installed, OAuth secrets configured, and application verified working
 
