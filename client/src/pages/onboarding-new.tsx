@@ -685,7 +685,7 @@ export default function Onboarding() {
                     <div className="flex-1">
                       <h4 className="font-medium">{edu.level || "Education Level"}</h4>
                       <p className="text-sm text-muted-foreground">
-                        {universities?.results?.find((u: any) => u.id === edu.university)?.name || "University"}
+                        {(universities as any)?.results?.find((u: any) => u.id === edu.university)?.name || "University"}
                       </p>
                       {(edu.date_started || edu.date_finished) && (
                         <p className="text-xs text-muted-foreground mt-1">

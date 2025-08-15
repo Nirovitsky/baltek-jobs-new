@@ -173,6 +173,42 @@
   .infinite-scroll::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
   }
+
+  /* Fix react-day-picker dropdown styling for month/year selectors */
+  .rdp-dropdown_month,
+  .rdp-dropdown_year {
+    @apply bg-background border border-input rounded-md px-3 py-1 text-sm;
+    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+    @apply text-foreground;
+    min-width: 80px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+  }
+
+  .rdp-dropdown_month:hover,
+  .rdp-dropdown_year:hover {
+    @apply border-border;
+  }
+
+  .rdp-dropdown_month:focus,
+  .rdp-dropdown_year:focus {
+    @apply border-primary ring-2 ring-primary ring-offset-2;
+  }
+
+  /* Dark mode support for dropdown styling */
+  .dark .rdp-dropdown_month,
+  .dark .rdp-dropdown_year {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%9ca3af' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  }
+
+  /* Style the caption container for better layout */
+  .rdp-caption_dropdowns {
+    @apply flex gap-2 items-center justify-center;
+  }
   
   .job-description-scroll {
     /* Hidden scrollbar for job description */
