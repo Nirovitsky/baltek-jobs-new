@@ -220,23 +220,24 @@ export class ApiClient {
     console.log('API: Completing onboarding...');
     
     try {
-      // Get the current user first to verify current status
+      // Get the current user first to verify current status and get user ID
       const currentUser = await this.getCurrentUser() as any;
       console.log('API: Current user from /users/short/:', currentUser);
       console.log('API: Current onboarding status:', currentUser.is_jobs_onboarding_completed);
+      console.log('API: User ID:', currentUser.id);
       
-      // Update the onboarding status using PATCH on users/short endpoint
+      // Update the onboarding status using PATCH on users/{id} endpoint
       const updateData = { 
         is_jobs_onboarding_completed: true,
         is_organizations_onboarding_completed: true 
       };
-      console.log('API: Sending update data to /users/short/:', updateData);
+      console.log('API: Sending update data to /users/' + currentUser.id + '/:', updateData);
       
-      const result = await this.makeRequest('/users/short/', {
+      const result = await this.makeRequest(`/users/${currentUser.id}/`, {
         method: 'PATCH',
         body: JSON.stringify(updateData),
       });
-      console.log('API: PATCH response from /users/short/:', result);
+      console.log('API: PATCH response from /users/' + currentUser.id + '/:', result);
       
       // Verify the update by fetching user again
       const updatedUser = await this.getCurrentUser();
