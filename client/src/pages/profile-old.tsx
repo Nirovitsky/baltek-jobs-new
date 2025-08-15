@@ -87,7 +87,7 @@ function CompanySuggestions() {
         <div>
           {suggestions.map((company: Organization, index: number) => (
             <div key={company.id}>
-              <Link href={`/company/${company.id}`}>
+              <Link to={`/company/${company.id}`}>
                 <div className="flex items-center gap-4 p-4 hover:bg-muted dark:hover:bg-muted/50 transition-all duration-200 cursor-pointer group">
                   <Avatar className="h-12 w-12 ring-2 ring-gray-100 dark:ring-gray-600 group-hover:ring-primary/30 transition-all duration-200">
                     <AvatarImage src={company.logo} alt={company.display_name || company.official_name} />
