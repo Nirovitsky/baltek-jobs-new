@@ -120,7 +120,9 @@ export class ApiClient {
           }
 
           if (!retryResponse.ok) {
-            throw new Error(`API Error: ${retryResponse.status}`);
+            const retryErrorText = await retryResponse.text();
+            console.error(`Retry API request failed for ${endpoint}:`, retryErrorText);
+            throw new Error(`API Error: ${retryResponse.status} - ${retryErrorText}`);
           }
 
           return retryResponse.json();
@@ -132,7 +134,10 @@ export class ApiClient {
       }
 
       if (!response.ok) {
-        throw new Error(`API Error: ${response.status}`);
+        const errorText = await response.text();
+        console.error(`API request failed for ${endpoint}:`, errorText);
+        console.error('Failed request details:', { url, body: options.body, headers });
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
       }
 
       return response.json();
