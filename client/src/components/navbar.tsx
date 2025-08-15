@@ -238,6 +238,11 @@ export default function Navbar({}: NavbarProps) {
               </>
             ) : (
               <>
+                {/* OAuth Login button for unauthenticated users */}
+                <Button size="sm" onClick={handleOAuthLogin}>
+                  Login
+                </Button>
+                
                 {/* Theme toggle popup for unauthenticated users */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -285,11 +290,6 @@ export default function Navbar({}: NavbarProps) {
                     </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                
-                {/* OAuth Login button for unauthenticated users */}
-                <Button size="sm" onClick={handleOAuthLogin}>
-                  Login
-                </Button>
               </>
             )}
           </div>
