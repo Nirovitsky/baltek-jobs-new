@@ -199,11 +199,20 @@ export default function Onboarding() {
     enabled: currentStep === 3,
   });
 
-  const { data: locations } = useQuery({
+  const { data: locations, isLoading: locationsLoading } = useQuery({
     queryKey: ["locations"],
     queryFn: () => ApiClient.getLocations(),
     enabled: currentStep === 1,
   });
+
+  // Debug locations data
+  useEffect(() => {
+    if (locations) {
+      console.log("Locations data received:", locations);
+      console.log("Is locations an array?", Array.isArray(locations));
+      console.log("Locations structure:", typeof locations, Object.keys(locations || {}));
+    }
+  }, [locations]);
 
   // Date formatting is now handled directly in DatePicker component
 
@@ -545,15 +554,25 @@ export default function Onboarding() {
                     <SelectValue placeholder="Select your location (optional)" />
                   </SelectTrigger>
                   <SelectContent>
-                    {locations && Array.isArray(locations) ? (
+                    {locationsLoading ? (
+                      <SelectItem value="loading" disabled>
+                        Loading locations...
+                      </SelectItem>
+                    ) : locations && Array.isArray(locations) ? (
                       locations.map((location: any) => (
                         <SelectItem key={location.id} value={location.id.toString()}>
                           {location.name}
                         </SelectItem>
                       ))
+                    ) : locations && locations.results && Array.isArray(locations.results) ? (
+                      locations.results.map((location: any) => (
+                        <SelectItem key={location.id} value={location.id.toString()}>
+                          {location.name}
+                        </SelectItem>
+                      ))
                     ) : (
-                      <SelectItem value="loading" disabled>
-                        Loading locations...
+                      <SelectItem value="no-data" disabled>
+                        No locations available
                       </SelectItem>
                     )}
                   </SelectContent>
