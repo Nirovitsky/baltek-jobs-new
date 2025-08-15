@@ -256,7 +256,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center space-x-4">
             <RouterLink
-              href={`/company/${job.organization?.id}`}
+              to={`/company/${job.organization?.id}`}
               className="w-16 h-16 bg-muted rounded-full flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
             >
               {job.organization?.logo ? (
@@ -279,7 +279,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               </h1>
               <div className="flex items-center gap-2">
                 <RouterLink
-                  href={`/company/${job.organization?.id}`}
+                  to={`/company/${job.organization?.id}`}
                   className="text-lg text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 >
                   {job.organization?.display_name ||
@@ -287,7 +287,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                     "Unknown Company"}
                 </RouterLink>
                 <RouterLink
-                  href={`/company/${job.organization?.id}`}
+                  to={`/company/${job.organization?.id}`}
                   className="text-muted-foreground/60 hover:text-primary transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
