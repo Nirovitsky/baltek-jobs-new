@@ -206,8 +206,6 @@ export class ApiClient {
   }
 
   static async updateProfile(id: number, data: any) {
-    console.log("API updateProfile - Raw data:", data);
-    console.log("API updateProfile - date_of_birth:", data.date_of_birth);
     return this.makeRequest(`/users/${id}/`, {
       method: "PATCH",
       body: JSON.stringify(data),

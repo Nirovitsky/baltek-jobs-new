@@ -248,7 +248,13 @@ export default function Onboarding() {
   const handleDateChange = (date: Date | undefined) => {
     setBirthDate(date);
     if (date) {
-      personalForm.setValue("date_of_birth", format(date, "dd.MM.yyyy"));
+      // Manually format as DD.MM.YYYY to ensure correct format
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const dateString = `${day}.${month}.${year}`;
+
+      personalForm.setValue("date_of_birth", dateString);
     }
   };
 
@@ -499,7 +505,7 @@ export default function Onboarding() {
               <div>
                 <Label>Date of Birth</Label>
                 <DatePicker
-                  value={birthDate ? format(birthDate, "dd.MM.yyyy") : ""}
+                  value={birthDate ? `${String(birthDate.getDate()).padStart(2, '0')}.${String(birthDate.getMonth() + 1).padStart(2, '0')}.${birthDate.getFullYear()}` : ""}
                   onChange={(dateString) => {
                     if (dateString) {
                       // Parse DD.MM.YYYY format
