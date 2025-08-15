@@ -13,7 +13,6 @@ import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import MessageRenderer from "@/components/message-renderer";
-import { FileAttachment } from "@/components/file-attachment";
 import {
   MessageCircle,
   Send,
@@ -950,10 +949,85 @@ export default function ChatPage() {
                                   {message.attachments && message.attachments.length > 0 && (
                                     <div className="space-y-2 mb-2">
                                       {message.attachments.map((attachment: any, index: number) => (
-                                        <FileAttachment
+                                        <div 
                                           key={attachment.id || index}
-                                          attachment={attachment}
-                                        />
+                                          className={`flex items-center justify-between p-3 rounded-lg border transition-all hover:shadow-sm ${
+                                            message.owner === user?.id
+                                              ? "bg-white/10 border-white/20 hover:bg-white/15"
+                                              : "bg-card border-border hover:border-input"
+                                          }`}
+                                        >
+                                          <div className="flex items-center space-x-3 flex-1 min-w-0">
+                                            <div className={`p-2 rounded-lg ${
+                                              message.owner === user?.id
+                                                ? "bg-white/10"
+                                                : "bg-primary/10"
+                                            }`}>
+                                              <FileText className={`w-5 h-5 ${
+                                                message.owner === user?.id ? "text-primary-foreground" : "text-blue-600 dark:text-blue-400"
+                                              }`} />
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                              <div className={`text-sm font-medium truncate ${
+                                                message.owner === user?.id ? "text-primary-foreground" : "text-foreground"
+                                              }`}>
+                                                {attachment.file_name || attachment.name || `Attachment ${index + 1}`}
+                                              </div>
+                                              {attachment.size && (
+                                                <div className={`text-xs ${
+                                                  message.owner === user?.id ? "text-primary-foreground/70" : "text-muted-foreground"
+                                                }`}>
+                                                  {formatFileSize(attachment.size)}
+                                                </div>
+                                              )}
+                                            </div>
+                                          </div>
+                                          <div className="flex items-center space-x-2">
+                                            {attachment.file_url ? (
+                                              <>
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  className={`h-8 w-8 p-0 ${
+                                                    message.owner === user?.id 
+                                                      ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20" 
+                                                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                                  }`}
+                                                  onClick={() => window.open(attachment.file_url, '_blank')}
+                                                  title="View file"
+                                                >
+                                                  <FileText className="w-4 h-4" />
+                                                </Button>
+                                                <Button
+                                                  variant="ghost"
+                                                  size="sm"
+                                                  className={`h-8 w-8 p-0 ${
+                                                    message.owner === user?.id 
+                                                      ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20" 
+                                                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                                                  }`}
+                                                  onClick={() => {
+                                                    const link = document.createElement('a');
+                                                    link.href = attachment.file_url;
+                                                    link.download = attachment.file_name || attachment.name || 'download';
+                                                    link.click();
+                                                  }}
+                                                  title="Download file"
+                                                >
+                                                  <Download className="w-4 h-4" />
+                                                </Button>
+                                              </>
+                                            ) : (
+                                              <div className={`text-xs px-2 py-1 rounded ${
+                                                message.owner === user?.id 
+                                                  ? "bg-white/10 text-primary-foreground/70" 
+                                                  : "bg-muted text-muted-foreground"
+                                              }`}>
+                                                Processing...
+                                              </div>
+                                            )}
+                                          </div>
+                                        </div>
                                       ))}
                                     </div>
                                   )}
