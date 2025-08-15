@@ -104,3 +104,4 @@ The application requires the following environment variables configured in Repli
 - **Improved UX**: Simplified company name to text input only, better visual feedback with cards for added entries
 - **Clean UI**: Consistent card-based layout with easy-to-use add/remove functionality
 - **Onboarding Completion Fix (January 15, 2025)**: Fixed PATCH method error in onboarding completion by updating `completeOnboarding` method to use proper `updateProfile` endpoint
+- **Scroll Behavior Fix (January 15, 2025)**: Fixed job card click behavior to prevent scrolling to top of job list by replacing React Router navigate with history.replaceState for URL updates

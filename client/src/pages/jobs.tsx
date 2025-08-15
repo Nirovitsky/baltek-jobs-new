@@ -174,13 +174,10 @@ export default function Jobs({}: JobsProps) {
 
   const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
-    // Update URL to reflect selected job without triggering a full navigation
-    // Use navigate with replace to avoid adding to history stack and prevent scroll reset
-    navigate(`/jobs/${job.id}`, { 
-      replace: true,
-      preventScrollReset: true
-    });
-  }, [navigate]);
+    // Update URL to reflect selected job without causing scroll reset
+    // Use history.replaceState to update URL without navigation behavior
+    window.history.replaceState(null, '', `/jobs/${job.id}`);
+  }, []);
 
   const handleFiltersChange = (newFilters: JobFilters) => {
     setFilters(newFilters);
