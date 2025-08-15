@@ -8,6 +8,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import { z } from "zod";
 import { 
   userProfileSchema, 
   educationSchema, 
@@ -189,9 +190,21 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   // Handle different API response structures - resumes might be in 'results' array or direct array
   const resumesList = (userResumes as any)?.results || userResumes || [];
 
+  // Personal info validation schema  
+  const personalInfoSchema = z.object({
+    first_name: z.string().min(1, "First name is required"),
+    last_name: z.string().min(1, "Last name is required"),
+    email: z.string().optional(),
+    phone: z.string().optional(),
+    profession: z.string().optional(),
+    date_of_birth: z.string().optional(),
+    gender: z.enum(["m", "f"]).optional(),
+  });
+
   // Personal info form - use cached profile data if available, fallback to user
   const profileData = fullProfile || user;
   const personalForm = useForm<any>({
+    resolver: zodResolver(personalInfoSchema),
     defaultValues: {
       first_name: (profileData as any)?.first_name || "",
       last_name: (profileData as any)?.last_name || "",
@@ -664,7 +677,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         id="first_name"
                         {...personalForm.register("first_name")}
                         placeholder="John"
+                        className={personalForm.formState.errors.first_name ? "border-red-500" : ""}
                       />
+                      {personalForm.formState.errors.first_name && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {personalForm.formState.errors.first_name.message}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="last_name">Last Name</Label>
@@ -672,7 +691,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         id="last_name"
                         {...personalForm.register("last_name")}
                         placeholder="Doe"
+                        className={personalForm.formState.errors.last_name ? "border-red-500" : ""}
                       />
+                      {personalForm.formState.errors.last_name && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {personalForm.formState.errors.last_name.message}
+                        </p>
+                      )}
                     </div>
                   </div>
 

@@ -46,10 +46,10 @@ import {
 
 import { ApiClient } from "@/lib/api";
 
-// Schemas - all fields optional for flexible onboarding
+// Schemas - name fields required, others optional for flexible onboarding
 const personalInfoSchema = z.object({
-  first_name: z.string().optional(),
-  last_name: z.string().optional(),
+  first_name: z.string().min(1, "First name is required"),
+  last_name: z.string().min(1, "Last name is required"),
   profession: z.string().optional(),
   gender: z.enum(["m", "f"]).optional(),
   date_of_birth: z.string().optional(),
@@ -454,7 +454,7 @@ export default function Onboarding() {
               <h2 className="text-2xl font-bold mb-2">Personal Information</h2>
               <p className="text-muted-foreground">Tell us about yourself</p>
               <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
-                All fields are optional - share what you're comfortable with
+                Name fields are required - other fields are optional
               </p>
             </div>
 
@@ -497,14 +497,26 @@ export default function Onboarding() {
                   <Input
                     {...personalForm.register("first_name")}
                     placeholder="First name"
+                    className={personalForm.formState.errors.first_name ? "border-red-500" : ""}
                   />
+                  {personalForm.formState.errors.first_name && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {personalForm.formState.errors.first_name.message}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="last_name">Last Name</Label>
                   <Input
                     {...personalForm.register("last_name")}
                     placeholder="Last name"
+                    className={personalForm.formState.errors.last_name ? "border-red-500" : ""}
                   />
+                  {personalForm.formState.errors.last_name && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {personalForm.formState.errors.last_name.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
