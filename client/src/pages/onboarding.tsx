@@ -1069,14 +1069,15 @@ export default function Onboarding() {
 
         {/* Navigation */}
         <div className="flex justify-between">
-          <Button
-            variant="outline"
-            onClick={handlePrevious}
-            disabled={currentStep === 1}
-          >
-            <ChevronLeft className="w-4 h-4 mr-2" />
-            Previous
-          </Button>
+          {currentStep > 1 && (
+            <Button
+              variant="outline"
+              onClick={handlePrevious}
+            >
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Previous
+            </Button>
+          )}
 
           <Button
             onClick={handleNext}
