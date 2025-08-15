@@ -202,7 +202,7 @@ export class ApiClient {
   }
 
   static async getCurrentUser() {
-    return this.makeRequest("/users/me");
+    return this.makeRequest("/users/me/", {}, true);
   }
 
   static async updateProfile(id: number, data: any) {
