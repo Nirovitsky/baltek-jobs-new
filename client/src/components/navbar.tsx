@@ -256,36 +256,32 @@ export default function Navbar({}: NavbarProps) {
                       )}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
-                      <Palette className="mr-2 h-4 w-4" />
-                      <span className="flex-1">Theme</span>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant={theme === "light" ? "default" : "ghost"}
-                          size="sm"
-                          onClick={() => setTheme("light")}
-                          className="h-6 w-6 p-0"
-                        >
-                          <Sun className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant={theme === "dark" ? "default" : "ghost"}
-                          size="sm"
-                          onClick={() => setTheme("dark")}
-                          className="h-6 w-6 p-0"
-                        >
-                          <Moon className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant={theme === "system" ? "default" : "ghost"}
-                          size="sm"
-                          onClick={() => setTheme("system")}
-                          className="h-6 w-6 p-0"
-                        >
-                          <Monitor className="h-3 w-3" />
-                        </Button>
-                      </div>
+                  <DropdownMenuContent align="end" className="w-32">
+                    <div className="flex items-center justify-center gap-1 p-2">
+                      <Button
+                        variant={theme === "light" ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setTheme("light")}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Sun className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant={theme === "dark" ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setTheme("dark")}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Moon className="h-3 w-3" />
+                      </Button>
+                      <Button
+                        variant={theme === "system" ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setTheme("system")}
+                        className="h-6 w-6 p-0"
+                      >
+                        <Monitor className="h-3 w-3" />
+                      </Button>
                     </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
