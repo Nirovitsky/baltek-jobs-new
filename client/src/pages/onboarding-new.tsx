@@ -338,9 +338,10 @@ export default function Onboarding() {
   const completeOnboardingMutation = useMutation({
     mutationFn: () => ApiClient.completeOnboarding(),
     onSuccess: (data) => {
+      console.log("Onboarding completed successfully:", data);
       setLocation("/jobs");
       toast({
-        title: "Welcome aboard! 🎉",
+        title: "Welcome aboard!",
         description: "Your profile is now complete. Let's find you amazing opportunities!",
       });
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
@@ -378,7 +379,7 @@ export default function Onboarding() {
           
           // Only include date_of_birth if it's not empty
           if (!profileData.date_of_birth || profileData.date_of_birth.trim() === '') {
-            delete profileData.date_of_birth;
+            delete (profileData as any).date_of_birth;
           }
           
           await updateProfileMutation.mutateAsync(profileData);
