@@ -60,7 +60,7 @@ export default function Jobs({}: JobsProps) {
     if (selectedJobIdFromUrl !== selectedJobId) {
       setSelectedJobId(selectedJobIdFromUrl);
     }
-  }, [selectedJobIdFromUrl]);
+  }, [selectedJobIdFromUrl, selectedJobId]);
   
   // Debounce search query with 500ms delay
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -189,7 +189,7 @@ export default function Jobs({}: JobsProps) {
     navigate(newUrl, { replace: true });
   }, [navigate, location.search]);
 
-  const handleFiltersChange = (newFilters: JobFilters) => {
+  const handleFiltersChange = useCallback((newFilters: JobFilters) => {
     console.log("handleFiltersChange - old filters:", filters);
     console.log("handleFiltersChange - new filters:", newFilters);
     
@@ -201,8 +201,9 @@ export default function Jobs({}: JobsProps) {
     setSelectedJobId(null);
     // Navigate back to jobs list without specific job ID, maintaining other URL params if any
     const searchParams = new URLSearchParams(location.search);
-    navigate(`/jobs${searchParams.toString() ? `?${searchParams.toString()}` : ''}`);
-  };
+    // Don't navigate to prevent URL-triggered re-renders that reset filters
+    // navigate(`/jobs${searchParams.toString() ? `?${searchParams.toString()}` : ''}`);
+  }, [filters, queryClient, location.search, navigate]);
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
@@ -214,10 +215,10 @@ export default function Jobs({}: JobsProps) {
     setSearchQuery(newValue);
     // Clear job selection when search changes
     setSelectedJobId(null);
-    // Navigate back to jobs list without specific job ID, maintaining other URL params if any
-    const searchParams = new URLSearchParams(location.search);
-    navigate(`/jobs${searchParams.toString() ? `?${searchParams.toString()}` : ''}`);
-  }, [navigate, location.search, queryClient]);
+    // Don't navigate to prevent URL-triggered re-renders that reset search
+    // const searchParams = new URLSearchParams(location.search);
+    // navigate(`/jobs${searchParams.toString() ? `?${searchParams.toString()}` : ''}`);
+  }, [queryClient]);
 
   const handleSearchSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
