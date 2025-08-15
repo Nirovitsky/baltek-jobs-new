@@ -183,11 +183,11 @@ export default function Jobs({}: JobsProps) {
   const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
     // Update URL to reflect selected job without causing scroll reset
-    // Use React Router navigate with replace to update URL without navigation behavior
+    // Use history.replaceState to avoid React Router re-render that causes scroll
     const searchParams = new URLSearchParams(location.search);
     const newUrl = `/jobs/${job.id}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-    navigate(newUrl, { replace: true });
-  }, [navigate, location.search]);
+    window.history.replaceState(null, '', newUrl);
+  }, [location.search]);
 
   const handleFiltersChange = useCallback((newFilters: JobFilters) => {
     console.log("handleFiltersChange - old filters:", filters);
