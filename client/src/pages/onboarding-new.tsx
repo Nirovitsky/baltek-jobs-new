@@ -120,7 +120,7 @@ const DatePicker = ({
           variant="outline"
           className="w-full justify-between font-normal"
         >
-          {selectedDate ? selectedDate.toLocaleDateString() : placeholder}
+          {selectedDate ? selectedDate.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }) : placeholder}
           <ChevronDown className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
