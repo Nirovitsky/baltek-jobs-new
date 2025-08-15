@@ -1,6 +1,5 @@
 import { useAuth } from "@/hooks/use-auth";
 import { Redirect } from "wouter";
-import { ApiClient } from "@/lib/api";
 
 interface OnboardingGuardProps {
   children: React.ReactNode;
@@ -18,8 +17,8 @@ export function OnboardingGuard({ children }: OnboardingGuardProps) {
   }
 
   // Only check onboarding status for authenticated users
-  // Check localStorage for onboarding completion since API doesn't have this field
-  if (isAuthenticated && user && !ApiClient.isOnboardingCompleted(user.id)) {
+  // If user is authenticated but hasn't completed onboarding, redirect to onboarding
+  if (isAuthenticated && user && user.is_jobs_onboarding_completed === false) {
     return <Redirect to="/onboarding" />;
   }
 
@@ -47,7 +46,7 @@ export function OnboardingRouteGuard({ children }: OnboardingRouteGuardProps) {
   }
 
   // If user is authenticated and already completed onboarding, redirect to jobs
-  if (user && ApiClient.isOnboardingCompleted(user.id)) {
+  if (user && user.is_jobs_onboarding_completed === true) {
     return <Redirect to="/jobs" />;
   }
 

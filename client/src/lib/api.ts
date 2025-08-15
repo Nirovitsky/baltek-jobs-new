@@ -220,32 +220,31 @@ export class ApiClient {
     console.log('API: Completing onboarding...');
     
     try {
-      // Get the current user first 
+      // Get the current user first to verify current status
       const currentUser = await this.getCurrentUser() as any;
-      console.log('API: Current user:', currentUser);
+      console.log('API: Current user from /users/short/:', currentUser);
+      console.log('API: Current onboarding status:', currentUser.is_jobs_onboarding_completed);
       
-      // Since the API doesn't have is_jobs_onboarding_completed field,
-      // we'll use localStorage to track completion status
-      const onboardingKey = `onboarding_completed_${currentUser.id}`;
-      localStorage.setItem(onboardingKey, 'true');
-      console.log('API: Onboarding completion stored in localStorage');
+      // Update the onboarding status using PATCH on users/short endpoint
+      const updateData = { is_jobs_onboarding_completed: true };
+      console.log('API: Sending update data to /users/short/:', updateData);
       
-      // Return a success response
-      return { 
-        success: true, 
-        message: 'Onboarding completed',
-        user: { ...currentUser, is_jobs_onboarding_completed: true }
-      };
+      const result = await this.makeRequest('/users/short/', {
+        method: 'PATCH',
+        body: JSON.stringify(updateData),
+      });
+      console.log('API: PATCH response from /users/short/:', result);
+      
+      // Verify the update by fetching user again
+      const updatedUser = await this.getCurrentUser();
+      console.log('API: User after update:', updatedUser);
+      console.log('API: Updated onboarding status:', updatedUser.is_jobs_onboarding_completed);
+      
+      return result;
     } catch (error) {
       console.error('API: Onboarding completion failed:', error);
       throw error;
     }
-  }
-
-  // Helper method to check if onboarding is completed
-  static isOnboardingCompleted(userId: number): boolean {
-    const onboardingKey = `onboarding_completed_${userId}`;
-    return localStorage.getItem(onboardingKey) === 'true';
   }
 
   // Education API
