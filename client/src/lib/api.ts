@@ -217,33 +217,22 @@ export class ApiClient {
   }
 
   static async completeOnboarding() {
-    // Try multiple approaches to ensure the onboarding completion works
-    console.log('API: Attempting to complete onboarding...');
+    console.log('API: Completing onboarding...');
     
     try {
-      // First try the /users/short/ endpoint
-      const result = await this.makeRequest('/users/short/', {
-        method: 'PATCH',
-        body: JSON.stringify({ is_jobs_onboarding_completed: true }),
+      // Get the current user first to get their ID
+      const currentUser = await this.getCurrentUser() as any;
+      console.log('API: Current user ID:', currentUser.id);
+      
+      // Use the updateProfile method to properly update the onboarding status
+      const result = await this.updateProfile(currentUser.id, { 
+        is_jobs_onboarding_completed: true 
       });
-      console.log('API: Onboarding completion via /users/short/ successful:', result);
+      console.log('API: Onboarding completion successful:', result);
       return result;
     } catch (error) {
-      console.error('API: /users/short/ approach failed, trying alternative:', error);
-      
-      // Fallback to current user ID approach
-      try {
-        const currentUser = await this.getCurrentUser() as any;
-        const result = await this.makeRequest(`/users/${currentUser.id}/`, {
-          method: 'PATCH',
-          body: JSON.stringify({ is_jobs_onboarding_completed: true }),
-        });
-        console.log('API: Onboarding completion via /users/id/ successful:', result);
-        return result;
-      } catch (secondError) {
-        console.error('API: Both approaches failed:', secondError);
-        throw secondError;
-      }
+      console.error('API: Onboarding completion failed:', error);
+      throw error;
     }
   }
 

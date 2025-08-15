@@ -103,3 +103,4 @@ The application requires the following environment variables configured in Repli
 - **Multiple Entries**: Users can now add multiple work experiences and education entries during onboarding
 - **Improved UX**: Simplified company name to text input only, better visual feedback with cards for added entries
 - **Clean UI**: Consistent card-based layout with easy-to-use add/remove functionality
+- **Onboarding Completion Fix (January 15, 2025)**: Fixed PATCH method error in onboarding completion by updating `completeOnboarding` method to use proper `updateProfile` endpoint
