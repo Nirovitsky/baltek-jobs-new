@@ -24,6 +24,7 @@ interface JobListProps {
   isSearching?: boolean;
   inputRef?: React.RefObject<HTMLInputElement>;
   hideAppliedBadge?: boolean;
+  disableViewedOpacity?: boolean;
 }
 
 export default function JobList({
@@ -41,6 +42,7 @@ export default function JobList({
   isSearching = false,
   inputRef,
   hideAppliedBadge = false,
+  disableViewedOpacity = false,
 }: JobListProps) {
   // Use a ref to track the actual input value independently
   const localInputRef = useRef<HTMLInputElement>(null);
@@ -179,6 +181,7 @@ export default function JobList({
             onSelect={onJobSelect}
             showBookmark={true}
             hideAppliedBadge={hideAppliedBadge}
+            disableViewedOpacity={disableViewedOpacity}
           />
         ))}
 

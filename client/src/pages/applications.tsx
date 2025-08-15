@@ -251,6 +251,7 @@ export default function ApplicationsPage() {
               isSearching={false}
               inputRef={inputRef}
               hideAppliedBadge={true}
+              disableViewedOpacity={true}
             />
           </div>
 

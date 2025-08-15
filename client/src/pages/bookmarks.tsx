@@ -92,6 +92,7 @@ export default function Bookmarks({}: BookmarksProps) {
               onSearchSubmit={handleSearchSubmit}
               isSearching={false}
               inputRef={inputRef}
+              disableViewedOpacity={true}
             />
           </div>
           
