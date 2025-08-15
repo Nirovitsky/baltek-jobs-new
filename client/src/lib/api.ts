@@ -226,7 +226,10 @@ export class ApiClient {
       console.log('API: Current onboarding status:', currentUser.is_jobs_onboarding_completed);
       
       // Update the onboarding status using PATCH on users/short endpoint
-      const updateData = { is_jobs_onboarding_completed: true };
+      const updateData = { 
+        is_jobs_onboarding_completed: true,
+        is_organizations_onboarding_completed: true 
+      };
       console.log('API: Sending update data to /users/short/:', updateData);
       
       const result = await this.makeRequest('/users/short/', {
