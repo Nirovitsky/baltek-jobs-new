@@ -83,6 +83,8 @@ export default function Jobs({}: JobsProps) {
         search: debouncedSearchQuery || undefined,
         ...filters,
       };
+      console.log("useInfiniteQuery - Making API call with params:", params);
+      console.log("useInfiniteQuery - Current filters state:", filters);
       return ApiClient.getJobs(params);
     },
     getNextPageParam: (lastPage: any, allPages: any[]) => {
@@ -135,6 +137,10 @@ export default function Jobs({}: JobsProps) {
       return undefined;
     },
     initialPageParam: 0,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchOnWindowFocus: false, // Disable auto-refetch on window focus
+    // Enable immediate refetch when queryKey changes (filters change)
+    refetchOnMount: true,
   });
 
   // Flatten and deduplicate jobs to prevent duplicate keys
@@ -183,6 +189,8 @@ export default function Jobs({}: JobsProps) {
   }, [navigate, location.search]);
 
   const handleFiltersChange = (newFilters: JobFilters) => {
+    console.log("handleFiltersChange - old filters:", filters);
+    console.log("handleFiltersChange - new filters:", newFilters);
     setFilters(newFilters);
     // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
