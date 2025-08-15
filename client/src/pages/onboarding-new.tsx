@@ -16,6 +16,12 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -31,6 +37,7 @@ import {
   GraduationCap,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
   Check,
   Star,
   Upload,
@@ -69,7 +76,7 @@ const educationSchema = z.object({
   date_finished: z.string().optional(),
 });
 
-// Simple month/year date picker component
+// Shadcn date picker component with dropdown calendar
 const DatePicker = ({ 
   value, 
   onChange, 
@@ -79,56 +86,44 @@ const DatePicker = ({
   onChange: (date: string) => void; 
   placeholder: string;
 }) => {
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: currentYear - 1970 + 1 }, (_, i) => currentYear - i);
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-  ];
+  const [open, setOpen] = React.useState(false);
+  const selectedDate = value ? new Date(value) : undefined;
 
-  const [month, year] = value 
-    ? [parseInt(value.split('-')[1]) - 1, parseInt(value.split('-')[0])]
-    : [-1, currentYear];
-
-  const handleMonthChange = (newMonth: number) => {
-    const selectedYear = year || currentYear;
-    const dateString = `${selectedYear}-${String(newMonth + 1).padStart(2, '0')}-01`;
-    onChange(dateString);
-  };
-
-  const handleYearChange = (newYear: number) => {
-    const selectedMonth = month >= 0 ? month : 0;
-    const dateString = `${newYear}-${String(selectedMonth + 1).padStart(2, '0')}-01`;
-    onChange(dateString);
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      // Format as YYYY-MM-DD for consistency
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      onChange(`${year}-${month}-${day}`);
+    } else {
+      onChange("");
+    }
+    setOpen(false);
   };
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <select
-        value={month >= 0 ? month : ""}
-        onChange={(e) => handleMonthChange(parseInt(e.target.value))}
-        className="w-full p-2 border rounded-md text-sm"
-      >
-        <option value="">Month</option>
-        {months.map((monthName, index) => (
-          <option key={index} value={index}>
-            {monthName}
-          </option>
-        ))}
-      </select>
-      <select
-        value={year || ""}
-        onChange={(e) => handleYearChange(parseInt(e.target.value))}
-        className="w-full p-2 border rounded-md text-sm"
-      >
-        <option value="">Year</option>
-        {years.map((yearOption) => (
-          <option key={yearOption} value={yearOption}>
-            {yearOption}
-          </option>
-        ))}
-      </select>
-    </div>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          className="w-full justify-between font-normal"
+        >
+          {selectedDate ? selectedDate.toLocaleDateString() : placeholder}
+          <ChevronDown className="h-4 w-4" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={selectedDate}
+          captionLayout="dropdown"
+          fromYear={1950}
+          toYear={new Date().getFullYear()}
+          onSelect={handleDateSelect}
+        />
+      </PopoverContent>
+    </Popover>
   );
 };
 
@@ -500,13 +495,13 @@ export default function Onboarding() {
               {/* Date of Birth */}
               <div>
                 <Label>Date of Birth</Label>
-                <Input
-                  type="date"
+                <DatePicker
                   value={birthDate ? format(birthDate, "yyyy-MM-dd") : ""}
-                  onChange={(e) => {
-                    const date = e.target.value ? new Date(e.target.value) : undefined;
+                  onChange={(dateString) => {
+                    const date = dateString ? new Date(dateString) : undefined;
                     handleDateChange(date);
                   }}
+                  placeholder="Select date of birth"
                 />
               </div>
 
