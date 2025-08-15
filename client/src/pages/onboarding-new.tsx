@@ -564,8 +564,8 @@ export default function Onboarding() {
                           {location.name}
                         </SelectItem>
                       ))
-                    ) : locations && locations.results && Array.isArray(locations.results) ? (
-                      locations.results.map((location: any) => (
+                    ) : locations && (locations as any).results && Array.isArray((locations as any).results) ? (
+                      (locations as any).results.map((location: any) => (
                         <SelectItem key={location.id} value={location.id.toString()}>
                           {location.name}
                         </SelectItem>
