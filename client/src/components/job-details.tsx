@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import { AuthService } from "@/lib/auth";
 import type { Job } from "@shared/schema";
-import { Link } from "wouter";
+import { Link as RouterLink } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -28,8 +28,7 @@ import {
   ExternalLink,
   UserPlus,
   LogIn,
-  Link2,
-  Chain,
+  Link,
 } from "lucide-react";
 import baltekIcon from "@/assets/baltek-icon.svg";
 
@@ -256,7 +255,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center space-x-4">
-            <Link
+            <RouterLink
               href={`/company/${job.organization?.id}`}
               className="w-16 h-16 bg-muted rounded-full flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
             >
@@ -273,26 +272,26 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               ) : (
                 <Building className="w-8 h-8 text-muted-foreground/60" />
               )}
-            </Link>
+            </RouterLink>
             <div>
               <h1 className="text-2xl font-bold text-foreground">
                 {job.title || "Job Title"}
               </h1>
               <div className="flex items-center gap-2">
-                <Link
+                <RouterLink
                   href={`/company/${job.organization?.id}`}
                   className="text-lg text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 >
                   {job.organization?.display_name ||
                     job.organization?.name ||
                     "Unknown Company"}
-                </Link>
-                <Link
+                </RouterLink>
+                <RouterLink
                   href={`/company/${job.organization?.id}`}
                   className="text-muted-foreground/60 hover:text-primary transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
-                </Link>
+                </RouterLink>
               </div>
               <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
                 <span className="flex items-center">
@@ -328,7 +327,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               </Button>
             )}
             <Button variant="outline" size="sm" onClick={handleShare} data-testid="button-share">
-              <Chain className="w-4 h-4" />
+              <Link className="w-4 h-4" />
             </Button>
           </div>
         </div>
