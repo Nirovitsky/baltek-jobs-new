@@ -375,6 +375,12 @@ export default function Onboarding() {
         try {
           const profileData = { ...formData };
           delete profileData.profile_picture;
+          
+          // Only include date_of_birth if it's not empty
+          if (!profileData.date_of_birth || profileData.date_of_birth.trim() === '') {
+            delete profileData.date_of_birth;
+          }
+          
           await updateProfileMutation.mutateAsync(profileData);
 
           if (profilePicture) {

@@ -60,18 +60,6 @@ export class ApiClient {
       }
 
       console.log('Making API request to:', url, 'with options:', { ...options, headers });
-      if (options.body && typeof options.body === 'string') {
-        console.log('Request body:', options.body);
-        try {
-          const bodyData = JSON.parse(options.body);
-          console.log('Parsed body data:', bodyData);
-          if (bodyData.date_of_birth) {
-            console.log('Date of birth being sent:', bodyData.date_of_birth);
-          }
-        } catch (e) {
-          console.log('Could not parse body as JSON');
-        }
-      }
       
       let response: Response;
       try {
@@ -136,7 +124,6 @@ export class ApiClient {
       if (!response.ok) {
         const errorText = await response.text();
         console.error(`API request failed for ${endpoint}:`, errorText);
-        console.error('Failed request details:', { url, body: options.body, headers });
         throw new Error(`API Error: ${response.status} - ${errorText}`);
       }
 
