@@ -87,15 +87,26 @@ const DatePicker = ({
   placeholder: string;
 }) => {
   const [open, setOpen] = React.useState(false);
-  const selectedDate = value ? new Date(value) : undefined;
+  
+  // Parse DD.MM.YYYY format for calendar display
+  const selectedDate = value ? (() => {
+    if (value.includes('.')) {
+      // DD.MM.YYYY format
+      const [day, month, year] = value.split('.');
+      return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    } else {
+      // Fallback for other formats
+      return new Date(value);
+    }
+  })() : undefined;
 
   const handleDateSelect = (date: Date | undefined) => {
     if (date) {
-      // Format as YYYY-MM-DD for consistency
+      // Format as DD.MM.YYYY for API compatibility
       const year = date.getFullYear();
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const day = String(date.getDate()).padStart(2, '0');
-      onChange(`${year}-${month}-${day}`);
+      onChange(`${day}.${month}.${year}`);
     } else {
       onChange("");
     }
@@ -194,13 +205,7 @@ export default function Onboarding() {
     enabled: currentStep === 1,
   });
 
-  // Date formatting helper functions
-  const formatDateForAPI = (dateString: string) => {
-    if (!dateString) return "";
-    // Convert from YYYY-MM-DD to DD.MM.YYYY
-    const [year, month, day] = dateString.split("-");
-    return `${day}.${month}.${year}`;
-  };
+  // Date formatting is now handled directly in DatePicker component
 
   // Personal info form
   const personalForm = useForm({
@@ -262,8 +267,7 @@ export default function Onboarding() {
     const newExperience = {
       id: Date.now(), // temporary ID
       ...data,
-      date_started: formatDateForAPI(data.date_started),
-      date_finished: formatDateForAPI(data.date_finished),
+      // dates are already in DD.MM.YYYY format from DatePicker
     };
     
     setExperiences([...experiences, newExperience]);
@@ -283,8 +287,7 @@ export default function Onboarding() {
     const newEducation = {
       id: Date.now(), // temporary ID
       ...data,
-      date_started: formatDateForAPI(data.date_started), 
-      date_finished: formatDateForAPI(data.date_finished),
+      // dates are already in DD.MM.YYYY format from DatePicker
     };
     
     setEducations([...educations, newEducation]);
