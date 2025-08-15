@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { OAuth2PKCEService } from "@/lib/oauth";
 import { AuthService } from "@/lib/auth";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   
   useEffect(() => {
     const handleCallback = async () => {
@@ -42,6 +44,10 @@ export default function AuthCallback() {
         
         // Store tokens and redirect immediately to jobs page
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
+        
+        // Invalidate auth queries to update navbar and user state immediately
+        queryClient.invalidateQueries({ queryKey: ["auth"] });
+        
         navigate('/jobs');
 
       } catch (error) {

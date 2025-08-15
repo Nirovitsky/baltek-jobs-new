@@ -186,11 +186,12 @@ export default function Jobs({}: JobsProps) {
     setSelectedJobId(job.id);
     // Mark this as a job selection to preserve scroll position
     markJobSelection();
-    // Update URL to reflect selected job
+    // Update URL without navigation to preserve scroll position
     const searchParams = new URLSearchParams(location.search);
     const newUrl = `/jobs/${job.id}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-    navigate(newUrl, { replace: true });
-  }, [navigate, location.search, markJobSelection]);
+    // Use history.replaceState instead of navigate to avoid scroll reset
+    window.history.replaceState(null, '', newUrl);
+  }, [location.search, markJobSelection]);
 
   const handleFiltersChange = useCallback((newFilters: JobFilters) => {
     console.log("handleFiltersChange - old filters:", filters);
