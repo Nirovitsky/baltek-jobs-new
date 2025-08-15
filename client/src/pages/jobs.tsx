@@ -29,20 +29,6 @@ export default function Jobs({}: JobsProps) {
   const organizationParam = urlParams.get("organization");
   const authError = urlParams.get("auth_error");
   
-  // Disable automatic scroll restoration to prevent scroll-to-top on URL changes
-  useEffect(() => {
-    if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual';
-    }
-    
-    return () => {
-      // Restore default behavior when component unmounts
-      if ('scrollRestoration' in window.history) {
-        window.history.scrollRestoration = 'auto';
-      }
-    };
-  }, []);
-
   // Show auth error toast if present
   useEffect(() => {
     if (authError) {
@@ -188,15 +174,10 @@ export default function Jobs({}: JobsProps) {
 
   const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
-    // Update URL using replaceState to avoid navigation history and scroll behavior
-    const newUrl = `/jobs/${job.id}`;
-    if (window.location.pathname !== newUrl) {
-      // Use setTimeout to ensure DOM updates happen first, then update URL
-      setTimeout(() => {
-        window.history.replaceState(null, '', newUrl);
-      }, 0);
-    }
-  }, []);
+    // Update URL to reflect selected job without triggering a full navigation
+    // Use setLocation with replace to avoid adding to history stack and prevent scroll reset
+    setLocation(`/jobs/${job.id}`, { replace: true });
+  }, [setLocation]);
 
   const handleFiltersChange = (newFilters: JobFilters) => {
     setFilters(newFilters);
