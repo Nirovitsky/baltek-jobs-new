@@ -4,6 +4,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
+import { useScrollPreserve } from "@/hooks/use-scroll-preserve";
 import type { Job, JobFilters } from "@shared/schema";
 
 import JobFiltersComponent from "@/components/job-filters";
@@ -19,6 +20,7 @@ interface JobsProps {}
 export default function Jobs({}: JobsProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { markJobSelection } = useScrollPreserve('job-list-container');
   
   // Handle routing
   const navigate = useNavigate();
@@ -182,12 +184,13 @@ export default function Jobs({}: JobsProps) {
 
   const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
-    // Update URL to reflect selected job without causing scroll reset
-    // Use history.replaceState to avoid React Router re-render that causes scroll
+    // Mark this as a job selection to preserve scroll position
+    markJobSelection();
+    // Update URL to reflect selected job
     const searchParams = new URLSearchParams(location.search);
     const newUrl = `/jobs/${job.id}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
-    window.history.replaceState(null, '', newUrl);
-  }, [location.search]);
+    navigate(newUrl, { replace: true });
+  }, [navigate, location.search, markJobSelection]);
 
   const handleFiltersChange = useCallback((newFilters: JobFilters) => {
     console.log("handleFiltersChange - old filters:", filters);
