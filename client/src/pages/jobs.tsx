@@ -24,8 +24,8 @@ export default function Jobs({}: JobsProps) {
   const location = useLocation();
   const params = useParams();
   
-  // Get URL parameters
-  const urlParams = new URLSearchParams(window.location.search);
+  // Get URL parameters using React Router's location.search
+  const urlParams = new URLSearchParams(location.search);
   const organizationParam = urlParams.get("organization");
   const authError = urlParams.get("auth_error");
   
@@ -37,12 +37,13 @@ export default function Jobs({}: JobsProps) {
         description: "There was an error during login. Please try again.",
         variant: "destructive",
       });
-      // Clean up URL
-      const newUrl = new URL(window.location.href);
-      newUrl.searchParams.delete('auth_error');
-      window.history.replaceState({}, '', newUrl.toString());
+      // Clean up URL using React Router navigation
+      const newParams = new URLSearchParams(location.search);
+      newParams.delete('auth_error');
+      const newSearch = newParams.toString();
+      navigate(location.pathname + (newSearch ? `?${newSearch}` : ''), { replace: true });
     }
-  }, [authError, toast]);
+  }, [authError, toast, location.search, navigate]);
 
   // Get selected job ID from URL parameter
   const selectedJobIdFromUrl = params.id ? parseInt(params.id) : null;
@@ -175,16 +176,19 @@ export default function Jobs({}: JobsProps) {
   const handleJobSelect = useCallback((job: Job) => {
     setSelectedJobId(job.id);
     // Update URL to reflect selected job without causing scroll reset
-    // Use history.replaceState to update URL without navigation behavior
-    window.history.replaceState(null, '', `/jobs/${job.id}`);
-  }, []);
+    // Use React Router navigate with replace to update URL without navigation behavior
+    const searchParams = new URLSearchParams(location.search);
+    const newUrl = `/jobs/${job.id}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+    navigate(newUrl, { replace: true });
+  }, [navigate, location.search]);
 
   const handleFiltersChange = (newFilters: JobFilters) => {
     setFilters(newFilters);
     // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
-    // Navigate back to jobs list without specific job ID
-    navigate('/jobs');
+    // Navigate back to jobs list without specific job ID, maintaining other URL params if any
+    const searchParams = new URLSearchParams(location.search);
+    navigate(`/jobs${searchParams.toString() ? `?${searchParams.toString()}` : ''}`);
   };
 
   const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -193,9 +197,10 @@ export default function Jobs({}: JobsProps) {
     setSearchQuery(newValue);
     // Clear job selection when search changes
     setSelectedJobId(null);
-    // Navigate back to jobs list without specific job ID
-    navigate('/jobs');
-  }, [navigate]);
+    // Navigate back to jobs list without specific job ID, maintaining other URL params if any
+    const searchParams = new URLSearchParams(location.search);
+    navigate(`/jobs${searchParams.toString() ? `?${searchParams.toString()}` : ''}`);
+  }, [navigate, location.search]);
 
   const handleSearchSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
