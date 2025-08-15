@@ -499,10 +499,16 @@ export default function Onboarding() {
               <div>
                 <Label>Date of Birth</Label>
                 <DatePicker
-                  value={birthDate ? format(birthDate, "yyyy-MM-dd") : ""}
+                  value={birthDate ? format(birthDate, "dd.MM.yyyy") : ""}
                   onChange={(dateString) => {
-                    const date = dateString ? new Date(dateString) : undefined;
-                    handleDateChange(date);
+                    if (dateString) {
+                      // Parse DD.MM.YYYY format
+                      const [day, month, year] = dateString.split('.');
+                      const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+                      handleDateChange(date);
+                    } else {
+                      handleDateChange(undefined);
+                    }
                   }}
                   placeholder="Select date of birth"
                 />
