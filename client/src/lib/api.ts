@@ -228,8 +228,7 @@ export class ApiClient {
       
       // Update the onboarding status using PATCH on users/{id} endpoint
       const updateData = { 
-        is_jobs_onboarding_completed: true,
-        is_organizations_onboarding_completed: true 
+        is_jobs_onboarding_completed: true
       };
       console.log('API: Sending update data to /users/' + currentUser.id + '/:', updateData);
       
