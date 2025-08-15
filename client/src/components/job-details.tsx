@@ -29,6 +29,7 @@ import {
   UserPlus,
   LogIn,
   Link2,
+  Chain,
 } from "lucide-react";
 import baltekIcon from "@/assets/baltek-icon.svg";
 
@@ -327,7 +328,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               </Button>
             )}
             <Button variant="outline" size="sm" onClick={handleShare} data-testid="button-share">
-              <Link2 className="w-4 h-4" />
+              <Chain className="w-4 h-4" />
             </Button>
           </div>
         </div>
