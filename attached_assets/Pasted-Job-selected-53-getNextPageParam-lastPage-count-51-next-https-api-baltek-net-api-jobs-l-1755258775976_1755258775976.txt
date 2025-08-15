@@ -1,0 +1,44 @@
+Job selected: 53
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20
+ Job selection state: {selectedJobId: 53, selectedJobIdFromUrl: null, lastUrlJobId: 53, isSelectedJobInResults: true, currentSelectedJobId: 53, …}
+job-filters.tsx:47 Saved filters data: []
+job-details.tsx:61 Job application check: {jobId: 53, my_application_id: null, hasApplied: false}
+ URL navigation detected: null vs last: 53
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20
+ Job selection state: {selectedJobId: null, selectedJobIdFromUrl: null, lastUrlJobId: null, isSelectedJobInResults: null, currentSelectedJobId: 52, …}
+job-filters.tsx:47 Saved filters data: []
+job-details.tsx:61 Job application check: {jobId: 52, my_application_id: 8, hasApplied: true}
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20
+ Job selected: 54
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20
+ Job selection state: {selectedJobId: 54, selectedJobIdFromUrl: null, lastUrlJobId: 54, isSelectedJobInResults: true, currentSelectedJobId: 54, …}
+job-filters.tsx:47 Saved filters data: []
+job-details.tsx:61 Job application check: {jobId: 54, my_application_id: undefined, hasApplied: false}
+api.ts:62 Making API request to: https://api.baltek.net/api/jobs/54/ with options: {headers: {…}}
+ URL navigation detected: null vs last: 54
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20
+ Job selection state: {selectedJobId: null, selectedJobIdFromUrl: null, lastUrlJobId: null, isSelectedJobInResults: null, currentSelectedJobId: 52, …}
+job-filters.tsx:47 Saved filters data: []
+job-details.tsx:61 Job application check: {jobId: 52, my_application_id: 8, hasApplied: true}
+ getNextPageParam - lastPage: {count: 51, next: 'https://api.baltek.net/api/jobs/?limit=10&offset=20', previous: 'https://api.baltek.net/api/jobs/?limit=10', results: Array(10)}
+ getNextPageParam - allPages length: 2
+ Next offset from URL: 20

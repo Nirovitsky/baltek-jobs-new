@@ -48,25 +48,29 @@ export default function Jobs({}: JobsProps) {
     }
   }, [authError, toast, location.search, navigate]);
 
-  // Get selected job ID from URL parameter
+  // Get selected job ID from URL parameter for initial load only
   const selectedJobIdFromUrl = params.id ? parseInt(params.id) : null;
   const [selectedJobId, setSelectedJobId] = useState<number | null>(selectedJobIdFromUrl);
-  const [lastUrlJobId, setLastUrlJobId] = useState<number | null>(selectedJobIdFromUrl);
+  const [initialUrlJobId] = useState<number | null>(selectedJobIdFromUrl);
   const [filters, setFilters] = useState<JobFilters>(
     organizationParam ? { organization: parseInt(organizationParam) } : {},
   );
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   
-  // Only sync with URL when it's a genuine navigation (not programmatic update)
+  // Only sync with URL on browser navigation (back/forward buttons)
   useEffect(() => {
-    if (selectedJobIdFromUrl !== lastUrlJobId) {
-      // This is a real URL change (browser navigation, direct URL entry)
-      console.log('URL navigation detected:', selectedJobIdFromUrl, 'vs last:', lastUrlJobId);
-      setSelectedJobId(selectedJobIdFromUrl);
-      setLastUrlJobId(selectedJobIdFromUrl);
-    }
-  }, [selectedJobIdFromUrl, lastUrlJobId]);
+    const handlePopState = () => {
+      // Browser navigation detected
+      const newJobId = window.location.pathname.includes('/jobs/') 
+        ? parseInt(window.location.pathname.split('/jobs/')[1]) || null
+        : null;
+      setSelectedJobId(newJobId);
+    };
+    
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   
   // Debounce search query with 500ms delay
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
@@ -186,18 +190,8 @@ export default function Jobs({}: JobsProps) {
       ? jobs[0].id
       : null;
   
-  // Debug logging
-  console.log('Job selection state:', {
-    selectedJobId,
-    selectedJobIdFromUrl,
-    lastUrlJobId,
-    isSelectedJobInResults,
-    currentSelectedJobId,
-    jobsCount: jobs.length
-  });
 
   const handleJobSelect = useCallback((job: Job) => {
-    console.log('Job selected:', job.id);
     setSelectedJobId(job.id);
     // Mark this as a job selection to preserve scroll position
     markJobSelection();
@@ -206,8 +200,6 @@ export default function Jobs({}: JobsProps) {
     const newUrl = `/jobs/${job.id}${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
     // Use history.replaceState instead of navigate to avoid scroll reset
     window.history.replaceState(null, '', newUrl);
-    // Track that we updated the URL programmatically
-    setLastUrlJobId(job.id);
   }, [location.search, markJobSelection]);
 
   const handleFiltersChange = useCallback((newFilters: JobFilters) => {
