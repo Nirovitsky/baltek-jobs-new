@@ -82,7 +82,7 @@ export default function Navbar({}: NavbarProps) {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center flex-1">
-            <Link href="/jobs" className="flex-shrink-0">
+            <Link to="/jobs" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
                 <Briefcase className="h-8 w-8 text-primary" />
                 <h1 className="text-xl font-bold text-primary">baltek jobs</h1>
@@ -95,7 +95,7 @@ export default function Navbar({}: NavbarProps) {
             {user ? (
               <>
                 {/* Notifications */}
-                <Link href="/notifications">
+                <Link to="/notifications">
                   <div className="relative w-8 h-8 flex items-center justify-center cursor-pointer" data-testid="nav-notifications">
                     <Bell className="h-5 w-5" />
                     {unreadCount > 0 && (
@@ -110,7 +110,7 @@ export default function Navbar({}: NavbarProps) {
                 </Link>
 
                 {/* Messages */}
-                <Link href="/chat">
+                <Link to="/chat">
                   <div className="w-8 h-8 flex items-center justify-center cursor-pointer" data-testid="nav-messages">
                     <MessageCircle className="h-5 w-5" />
                   </div>
@@ -140,25 +140,25 @@ export default function Navbar({}: NavbarProps) {
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/profile" className="flex items-center">
+                      <Link to="/profile" className="flex items-center">
                         <User className="mr-2 h-4 w-4" />
                         <span>Profile</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/bookmarks" className="flex items-center">
+                      <Link to="/bookmarks" className="flex items-center">
                         <Heart className="mr-2 h-4 w-4" />
                         <span>Bookmarks</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/applications" className="flex items-center">
+                      <Link to="/applications" className="flex items-center">
                         <FileText className="mr-2 h-4 w-4" />
                         <span>Applications</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link href="/settings" className="flex items-center">
+                      <Link to="/settings" className="flex items-center">
                         <Settings className="mr-2 h-4 w-4" />
                         <span>Settings</span>
                       </Link>

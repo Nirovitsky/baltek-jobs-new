@@ -1,8 +1,11 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { OAuth2PKCEService } from "@/lib/oauth";
 import { AuthService } from "@/lib/auth";
 
 export default function AuthCallback() {
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const handleCallback = async () => {
       try {
@@ -13,13 +16,13 @@ export default function AuthCallback() {
 
         if (error) {
           console.error('OAuth error:', urlParams.get('error_description') || error);
-          window.location.href = '/jobs?auth_error=1';
+          navigate('/jobs?auth_error=1');
           return;
         }
 
         if (!code || !state) {
           console.error('Missing authorization code or state parameter');
-          window.location.href = '/jobs?auth_error=1';
+          navigate('/jobs?auth_error=1');
           return;
         }
 
@@ -39,16 +42,16 @@ export default function AuthCallback() {
         
         // Store tokens and redirect immediately to jobs page
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
-        window.location.href = '/jobs';
+        navigate('/jobs');
 
       } catch (error) {
         console.error('OAuth callback error:', error);
-        window.location.href = '/jobs?auth_error=1';
+        navigate('/jobs?auth_error=1');
       }
     };
 
     handleCallback();
-  }, []);
+  }, [navigate]);
 
   // Return null - no UI needed since we redirect immediately
   return null;

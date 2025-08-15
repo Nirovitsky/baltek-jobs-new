@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, SearchX, ArrowLeft, Briefcase } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function NotFound() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-2xl mx-auto text-center">
@@ -39,7 +41,7 @@ export default function NotFound() {
                 size="lg" 
                 className="w-full sm:w-auto min-w-[160px]"
               >
-                <Link href="/jobs">
+                <Link to="/jobs">
                   <Home className="h-4 w-4 mr-2" />
                   Go Home
                 </Link>
@@ -51,7 +53,7 @@ export default function NotFound() {
                 size="lg" 
                 className="w-full sm:w-auto min-w-[160px]"
               >
-                <Link href="/jobs">
+                <Link to="/jobs">
                   <Briefcase className="h-4 w-4 mr-2" />
                   Browse Jobs
                 </Link>
@@ -64,7 +66,7 @@ export default function NotFound() {
                   if (window.history.length > 1) {
                     window.history.back();
                   } else {
-                    window.location.href = '/jobs';
+                    navigate('/jobs');
                   }
                 }}
                 className="w-full sm:w-auto min-w-[160px]"
@@ -84,28 +86,28 @@ export default function NotFound() {
           
           <div className="flex flex-wrap justify-center gap-4 text-sm">
             <Link 
-              href="/jobs" 
+              to="/jobs" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
               Job Listings
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link 
-              href="/profile" 
+              to="/profile" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
               My Profile
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link 
-              href="/applications" 
+              to="/applications" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
               Applications
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link 
-              href="/contact-us" 
+              to="/contact-us" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
               Contact Support
