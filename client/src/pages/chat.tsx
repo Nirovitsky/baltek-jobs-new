@@ -68,7 +68,7 @@ export default function ChatPage() {
   >(null);
   const [messageInput, setMessageInput] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [attachedFiles, setAttachedFiles] = useState<Array<{id: number, name: string, size: number}>>([]);
+  const [attachedFiles, setAttachedFiles] = useState<Array<{id: number, name: string, size: number, file_url?: string, content_type?: string}>>([]);
   const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<Array<{name: string, progress: number}>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -144,7 +144,16 @@ export default function ChatPage() {
       owner: user?.id || 0,
       text: content,
       status: "sending",
-      attachments: attachments.map(id => ({ id, file_name: attachedFiles.find(f => f.id === id)?.name || "File" })),
+      attachments: attachments.map(id => {
+        const file = attachedFiles.find(f => f.id === id);
+        return {
+          id,
+          file_name: file?.name || "File",
+          file_url: file?.file_url,
+          content_type: file?.content_type,
+          size: file?.size
+        };
+      }),
       date_created: Math.floor(Date.now() / 1000),
       isOptimistic: true,
     };
@@ -517,6 +526,7 @@ export default function ChatPage() {
           );
 
           const result = await ApiClient.uploadFile(file);
+          console.log("Upload result:", result); // Debug: see what the API returns
           
           // Update progress to show completion
           setUploadProgress(prev => 
@@ -529,6 +539,8 @@ export default function ChatPage() {
             id: result.id,
             name: file.name,
             size: file.size,
+            file_url: result.file_url || result.url || result.path, // Try different possible URL fields
+            content_type: file.type,
           };
         } catch (error) {
           console.error("Upload error:", error);
@@ -550,7 +562,7 @@ export default function ChatPage() {
       });
 
       const uploadedFiles = await Promise.all(uploadPromises);
-      const successfulUploads = uploadedFiles.filter(Boolean) as Array<{id: number, name: string, size: number}>;
+      const successfulUploads = uploadedFiles.filter(Boolean) as Array<{id: number, name: string, size: number, file_url?: string, content_type?: string}>;
       
       setAttachedFiles(prev => [...prev, ...successfulUploads]);
       

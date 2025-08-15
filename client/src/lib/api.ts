@@ -487,6 +487,11 @@ export class ApiClient {
     return response.json();
   }
 
+  // Helper to construct file URL from ID
+  static getFileUrl(fileId: number | string): string {
+    return `${API_BASE}/files/${fileId}/`;
+  }
+
   // Saved filters API
   static async getSavedFilters() {
     return this.makeRequest("/jobs/saved_filters/");

@@ -119,8 +119,11 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
   const fileTypeInfo = getFileTypeInfo(fileName, attachment.content_type);
   const IconComponent = fileTypeInfo.icon;
   
+  // Construct file URL if not provided
+  const fileUrl = attachment.file_url || `https://api.baltek.net/api/files/${attachment.id}/`;
+  
   // Check if it's an image and should show preview
-  const isImage = fileTypeInfo.type === 'image' && attachment.file_url;
+  const isImage = fileTypeInfo.type === 'image' && fileUrl;
   
   return (
     <div 
@@ -134,7 +137,7 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
       {isImage && (
         <div className="relative mb-3">
           <img
-            src={attachment.file_url}
+            src={fileUrl}
             alt={fileName}
             className="w-full h-auto max-h-64 object-cover rounded-t-lg"
             loading="lazy"
@@ -148,7 +151,7 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
               variant="secondary"
               size="sm"
               className="h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white border-0"
-              onClick={() => window.open(attachment.file_url, '_blank')}
+              onClick={() => window.open(fileUrl, '_blank')}
               title="View full size"
             >
               <Eye className="w-4 h-4" />
@@ -159,7 +162,7 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
               className="h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white border-0"
               onClick={() => {
                 const link = document.createElement('a');
-                link.href = attachment.file_url!;
+                link.href = fileUrl;
                 link.download = fileName;
                 link.click();
               }}
@@ -198,49 +201,37 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
         {/* Action Buttons for non-images */}
         {!isImage && (
           <div className="flex items-center space-x-2">
-            {attachment.file_url ? (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`h-8 w-8 p-0 ${
-                    isOwner 
-                      ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                  onClick={() => window.open(attachment.file_url, '_blank')}
-                  title="View file"
-                >
-                  <Eye className="w-4 h-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className={`h-8 w-8 p-0 ${
-                    isOwner 
-                      ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                  onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = attachment.file_url!;
-                    link.download = fileName;
-                    link.click();
-                  }}
-                  title="Download file"
-                >
-                  <Download className="w-4 h-4" />
-                </Button>
-              </>
-            ) : (
-              <div className={`text-xs px-2 py-1 rounded ${
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`h-8 w-8 p-0 ${
                 isOwner 
-                  ? "bg-white/10 text-primary-foreground/70" 
-                  : "bg-muted text-muted-foreground"
-              }`}>
-                Processing...
-              </div>
-            )}
+                  ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+              onClick={() => window.open(fileUrl, '_blank')}
+              title="View file"
+            >
+              <Eye className="w-4 h-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`h-8 w-8 p-0 ${
+                isOwner 
+                  ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20" 
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted"
+              }`}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = fileUrl;
+                link.download = fileName;
+                link.click();
+              }}
+              title="Download file"
+            >
+              <Download className="w-4 h-4" />
+            </Button>
           </div>
         )}
       </div>
