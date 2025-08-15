@@ -22,7 +22,7 @@ import {
   Settings,
   LogOut,
   ChevronDown,
-  Heart,
+  Bookmark,
   FileText,
   Briefcase,
   Sun,
@@ -147,7 +147,7 @@ export default function Navbar({}: NavbarProps) {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/bookmarks" className="flex items-center">
-                        <Heart className="mr-2 h-4 w-4" />
+                        <Bookmark className="mr-2 h-4 w-4" />
                         <span>Bookmarks</span>
                       </Link>
                     </DropdownMenuItem>
