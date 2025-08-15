@@ -119,7 +119,38 @@ const MUIDatePicker = ({
           textField: {
             fullWidth: true,
             variant: "outlined",
-            size: "small"
+            size: "small",
+            sx: {
+              '& .MuiOutlinedInput-root': {
+                borderRadius: '6px',
+                fontSize: '14px',
+                '& fieldset': {
+                  borderColor: 'hsl(var(--border))',
+                },
+                '&:hover fieldset': {
+                  borderColor: 'hsl(var(--border))',
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: 'hsl(var(--ring))',
+                  borderWidth: '2px',
+                },
+                '&.Mui-error fieldset': {
+                  borderColor: 'hsl(var(--destructive))',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                color: 'hsl(var(--muted-foreground))',
+                fontSize: '14px',
+                '&.Mui-focused': {
+                  color: 'hsl(var(--foreground))',
+                },
+              },
+              '& .MuiInputBase-input': {
+                color: 'hsl(var(--foreground))',
+                backgroundColor: 'hsl(var(--background))',
+                padding: '8px 12px',
+              },
+            }
           }
         }}
       />
