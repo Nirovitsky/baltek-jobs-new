@@ -110,3 +110,5 @@ The application requires the following environment variables configured in Repli
 - **Authentication State Update Fix (January 15, 2025)**: Fixed navbar not updating after login by adding query invalidation in auth callback
 - **Job List Scroll Position Fix (January 15, 2025)**: Fixed job card clicks scrolling to top by replacing React Router navigate with history.replaceState for URL updates
 - **Job Selection State Fix (January 15, 2025)**: Fixed job selection not updating UI by removing conflicting URL sync logic and using pure local state management
+- **Project Import Completed (January 15, 2025)**: Successfully migrated project from Replit Agent to standard Replit environment with all checklist items verified and OAuth environment variables properly configured
+- **Chat UX Improvement (January 15, 2025)**: Removed 'New' button from chat page since conversations cannot be created by users - they are initiated by recruiters or through job applications

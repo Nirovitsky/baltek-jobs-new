@@ -7,13 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+
 import { useToast } from "@/hooks/use-toast";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
@@ -28,7 +22,7 @@ import {
   Phone,
   Mail,
   MoreVertical,
-  Plus,
+
   Clock,
   Check,
   CheckCheck,
@@ -700,26 +694,6 @@ export default function ChatPage() {
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Conversations</CardTitle>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button size="sm" data-testid="button-new-message">
-                      <Plus className="w-4 h-4 mr-2" />
-                      New
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Start New Conversation</DialogTitle>
-                    </DialogHeader>
-                    <div className="p-4">
-                      <p className="text-sm text-muted-foreground">
-                        New conversations are typically started when recruiters
-                        contact you about job opportunities, or when you apply
-                        to positions through the platform.
-                      </p>
-                    </div>
-                  </DialogContent>
-                </Dialog>
               </div>
 
               {/* Search */}
