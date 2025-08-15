@@ -264,7 +264,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   src={job.organization.logo}
                   alt={
                     job.organization.display_name ||
-                    job.organization.name ||
+                    job.organization.official_name ||
                     "Company"
                   }
                   className="w-16 h-16 rounded-full object-cover"
@@ -283,7 +283,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   className="text-lg text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 >
                   {job.organization?.display_name ||
-                    job.organization?.name ||
+                    job.organization?.official_name ||
                     "Unknown Company"}
                 </RouterLink>
                 <RouterLink
