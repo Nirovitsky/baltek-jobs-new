@@ -76,7 +76,7 @@ export default function ChatPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [attachedFiles, setAttachedFiles] = useState<Array<{id: number, name: string, size: number, file_url?: string, content_type?: string}>>([]);
   const [uploadingFiles, setUploadingFiles] = useState<boolean>(false);
-  const [uploadProgress, setUploadProgress] = useState<Array<{name: string, progress: number}>>([]);
+  const [uploadProgress, setUploadProgress] = useState<Array<{name: string, progress: number, abort?: () => void}>>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -526,8 +526,8 @@ export default function ChatPage() {
     try {
       const uploadPromises = Array.from(files).map(async (file, index) => {
         try {
-          // Upload with real-time progress callback
-          const result = await ApiClient.uploadFile(file, (progress) => {
+          // Upload with real-time progress callback and cancellation support
+          const upload = ApiClient.uploadFile(file, (progress) => {
             setUploadProgress(prev => 
               prev.map((item, idx) => 
                 idx === index ? { ...item, progress } : item
@@ -535,6 +535,14 @@ export default function ChatPage() {
             );
           });
           
+          // Store abort function for cancellation
+          setUploadProgress(prev => 
+            prev.map((item, idx) => 
+              idx === index ? { ...item, abort: upload.abort } : item
+            )
+          );
+          
+          const result = await upload.promise;
           console.log("Upload result:", result); // Debug: see what the API returns
 
           return {
@@ -547,10 +555,17 @@ export default function ChatPage() {
         } catch (error) {
           console.error("Upload error:", error);
           
+          // Check if it was aborted
+          if (error instanceof Error && error.message === 'Upload aborted') {
+            // Remove from progress tracking for aborted uploads
+            setUploadProgress(prev => prev.filter((_, idx) => idx !== index));
+            return null;
+          }
+          
           // Update progress to show error
           setUploadProgress(prev => 
             prev.map((item, idx) => 
-              idx === index ? { ...item, progress: -1 } : item
+              idx === index ? { ...item, progress: -1, abort: undefined } : item
             )
           );
           
@@ -588,6 +603,17 @@ export default function ChatPage() {
   // Remove attached file
   const removeAttachedFile = (fileId: number) => {
     setAttachedFiles(prev => prev.filter(file => file.id !== fileId));
+  };
+
+  // Cancel upload
+  const cancelUpload = (index: number) => {
+    setUploadProgress(prev => {
+      const item = prev[index];
+      if (item?.abort) {
+        item.abort();
+      }
+      return prev.filter((_, idx) => idx !== index);
+    });
   };
 
   const formatTime = (timestamp: string) => {
@@ -1035,6 +1061,7 @@ export default function ChatPage() {
                       attachedFiles={attachedFiles}
                       uploadProgress={uploadProgress}
                       onRemoveFile={removeAttachedFile}
+                      onCancelUpload={cancelUpload}
                       uploadingFiles={uploadingFiles}
                     />
                     

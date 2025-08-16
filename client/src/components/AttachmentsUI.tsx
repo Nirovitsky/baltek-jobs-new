@@ -163,6 +163,7 @@ interface ComposerAttachmentsProps {
   attachedFiles: AttachedFile[];
   uploadProgress: UploadProgress[];
   onRemoveFile: (fileId: number) => void;
+  onCancelUpload: (index: number) => void;
   uploadingFiles: boolean;
 }
 
@@ -170,6 +171,7 @@ export function ComposerAttachments({
   attachedFiles, 
   uploadProgress, 
   onRemoveFile, 
+  onCancelUpload,
   uploadingFiles 
 }: ComposerAttachmentsProps) {
   if (attachedFiles.length === 0 && uploadProgress.length === 0) {
@@ -317,14 +319,24 @@ export function ComposerAttachments({
                     </div>
                   </div>
 
-                  {/* Error Badge */}
-                  {file.progress === -1 && (
-                    <div className="absolute -top-2 -right-2">
+                  {/* Cancel/Error Button */}
+                  <div className="absolute -top-2 -right-2">
+                    {file.progress === -1 ? (
                       <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
                         <X className="w-3 h-3 text-white" />
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="h-6 w-6 p-0 rounded-full bg-gray-500 hover:bg-red-500 text-white border-0 shadow-lg transition-colors duration-200"
+                        onClick={() => onCancelUpload(index)}
+                        title="Cancel upload"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    )}
+                  </div>
                 </div>
               );
             })}

@@ -469,12 +469,14 @@ export class ApiClient {
   }
 
   // File upload API
-  static async uploadFile(file: File, onProgress?: (progress: number) => void): Promise<{ id: number; file_url?: string; url?: string; path?: string }> {
-    return new Promise((resolve, reject) => {
+  static uploadFile(file: File, onProgress?: (progress: number) => void): { promise: Promise<{ id: number; file_url?: string; url?: string; path?: string }>; abort: () => void } {
+    let xhr: XMLHttpRequest;
+    
+    const promise = new Promise<{ id: number; file_url?: string; url?: string; path?: string }>((resolve, reject) => {
+      xhr = new XMLHttpRequest();
       const formData = new FormData();
       formData.append("path", file);
 
-      const xhr = new XMLHttpRequest();
 
       // Track upload progress
       xhr.upload.addEventListener('progress', (event) => {
@@ -523,6 +525,15 @@ export class ApiClient {
 
       xhr.send(formData);
     });
+
+    return {
+      promise,
+      abort: () => {
+        if (xhr) {
+          xhr.abort();
+        }
+      }
+    };
   }
 
   // Helper to construct file URL from ID
