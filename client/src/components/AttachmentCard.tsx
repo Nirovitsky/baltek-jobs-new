@@ -164,8 +164,8 @@ export function AttachmentCard({
     const isMediaFile = ['image', 'video', 'audio'].includes(fileTypeInfo.type);
     
     if (isMediaFile) {
-      // Media files: no border, no padding, no hover effects, take whole card
-      return "relative group";
+      // Media files: minimal container, image fills the card completely
+      return "relative group overflow-hidden rounded-xl";
     }
     
     const baseClasses = "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-3";
@@ -231,22 +231,20 @@ export function AttachmentCard({
       {/* Unified Content Layout */}
       {isImage && fileUrl ? (
         /* Image Layout - Full width preview with details below */
-        <div className="w-full h-full">
-          <div className="relative cursor-pointer w-full h-full" onClick={handleView}>
-            <img
-              src={fileUrl}
-              alt={fileName}
-              className="w-full h-full object-cover"
-              loading="lazy"
-              onError={(e) => {
-                console.log('Image failed to load:', fileUrl);
-                e.currentTarget.style.display = 'none';
-              }}
-              onLoad={() => {
-                console.log('Image loaded successfully:', fileUrl);
-              }}
-            />
-          </div>
+        <div className="relative cursor-pointer" onClick={handleView}>
+          <img
+            src={fileUrl}
+            alt={fileName}
+            className="w-full h-48 object-cover rounded-t-xl"
+            loading="lazy"
+            onError={(e) => {
+              console.log('Image failed to load:', fileUrl);
+              e.currentTarget.style.display = 'none';
+            }}
+            onLoad={() => {
+              console.log('Image loaded successfully:', fileUrl);
+            }}
+          />
         </div>
       ) : (
         /* File Layout - Icon, filename, and download button */
