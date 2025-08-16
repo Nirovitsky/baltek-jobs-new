@@ -163,6 +163,7 @@ export function AttachmentCard({
         setCachedImageUrl(cached);
       } else {
         console.log('📥 Loading and caching image:', fileUrl);
+        // Cache in background, but don't wait for it to display the image
         loadAndCacheImage(fileUrl)
           .then((cachedUrl) => {
             console.log('✅ Image cached successfully:', fileUrl);
@@ -272,7 +273,7 @@ export function AttachmentCard({
               src={cachedImageUrl || fileUrl}
               alt={fileName}
               className="w-full h-64 object-cover rounded-xl"
-              loading="lazy"
+              loading="eager"
               onError={(e) => {
                 console.log('Image failed to load:', fileUrl);
                 e.currentTarget.style.display = 'none';
@@ -346,16 +347,10 @@ export function AttachmentCard({
       {isImage && (
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
           <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 border-none bg-transparent">
-            {!cachedImageUrl && isLoading(fileUrl) && (
-              <div className="w-full h-full flex items-center justify-center">
-                <Loader2 className="w-8 h-8 animate-spin text-white" />
-              </div>
-            )}
             <img
               src={cachedImageUrl || fileUrl}
               alt={fileName}
               className="w-full h-full object-contain"
-              style={{ display: (!cachedImageUrl && isLoading(fileUrl)) ? 'none' : 'block' }}
             />
           </DialogContent>
         </Dialog>
