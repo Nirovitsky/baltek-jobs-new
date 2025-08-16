@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import FileUpload from "@/components/file-upload";
-import { Send, X } from "lucide-react";
+import { Send, X, FileText } from "lucide-react";
 import baltekIcon from "@/assets/baltek-icon.svg";
 
 interface ApplicationModalProps {
@@ -186,43 +186,61 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
                             if (uploadedFile) setUploadedFile(null); // Clear uploaded file when selecting existing resume
                           }}
                           className={`
-                            relative p-4 border rounded-lg cursor-pointer transition-all duration-200
+                            relative p-4 border rounded-xl cursor-pointer transition-all duration-200 min-h-[80px]
                             ${selectedResumeId === resume.id.toString() 
-                              ? 'border-primary bg-primary/5 ring-1 ring-primary' 
+                              ? 'border-primary bg-primary/5 ring-2 ring-primary/20' 
                               : 'border-input bg-background hover:border-primary/50 hover:bg-muted/30'
                             }
                           `}
                         >
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h4 className="font-medium text-sm">
-                                {resume.title || resume.name || `Resume ${resume.id}`}
-                                {resume.is_primary && (
-                                  <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
-                                    Primary
-                                  </span>
-                                )}
-                              </h4>
-                              {resume.updated_at && (
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  Updated {new Date(resume.updated_at).toLocaleDateString()}
-                                </p>
-                              )}
-                            </div>
+                          <div className="flex items-start space-x-3">
                             <div className={`
-                              w-4 h-4 rounded-full border-2 transition-all duration-200
+                              flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center
                               ${selectedResumeId === resume.id.toString()
-                                ? 'border-primary bg-primary'
-                                : 'border-input'
+                                ? 'bg-primary/10 text-primary'
+                                : 'bg-muted/50 text-muted-foreground'
                               }
                             `}>
-                              {selectedResumeId === resume.id.toString() && (
-                                <div className="w-full h-full rounded-full bg-background scale-50" />
-                              )}
+                              <FileText className="w-5 h-5" />
+                            </div>
+                            
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1 min-w-0">
+                                  <h4 className="font-medium text-sm text-foreground truncate">
+                                    {resume.title || resume.name || `Resume ${resume.id}`}
+                                  </h4>
+                                  <div className="flex items-center space-x-2 mt-1">
+                                    {resume.is_primary && (
+                                      <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+                                        Primary
+                                      </span>
+                                    )}
+                                    {resume.updated_at && (
+                                      <p className="text-xs text-muted-foreground">
+                                        Updated {new Date(resume.updated_at).toLocaleDateString()}
+                                      </p>
+                                    )}
+                                  </div>
+                                </div>
+                                
+                                <div className={`
+                                  flex-shrink-0 w-5 h-5 rounded-full border-2 transition-all duration-200 ml-3
+                                  ${selectedResumeId === resume.id.toString()
+                                    ? 'border-primary bg-primary'
+                                    : 'border-input'
+                                  }
+                                `}>
+                                  {selectedResumeId === resume.id.toString() && (
+                                    <div className="w-full h-full rounded-full bg-white scale-50" />
+                                  )}
+                                </div>
+                              </div>
                             </div>
                           </div>
+                          
                           {selectedResumeId === resume.id.toString() && (
-                            <div className="absolute inset-0 rounded-lg border-2 border-primary opacity-20 pointer-events-none" />
+                            <div className="absolute inset-0 rounded-xl border-2 border-primary opacity-15 pointer-events-none" />
                           )}
                         </div>
                       ));
