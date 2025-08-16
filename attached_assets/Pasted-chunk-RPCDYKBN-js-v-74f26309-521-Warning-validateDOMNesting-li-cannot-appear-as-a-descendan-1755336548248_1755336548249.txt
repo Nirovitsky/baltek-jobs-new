@@ -1,0 +1,94 @@
+chunk-RPCDYKBN.js?v=74f26309:521 Warning: validateDOMNesting(...): <li> cannot appear as a descendant of <li>.
+    at li
+    at BreadcrumbSeparator (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/components/ui/breadcrumb.tsx:116:3)
+    at li
+    at _c5 (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/components/ui/breadcrumb.tsx:52:12)
+    at ol
+    at _c3 (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/components/ui/breadcrumb.tsx:29:12)
+    at nav
+    at _c (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/components/ui/breadcrumb.tsx:21:48)
+    at div
+    at div
+    at BreadcrumbNavigation (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/components/breadcrumb-navigation.tsx:87:20)
+    at div
+    at ChatPage (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/pages/chat.tsx:51:20)
+    at main
+    at div
+    at ProtectedLayout (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/App.tsx:97:30)
+    at OnboardingGuard (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/components/onboarding-guard.tsx:20:35)
+    at ProtectedRoute (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/App.tsx:43:27)
+    at RenderedRoute (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-router-dom.js?v=74f26309:5643:26)
+    at Routes (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-router-dom.js?v=74f26309:6379:3)
+    at Router (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/App.tsx:76:42)
+    at Provider (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=74f26309:38:15)
+    at TooltipProvider (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=74f26309:63:5)
+    at ThemeProvider (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/src/components/theme-provider.tsx:25:3)
+    at QueryClientProvider (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=74f26309:2805:3)
+    at App
+    at Router (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-router-dom.js?v=74f26309:6322:13)
+    at BrowserRouter (https://33644e2f-8d90-48d7-8ac2-d2264601e962-00-5jdwl1hhhzdi.janeway.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-router-dom.js?v=74f26309:9403:3)
+printWarning @ chunk-RPCDYKBN.js?v=74f26309:521
+error @ chunk-RPCDYKBN.js?v=74f26309:505
+validateDOMNesting @ chunk-RPCDYKBN.js?v=74f26309:8256
+createInstance @ chunk-RPCDYKBN.js?v=74f26309:8328
+completeWork @ chunk-RPCDYKBN.js?v=74f26309:16290
+completeUnitOfWork @ chunk-RPCDYKBN.js?v=74f26309:19224
+performUnitOfWork @ chunk-RPCDYKBN.js?v=74f26309:19206
+workLoopSync @ chunk-RPCDYKBN.js?v=74f26309:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=74f26309:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=74f26309:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=74f26309:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=74f26309:18627
+setTimeout
+scheduleFn @ @tanstack_react-query.js?v=74f26309:555
+flush @ @tanstack_react-query.js?v=74f26309:569
+batch @ @tanstack_react-query.js?v=74f26309:587
+dispatch_fn @ @tanstack_react-query.js?v=74f26309:996
+setData @ @tanstack_react-query.js?v=74f26309:696
+onSuccess @ @tanstack_react-query.js?v=74f26309:897
+resolve @ @tanstack_react-query.js?v=74f26309:456
+Promise.then
+run @ @tanstack_react-query.js?v=74f26309:498
+start @ @tanstack_react-query.js?v=74f26309:536
+fetch @ @tanstack_react-query.js?v=74f26309:926
+executeFetch_fn @ @tanstack_react-query.js?v=74f26309:2211
+onSubscribe @ @tanstack_react-query.js?v=74f26309:1898
+subscribe @ @tanstack_react-query.js?v=74f26309:24
+(anonymous) @ @tanstack_react-query.js?v=74f26309:3022
+subscribeToStore @ chunk-RPCDYKBN.js?v=74f26309:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=74f26309:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=74f26309:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=74f26309:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=74f26309:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=74f26309:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=74f26309:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=74f26309:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=74f26309:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=74f26309:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=74f26309:19432
+commitRoot @ chunk-RPCDYKBN.js?v=74f26309:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=74f26309:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=74f26309:18718
+workLoop @ chunk-RPCDYKBN.js?v=74f26309:197
+flushWork @ chunk-RPCDYKBN.js?v=74f26309:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=74f26309:384Understand this error
+api.ts:62 Making API request to: https://api.baltek.net/api/notifications/?page_size=5 with options: {headers: {…}}
+api.ts:62 Making API request to: https://api.baltek.net/api/chat/rooms/ with options: {headers: {…}}
+chat.tsx:673 Messages debug: {selectedConversation: null, apiMessagesCount: 0, localMessagesCount: 0, totalUniqueMessages: 0, messagesLoading: false, …}
+2api.ts:70 API response status: 200
+chat.tsx:673 Messages debug: {selectedConversation: null, apiMessagesCount: 0, localMessagesCount: 0, totalUniqueMessages: 0, messagesLoading: false, …}
+chat.tsx:312 WebSocket connected successfully with token authentication
+chat.tsx:673 Messages debug: {selectedConversation: null, apiMessagesCount: 0, localMessagesCount: 0, totalUniqueMessages: 0, messagesLoading: false, …}
+chat.tsx:673 Messages debug: {selectedConversation: 3, apiMessagesCount: 0, localMessagesCount: 0, totalUniqueMessages: 0, messagesLoading: true, …}
+api.ts:62 Making API request to: https://api.baltek.net/api/chat/messages/?room=3 with options: {headers: {…}}
+chat.tsx:673 Messages debug: {selectedConversation: 3, apiMessagesCount: 0, localMessagesCount: 0, totalUniqueMessages: 0, messagesLoading: true, …}
+chat.tsx:673 Messages debug: {selectedConversation: 3, apiMessagesCount: 0, localMessagesCount: 0, totalUniqueMessages: 0, messagesLoading: true, …}
+chat.tsx:673 Messages debug: {selectedConversation: 3, apiMessagesCount: 0, localMessagesCount: 0, totalUniqueMessages: 0, messagesLoading: true, …}
+api.ts:70 API response status: 200
+chat.tsx:673 Messages debug: {selectedConversation: 3, apiMessagesCount: 20, localMessagesCount: 0, totalUniqueMessages: 20, messagesLoading: false, …}
+AttachmentCard.tsx:146 AttachmentCard Debug: {fileName: 'IMG_5195.HEIC', contentType: undefined, fileTypeInfo: 'unknown', isImage: false, fileUrl: 'https://api.baltek.net/api/files/51/', …}
+AttachmentCard.tsx:146 AttachmentCard Debug: {fileName: 'ynanc_hat.docx (1).pdf', contentType: undefined, fileTypeInfo: 'pdf', isImage: false, fileUrl: 'https://api.baltek.net/api/files/54/', …}
+AttachmentCard.tsx:146 AttachmentCard Debug: {fileName: 'lemoneta_2.jpg', contentType: undefined, fileTypeInfo: 'image', isImage: true, fileUrl: 'https://api.baltek.net/api/files/68/', …}
+api.ts:62 Making API request to: https://api.baltek.net/api/jobs/54/ with options: {headers: {…}}
+api.ts:70 API response status: 200
+AttachmentCard.tsx:224 Image failed to load: https://api.baltek.net/api/files/68/

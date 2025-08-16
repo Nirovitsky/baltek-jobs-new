@@ -47,7 +47,7 @@ const getFileTypeInfo = (fileName: string, contentType?: string) => {
   const extension = getFileExtension(fileName);
   
   // Image files
-  if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'].includes(extension) || 
+  if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'heic', 'heif'].includes(extension) || 
       contentType?.startsWith('image/')) {
     return {
       type: 'image',
@@ -138,7 +138,8 @@ export function AttachmentCard({
   const fileName = file.file_name || file.name || 'Unknown file';
   const fileTypeInfo = getFileTypeInfo(fileName, file.content_type);
   const IconComponent = fileTypeInfo.icon;
-  const fileUrl = file.file_url || (file.id ? `https://api.baltek.net/api/files/${file.id}/` : '');
+  // Fix URL construction - backend uses /media/file/ format
+  const fileUrl = file.file_url || (file.id ? `https://api.baltek.net/media/file/${file.id}` : '');
   const isImage = fileTypeInfo.type === 'image';
   const isUploading = uploadProgress && uploadProgress.name === fileName;
 
