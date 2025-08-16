@@ -190,9 +190,27 @@ export function AttachmentCard({
     isHEIC: getFileExtension(fileName) === 'heic' || file.content_type === 'image/heic'
   });
 
-  // Simple styling - no backgrounds, just minimal layout
+  // Unified styling for both variants
   const getCardClasses = () => {
-    return "relative";
+    const isMediaFile = ['image', 'video', 'audio'].includes(fileTypeInfo.type);
+    
+    if (isMediaFile) {
+      // Media files: no border, no padding, minimal styling
+      return "relative group rounded-xl hover:shadow-lg transition-all duration-300";
+    }
+    
+    const baseClasses = "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-3";
+    
+    if (variant === 'composer') {
+      return `${baseClasses} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:scale-[1.02]`;
+    } else {
+      // Message variant - use same styling as composer but adapt colors for message context
+      if (isOwner) {
+        return `${baseClasses} bg-gradient-to-br from-white/10 to-white/5 dark:from-white/10 dark:to-white/5 border border-white/20 hover:bg-white/15`;
+      } else {
+        return `${baseClasses} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700`;
+      }
+    }
   };
 
   const handleDownload = () => {
@@ -246,15 +264,15 @@ export function AttachmentCard({
         </div>
       )}
 
-      {/* Simplified Content Layout */}
+      {/* Unified Content Layout */}
       {isImage && fileUrl ? (
-        /* Image Layout - Simple preview with click to view */
-        <div className="flex items-center space-x-3">
+        /* Image Layout - Full width preview with details below */
+        <div className="flex flex-col">
           <div className="cursor-pointer" onClick={handleView}>
             <img
               src={cachedImageUrl || fileUrl}
               alt={fileName}
-              className="w-12 h-12 object-cover rounded"
+              className="w-full h-64 object-cover rounded-xl"
               loading="eager"
               onError={(e) => {
                 console.log('Image failed to load:', fileUrl);
@@ -266,46 +284,46 @@ export function AttachmentCard({
             />
           </div>
           
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-foreground truncate" title={fileName}>
-              {fileName}
+          {/* Only show image details in composer variant, hide in message variant */}
+          {variant === 'composer' && (
+            <div className="flex items-center justify-between p-3">
+              <div className="flex-1 min-w-0">
+                <div 
+                  className="text-sm font-medium text-foreground truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" 
+                  title="Click to view"
+                  onClick={handleView}
+                >
+                  {fileName}
+                </div>
+                {file.size && (
+                  <div className="text-xs text-muted-foreground">
+                    {formatFileSize(file.size)}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-8 w-8 p-0"
-            onClick={handleDownload}
-            title="Download"
-          >
-            <Download className="w-4 h-4" />
-          </Button>
+          )}
         </div>
       ) : (
-        /* File Layout - Icon, filename, and download button */
-        <div className="flex items-center space-x-3">
-          <div className="flex-shrink-0">
-            <IconComponent className={`w-6 h-6 ${fileTypeInfo.color}`} />
+        /* File Layout - New design */
+        <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+          <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 flex items-center justify-center rounded">
+            <IconComponent className={`w-4 h-4 ${fileTypeInfo.color}`} />
           </div>
-          
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-foreground truncate" title={fileName}>
-              {fileName}
-            </div>
-          </div>
-          
-          {fileUrl && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0"
-              onClick={handleDownload}
-              title="Download"
-            >
-              <Download className="w-4 h-4" />
-            </Button>
-          )}
+          <span className="text-sm flex-1 truncate" title={fileName}>
+            {fileName}
+            {file.size && (
+              <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                ({formatFileSize(file.size)})
+              </span>
+            )}
+          </span>
+          <button 
+            className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
+            onClick={fileTypeInfo.type === 'pdf' ? handleView : handleDownload}
+          >
+            {fileTypeInfo.type === 'pdf' ? 'View' : 'Download'}
+          </button>
         </div>
       )}
 
