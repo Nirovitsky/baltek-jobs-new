@@ -162,7 +162,9 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      navigate('/profile');
+                      if (job.organization?.id) {
+                        navigate(`/company/${job.organization.id}`);
+                      }
                     }}
                   />
                 ) : (
@@ -171,7 +173,9 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      navigate('/profile');
+                      if (job.organization?.id) {
+                        navigate(`/company/${job.organization.id}`);
+                      }
                     }}
                   >
                     <Building className="w-6 h-6 text-primary" />
@@ -188,7 +192,9 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        navigate('/profile');
+                        if (job.organization?.id) {
+                          navigate(`/company/${job.organization.id}`);
+                        }
                       }}
                     >
                       {job.organization?.display_name || job.organization?.name || "Unknown Company"}
