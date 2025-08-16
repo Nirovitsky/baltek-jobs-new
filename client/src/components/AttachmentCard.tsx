@@ -200,89 +200,106 @@ export function AttachmentCard({
         </div>
       )}
 
-      {/* Image Thumbnail */}
+      {/* Content Layout */}
       {isImage ? (
-        <div className="relative mb-3">
-          <img
-            src={fileUrl}
-            alt={fileName}
-            className="w-full h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
-            loading="lazy"
-            onError={(e) => {
-              e.currentTarget.style.display = 'none';
-            }}
-          />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
+        /* Image Layout */
+        <div className="space-y-3">
+          <div className="relative">
+            <img
+              src={fileUrl}
+              alt={fileName}
+              className="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+              loading="lazy"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
+            />
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
+            
+            {/* Image Action Buttons (Message variant) */}
+            {variant === 'message' && (
+              <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
+                  onClick={handleView}
+                  title="View full size"
+                >
+                  <Eye className="w-3 h-3" />
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
+                  onClick={handleDownload}
+                  title="Download"
+                >
+                  <Download className="w-3 h-3" />
+                </Button>
+              </div>
+            )}
+          </div>
           
-          {/* Image Action Buttons (Message variant) */}
-          {variant === 'message' && (
-            <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-                onClick={handleView}
-                title="View full size"
-              >
-                <Eye className="w-3 h-3" />
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-                onClick={handleDownload}
-                title="Download"
-              >
-                <Download className="w-3 h-3" />
-              </Button>
+          {/* Image File Info */}
+          <div className="text-center">
+            <div className="text-sm font-medium text-foreground truncate" title={fileName}>
+              {fileName}
             </div>
-          )}
+            {file.size && (
+              <div className="text-xs text-muted-foreground">
+                {formatFileSize(file.size)}
+              </div>
+            )}
+          </div>
         </div>
       ) : (
-        /* File Icon */
-        <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-3 ${fileTypeInfo.bgColor}`}>
-          <IconComponent className={`w-6 h-6 ${fileTypeInfo.color}`} />
+        /* File Layout */
+        <div className="flex items-center space-x-3">
+          <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${fileTypeInfo.bgColor}`}>
+            <IconComponent className={`w-6 h-6 ${fileTypeInfo.color}`} />
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium text-foreground truncate" title={fileName}>
+              {fileName}
+            </div>
+            {file.size && (
+              <div className="text-xs text-muted-foreground">
+                {formatFileSize(file.size)}
+              </div>
+            )}
+            
+            {/* Action Buttons for Files */}
+            {variant === 'message' && fileUrl && (
+              <div className="flex space-x-2 mt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={handleDownload}
+                >
+                  <Download className="w-3 h-3 mr-1" />
+                  Download
+                </Button>
+                {fileTypeInfo.type === 'pdf' && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={handleView}
+                    title="View"
+                  >
+                    <Eye className="w-3 h-3" />
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
-      {/* File Info */}
-      <div className="space-y-2">
-        <div className="text-sm font-medium text-foreground truncate" title={fileName}>
-          {fileName}
-        </div>
-        
-        {file.size && (
-          <div className="text-xs text-muted-foreground">
-            {formatFileSize(file.size)}
-          </div>
-        )}
 
-        {/* Action Buttons for Non-Images */}
-        {!isImage && variant === 'message' && fileUrl && (
-          <div className="flex space-x-2 pt-1">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-7 px-2 text-xs flex-1"
-              onClick={handleDownload}
-            >
-              <Download className="w-3 h-3 mr-1" />
-              Download
-            </Button>
-            {fileTypeInfo.type === 'pdf' && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7 px-2 text-xs"
-                onClick={handleView}
-                title="View"
-              >
-                <Eye className="w-3 h-3" />
-              </Button>
-            )}
-          </div>
-        )}
-      </div>
     </div>
   );
 }

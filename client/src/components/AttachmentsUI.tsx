@@ -367,13 +367,14 @@ export function UserMessageAttachments({ attachments, isOwner }: UserMessageAtta
   }
 
   return (
-    <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+    <div className="mt-2 space-y-2">
       {attachments.map((attachment, index) => (
         <AttachmentCard
           key={attachment.id || index}
           file={attachment}
           variant="message"
           isOwner={isOwner}
+          className="w-full max-w-sm"
         />
       ))}
     </div>
