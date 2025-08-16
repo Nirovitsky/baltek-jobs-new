@@ -1052,12 +1052,12 @@ export default function ChatPage() {
                                       <div
                                         className={`rounded-lg transition-all duration-200 ease-in-out hover:shadow-md ${
                                           message.status === "failed"
-                                            ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500 p-3"
+                                            ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500 p-2"
                                             : message.status === "sending"
-                                            ? "bg-primary/70 text-primary-foreground p-3"
+                                            ? "bg-primary/70 text-primary-foreground p-2"
                                             : message.owner === user?.id
-                                            ? "bg-primary text-primary-foreground hover:bg-primary/90 p-3"
-                                            : "bg-muted text-foreground p-3"
+                                            ? "bg-primary text-primary-foreground hover:bg-primary/90 p-2"
+                                            : "bg-muted text-foreground p-2"
                                         }`}
                                       >
                                         <MessageRenderer 
