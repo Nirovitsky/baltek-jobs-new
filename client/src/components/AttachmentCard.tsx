@@ -321,23 +321,21 @@ export function AttachmentCard({
       {/* Image Modal */}
       {isImage && (
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-          <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 bg-black/95 border-none">
-            <div className="relative w-full h-full flex items-center justify-center p-4">
-              <img
-                src={fileUrl}
-                alt={fileName}
-                className="max-w-full max-h-full object-contain rounded-lg"
-                loading="lazy"
-              />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute top-4 right-4 h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white border-none"
-                onClick={() => setIsImageModalOpen(false)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
+          <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 border-none bg-transparent">
+            <img
+              src={fileUrl}
+              alt={fileName}
+              className="w-full h-full object-contain"
+              loading="lazy"
+            />
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute top-4 right-4 h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white border-none z-10"
+              onClick={() => setIsImageModalOpen(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
           </DialogContent>
         </Dialog>
       )}
