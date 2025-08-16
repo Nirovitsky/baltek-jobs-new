@@ -469,7 +469,7 @@ export class ApiClient {
   }
 
   // File upload API
-  static async uploadFile(file: File, onProgress?: (progress: number) => void) {
+  static async uploadFile(file: File, onProgress?: (progress: number) => void): Promise<{ id: number; file_url?: string; url?: string; path?: string }> {
     return new Promise((resolve, reject) => {
       const formData = new FormData();
       formData.append("path", file);

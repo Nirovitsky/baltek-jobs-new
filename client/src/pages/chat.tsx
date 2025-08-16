@@ -538,10 +538,10 @@ export default function ChatPage() {
           console.log("Upload result:", result); // Debug: see what the API returns
 
           return {
-            id: result.id,
+            id: (result as any).id,
             name: file.name,
             size: file.size,
-            file_url: result.file_url || result.url || result.path, // Try different possible URL fields
+            file_url: (result as any).file_url || (result as any).url || (result as any).path, // Try different possible URL fields
             content_type: file.type,
           };
         } catch (error) {
