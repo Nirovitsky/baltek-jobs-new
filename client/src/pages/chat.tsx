@@ -1057,7 +1057,7 @@ export default function ChatPage() {
                                             ? "bg-primary/70 text-primary-foreground p-3"
                                             : message.owner === user?.id
                                             ? "bg-primary text-primary-foreground hover:bg-primary/90 p-3"
-                                            : "bg-muted text-foreground hover:bg-muted p-3"
+                                            : "bg-muted text-foreground p-3"
                                         }`}
                                       >
                                         <MessageRenderer 
