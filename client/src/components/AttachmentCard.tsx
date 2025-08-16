@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
   DialogContent,
@@ -150,6 +151,7 @@ export function AttachmentCard({
   const isImage = fileTypeInfo.type === 'image';
   const isUploading = uploadProgress && uploadProgress.name === fileName;
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   // Debug log for images
   console.log('AttachmentCard Debug:', {
@@ -202,6 +204,7 @@ export function AttachmentCard({
   const handleView = () => {
     if (isImage) {
       // For images, open modal instead of new window
+      setImageLoaded(false); // Reset image loaded state
       setIsImageModalOpen(true);
     } else {
       // For non-images, open in new window
@@ -244,17 +247,22 @@ export function AttachmentCard({
         /* Image Layout - Full width preview with details below */
         <div className="flex flex-col">
           <div className="relative cursor-pointer" onClick={handleView}>
+            {!imageLoaded && (
+              <Skeleton className="w-full h-64 rounded-xl" />
+            )}
             <img
               src={fileUrl}
               alt={fileName}
-              className="w-full h-64 object-cover rounded-xl"
+              className={`w-full h-64 object-cover rounded-xl transition-opacity duration-200 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               loading="lazy"
               onError={(e) => {
                 console.log('Image failed to load:', fileUrl);
+                setImageLoaded(true); // Hide skeleton even if image fails
                 e.currentTarget.style.display = 'none';
               }}
               onLoad={() => {
                 console.log('Image loaded successfully:', fileUrl);
+                setImageLoaded(true);
               }}
             />
             <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-xl transition-colors duration-200" />
@@ -321,7 +329,7 @@ export function AttachmentCard({
       {/* Image Modal */}
       {isImage && (
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-          <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 bg-black/95 border-none">
+          <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 bg-white dark:bg-gray-900 border-none">
             <div className="relative w-full h-full flex items-center justify-center p-4">
               <img
                 src={fileUrl}
@@ -332,7 +340,7 @@ export function AttachmentCard({
               <Button
                 variant="ghost"
                 size="sm"
-                className="absolute top-4 right-4 h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white border-none"
+                className="absolute top-4 right-4 h-8 w-8 p-0 bg-gray-100/90 hover:bg-gray-200/90 dark:bg-gray-800/90 dark:hover:bg-gray-700/90 text-gray-800 dark:text-gray-200 border-none"
                 onClick={() => setIsImageModalOpen(false)}
               >
                 <X className="w-4 h-4" />
