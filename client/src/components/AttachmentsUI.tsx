@@ -177,76 +177,29 @@ export function ComposerAttachments({
   }
 
   return (
-    <div className="p-3 border-t border-border space-y-2">
-      {/* Upload Progress */}
-      {uploadProgress.length > 0 && (
-        <div className="space-y-2">
-          <div className="text-xs font-medium text-muted-foreground flex items-center gap-2">
-            <Loader2 className="w-3 h-3 animate-spin" />
-            Uploading {uploadProgress.length} file{uploadProgress.length > 1 ? 's' : ''}...
-          </div>
-          <div className="flex flex-wrap gap-3">
-            {uploadProgress.map((file, index) => (
-              <div key={index} className="group relative">
-                <div className="flex items-center space-x-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border border-blue-200 dark:border-blue-800/50 rounded-xl p-3 min-w-0 max-w-52 shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="relative w-10 h-10 flex-shrink-0">
-                    <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
-                      <path
-                        className="text-blue-200 dark:text-blue-800"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="transparent"
-                        d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
-                      />
-                      <path
-                        className={file.progress === -1 ? "text-red-500" : "text-blue-600 dark:text-blue-400"}
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        fill="transparent"
-                        strokeDasharray={`${file.progress === -1 ? 0 : file.progress}, 100`}
-                        strokeLinecap="round"
-                        d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
-                        style={{
-                          transition: 'stroke-dasharray 0.3s ease-in-out'
-                        }}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-xs font-semibold text-blue-700 dark:text-blue-300">
-                        {file.progress === -1 ? "!" : `${file.progress}%`}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold text-blue-900 dark:text-blue-100 truncate">
-                      {file.name}
-                    </div>
-                    <div className="text-xs text-blue-600 dark:text-blue-400">
-                      {file.progress === -1 ? "Upload failed" : "Uploading..."}
-                    </div>
-                  </div>
-                </div>
-                {file.progress === -1 && (
-                  <div className="absolute -top-1 -right-1">
-                    <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                      <X className="w-3 h-3 text-white" />
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Attached Files Preview */}
-      {attachedFiles.length > 0 && (
+    <div className="p-3 border-t border-border space-y-3">
+      {/* Combined Files Display */}
+      {(uploadProgress.length > 0 || attachedFiles.length > 0) && (
         <div className="space-y-3">
-          <div className="text-xs font-semibold text-foreground flex items-center gap-2">
-            <Paperclip className="w-3 h-3" />
-            Ready to send ({attachedFiles.length} file{attachedFiles.length > 1 ? 's' : ''})
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-semibold text-foreground flex items-center gap-2">
+              <Paperclip className="w-3 h-3" />
+              {uploadProgress.length > 0 && attachedFiles.length > 0
+                ? `${attachedFiles.length} ready, ${uploadProgress.length} uploading`
+                : uploadProgress.length > 0
+                ? `Uploading ${uploadProgress.length} file${uploadProgress.length > 1 ? 's' : ''}...`
+                : `Ready to send (${attachedFiles.length} file${attachedFiles.length > 1 ? 's' : ''})`
+              }
+            </div>
+            {uploadProgress.length > 0 && (
+              <Loader2 className="w-3 h-3 animate-spin text-blue-600" />
+            )}
           </div>
+
+          {/* Combined Grid Layout */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {/* Uploaded Files */}
             {attachedFiles.map((file) => {
               const fileTypeInfo = getFileTypeInfo(file.name, file.content_type);
               const IconComponent = fileTypeInfo.icon;
@@ -302,6 +255,76 @@ export function ComposerAttachments({
                   >
                     <X className="w-3 h-3" />
                   </Button>
+                </div>
+              );
+            })}
+
+            {/* Uploading Files */}
+            {uploadProgress.map((file, index) => {
+              const fileTypeInfo = getFileTypeInfo(file.name);
+              const IconComponent = fileTypeInfo.icon;
+
+              return (
+                <div key={`upload-${index}`} className="relative group animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-200 dark:border-blue-800/50 rounded-xl p-3 shadow-sm hover:shadow-lg transition-all duration-300">
+                    {/* Upload Progress Circle */}
+                    <div className="flex items-center justify-center h-20 relative">
+                      <div className={`p-3 rounded-xl ${fileTypeInfo.bgColor} opacity-50`}>
+                        <IconComponent className={`w-8 h-8 ${fileTypeInfo.color}`} />
+                      </div>
+                      
+                      {/* Progress Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="relative w-12 h-12">
+                          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+                            <path
+                              className="text-blue-200 dark:text-blue-800"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              fill="transparent"
+                              d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
+                            />
+                            <path
+                              className={file.progress === -1 ? "text-red-500" : "text-blue-600 dark:text-blue-400"}
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              fill="transparent"
+                              strokeDasharray={`${file.progress === -1 ? 0 : file.progress}, 100`}
+                              strokeLinecap="round"
+                              d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
+                              style={{
+                                transition: 'stroke-dasharray 0.3s ease-in-out'
+                              }}
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-xs font-bold text-blue-700 dark:text-blue-300">
+                              {file.progress === -1 ? "!" : `${file.progress}%`}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* File Info */}
+                    <div className="mt-3 text-center space-y-1">
+                      <div className="text-xs font-semibold text-blue-900 dark:text-blue-100 truncate" title={file.name}>
+                        {file.name}
+                      </div>
+                      <div className="text-xs text-blue-600 dark:text-blue-400">
+                        {file.progress === -1 ? "Upload failed" : "Uploading..."}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Error Badge */}
+                  {file.progress === -1 && (
+                    <div className="absolute -top-2 -right-2">
+                      <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+                        <X className="w-3 h-3 text-white" />
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
