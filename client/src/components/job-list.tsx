@@ -142,7 +142,7 @@ export default function JobList({
 
   if (isLoading) {
     return (
-      <div className="h-full flex flex-col w-[400px]">
+      <div className="h-full flex flex-col w-full max-w-[400px]">
         {renderSearchBar()}
         <div className="flex-1 overflow-y-auto min-h-0 space-y-3 p-3">
           <JobCardSkeleton />
@@ -155,7 +155,7 @@ export default function JobList({
 
   if (jobs.length === 0) {
     return (
-      <div className="h-full flex flex-col w-[400px]">
+      <div className="h-full flex flex-col w-full max-w-[400px]">
         {renderSearchBar()}
         
         <div className="flex-1 flex items-center justify-center p-8">
@@ -169,7 +169,7 @@ export default function JobList({
   }
 
   return (
-    <div className="h-full flex flex-col w-[400px]">
+    <div className="h-full flex flex-col w-full max-w-[400px]">
       {renderSearchBar()}
 
       <div id="job-list-container" className="infinite-scroll flex-1 overflow-y-auto min-h-0 space-y-3 p-3" style={{ scrollBehavior: 'auto' }}>

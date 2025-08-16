@@ -84,14 +84,14 @@ export default function Navbar({}: NavbarProps) {
           <div className="flex items-center flex-1">
             <Link to="/jobs" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
-                <Briefcase className="h-8 w-8 text-primary" />
-                <h1 className="text-xl font-bold text-primary">baltek jobs</h1>
+                <Briefcase className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                <h1 className="text-lg sm:text-xl font-bold text-primary">baltek jobs</h1>
               </div>
             </Link>
           </div>
 
           {/* Navigation Items */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             {user ? (
               <>
                 {/* Notifications */}

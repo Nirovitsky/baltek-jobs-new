@@ -249,15 +249,15 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   };
 
   return (
-    <Card className="h-full max-h-[calc(100vh-195px)] flex flex-col w-full overflow-hidden">
+    <Card className="h-full max-h-[50vh] lg:max-h-[calc(100vh-195px)] flex flex-col w-full overflow-hidden">
       {/* Fixed Header */}
-      <div className="p-6 border-b bg-background flex-shrink-0">
+      <div className="p-4 lg:p-6 border-b bg-background flex-shrink-0">
         {/* Header */}
-        <div className="flex items-start justify-between mb-6">
-          <div className="flex items-center space-x-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 lg:mb-6 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
             <RouterLink
               to={`/company/${job.organization?.id}`}
-              className="w-16 h-16 bg-muted rounded-full flex items-center justify-center hover:bg-muted transition-colors cursor-pointer"
+              className="w-12 h-12 sm:w-16 sm:h-16 bg-muted rounded-full flex items-center justify-center hover:bg-muted transition-colors cursor-pointer self-start"
             >
               {job.organization?.logo ? (
                 <img
@@ -267,20 +267,20 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                     job.organization.official_name ||
                     "Company"
                   }
-                  className="w-16 h-16 rounded-full object-cover"
+                  className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover"
                 />
               ) : (
-                <Building className="w-8 h-8 text-muted-foreground/60" />
+                <Building className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground/60" />
               )}
             </RouterLink>
-            <div>
-              <h1 className="text-2xl font-bold text-foreground">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground leading-tight">
                 {job.title || "Job Title"}
               </h1>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mt-1">
                 <RouterLink
                   to={`/company/${job.organization?.id}`}
-                  className="text-lg text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                  className="text-sm sm:text-base lg:text-lg text-muted-foreground hover:text-primary transition-colors cursor-pointer truncate"
                 >
                   {job.organization?.display_name ||
                     job.organization?.official_name ||
@@ -288,25 +288,25 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                 </RouterLink>
                 <RouterLink
                   to={`/company/${job.organization?.id}`}
-                  className="text-muted-foreground/60 hover:text-primary transition-colors"
+                  className="text-muted-foreground/60 hover:text-primary transition-colors flex-shrink-0"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="w-3 h-3 sm:w-4 sm:h-4" />
                 </RouterLink>
               </div>
-              <div className="flex items-center space-x-4 text-sm text-muted-foreground mt-1">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-xs sm:text-sm text-muted-foreground mt-1 gap-1 sm:gap-0">
                 <span className="flex items-center">
-                  <MapPin className="w-4 h-4 mr-1" />
-                  {job.location?.name || "Unknown"}
+                  <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
+                  <span className="truncate">{job.location?.name || "Unknown"}</span>
                 </span>
                 <span className="flex items-center">
-                  <Calendar className="w-4 h-4 mr-1" />
+                  <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
                   Posted{" "}
                   {job.created_at ? getTimeAgo(job.created_at) : "Recently"}
                 </span>
               </div>
             </div>
           </div>
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 self-start sm:self-auto">
             {isAuthenticated && (
               <Button
                 variant="outline"
@@ -332,18 +332,18 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
         </div>
 
         {/* Quick Info Cards */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-muted p-4 rounded-lg">
-            <h3 className="font-semibold text-foreground mb-2">Salary Range</h3>
-            <p className="text-xl font-bold text-primary">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
+          <div className="bg-muted p-3 lg:p-4 rounded-lg">
+            <h3 className="font-semibold text-foreground mb-2 text-sm lg:text-base">Salary Range</h3>
+            <p className="text-lg lg:text-xl font-bold text-primary">
               {formatSalary(job)}
             </p>
-            <p className="text-sm text-muted-foreground">per year</p>
+            <p className="text-xs lg:text-sm text-muted-foreground">per year</p>
           </div>
-          <div className="bg-muted p-4 rounded-lg">
-            <h3 className="font-semibold text-foreground mb-2">Job Type</h3>
-            <p className="text-lg">{formatJobType(job.job_type)}</p>
-            <p className="text-sm text-muted-foreground">
+          <div className="bg-muted p-3 lg:p-4 rounded-lg">
+            <h3 className="font-semibold text-foreground mb-2 text-sm lg:text-base">Job Type</h3>
+            <p className="text-base lg:text-lg">{formatJobType(job.job_type)}</p>
+            <p className="text-xs lg:text-sm text-muted-foreground">
               {formatWorkplaceType(job.workplace_type)}
             </p>
           </div>
@@ -352,7 +352,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
       {/* Scrollable Content */}
       <div className="flex-1 min-h-0 overflow-y-auto job-description-scroll">
-        <CardContent className="p-6">
+        <CardContent className="p-4 lg:p-6">
 
 
           {/* Description */}

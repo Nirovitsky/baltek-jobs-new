@@ -261,27 +261,29 @@ export default function Jobs({}: JobsProps) {
       />
 
       <div className="layout-container-body py-4 flex-1 overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-full">
-          <div className="lg:col-span-1 h-full flex-shrink-0">
-            <JobList
-              jobs={jobs}
-              selectedJobId={currentSelectedJobId}
-              onJobSelect={handleJobSelect}
-              isLoading={isLoading}
-              hasNextPage={hasNextPage}
-              isFetchingNextPage={isFetchingNextPage}
-              fetchNextPage={fetchNextPage}
-              totalCount={filteredTotalCount}
-              searchQuery={searchQuery}
-              onSearchChange={handleSearchChange}
-              onSearchSubmit={handleSearchSubmit}
-              isSearching={isSearching}
-              inputRef={inputRef}
-            />
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6 h-full">
+          <div className="lg:col-span-1 h-auto lg:h-full flex-shrink-0 order-1">
+            <div className="h-[50vh] lg:h-full">
+              <JobList
+                jobs={jobs}
+                selectedJobId={currentSelectedJobId}
+                onJobSelect={handleJobSelect}
+                isLoading={isLoading}
+                hasNextPage={hasNextPage}
+                isFetchingNextPage={isFetchingNextPage}
+                fetchNextPage={fetchNextPage}
+                totalCount={filteredTotalCount}
+                searchQuery={searchQuery}
+                onSearchChange={handleSearchChange}
+                onSearchSubmit={handleSearchSubmit}
+                isSearching={isSearching}
+                inputRef={inputRef}
+              />
+            </div>
           </div>
 
-          <div className="lg:col-span-2 h-full max-h-[calc(100vh-175px)] flex-shrink-0 min-w-0">
-            <div className="h-full max-h-[calc(100vh-175px)] w-full overflow-hidden">
+          <div className="lg:col-span-2 h-auto lg:h-full max-h-[50vh] lg:max-h-[calc(100vh-175px)] flex-shrink-0 min-w-0 order-2">
+            <div className="h-full lg:max-h-[calc(100vh-175px)] w-full overflow-hidden">
               {isLoading ? (
                 <JobDetailsSkeleton />
               ) : currentSelectedJobId ? (

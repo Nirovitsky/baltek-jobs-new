@@ -616,7 +616,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
+      <DialogContent className="max-w-[95vw] sm:max-w-4xl max-h-[90vh] overflow-hidden mx-4">
         <DialogHeader>
           <div className="flex items-center justify-between">
             <div>
@@ -629,53 +629,55 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
           </div>
         </DialogHeader>
 
-        <div className="flex h-[70vh]">
+        <div className="flex flex-col lg:flex-row h-[70vh]">
           {/* Sidebar Navigation */}
-          <div className="w-48 border-r pr-4 space-y-2">
-            <Button
-              variant={activeTab === "personal" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("personal")}
-            >
-              <User className="w-4 h-4 mr-2" />
-              Personal
-            </Button>
-            <Button
-              variant={activeTab === "education" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("education")}
-            >
-              <GraduationCap className="w-4 h-4 mr-2" />
-              Education
-            </Button>
-            <Button
-              variant={activeTab === "experience" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("experience")}
-            >
-              <Briefcase className="w-4 h-4 mr-2" />
-              Experience
-            </Button>
-            <Button
-              variant={activeTab === "projects" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("projects")}
-            >
-              <Code className="w-4 h-4 mr-2" />
-              Projects
-            </Button>
-            <Button
-              variant={activeTab === "resumes" ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveTab("resumes")}
-            >
-              <FileText className="w-4 h-4 mr-2" />
-              Resumes ({resumesList.length}/3)
-            </Button>
+          <div className="w-full lg:w-48 border-b lg:border-b-0 lg:border-r pb-4 lg:pb-0 pr-0 lg:pr-4 mb-4 lg:mb-0">
+            <div className="flex lg:flex-col space-x-2 lg:space-x-0 lg:space-y-2 overflow-x-auto lg:overflow-x-visible">
+              <Button
+                variant={activeTab === "personal" ? "default" : "ghost"}
+                className="w-auto lg:w-full justify-start flex-shrink-0"
+                onClick={() => setActiveTab("personal")}
+              >
+                <User className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Personal</span>
+              </Button>
+              <Button
+                variant={activeTab === "education" ? "default" : "ghost"}
+                className="w-auto lg:w-full justify-start flex-shrink-0"
+                onClick={() => setActiveTab("education")}
+              >
+                <GraduationCap className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Education</span>
+              </Button>
+              <Button
+                variant={activeTab === "experience" ? "default" : "ghost"}
+                className="w-auto lg:w-full justify-start flex-shrink-0"
+                onClick={() => setActiveTab("experience")}
+              >
+                <Briefcase className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Experience</span>
+              </Button>
+              <Button
+                variant={activeTab === "projects" ? "default" : "ghost"}
+                className="w-auto lg:w-full justify-start flex-shrink-0"
+                onClick={() => setActiveTab("projects")}
+              >
+                <Code className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Projects</span>
+              </Button>
+              <Button
+                variant={activeTab === "resumes" ? "default" : "ghost"}
+                className="w-auto lg:w-full justify-start flex-shrink-0"
+                onClick={() => setActiveTab("resumes")}
+              >
+                <FileText className="w-4 h-4 mr-2" />
+                <span className="hidden sm:inline">Resumes ({resumesList.length}/3)</span>
+              </Button>
+            </div>
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 pl-6 overflow-y-auto">
+          <div className="flex-1 pl-0 lg:pl-6 overflow-y-auto">
             {/* Personal Information Tab */}
             {activeTab === "personal" && (
               <div className="space-y-6">
@@ -701,7 +703,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 </div>
 
                 <form onSubmit={personalForm.handleSubmit(handlePersonalSubmit)} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="first_name">First Name</Label>
                       <Input
@@ -712,7 +714,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       />
                       {personalForm.formState.errors.first_name && (
                         <p className="text-red-500 text-sm mt-1">
-                          {personalForm.formState.errors.first_name.message}
+                          {personalForm.formState.errors.first_name.message?.toString()}
                         </p>
                       )}
                     </div>
@@ -726,7 +728,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       />
                       {personalForm.formState.errors.last_name && (
                         <p className="text-red-500 text-sm mt-1">
-                          {personalForm.formState.errors.last_name.message}
+                          {personalForm.formState.errors.last_name.message?.toString()}
                         </p>
                       )}
                     </div>

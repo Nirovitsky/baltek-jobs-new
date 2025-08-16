@@ -58,7 +58,7 @@ export default function ChatWidget() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 w-80 z-40">
+    <div className="fixed bottom-4 right-4 w-72 sm:w-80 z-40 max-w-[calc(100vw-2rem)]">
       <Card className="shadow-lg">
         <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
           <div className="flex items-center justify-between">
