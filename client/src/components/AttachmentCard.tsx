@@ -223,13 +223,13 @@ export function AttachmentCard({
 
       {/* Unified Content Layout */}
       {isImage && fileUrl ? (
-        /* Image Layout - Large preview with details below */
-        <div className="flex flex-col space-y-3">
+        /* Image Layout - Full width preview with details below */
+        <div className="flex flex-col">
           <div className="relative cursor-pointer" onClick={handleView}>
             <img
               src={fileUrl}
               alt={fileName}
-              className="w-full max-w-xs h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+              className="w-full h-48 object-cover rounded-t-lg"
               loading="lazy"
               onError={(e) => {
                 console.log('Image failed to load:', fileUrl);
@@ -239,10 +239,11 @@ export function AttachmentCard({
                 console.log('Image loaded successfully:', fileUrl);
               }}
             />
-            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-lg transition-colors duration-200" />
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-t-lg transition-colors duration-200" />
           </div>
+          <div className="border-b border-gray-200 dark:border-gray-600"></div>
           
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between p-3">
             <div className="flex-1 min-w-0">
               <div 
                 className="text-sm font-medium text-foreground truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" 
