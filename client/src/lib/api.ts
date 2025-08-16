@@ -469,22 +469,58 @@ export class ApiClient {
   }
 
   // File upload API
-  static async uploadFile(file: File) {
-    const formData = new FormData();
-    formData.append("path", file);
+  static async uploadFile(file: File, onProgress?: (progress: number) => void) {
+    return new Promise((resolve, reject) => {
+      const formData = new FormData();
+      formData.append("path", file);
 
-    const response = await fetch(`${API_BASE}/files/`, {
-      method: "POST",
-      headers: AuthService.getAuthHeaders(),
-      body: formData,
+      const xhr = new XMLHttpRequest();
+
+      // Track upload progress
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable && onProgress) {
+          const progress = Math.round((event.loaded / event.total) * 100);
+          onProgress(progress);
+        }
+      });
+
+      xhr.addEventListener('load', () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try {
+            const response = JSON.parse(xhr.responseText);
+            resolve(response);
+          } catch (error) {
+            reject(new Error('Invalid response format'));
+          }
+        } else {
+          try {
+            const errorData = JSON.parse(xhr.responseText);
+            reject(new Error(errorData.detail || errorData.message || "File upload failed"));
+          } catch {
+            reject(new Error(`Upload failed with status ${xhr.status}`));
+          }
+        }
+      });
+
+      xhr.addEventListener('error', () => {
+        reject(new Error('Network error during upload'));
+      });
+
+      xhr.addEventListener('abort', () => {
+        reject(new Error('Upload aborted'));
+      });
+
+      // Set headers
+      const authHeaders = AuthService.getAuthHeaders();
+      Object.entries(authHeaders).forEach(([key, value]) => {
+        if (key !== 'Content-Type') { // Don't set Content-Type for FormData
+          xhr.setRequestHeader(key, value);
+        }
+      });
+
+      xhr.open('POST', `${API_BASE}/files/`);
+      xhr.send(formData);
     });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.detail || errorData.message || "File upload failed");
-    }
-
-    return response.json();
   }
 
   // Helper to construct file URL from ID

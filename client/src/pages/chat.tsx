@@ -112,20 +112,7 @@ export default function ChatPage() {
   // WebSocket connection
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
-  // File upload mutation
-  const uploadFileMutation = useMutation({
-    mutationFn: async (file: File) => {
-      return await ApiClient.uploadFile(file);
-    },
-    onError: (error, file) => {
-      console.error("Upload error:", error);
-      toast({
-        title: "Upload Failed",
-        description: `Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        variant: "destructive",
-      });
-    },
-  });
+  // File upload no longer needs mutation - handled directly with progress
 
   // Send message via WebSocket with optimistic UI
   const sendMessageViaWebSocket = (content: string, attachments: number[] = []) => {
@@ -539,22 +526,16 @@ export default function ChatPage() {
     try {
       const uploadPromises = Array.from(files).map(async (file, index) => {
         try {
-          // Update progress to show starting upload
-          setUploadProgress(prev => 
-            prev.map((item, idx) => 
-              idx === index ? { ...item, progress: 10 } : item
-            )
-          );
-
-          const result = await uploadFileMutation.mutateAsync(file);
-          console.log("Upload result:", result); // Debug: see what the API returns
+          // Upload with real-time progress callback
+          const result = await ApiClient.uploadFile(file, (progress) => {
+            setUploadProgress(prev => 
+              prev.map((item, idx) => 
+                idx === index ? { ...item, progress } : item
+              )
+            );
+          });
           
-          // Update progress to show completion
-          setUploadProgress(prev => 
-            prev.map((item, idx) => 
-              idx === index ? { ...item, progress: 100 } : item
-            )
-          );
+          console.log("Upload result:", result); // Debug: see what the API returns
 
           return {
             id: result.id,
