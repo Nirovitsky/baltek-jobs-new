@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -63,6 +64,7 @@ export default function ChatPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [selectedConversation, setSelectedConversation] = useState<
     number | null
   >(null);
@@ -753,7 +755,13 @@ export default function ChatPage() {
                       >
                         <div className="flex items-start space-x-3">
                           <div className="relative flex-shrink-0">
-                            <Avatar className="w-14 h-14 ring-2 ring-background shadow-sm">
+                            <Avatar 
+                              className="w-14 h-14 ring-2 ring-background shadow-sm cursor-pointer hover:ring-primary/50 transition-all"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/profile');
+                              }}
+                            >
                               <AvatarImage
                                 src={conversation.content_object?.job?.organization?.logo}
                                 className="object-cover"
@@ -777,11 +785,17 @@ export default function ChatPage() {
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between mb-2">
                               <div className="flex items-start space-x-2 flex-1 min-w-0">
-                                <h3 className={`font-semibold text-base leading-5 ${
-                                  conversation.unread_message_count > 0
-                                    ? "text-foreground"
-                                    : "text-foreground"
-                                } break-words`}>
+                                <h3 
+                                  className={`font-semibold text-base leading-5 cursor-pointer hover:text-primary transition-colors ${
+                                    conversation.unread_message_count > 0
+                                      ? "text-foreground"
+                                      : "text-foreground"
+                                  } break-words`}
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate('/profile');
+                                  }}
+                                >
                                   {(conversation.content_object?.job?.organization?.display_name || 
                                     conversation.content_object?.job?.organization?.official_name || "Unknown Company") + 
                                    (conversation.content_object?.job?.title ? ` - ${conversation.content_object.job.title}` : "")}
@@ -841,7 +855,10 @@ export default function ChatPage() {
                 <CardHeader className="pb-4 border-b">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <Avatar className="w-10 h-10">
+                      <Avatar 
+                        className="w-10 h-10 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                        onClick={() => navigate('/profile')}
+                      >
                         <AvatarImage
                           src={selectedConversationData?.content_object?.job?.organization?.logo}
                         />
@@ -853,7 +870,10 @@ export default function ChatPage() {
                       </Avatar>
                       <div>
                         <div className="flex items-center space-x-2">
-                          <h3 className="font-semibold text-foreground">
+                          <h3 
+                            className="font-semibold text-foreground cursor-pointer hover:text-primary transition-colors"
+                            onClick={() => navigate('/profile')}
+                          >
                             {(selectedConversationData?.content_object?.job?.organization?.display_name || 
                               selectedConversationData?.content_object?.job?.organization?.official_name || "Unknown Company") + 
                              (selectedConversationData?.content_object?.job?.title ? ` - ${selectedConversationData?.content_object?.job?.title}` : "")}

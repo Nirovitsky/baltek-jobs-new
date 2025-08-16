@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { ApiClient } from "@/lib/api";
 import type { Job } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,6 +21,7 @@ interface LinkPreviewCardProps {
 
 export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps) {
   const [jobId, setJobId] = useState<number | null>(null);
+  const navigate = useNavigate();
   
   // Extract job ID from URL - support multiple patterns
   useEffect(() => {
@@ -147,7 +149,7 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
   return (
     <Card className={`w-full border border-border/50 hover:border-border hover:shadow-lg transition-all duration-300 cursor-pointer bg-card/50 backdrop-blur-sm ${className}`}>
       <CardContent className="p-0">
-        <Link href={`/jobs/${job.id}`}>
+        <Link to={`/jobs/${job.id}`}>
           <div className="overflow-hidden">
             {/* Header banner with company branding */}
             <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-4 border-b border-border/30">
@@ -156,10 +158,22 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
                   <img
                     src={job.organization.logo}
                     alt={job.organization.display_name || job.organization.name}
-                    className="w-12 h-12 rounded-lg object-cover border border-border/30 bg-background"
+                    className="w-12 h-12 rounded-lg object-cover border border-border/30 bg-background cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate('/profile');
+                    }}
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center border border-border/30">
+                  <div 
+                    className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center border border-border/30 cursor-pointer hover:ring-2 hover:ring-primary/50 transition-all"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      navigate('/profile');
+                    }}
+                  >
                     <Building className="w-6 h-6 text-primary" />
                   </div>
                 )}
@@ -169,7 +183,14 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
                   </h4>
                   <div className="flex items-center space-x-1 text-sm text-muted-foreground">
                     <Building className="w-4 h-4 flex-shrink-0" />
-                    <span className="truncate">
+                    <span 
+                      className="truncate cursor-pointer hover:text-primary transition-colors"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        navigate('/profile');
+                      }}
+                    >
                       {job.organization?.display_name || job.organization?.name || "Unknown Company"}
                     </span>
                   </div>
