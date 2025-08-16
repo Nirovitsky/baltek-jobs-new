@@ -40,11 +40,23 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: resumes, isLoading: resumesLoading } = useQuery({
+  const { data: resumes, isLoading: resumesLoading, error: resumesError } = useQuery({
     queryKey: ["user", "resumes", "current"],
-    queryFn: () => ApiClient.getResumes(),
+    queryFn: async () => {
+      console.log("Fetching resumes...");
+      const result = await ApiClient.getResumes();
+      console.log("Raw resumes API response:", result);
+      return result;
+    },
     enabled: isOpen,
   });
+
+  // Debug logging for resumes data
+  console.log("Application Modal - Resumes data:", resumes);
+  console.log("Application Modal - Resumes loading:", resumesLoading);
+  console.log("Application Modal - Resumes error:", resumesError);
+  console.log("Application Modal - Modal open:", isOpen);
+  console.log("Application Modal - Resumes data structure:", JSON.stringify(resumes, null, 2));
 
   const {
     register,
@@ -161,7 +173,12 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
               <Label>Resume/CV <span className="text-sm text-muted-foreground">(Optional)</span></Label>
               
               {/* Existing Resumes */}
-              {!resumesLoading && (resumes as any)?.results?.length > 0 && (
+              {!resumesLoading && (
+                // Handle different response formats: direct array, results array, or count > 0
+                ((Array.isArray(resumes) && resumes.length > 0) || 
+                 ((resumes as any)?.results && Array.isArray((resumes as any).results) && (resumes as any).results.length > 0) ||
+                 ((resumes as any)?.count > 0))
+              ) && (
                 <div className="space-y-2">
                   <Label className="text-sm text-muted-foreground">Select from your resumes:</Label>
                   <Select value={selectedResumeId} onValueChange={setSelectedResumeId}>
@@ -169,12 +186,22 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
                       <SelectValue placeholder="Select a resume (optional)" />
                     </SelectTrigger>
                     <SelectContent>
-                      {(resumes as any).results.map((resume: any) => (
-                        <SelectItem key={resume.id} value={resume.id.toString()}>
-                          {resume.title}
-                          {resume.is_primary && " (Primary)"}
-                        </SelectItem>
-                      ))}
+                      {/* Handle different data structures */}
+                      {(() => {
+                        let resumeList = [];
+                        if (Array.isArray(resumes)) {
+                          resumeList = resumes;
+                        } else if ((resumes as any)?.results && Array.isArray((resumes as any).results)) {
+                          resumeList = (resumes as any).results;
+                        }
+                        
+                        return resumeList.map((resume: any) => (
+                          <SelectItem key={resume.id} value={resume.id.toString()}>
+                            {resume.title || resume.name || `Resume ${resume.id}`}
+                            {resume.is_primary && " (Primary)"}
+                          </SelectItem>
+                        ));
+                      })()}
                     </SelectContent>
                   </Select>
                 </div>
