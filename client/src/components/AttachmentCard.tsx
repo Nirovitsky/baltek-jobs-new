@@ -47,9 +47,10 @@ const getFileExtension = (fileName: string): string => {
 const getFileTypeInfo = (fileName: string, contentType?: string) => {
   const extension = getFileExtension(fileName);
   
-  // Image files
+  // Image files - including HEIC/HEIF support
   if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'heic', 'heif'].includes(extension) || 
-      contentType?.startsWith('image/')) {
+      contentType?.startsWith('image/') ||
+      contentType === 'image/heic' || contentType === 'image/heif') {
     return {
       type: 'image',
       icon: ImageIcon,
@@ -147,13 +148,15 @@ export function AttachmentCard({
   // Debug log for images
   console.log('AttachmentCard Debug:', {
     fileName,
+    extension: getFileExtension(fileName),
     contentType: file.content_type,
     fileTypeInfo: fileTypeInfo.type,
     isImage,
     fileUrl,
     pathFromBackend: file.path,
     actualFileUrl: file.file_url,
-    hasUrl: !!fileUrl
+    hasUrl: !!fileUrl,
+    isHEIC: getFileExtension(fileName) === 'heic' || file.content_type === 'image/heic'
   });
 
   // Unified styling for both variants
@@ -220,13 +223,13 @@ export function AttachmentCard({
 
       {/* Unified Content Layout */}
       {isImage && fileUrl ? (
-        /* Image Layout - Small thumbnail preview */
-        <div className="flex items-center space-x-3">
-          <div className="relative flex-shrink-0 cursor-pointer" onClick={handleView}>
+        /* Image Layout - Large preview with details below */
+        <div className="flex flex-col space-y-3">
+          <div className="relative cursor-pointer" onClick={handleView}>
             <img
               src={fileUrl}
               alt={fileName}
-              className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+              className="w-full max-w-xs h-48 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
               loading="lazy"
               onError={(e) => {
                 console.log('Image failed to load:', fileUrl);
@@ -236,36 +239,36 @@ export function AttachmentCard({
                 console.log('Image loaded successfully:', fileUrl);
               }}
             />
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-lg transition-colors duration-200" />
           </div>
           
-          <div className="flex-1 min-w-0">
-            <div 
-              className="text-sm font-medium text-foreground truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" 
-              title="Click to view"
-              onClick={handleView}
-            >
-              {fileName}
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <div 
+                className="text-sm font-medium text-foreground truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" 
+                title="Click to view"
+                onClick={handleView}
+              >
+                {fileName}
+              </div>
+              {file.size && (
+                <div className="text-xs text-muted-foreground">
+                  {formatFileSize(file.size)}
+                </div>
+              )}
             </div>
-            {file.size && (
-              <div className="text-xs text-muted-foreground">
-                {formatFileSize(file.size)}
-              </div>
-            )}
             
-            {/* Action Buttons for Images */}
+            {/* Action Button for Images */}
             {variant === 'message' && fileUrl && (
-              <div className="flex space-x-1 mt-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-6 w-6 p-0"
-                  onClick={handleDownload}
-                  title="Download"
-                >
-                  <Download className="w-3 h-3" />
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-6 w-6 p-0 ml-2"
+                onClick={handleDownload}
+                title="Download"
+              >
+                <Download className="w-3 h-3" />
+              </Button>
             )}
           </div>
         </div>
