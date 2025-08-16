@@ -199,211 +199,148 @@ export function ComposerAttachments({
             )}
           </div>
 
-          {/* Uploaded Files - Chat Message Style */}
-          {attachedFiles.length > 0 && (
-            <div className="space-y-2">
-              {attachedFiles.map((file) => {
-                const fileTypeInfo = getFileTypeInfo(file.name, file.content_type);
-                const IconComponent = fileTypeInfo.icon;
-                const isImage = fileTypeInfo.type === 'image' && file.file_url;
-                const fileUrl = file.file_url || `https://api.baltek.net/api/files/${file.id}/`;
+          {/* Combined Grid Layout */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {/* Uploaded Files */}
+            {attachedFiles.map((file) => {
+              const fileTypeInfo = getFileTypeInfo(file.name, file.content_type);
+              const IconComponent = fileTypeInfo.icon;
+              const isImage = fileTypeInfo.type === 'image' && file.file_url;
 
-                return (
-                  <div
-                    key={file.id}
-                    className="relative group animate-in fade-in-0 slide-in-from-bottom-2 duration-300"
-                  >
-                    <div className="rounded-lg border transition-all hover:shadow-sm bg-card border-border hover:border-input">
-                      {/* Image Preview */}
-                      {isImage && (
-                        <div className="relative mb-3 group/image">
-                          <img
-                            src={fileUrl}
-                            alt={file.name}
-                            className="w-full h-auto max-h-64 object-cover rounded-t-lg"
-                            loading="lazy"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none';
-                            }}
-                          />
-                          <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/20 rounded-t-lg transition-colors duration-300" />
-                          <div className="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover/image:opacity-100 transition-all duration-300">
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-                              onClick={() => window.open(fileUrl, '_blank')}
-                              title="View full size"
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="secondary"
-                              size="sm"
-                              className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-                              onClick={() => {
-                                const link = document.createElement('a');
-                                link.href = fileUrl;
-                                link.download = file.name;
-                                link.click();
-                              }}
-                              title="Download"
-                            >
-                              <Download className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* File Info */}
-                      <div className={`flex items-center justify-between p-4 ${isImage ? 'pt-0' : ''}`}>
-                        <div className="flex items-center space-x-3 flex-1 min-w-0">
-                          {!isImage && (
-                            <div className={`p-3 rounded-xl ${fileTypeInfo.bgColor} shadow-sm`}>
-                              <IconComponent className={`w-6 h-6 ${fileTypeInfo.color}`} />
-                            </div>
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <div className="text-sm font-semibold truncate text-foreground">
-                              {file.name}
-                            </div>
-                            <div className="text-xs font-medium text-muted-foreground">
-                              {formatFileSize(file.size)}
-                            </div>
-                          </div>
-                        </div>
-                        
-                        {/* Action Buttons */}
-                        <div className="flex items-center space-x-1">
-                          {!isImage && (
-                            <>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-9 w-9 p-0 rounded-full transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-110"
-                                onClick={() => window.open(fileUrl, '_blank')}
-                                title="View file"
-                              >
-                                <Eye className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-9 w-9 p-0 rounded-full transition-all duration-200 text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-110"
-                                onClick={() => {
-                                  const link = document.createElement('a');
-                                  link.href = fileUrl;
-                                  link.download = file.name;
-                                  link.click();
-                                }}
-                                title="Download file"
-                              >
-                                <Download className="w-4 h-4" />
-                              </Button>
-                            </>
-                          )}
-                          {/* Remove Button */}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-9 w-9 p-0 rounded-full transition-all duration-200 text-muted-foreground hover:text-destructive hover:bg-destructive/10 hover:scale-110"
-                            onClick={() => onRemoveFile(file.id)}
-                            title="Remove file"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        </div>
+              return (
+                <div
+                  key={file.id}
+                  className="relative group animate-in fade-in-0 slide-in-from-bottom-2 duration-300"
+                >
+                  <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
+                    {/* Image Thumbnail */}
+                    {isImage ? (
+                      <div className="relative">
+                        <img
+                          src={file.file_url}
+                          alt={file.name}
+                          className="w-full h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
                       </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
-          {/* Uploading Files - Keep original progress style */}
-          {uploadProgress.length > 0 && (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {uploadProgress.map((file, index) => {
-                const fileTypeInfo = getFileTypeInfo(file.name);
-                const IconComponent = fileTypeInfo.icon;
-
-                return (
-                  <div key={`upload-${index}`} className="relative group animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-200 dark:border-blue-800/50 rounded-xl p-3 shadow-sm hover:shadow-lg transition-all duration-300">
-                      {/* Upload Progress Circle */}
-                      <div className="flex items-center justify-center h-20 relative">
-                        <div className={`p-3 rounded-xl ${fileTypeInfo.bgColor} opacity-50`}>
+                    ) : (
+                      /* File Icon */
+                      <div className="flex items-center justify-center h-20">
+                        <div className={`p-3 rounded-xl ${fileTypeInfo.bgColor} group-hover:scale-110 transition-transform duration-200`}>
                           <IconComponent className={`w-8 h-8 ${fileTypeInfo.color}`} />
                         </div>
-                        
-                        {/* Progress Overlay */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="relative w-12 h-12">
-                            <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
-                              <path
-                                className="text-blue-200 dark:text-blue-800"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                fill="transparent"
-                                d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
-                              />
-                              <path
-                                className={file.progress === -1 ? "text-red-500" : "text-blue-600 dark:text-blue-400"}
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                fill="transparent"
-                                strokeDasharray={`${file.progress === -1 ? 0 : file.progress}, 100`}
-                                strokeLinecap="round"
-                                d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
-                                style={{
-                                  transition: 'stroke-dasharray 0.3s ease-in-out'
-                                }}
-                              />
-                            </svg>
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-xs font-bold text-blue-700 dark:text-blue-300">
-                                {file.progress === -1 ? "!" : `${file.progress}%`}
-                              </span>
-                            </div>
+                      </div>
+                    )}
+                    
+                    {/* File Info */}
+                    <div className="mt-3 text-center space-y-1">
+                      <div className="text-xs font-semibold text-foreground truncate" title={file.name}>
+                        {file.name}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {formatFileSize(file.size)}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Remove Button */}
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg hover:scale-110"
+                    onClick={() => onRemoveFile(file.id)}
+                    title="Remove file"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                </div>
+              );
+            })}
+
+            {/* Uploading Files */}
+            {uploadProgress.map((file, index) => {
+              const fileTypeInfo = getFileTypeInfo(file.name);
+              const IconComponent = fileTypeInfo.icon;
+
+              return (
+                <div key={`upload-${index}`} className="relative group animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                  <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 border-2 border-blue-200 dark:border-blue-800/50 rounded-xl p-3 shadow-sm hover:shadow-lg transition-all duration-300">
+                    {/* Upload Progress Circle */}
+                    <div className="flex items-center justify-center h-20 relative">
+                      <div className={`p-3 rounded-xl ${fileTypeInfo.bgColor} opacity-50`}>
+                        <IconComponent className={`w-8 h-8 ${fileTypeInfo.color}`} />
+                      </div>
+                      
+                      {/* Progress Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="relative w-12 h-12">
+                          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
+                            <path
+                              className="text-blue-200 dark:text-blue-800"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              fill="transparent"
+                              d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
+                            />
+                            <path
+                              className={file.progress === -1 ? "text-red-500" : "text-blue-600 dark:text-blue-400"}
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              fill="transparent"
+                              strokeDasharray={`${file.progress === -1 ? 0 : file.progress}, 100`}
+                              strokeLinecap="round"
+                              d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
+                              style={{
+                                transition: 'stroke-dasharray 0.3s ease-in-out'
+                              }}
+                            />
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-xs font-bold text-blue-700 dark:text-blue-300">
+                              {file.progress === -1 ? "!" : `${file.progress}%`}
+                            </span>
                           </div>
                         </div>
                       </div>
-                      
-                      {/* File Info */}
-                      <div className="mt-3 text-center space-y-1">
-                        <div className="text-xs font-semibold text-blue-900 dark:text-blue-100 truncate" title={file.name}>
-                          {file.name}
-                        </div>
-                        <div className="text-xs text-blue-600 dark:text-blue-400">
-                          {file.progress === -1 ? "Upload failed" : "Uploading..."}
-                        </div>
+                    </div>
+                    
+                    {/* File Info */}
+                    <div className="mt-3 text-center space-y-1">
+                      <div className="text-xs font-semibold text-blue-900 dark:text-blue-100 truncate" title={file.name}>
+                        {file.name}
+                      </div>
+                      <div className="text-xs text-blue-600 dark:text-blue-400">
+                        {file.progress === -1 ? "Upload failed" : "Uploading..."}
                       </div>
                     </div>
-
-                    {/* Cancel/Error Button */}
-                    <div className="absolute -top-2 -right-2">
-                      {file.progress === -1 ? (
-                        <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
-                          <X className="w-3 h-3 text-white" />
-                        </div>
-                      ) : (
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          className="h-6 w-6 p-0 rounded-full bg-gray-500 hover:bg-red-500 text-white border-0 shadow-lg transition-colors duration-200"
-                          onClick={() => onCancelUpload(index)}
-                          title="Cancel upload"
-                        >
-                          <X className="w-3 h-3" />
-                        </Button>
-                      )}
-                    </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
+
+                  {/* Cancel/Error Button */}
+                  <div className="absolute -top-2 -right-2">
+                    {file.progress === -1 ? (
+                      <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center shadow-lg">
+                        <X className="w-3 h-3 text-white" />
+                      </div>
+                    ) : (
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        className="h-6 w-6 p-0 rounded-full bg-gray-500 hover:bg-red-500 text-white border-0 shadow-lg transition-colors duration-200"
+                        onClick={() => onCancelUpload(index)}
+                        title="Cancel upload"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
