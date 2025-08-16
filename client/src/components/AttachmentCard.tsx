@@ -213,7 +213,7 @@ export function AttachmentCard({
   // For images in message variant, render directly without wrapper card
   if (isImage && fileUrl && variant === 'message') {
     return (
-      <div className="relative cursor-pointer -mx-3 -my-3 border border-gray-300 dark:border-gray-600 rounded-xl overflow-hidden" onClick={handleView}>
+      <div className="relative cursor-pointer -mx-3 -my-5 border border-gray-300 dark:border-gray-600 rounded-xl overflow-hidden" onClick={handleView}>
         <img
           src={fileUrl}
           alt={fileName}
