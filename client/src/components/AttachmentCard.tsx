@@ -358,13 +358,12 @@ export function AttachmentCard({
                 <Loader2 className="w-8 h-8 animate-spin text-white" />
               </div>
             )}
-            {cachedImageUrl && (
-              <img
-                src={cachedImageUrl}
-                alt={fileName}
-                className="w-full h-full object-contain"
-              />
-            )}
+            <img
+              src={cachedImageUrl || fileUrl}
+              alt={fileName}
+              className="w-full h-full object-contain"
+              style={{ display: (!cachedImageUrl && isLoading(fileUrl)) ? 'none' : 'block' }}
+            />
           </DialogContent>
         </Dialog>
       )}
