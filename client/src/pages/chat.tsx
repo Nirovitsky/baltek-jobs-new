@@ -508,8 +508,24 @@ export default function ChatPage() {
     e.preventDefault();
     if ((!messageInput.trim() && attachedFiles.length === 0) || !selectedConversation) return;
 
-    const attachmentIds = attachedFiles.map(file => file.id);
-    sendMessageViaWebSocket(messageInput.trim() || "", attachmentIds);
+    const hasText = messageInput.trim();
+    const hasFiles = attachedFiles.length > 0;
+    
+    if (hasText && hasFiles) {
+      // Send text and files as separate messages
+      sendMessageViaWebSocket(hasText, []); // Send text first
+      setTimeout(() => {
+        const attachmentIds = attachedFiles.map(file => file.id);
+        sendMessageViaWebSocket("", attachmentIds); // Then send files
+      }, 100); // Small delay to ensure proper order
+    } else if (hasText) {
+      // Send only text
+      sendMessageViaWebSocket(hasText, []);
+    } else if (hasFiles) {
+      // Send only files
+      const attachmentIds = attachedFiles.map(file => file.id);
+      sendMessageViaWebSocket("", attachmentIds);
+    }
   };
 
   // Handle file upload
