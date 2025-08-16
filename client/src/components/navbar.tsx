@@ -31,7 +31,7 @@ import {
   Globe,
   Monitor,
 } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 
 interface NavbarProps {}
@@ -42,17 +42,22 @@ export default function Navbar({}: NavbarProps) {
   const { theme, setTheme } = useTheme();
   const [language, setLanguage] = useState("english");
 
-  const handleOAuthLogin = async () => {
-    try {
-      await AuthService.startOAuthLogin();
-    } catch (error) {
+  const oauthLoginMutation = useMutation({
+    mutationFn: async () => {
+      return await AuthService.startOAuthLogin();
+    },
+    onError: (error) => {
       console.error('OAuth login failed:', error);
       toast({
         title: "Login Failed",
         description: error instanceof Error ? error.message : "Failed to start OAuth login",
         variant: "destructive",
       });
-    }
+    },
+  });
+
+  const handleOAuthLogin = () => {
+    oauthLoginMutation.mutate();
   };
 
   // Fetch notifications for the dropdown

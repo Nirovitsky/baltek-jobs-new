@@ -239,7 +239,7 @@ export class ApiClient {
       console.log('API: PATCH response from /users/' + currentUser.id + '/:', result);
       
       // Verify the update by fetching user again
-      const updatedUser = await this.getCurrentUser();
+      const updatedUser = await this.getCurrentUser() as any;
       console.log('API: User after update:', updatedUser);
       console.log('API: Updated onboarding status:', updatedUser.is_jobs_onboarding_completed);
       

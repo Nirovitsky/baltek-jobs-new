@@ -108,6 +108,21 @@ export default function ChatPage() {
   // WebSocket connection
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
+  // File upload mutation
+  const uploadFileMutation = useMutation({
+    mutationFn: async (file: File) => {
+      return await ApiClient.uploadFile(file);
+    },
+    onError: (error, file) => {
+      console.error("Upload error:", error);
+      toast({
+        title: "Upload Failed",
+        description: `Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
+    },
+  });
+
   // Send message via WebSocket with optimistic UI
   const sendMessageViaWebSocket = (content: string, attachments: number[] = []) => {
     if (!selectedConversation) {
@@ -527,7 +542,7 @@ export default function ChatPage() {
             )
           );
 
-          const result = await ApiClient.uploadFile(file);
+          const result = await uploadFileMutation.mutateAsync(file);
           console.log("Upload result:", result); // Debug: see what the API returns
           
           // Update progress to show completion
@@ -546,11 +561,6 @@ export default function ChatPage() {
           };
         } catch (error) {
           console.error("Upload error:", error);
-          toast({
-            title: "Upload Failed",
-            description: `Failed to upload ${file.name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-            variant: "destructive",
-          });
           
           // Update progress to show error
           setUploadProgress(prev => 

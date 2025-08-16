@@ -21,6 +21,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import { useMutation } from "@tanstack/react-query";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import {
   Trash2,
@@ -35,22 +36,36 @@ export default function SettingsPage() {
   const { user, logout } = useAuth();
   const { toast } = useToast();
 
-  const handleDeleteAccount = async () => {
-    try {
-      if (!user?.id) throw new Error("User ID not found");
-      await ApiClient.deleteAccount(user.id);
+  const deleteAccountMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      return await ApiClient.deleteAccount(userId);
+    },
+    onSuccess: () => {
       toast({
         title: "Account deleted",
         description: "Your account has been permanently deleted.",
       });
       logout();
-    } catch (error) {
+    },
+    onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to delete account. Please try again later.",
+        description: error instanceof Error ? error.message : "Failed to delete account. Please try again later.",
         variant: "destructive",
       });
+    },
+  });
+
+  const handleDeleteAccount = async () => {
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "User ID not found",
+        variant: "destructive",
+      });
+      return;
     }
+    deleteAccountMutation.mutate(user.id);
   };
 
   return (
@@ -73,7 +88,7 @@ export default function SettingsPage() {
                   Learn more about Baltek Jobs and get help
                 </p>
                 <div className="space-y-2">
-                  <Link href="/about-us">
+                  <Link to="/about-us">
                     <Button variant="ghost" className="w-full justify-start">
                       <Info className="h-4 w-4 mr-2" />
                       About Us
@@ -81,7 +96,7 @@ export default function SettingsPage() {
                     </Button>
                   </Link>
 
-                  <Link href="/contact-us">
+                  <Link to="/contact-us">
                     <Button variant="ghost" className="w-full justify-start">
                       <Mail className="h-4 w-4 mr-2" />
                       Contact Us
@@ -89,7 +104,7 @@ export default function SettingsPage() {
                     </Button>
                   </Link>
 
-                  <Link href="/terms">
+                  <Link to="/terms">
                     <Button variant="ghost" className="w-full justify-start">
                       <FileText className="h-4 w-4 mr-2" />
                       Terms and Agreement
@@ -97,7 +112,7 @@ export default function SettingsPage() {
                     </Button>
                   </Link>
 
-                  <Link href="/privacy-policy">
+                  <Link to="/privacy-policy">
                     <Button variant="ghost" className="w-full justify-start">
                       <Shield className="h-4 w-4 mr-2" />
                       Privacy Policy
