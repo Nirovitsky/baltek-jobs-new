@@ -263,11 +263,11 @@ export function AttachmentCard({
               <Button
                 variant="outline"
                 size="sm"
-                className="h-6 w-6 p-0 ml-2"
+                className="h-6 w-6 p-0 ml-2 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 border-gray-300 dark:border-gray-600"
                 onClick={handleDownload}
                 title="Download"
               >
-                <Download className="w-3 h-3" />
+                <Download className="w-3 h-3 text-gray-700 dark:text-gray-300" />
               </Button>
             )}
           </div>
@@ -298,11 +298,11 @@ export function AttachmentCard({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-6 w-6 p-0"
+                  className="h-6 w-6 p-0 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 border-gray-300 dark:border-gray-600"
                   onClick={handleDownload}
                   title="Download"
                 >
-                  <Download className="w-3 h-3" />
+                  <Download className="w-3 h-3 text-gray-700 dark:text-gray-300" />
                 </Button>
               </div>
             )}
