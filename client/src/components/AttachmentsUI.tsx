@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import AttachmentCard from "@/components/AttachmentCard";
 import {
   Paperclip,
   X,
@@ -366,133 +367,15 @@ export function UserMessageAttachments({ attachments, isOwner }: UserMessageAtta
   }
 
   return (
-    <div className="mt-2 space-y-2">
-      {attachments.map((attachment, index) => {
-        const fileName = attachment.file_name || attachment.name || `Attachment ${index + 1}`;
-        const fileTypeInfo = getFileTypeInfo(fileName, attachment.content_type);
-        const IconComponent = fileTypeInfo.icon;
-        
-        // Construct file URL if not provided
-        const fileUrl = attachment.file_url || `https://api.baltek.net/api/files/${attachment.id}/`;
-        
-        // Check if it's an image and should show preview
-        const isImage = fileTypeInfo.type === 'image' && fileUrl;
-        
-        return (
-          <div 
-            key={attachment.id || index}
-            className={`rounded-lg border transition-all hover:shadow-sm ${
-              isOwner
-                ? "bg-white/10 border-white/20 hover:bg-white/15"
-                : "bg-card border-border hover:border-input"
-            }`}
-          >
-            {/* Image Preview */}
-            {isImage && (
-              <div className="relative mb-3 group/image">
-                <img
-                  src={fileUrl}
-                  alt={fileName}
-                  className="w-full h-auto max-h-64 object-cover rounded-t-lg"
-                  loading="lazy"
-                  onError={(e) => {
-                    // Hide image if it fails to load
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-                <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/20 rounded-t-lg transition-colors duration-300" />
-                <div className="absolute top-3 right-3 flex space-x-2 opacity-0 group-hover/image:opacity-100 transition-all duration-300">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-                    onClick={() => window.open(fileUrl, '_blank')}
-                    title="View full size"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-                    onClick={() => {
-                      const link = document.createElement('a');
-                      link.href = fileUrl;
-                      link.download = fileName;
-                      link.click();
-                    }}
-                    title="Download"
-                  >
-                    <Download className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            )}
-            
-            {/* File Info */}
-            <div className={`flex items-center justify-between p-4 ${isImage ? 'pt-0' : ''}`}>
-              <div className="flex items-center space-x-3 flex-1 min-w-0">
-                {!isImage && (
-                  <div className={`p-3 rounded-xl ${fileTypeInfo.bgColor} shadow-sm`}>
-                    <IconComponent className={`w-6 h-6 ${fileTypeInfo.color}`} />
-                  </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <div className={`text-sm font-semibold truncate ${
-                    isOwner ? "text-primary-foreground" : "text-foreground"
-                  }`}>
-                    {fileName}
-                  </div>
-                  {attachment.size && (
-                    <div className={`text-xs font-medium ${
-                      isOwner ? "text-primary-foreground/80" : "text-muted-foreground"
-                    }`}>
-                      {formatFileSize(attachment.size)}
-                    </div>
-                  )}
-                </div>
-              </div>
-              
-              {/* Action Buttons for non-images */}
-              {!isImage && (
-                <div className="flex items-center space-x-1">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`h-9 w-9 p-0 rounded-full transition-all duration-200 ${
-                      isOwner 
-                        ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20 hover:scale-110" 
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-110"
-                    }`}
-                    onClick={() => window.open(fileUrl, '_blank')}
-                    title="View file"
-                  >
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className={`h-9 w-9 p-0 rounded-full transition-all duration-200 ${
-                      isOwner 
-                        ? "text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/20 hover:scale-110" 
-                        : "text-muted-foreground hover:text-foreground hover:bg-muted hover:scale-110"
-                    }`}
-                    onClick={() => {
-                      const link = document.createElement('a');
-                      link.href = fileUrl;
-                      link.download = fileName;
-                      link.click();
-                    }}
-                    title="Download file"
-                  >
-                    <Download className="w-4 h-4" />
-                  </Button>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      })}
+    <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+      {attachments.map((attachment, index) => (
+        <AttachmentCard
+          key={attachment.id || index}
+          file={attachment}
+          variant="message"
+          isOwner={isOwner}
+        />
+      ))}
     </div>
   );
 }
