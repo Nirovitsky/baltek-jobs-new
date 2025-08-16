@@ -42,21 +42,9 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
 
   const { data: resumes, isLoading: resumesLoading, error: resumesError } = useQuery({
     queryKey: ["user", "resumes", "current"],
-    queryFn: async () => {
-      console.log("Fetching resumes...");
-      const result = await ApiClient.getResumes();
-      console.log("Raw resumes API response:", result);
-      return result;
-    },
+    queryFn: () => ApiClient.getResumes(),
     enabled: isOpen,
   });
-
-  // Debug logging for resumes data
-  console.log("Application Modal - Resumes data:", resumes);
-  console.log("Application Modal - Resumes loading:", resumesLoading);
-  console.log("Application Modal - Resumes error:", resumesError);
-  console.log("Application Modal - Modal open:", isOpen);
-  console.log("Application Modal - Resumes data structure:", JSON.stringify(resumes, null, 2));
 
   const {
     register,
@@ -179,31 +167,67 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
                  ((resumes as any)?.results && Array.isArray((resumes as any).results) && (resumes as any).results.length > 0) ||
                  ((resumes as any)?.count > 0))
               ) && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label className="text-sm text-muted-foreground">Select from your resumes:</Label>
-                  <Select value={selectedResumeId} onValueChange={setSelectedResumeId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a resume (optional)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {/* Handle different data structures */}
-                      {(() => {
-                        let resumeList = [];
-                        if (Array.isArray(resumes)) {
-                          resumeList = resumes;
-                        } else if ((resumes as any)?.results && Array.isArray((resumes as any).results)) {
-                          resumeList = (resumes as any).results;
-                        }
-                        
-                        return resumeList.map((resume: any) => (
-                          <SelectItem key={resume.id} value={resume.id.toString()}>
-                            {resume.title || resume.name || `Resume ${resume.id}`}
-                            {resume.is_primary && " (Primary)"}
-                          </SelectItem>
-                        ));
-                      })()}
-                    </SelectContent>
-                  </Select>
+                  <div className="grid gap-2">
+                    {(() => {
+                      let resumeList = [];
+                      if (Array.isArray(resumes)) {
+                        resumeList = resumes;
+                      } else if ((resumes as any)?.results && Array.isArray((resumes as any).results)) {
+                        resumeList = (resumes as any).results;
+                      }
+                      
+                      return resumeList.map((resume: any) => (
+                        <div
+                          key={resume.id}
+                          onClick={() => {
+                            setSelectedResumeId(selectedResumeId === resume.id.toString() ? "" : resume.id.toString());
+                            if (uploadedFile) setUploadedFile(null); // Clear uploaded file when selecting existing resume
+                          }}
+                          className={`
+                            relative p-4 border rounded-lg cursor-pointer transition-all duration-200
+                            ${selectedResumeId === resume.id.toString() 
+                              ? 'border-primary bg-primary/5 ring-1 ring-primary' 
+                              : 'border-input bg-background hover:border-primary/50 hover:bg-muted/30'
+                            }
+                          `}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-sm">
+                                {resume.title || resume.name || `Resume ${resume.id}`}
+                                {resume.is_primary && (
+                                  <span className="ml-2 text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">
+                                    Primary
+                                  </span>
+                                )}
+                              </h4>
+                              {resume.updated_at && (
+                                <p className="text-xs text-muted-foreground mt-1">
+                                  Updated {new Date(resume.updated_at).toLocaleDateString()}
+                                </p>
+                              )}
+                            </div>
+                            <div className={`
+                              w-4 h-4 rounded-full border-2 transition-all duration-200
+                              ${selectedResumeId === resume.id.toString()
+                                ? 'border-primary bg-primary'
+                                : 'border-input'
+                              }
+                            `}>
+                              {selectedResumeId === resume.id.toString() && (
+                                <div className="w-full h-full rounded-full bg-background scale-50" />
+                              )}
+                            </div>
+                          </div>
+                          {selectedResumeId === resume.id.toString() && (
+                            <div className="absolute inset-0 rounded-lg border-2 border-primary opacity-20 pointer-events-none" />
+                          )}
+                        </div>
+                      ));
+                    })()}
+                  </div>
                 </div>
               )}
 
