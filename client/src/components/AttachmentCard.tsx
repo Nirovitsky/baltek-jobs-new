@@ -163,8 +163,17 @@ export function AttachmentCard({
   const getCardClasses = () => {
     const isMediaFile = ['image', 'video', 'audio'].includes(fileTypeInfo.type);
     
+    if (isMediaFile && variant === 'message') {
+      // Media files in messages: keep bubble styling but no padding (image fills the bubble)
+      if (isOwner) {
+        return "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white/10 to-white/5 dark:from-white/10 dark:to-white/5 border border-white/20 hover:bg-white/15";
+      } else {
+        return "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700";
+      }
+    }
+    
     if (isMediaFile) {
-      // Media files: no border, no padding, minimal styling
+      // Media files in composer: minimal styling
       return "relative group rounded-xl hover:shadow-lg transition-all duration-300";
     }
     
@@ -230,26 +239,10 @@ export function AttachmentCard({
 
       {/* Unified Content Layout */}
       {isImage && fileUrl ? (
-        /* Image Layout - Full width preview with details below */
+        /* Image Layout - Text above, full-width image below */
         <div className="flex flex-col">
-          <div className="relative cursor-pointer" onClick={handleView}>
-            <img
-              src={fileUrl}
-              alt={fileName}
-              className="w-full h-48 object-cover rounded-xl"
-              loading="lazy"
-              onError={(e) => {
-                console.log('Image failed to load:', fileUrl);
-                e.currentTarget.style.display = 'none';
-              }}
-              onLoad={() => {
-                console.log('Image loaded successfully:', fileUrl);
-              }}
-            />
-            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-xl transition-colors duration-200" />
-          </div>
-          
-          <div className="flex items-center justify-between p-3">
+          {/* Text section above image with padding */}
+          <div className="flex items-center justify-between p-3 pb-0">
             <div className="flex-1 min-w-0">
               <div 
                 className="text-sm font-medium text-foreground truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" 
@@ -277,6 +270,25 @@ export function AttachmentCard({
                 <Download className="w-3 h-3 text-gray-700 dark:text-gray-300" />
               </Button>
             )}
+          </div>
+          
+          {/* Full-width image with proper corner rounding */}
+          <div className="relative cursor-pointer mt-3" onClick={handleView}>
+            <img
+              src={fileUrl}
+              alt={fileName}
+              className="w-full h-auto object-cover rounded-b-xl"
+              style={{ minHeight: '120px', maxHeight: '400px' }}
+              loading="lazy"
+              onError={(e) => {
+                console.log('Image failed to load:', fileUrl);
+                e.currentTarget.style.display = 'none';
+              }}
+              onLoad={() => {
+                console.log('Image loaded successfully:', fileUrl);
+              }}
+            />
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-b-xl transition-colors duration-200" />
           </div>
         </div>
       ) : (
