@@ -163,17 +163,8 @@ export function AttachmentCard({
   const getCardClasses = () => {
     const isMediaFile = ['image', 'video', 'audio'].includes(fileTypeInfo.type);
     
-    if (isMediaFile && variant === 'message') {
-      // Media files in messages: keep bubble styling but no padding (image fills the bubble)
-      if (isOwner) {
-        return "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white/10 to-white/5 dark:from-white/10 dark:to-white/5 border border-white/20 hover:bg-white/15";
-      } else {
-        return "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700";
-      }
-    }
-    
     if (isMediaFile) {
-      // Media files in composer: minimal styling
+      // Media files: no border, no padding, minimal styling
       return "relative group rounded-xl hover:shadow-lg transition-all duration-300";
     }
     
@@ -210,29 +201,6 @@ export function AttachmentCard({
     }
   };
 
-  // For images in message variant, render directly without wrapper card
-  if (isImage && fileUrl && variant === 'message') {
-    return (
-      <div className="relative cursor-pointer -mx-3 -my-5 border border-gray-300 dark:border-gray-600 rounded-xl overflow-hidden" onClick={handleView}>
-        <img
-          src={fileUrl}
-          alt={fileName}
-          className="w-full h-auto object-cover"
-          style={{ minHeight: '120px', maxHeight: '400px' }}
-          loading="lazy"
-          onError={(e) => {
-            console.log('Image failed to load:', fileUrl);
-            e.currentTarget.style.display = 'none';
-          }}
-          onLoad={() => {
-            console.log('Image loaded successfully:', fileUrl);
-          }}
-        />
-        <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-200" />
-      </div>
-    );
-  }
-
   return (
     <div className={`${getCardClasses()} ${className}`}>
       {/* Upload Progress Overlay */}
@@ -268,7 +236,7 @@ export function AttachmentCard({
             <img
               src={fileUrl}
               alt={fileName}
-              className="w-full h-48 object-cover rounded-t-xl"
+              className="w-full h-48 object-cover rounded-xl"
               loading="lazy"
               onError={(e) => {
                 console.log('Image failed to load:', fileUrl);
@@ -278,7 +246,7 @@ export function AttachmentCard({
                 console.log('Image loaded successfully:', fileUrl);
               }}
             />
-            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-t-xl transition-colors duration-200" />
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-xl transition-colors duration-200" />
           </div>
           
           <div className="flex items-center justify-between p-3">

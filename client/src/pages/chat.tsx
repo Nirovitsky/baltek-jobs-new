@@ -956,116 +956,83 @@ export default function ChatPage() {
                           .map((message: Message) => (
                             <div
                               key={message.id}
-                              className={`flex flex-col gap-1 ${message.owner === user?.id ? "items-end" : "items-start"} animate-in fade-in-0 slide-in-from-bottom-2 duration-300`}
+                              className={`flex ${message.owner === user?.id ? "justify-end" : "justify-start"} animate-in fade-in-0 slide-in-from-bottom-2 duration-300`}
                             >
-                              {/* Display attachments first if present */}
-                              {message.attachments && message.attachments.length > 0 && (
+                              <div
+                                className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${
+                                  message.owner === user?.id
+                                    ? "flex-row-reverse space-x-reverse"
+                                    : ""
+                                }`}
+                              >
+                                {message.owner !== user?.id && (
+                                  <Avatar className="w-8 h-8">
+                                    <AvatarImage src="" />
+                                    <AvatarFallback>
+                                      {selectedConversationData?.content_object?.job?.organization?.display_name?.[0] ||
+                                        selectedConversationData?.content_object?.job?.organization?.official_name?.[0] ||
+                                        "R"}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                )}
+
                                 <div
-                                  className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${
-                                    message.owner === user?.id
-                                      ? "flex-row-reverse space-x-reverse"
-                                      : ""
+                                  className={`rounded-lg transition-all duration-200 ease-in-out hover:shadow-md ${
+                                    message.status === "failed"
+                                      ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500 p-3"
+                                      : message.status === "sending"
+                                      ? "bg-primary/70 text-primary-foreground p-3"
+                                      : message.owner === user?.id
+                                      ? "bg-primary text-primary-foreground hover:bg-primary/90 p-3"
+                                      : "bg-muted text-foreground hover:bg-muted p-3"
                                   }`}
                                 >
-                                  {message.owner !== user?.id && (
-                                    <Avatar className="w-8 h-8">
-                                      <AvatarImage src="" />
-                                      <AvatarFallback>
-                                        {selectedConversationData?.content_object?.job?.organization?.display_name?.[0] ||
-                                          selectedConversationData?.content_object?.job?.organization?.official_name?.[0] ||
-                                          "R"}
-                                      </AvatarFallback>
-                                    </Avatar>
+                                  {/* Display attachments first if present */}
+                                  <UserMessageAttachments
+                                    attachments={message.attachments}
+                                    isOwner={message.owner === user?.id}
+                                  />
+                                  
+                                  {/* Display text message after attachments */}
+                                  {message.text && (
+                                    <div className={`${message.attachments && message.attachments.length > 0 ? 'mt-2' : ''}`}>
+                                      <MessageRenderer 
+                                        text={message.text} 
+                                        className={message.status === "failed" ? "text-white" : message.owner === user?.id ? "text-primary-foreground" : "text-foreground"}
+                                      />
+                                    </div>
                                   )}
-
-                                  <div
-                                    className={`rounded-lg transition-all duration-200 ease-in-out hover:shadow-md ${
-                                      message.status === "failed"
-                                        ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500 p-3"
-                                        : message.status === "sending"
-                                        ? "bg-primary/70 text-primary-foreground p-3"
-                                        : message.owner === user?.id
-                                        ? "bg-primary text-primary-foreground hover:bg-primary/90 p-3"
-                                        : "bg-muted text-foreground hover:bg-muted p-3"
-                                    }`}
-                                  >
-                                    <UserMessageAttachments
-                                      attachments={message.attachments}
-                                      isOwner={message.owner === user?.id}
-                                    />
-                                  </div>
-                                </div>
-                              )}
-
-                              {/* Display text message separately */}
-                              {message.text && (
-                                <div
-                                  className={`flex items-end space-x-2 max-w-xs lg:max-w-md ${
-                                    message.owner === user?.id
-                                      ? "flex-row-reverse space-x-reverse"
-                                      : ""
-                                  }`}
-                                >
-                                  {message.owner !== user?.id && !message.attachments?.length && (
-                                    <Avatar className="w-8 h-8">
-                                      <AvatarImage src="" />
-                                      <AvatarFallback>
-                                        {selectedConversationData?.content_object?.job?.organization?.display_name?.[0] ||
-                                          selectedConversationData?.content_object?.job?.organization?.official_name?.[0] ||
-                                          "R"}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                  )}
-                                  {message.owner !== user?.id && message.attachments?.length > 0 && (
-                                    <div className="w-8 h-8"></div>
-                                  )}
-
-                                  <div
-                                    className={`rounded-lg transition-all duration-200 ease-in-out hover:shadow-md ${
-                                      message.status === "failed"
-                                        ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500 p-3"
-                                        : message.status === "sending"
-                                        ? "bg-primary/70 text-primary-foreground p-3"
-                                        : message.owner === user?.id
-                                        ? "bg-primary text-primary-foreground hover:bg-primary/90 p-3"
-                                        : "bg-muted text-foreground hover:bg-muted p-3"
-                                    }`}
-                                  >
-                                    <MessageRenderer 
-                                      text={message.text} 
-                                      className={message.status === "failed" ? "text-white" : message.owner === user?.id ? "text-primary-foreground" : "text-foreground"}
-                                    />
-                                    
-                                    <div className="flex items-center justify-end gap-1 mt-2">
-                                      {/* Show error message for failed messages */}
-                                      {message.status === "failed" && message.error && (
-                                        <span className="text-xs text-red-400 mr-2">
-                                          {message.error}
-                                        </span>
-                                      )}
-                                      
-                                      <span
-                                        className={`text-xs ${
-                                          message.owner === user?.id
-                                            ? "text-white/70"
-                                            : "text-muted-foreground"
-                                        }`}
-                                      >
-                                        {formatTime(new Date(message.date_created * 1000).toISOString())}
+                                  
+                                  <div className="flex items-center justify-end gap-1 mt-2">
+                                    {/* Show error message for failed messages */}
+                                    {message.status === "failed" && message.error && (
+                                      <span className="text-xs text-red-400 mr-2">
+                                        {message.error}
                                       </span>
-                                      
-                                      {message.owner === user?.id && (
-                                        <div className="flex items-center gap-1">
-                                          {message.status === "sending" ? (
-                                            <Loader2 className="w-3 h-3 text-white/70 animate-spin" />
-                                          ) : message.status === "failed" ? (
-                                            <Button
-                                              variant="ghost"
-                                              size="sm"
-                                              className="h-5 w-5 p-0 text-red-400 hover:text-red-300"
-                                              onClick={() => retryMessage(message.id)}
-                                              title="Retry message"
-                                            >
+                                    )}
+                                    
+                                    <span
+                                      className={`text-xs ${
+                                        message.owner === user?.id
+                                          ? "text-white/70"
+                                          : "text-muted-foreground"
+                                      }`}
+                                    >
+                                      {formatTime(new Date(message.date_created * 1000).toISOString())}
+                                    </span>
+                                    
+                                    {message.owner === user?.id && (
+                                      <div className="flex items-center gap-1">
+                                        {message.status === "sending" ? (
+                                          <Loader2 className="w-3 h-3 text-white/70 animate-spin" />
+                                        ) : message.status === "failed" ? (
+                                          <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-5 w-5 p-0 text-red-400 hover:text-red-300"
+                                            onClick={() => retryMessage(message.id)}
+                                            title="Retry message"
+                                          >
                                             <RotateCcw className="w-3 h-3" />
                                           </Button>
                                         ) : message.status === "read" ? (
@@ -1078,7 +1045,6 @@ export default function ChatPage() {
                                   </div>
                                 </div>
                               </div>
-                              )}
                             </div>
                           ))}
                         <div ref={messagesEndRef} />
