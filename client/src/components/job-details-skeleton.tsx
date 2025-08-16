@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function JobDetailsSkeleton() {
   return (
-    <Card className="h-full max-h-[calc(100vh-220px)] flex flex-col w-full overflow-hidden">
+    <Card className="h-full max-h-[calc(100vh-205px)] flex flex-col w-full overflow-hidden">
       {/* Fixed Header - matches exact structure */}
       <div className="p-6 border-b bg-background">
         {/* Header - matches job-details structure */}
