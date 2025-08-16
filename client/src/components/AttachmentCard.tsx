@@ -214,8 +214,27 @@ export function AttachmentCard({
   if (isImage && fileUrl && variant === 'message') {
     return (
       <div className="flex flex-col">
-        {/* Text section above image with padding */}
-        <div className="flex items-center justify-between p-3 pb-2">
+        {/* Full-width image that fills parent bubble */}
+        <div className="relative cursor-pointer -mx-3 -mt-3" onClick={handleView}>
+          <img
+            src={fileUrl}
+            alt={fileName}
+            className="w-full h-auto object-cover rounded-t-xl"
+            style={{ minHeight: '120px', maxHeight: '400px' }}
+            loading="lazy"
+            onError={(e) => {
+              console.log('Image failed to load:', fileUrl);
+              e.currentTarget.style.display = 'none';
+            }}
+            onLoad={() => {
+              console.log('Image loaded successfully:', fileUrl);
+            }}
+          />
+          <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-t-xl transition-colors duration-200" />
+        </div>
+        
+        {/* Text section below image with padding */}
+        <div className="flex items-center justify-between p-3 pt-2">
           <div className="flex-1 min-w-0">
             <div 
               className="text-sm font-medium text-foreground truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" 
@@ -241,25 +260,6 @@ export function AttachmentCard({
           >
             <Download className="w-3 h-3 text-gray-700 dark:text-gray-300" />
           </Button>
-        </div>
-        
-        {/* Full-width image that fills parent bubble */}
-        <div className="relative cursor-pointer -mx-3 -mb-3" onClick={handleView}>
-          <img
-            src={fileUrl}
-            alt={fileName}
-            className="w-full h-auto object-cover rounded-b-xl"
-            style={{ minHeight: '120px', maxHeight: '400px' }}
-            loading="lazy"
-            onError={(e) => {
-              console.log('Image failed to load:', fileUrl);
-              e.currentTarget.style.display = 'none';
-            }}
-            onLoad={() => {
-              console.log('Image loaded successfully:', fileUrl);
-            }}
-          />
-          <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-b-xl transition-colors duration-200" />
         </div>
       </div>
     );
