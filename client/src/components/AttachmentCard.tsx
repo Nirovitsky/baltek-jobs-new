@@ -346,11 +346,11 @@ export function AttachmentCard({
       {/* Image Modal */}
       {isImage && (
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-          <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 border-none bg-transparent">
+          <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 border-none bg-transparent overflow-hidden">
             <img
               src={cachedImageUrl || fileUrl}
               alt={fileName}
-              className="w-full h-full object-contain"
+              className="max-w-full max-h-[95vh] w-auto h-auto object-contain"
             />
           </DialogContent>
         </Dialog>
