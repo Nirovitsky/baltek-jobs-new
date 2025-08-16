@@ -222,7 +222,7 @@ export function AttachmentCard({
       {isImage && fileUrl ? (
         /* Image Layout - Small thumbnail preview */
         <div className="flex items-center space-x-3">
-          <div className="relative flex-shrink-0">
+          <div className="relative flex-shrink-0 cursor-pointer" onClick={handleView}>
             <img
               src={fileUrl}
               alt={fileName}
@@ -240,7 +240,11 @@ export function AttachmentCard({
           </div>
           
           <div className="flex-1 min-w-0">
-            <div className="text-sm font-medium text-foreground truncate" title={fileName}>
+            <div 
+              className="text-sm font-medium text-foreground truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" 
+              title="Click to view"
+              onClick={handleView}
+            >
               {fileName}
             </div>
             {file.size && (
@@ -255,21 +259,11 @@ export function AttachmentCard({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-6 px-2 text-xs"
-                  onClick={handleView}
-                  title="View full size"
-                >
-                  <Eye className="w-3 h-3 mr-1" />
-                  View
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="h-6 px-2 text-xs"
+                  className="h-6 w-6 p-0"
                   onClick={handleDownload}
+                  title="Download"
                 >
-                  <Download className="w-3 h-3 mr-1" />
-                  Download
+                  <Download className="w-3 h-3" />
                 </Button>
               </div>
             )}
@@ -278,7 +272,10 @@ export function AttachmentCard({
       ) : (
         /* File Layout - Icon, filename, and download button */
         <div className="flex items-center space-x-3">
-          <div className={`w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0 ${fileTypeInfo.bgColor}`}>
+          <div 
+            className={`w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0 cursor-pointer ${fileTypeInfo.bgColor}`}
+            onClick={fileTypeInfo.type === 'pdf' ? handleView : handleDownload}
+          >
             <IconComponent className={`w-7 h-7 ${fileTypeInfo.color}`} />
           </div>
           
@@ -298,24 +295,12 @@ export function AttachmentCard({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-6 px-2 text-xs"
+                  className="h-6 w-6 p-0"
                   onClick={handleDownload}
+                  title="Download"
                 >
-                  <Download className="w-3 h-3 mr-1" />
-                  Download
+                  <Download className="w-3 h-3" />
                 </Button>
-                {fileTypeInfo.type === 'pdf' && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-6 px-2 text-xs"
-                    onClick={handleView}
-                    title="View"
-                  >
-                    <Eye className="w-3 h-3 mr-1" />
-                    View
-                  </Button>
-                )}
               </div>
             )}
           </div>
