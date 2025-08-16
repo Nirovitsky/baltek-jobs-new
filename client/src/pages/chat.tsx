@@ -14,7 +14,11 @@ import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import MessageRenderer from "@/components/message-renderer";
-import FileAttachment from "@/components/file-attachment";
+import {
+  ComposerAddAttachment,
+  ComposerAttachments,
+  UserMessageAttachments,
+} from "@/components/AttachmentsUI";
 import {
   MessageCircle,
   Send,
@@ -977,18 +981,10 @@ export default function ChatPage() {
                                   }`}
                                 >
                                   {/* Display attachments first if present */}
-                                  {message.attachments && message.attachments.length > 0 && (
-                                    <div className="space-y-2 mb-2">
-                                      {message.attachments.map((attachment: any, index: number) => (
-                                        <FileAttachment
-                                          key={attachment.id || index}
-                                          attachment={attachment}
-                                          isOwner={message.owner === user?.id}
-                                          index={index}
-                                        />
-                                      ))}
-                                    </div>
-                                  )}
+                                  <UserMessageAttachments
+                                    attachments={message.attachments}
+                                    isOwner={message.owner === user?.id}
+                                  />
                                   
                                   {/* Display text message after attachments */}
                                   {message.text && (
@@ -1053,95 +1049,23 @@ export default function ChatPage() {
                 {/* Message Input - Only show if not expired */}
                 {selectedConversationData?.content_object?.status !== "expired" ? (
                   <div className="p-4 border-t">
-                    {/* Upload Progress */}
-                    {uploadProgress.length > 0 && (
-                      <div className="mb-3 p-2 bg-primary/10 rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-                        <div className="text-xs text-blue-600 mb-2">Uploading files...</div>
-                        <div className="space-y-1">
-                          {uploadProgress.map((item, index) => (
-                            <div key={index} className="flex items-center space-x-2">
-                              <FileText className="w-4 h-4 text-blue-500" />
-                              <div className="flex-1">
-                                <div className="text-sm font-medium">{item.name}</div>
-                                <div className="w-full bg-muted rounded-full h-1.5">
-                                  <div
-                                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                                      item.progress === -1 
-                                        ? 'bg-red-500' 
-                                        : item.progress === 100 
-                                          ? 'bg-green-500' 
-                                          : 'bg-primary/100'
-                                    }`}
-                                    style={{ width: `${Math.max(0, item.progress)}%` }}
-                                  ></div>
-                                </div>
-                                <div className="text-xs text-muted-foreground">
-                                  {item.progress === -1 
-                                    ? 'Failed' 
-                                    : item.progress === 100 
-                                      ? 'Complete' 
-                                      : `${item.progress}%`
-                                  }
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {/* File Attachments Preview */}
-                    {attachedFiles.length > 0 && (
-                      <div className="mb-3 p-2 bg-muted rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-                        <div className="text-xs text-muted-foreground mb-2">Attachments:</div>
-                        <div className="space-y-1">
-                          {attachedFiles.map((file) => (
-                            <div key={file.id} className="flex items-center justify-between bg-white p-2 rounded border">
-                              <div className="flex items-center space-x-2">
-                                <FileText className="w-4 h-4 text-muted-foreground" />
-                                <div>
-                                  <div className="text-sm font-medium">{file.name}</div>
-                                  <div className="text-xs text-muted-foreground">
-                                    {file.size ? `${(file.size / 1024 / 1024).toFixed(1)} MB` : 'Unknown size'}
-                                  </div>
-                                </div>
-                              </div>
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeAttachedFile(file.id)}
-                                className="h-6 w-6 p-0"
-                              >
-                                <X className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                    {/* File Attachments and Upload Progress */}
+                    <ComposerAttachments
+                      attachedFiles={attachedFiles}
+                      uploadProgress={uploadProgress}
+                      onRemoveFile={removeAttachedFile}
+                      uploadingFiles={uploadingFiles}
+                    />
                     
                     <form
                       onSubmit={handleSendMessage}
                       className="flex space-x-2"
                     >
-                      <input
-                        type="file"
-                        ref={fileInputRef}
-                        onChange={handleFileUpload}
-                        multiple
-                        className="hidden"
+                      <ComposerAddAttachment
+                        onFileSelect={handleFileUpload}
+                        uploadingFiles={uploadingFiles}
+                        fileInputRef={fileInputRef}
                       />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => fileInputRef.current?.click()}
-                        disabled={uploadingFiles}
-                        className="px-3"
-                      >
-                        <Paperclip className="w-4 h-4" />
-                      </Button>
                       <Input
                         value={messageInput}
                         onChange={(e) => setMessageInput(e.target.value)}
