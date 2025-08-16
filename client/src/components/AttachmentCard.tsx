@@ -139,8 +139,18 @@ export function AttachmentCard({
   const fileTypeInfo = getFileTypeInfo(fileName, file.content_type);
   const IconComponent = fileTypeInfo.icon;
   const fileUrl = file.file_url || (file.id ? `https://api.baltek.net/api/files/${file.id}/` : '');
-  const isImage = fileTypeInfo.type === 'image' && fileUrl;
+  const isImage = fileTypeInfo.type === 'image';
   const isUploading = uploadProgress && uploadProgress.name === fileName;
+
+  // Debug log for images
+  console.log('AttachmentCard Debug:', {
+    fileName,
+    contentType: file.content_type,
+    fileTypeInfo: fileTypeInfo.type,
+    isImage,
+    fileUrl,
+    hasUrl: !!fileUrl
+  });
 
   // Unified styling for both variants
   const getCardClasses = () => {
@@ -201,7 +211,7 @@ export function AttachmentCard({
       )}
 
       {/* Unified Content Layout */}
-      {isImage ? (
+      {isImage && fileUrl ? (
         /* Image Layout - Small thumbnail preview */
         <div className="flex items-center space-x-3">
           <div className="relative flex-shrink-0">
@@ -211,7 +221,11 @@ export function AttachmentCard({
               className="w-16 h-16 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
               loading="lazy"
               onError={(e) => {
+                console.log('Image failed to load:', fileUrl);
                 e.currentTarget.style.display = 'none';
+              }}
+              onLoad={() => {
+                console.log('Image loaded successfully:', fileUrl);
               }}
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
