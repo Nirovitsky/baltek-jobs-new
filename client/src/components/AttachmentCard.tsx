@@ -226,7 +226,7 @@ export function AttachmentCard({
             <img
               src={fileUrl}
               alt={fileName}
-              className="w-16 h-16 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+              className="w-20 h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
               loading="lazy"
               onError={(e) => {
                 console.log('Image failed to load:', fileUrl);
@@ -251,11 +251,11 @@ export function AttachmentCard({
             
             {/* Action Buttons for Images */}
             {variant === 'message' && fileUrl && (
-              <div className="flex space-x-2 mt-2">
+              <div className="flex space-x-1 mt-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 px-2 text-xs"
+                  className="h-6 px-2 text-xs"
                   onClick={handleView}
                   title="View full size"
                 >
@@ -265,7 +265,7 @@ export function AttachmentCard({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 px-2 text-xs"
+                  className="h-6 px-2 text-xs"
                   onClick={handleDownload}
                 >
                   <Download className="w-3 h-3 mr-1" />
@@ -278,8 +278,8 @@ export function AttachmentCard({
       ) : (
         /* File Layout - Icon, filename, and download button */
         <div className="flex items-center space-x-3">
-          <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${fileTypeInfo.bgColor}`}>
-            <IconComponent className={`w-6 h-6 ${fileTypeInfo.color}`} />
+          <div className={`w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0 ${fileTypeInfo.bgColor}`}>
+            <IconComponent className={`w-7 h-7 ${fileTypeInfo.color}`} />
           </div>
           
           <div className="flex-1 min-w-0">
@@ -294,11 +294,11 @@ export function AttachmentCard({
             
             {/* Action Buttons for Files */}
             {variant === 'message' && fileUrl && (
-              <div className="flex space-x-2 mt-2">
+              <div className="flex space-x-1 mt-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-7 px-2 text-xs"
+                  className="h-6 px-2 text-xs"
                   onClick={handleDownload}
                 >
                   <Download className="w-3 h-3 mr-1" />
@@ -308,7 +308,7 @@ export function AttachmentCard({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-7 px-2 text-xs"
+                    className="h-6 px-2 text-xs"
                     onClick={handleView}
                     title="View"
                   >
