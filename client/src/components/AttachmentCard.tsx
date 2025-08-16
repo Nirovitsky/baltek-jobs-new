@@ -150,6 +150,7 @@ export function AttachmentCard({
     fileTypeInfo: fileTypeInfo.type,
     isImage,
     fileUrl,
+    actualFileUrl: file.file_url,
     hasUrl: !!fileUrl
   });
 
@@ -170,17 +171,21 @@ export function AttachmentCard({
   };
 
   const handleDownload = () => {
-    if (fileUrl) {
+    // Use the actual file_url from API response for download too
+    const downloadUrl = file.file_url || fileUrl;
+    if (downloadUrl) {
       const link = document.createElement('a');
-      link.href = fileUrl;
+      link.href = downloadUrl;
       link.download = fileName;
       link.click();
     }
   };
 
   const handleView = () => {
-    if (fileUrl) {
-      window.open(fileUrl, '_blank');
+    // Use the actual file_url from API response, not constructed URL
+    const viewUrl = file.file_url || fileUrl;
+    if (viewUrl) {
+      window.open(viewUrl, '_blank');
     }
   };
 
