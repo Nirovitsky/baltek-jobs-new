@@ -159,28 +159,21 @@ export function AttachmentCard({
     if (isImage && fileUrl) {
       const cached = getCachedImage(fileUrl);
       if (cached) {
+        console.log('✅ Using cached image:', fileUrl);
         setCachedImageUrl(cached);
       } else {
+        console.log('📥 Loading and caching image:', fileUrl);
         loadAndCacheImage(fileUrl)
           .then((cachedUrl) => {
+            console.log('✅ Image cached successfully:', fileUrl);
             setCachedImageUrl(cachedUrl);
           })
           .catch((error) => {
-            console.error('Failed to cache image:', error);
+            console.error('❌ Failed to cache image:', error);
           });
       }
     }
-  }, [isImage, fileUrl, getCachedImage, loadAndCacheImage]);
-
-  // Update cached URL when cache changes
-  useEffect(() => {
-    if (isImage && fileUrl) {
-      const cached = getCachedImage(fileUrl);
-      if (cached && cached !== cachedImageUrl) {
-        setCachedImageUrl(cached);
-      }
-    }
-  });
+  }, [isImage, fileUrl]); // Remove function dependencies to prevent re-runs
 
   // Debug log for images
   console.log('AttachmentCard Debug:', {

@@ -13,8 +13,6 @@ const imageCache = new Map<string, string>();
 const loadingImages = new Set<string>();
 
 export function ImageCacheProvider({ children }: { children: ReactNode }) {
-  const [, forceUpdate] = useState({});
-
   const getCachedImage = useCallback((url: string): string | null => {
     return imageCache.get(url) || null;
   }, []);
@@ -64,9 +62,6 @@ export function ImageCacheProvider({ children }: { children: ReactNode }) {
       // Cache the blob URL
       imageCache.set(url, objectUrl);
       loadingImages.delete(url);
-      
-      // Force re-render to update loading states
-      forceUpdate({});
       
       return objectUrl;
     } catch (error) {
