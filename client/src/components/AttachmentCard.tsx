@@ -305,25 +305,40 @@ export function AttachmentCard({
           )}
         </div>
       ) : (
-        /* File Layout - New design */
-        <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
-          <div className="w-8 h-8 bg-gray-300 dark:bg-gray-600 flex items-center justify-center rounded">
-            <IconComponent className={`w-4 h-4 ${fileTypeInfo.color}`} />
-          </div>
-          <span className="text-sm flex-1 truncate" title={fileName}>
-            {fileName}
-            {file.size && (
-              <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                ({formatFileSize(file.size)})
-              </span>
-            )}
-          </span>
-          <button 
-            className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
+        /* File Layout - Icon, filename, and download button */
+        <div className={`flex items-center space-x-3 ${['image', 'video', 'audio'].includes(fileTypeInfo.type) ? '' : 'p-3'}`}>
+          <div 
+            className={`w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0 cursor-pointer ${fileTypeInfo.bgColor}`}
             onClick={fileTypeInfo.type === 'pdf' ? handleView : handleDownload}
           >
-            {fileTypeInfo.type === 'pdf' ? 'View' : 'Download'}
-          </button>
+            <IconComponent className={`w-7 h-7 ${fileTypeInfo.color}`} />
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <div className="text-sm font-medium text-foreground truncate" title={fileName}>
+              {fileName}
+            </div>
+            {file.size && (
+              <div className="text-xs text-muted-foreground">
+                {formatFileSize(file.size)}
+              </div>
+            )}
+            
+            {/* Action Buttons for Files */}
+            {variant === 'message' && fileUrl && (
+              <div className="flex space-x-1 mt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-6 w-6 p-0 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 border-gray-300 dark:border-gray-600"
+                  onClick={handleDownload}
+                  title="Download"
+                >
+                  <Download className="w-3 h-3 text-gray-700 dark:text-gray-300" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
       )}
 
