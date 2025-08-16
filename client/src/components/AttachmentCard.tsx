@@ -215,7 +215,7 @@ export function AttachmentCard({
     return (
       <div className="flex flex-col">
         {/* Full-width image that fills parent bubble */}
-        <div className="relative cursor-pointer -mx-3 -mt-3" onClick={handleView}>
+        <div className="relative cursor-pointer -mx-3 -mt-4" onClick={handleView}>
           <img
             src={fileUrl}
             alt={fileName}
