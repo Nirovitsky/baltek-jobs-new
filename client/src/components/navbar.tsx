@@ -13,7 +13,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Search,
   Bell,
@@ -41,6 +41,7 @@ export default function Navbar({}: NavbarProps) {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
   const [language, setLanguage] = useState("english");
+  const location = useLocation();
 
   const oauthLoginMutation = useMutation({
     mutationFn: async () => {
@@ -60,12 +61,12 @@ export default function Navbar({}: NavbarProps) {
     oauthLoginMutation.mutate();
   };
 
-  // Fetch notifications for the dropdown
+  // Fetch notifications only when on notifications page
   const { data: notificationsData } = useQuery({
     queryKey: ["notifications", "navbar"],
     queryFn: () => ApiClient.getNotifications({ page_size: 5 }),
     retry: false,
-    enabled: !!user,
+    enabled: !!user && location.pathname === "/notifications",
     staleTime: 30000, // Cache for 30 seconds to prevent unnecessary re-fetches
     refetchOnWindowFocus: false, // Prevent refetch on route changes
   });
