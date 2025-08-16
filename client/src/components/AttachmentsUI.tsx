@@ -182,19 +182,40 @@ export function ComposerAttachments({
       {uploadProgress.length > 0 && (
         <div className="space-y-2">
           {uploadProgress.map((file, index) => (
-            <div key={index} className="space-y-1">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground truncate">
-                  Uploading {file.name}...
-                </span>
-                <span className="text-muted-foreground text-xs">
-                  {file.progress === -1 ? "Error" : `${file.progress}%`}
-                </span>
+            <div key={index} className="flex items-center space-x-3">
+              <div className="relative w-10 h-10 flex-shrink-0">
+                <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="text-muted/20"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
+                  />
+                  <path
+                    className={file.progress === -1 ? "text-red-500" : "text-primary"}
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    fill="transparent"
+                    strokeDasharray={`${file.progress === -1 ? 0 : file.progress}, 100`}
+                    strokeLinecap="round"
+                    d="m18,2.0845 a 15.9155,15.9155 0 0,1 0,31.831 a 15.9155,15.9155 0 0,1 0,-31.831"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="text-xs font-medium">
+                    {file.progress === -1 ? "!" : `${file.progress}%`}
+                  </span>
+                </div>
               </div>
-              <Progress 
-                value={file.progress === -1 ? 0 : file.progress} 
-                className="h-1"
-              />
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium text-foreground truncate">
+                  {file.name}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {file.progress === -1 ? "Upload failed" : "Uploading..."}
+                </div>
+              </div>
             </div>
           ))}
         </div>
