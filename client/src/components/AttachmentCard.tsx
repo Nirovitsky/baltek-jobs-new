@@ -1,5 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogOverlay,
+} from "@/components/ui/dialog";
 import {
   X,
   Download,
@@ -144,6 +149,7 @@ export function AttachmentCard({
   const fileUrl = file.path || file.file_url || (file.id ? `https://api.baltek.net/media/file/${file.id}` : '');
   const isImage = fileTypeInfo.type === 'image';
   const isUploading = uploadProgress && uploadProgress.name === fileName;
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   // Debug log for images
   console.log('AttachmentCard Debug:', {
@@ -194,10 +200,15 @@ export function AttachmentCard({
   };
 
   const handleView = () => {
-    // Use path field from backend first, then fallback
-    const viewUrl = file.path || file.file_url || fileUrl;
-    if (viewUrl) {
-      window.open(viewUrl, '_blank');
+    if (isImage) {
+      // For images, open modal instead of new window
+      setIsImageModalOpen(true);
+    } else {
+      // For non-images, open in new window
+      const viewUrl = file.path || file.file_url || fileUrl;
+      if (viewUrl) {
+        window.open(viewUrl, '_blank');
+      }
     }
   };
 
@@ -307,7 +318,30 @@ export function AttachmentCard({
         </div>
       )}
 
-
+      {/* Image Modal */}
+      {isImage && (
+        <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
+          <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 bg-black/95 border-none">
+            <DialogOverlay className="bg-black/80" />
+            <div className="relative w-full h-full flex items-center justify-center p-4">
+              <img
+                src={fileUrl}
+                alt={fileName}
+                className="max-w-full max-h-full object-contain rounded-lg"
+                loading="lazy"
+              />
+              <Button
+                variant="ghost"
+                size="sm"
+                className="absolute top-4 right-4 h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white border-none"
+                onClick={() => setIsImageModalOpen(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
