@@ -1,15 +1,16 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
+  X,
   Download,
-  ImageIcon,
+  Eye,
   FileText,
   FileVideo,
+  ImageIcon,
   Music,
   Archive,
   File,
-  Eye,
-  X,
+  Loader2,
 } from "lucide-react";
 
 // Types
@@ -22,12 +23,18 @@ interface AttachmentFile {
   content_type?: string;
 }
 
+interface UploadProgress {
+  name: string;
+  progress: number;
+}
+
 interface AttachmentCardProps {
   file: AttachmentFile;
   variant?: 'composer' | 'message';
   isOwner?: boolean;
+  uploadProgress?: UploadProgress;
   onRemove?: () => void;
-  showRemoveButton?: boolean;
+  onCancelUpload?: () => void;
   className?: string;
 }
 
@@ -112,41 +119,41 @@ const getFileTypeInfo = (fileName: string, contentType?: string) => {
 };
 
 const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return '0 B';
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 };
 
 export function AttachmentCard({ 
   file, 
-  variant = 'message', 
+  variant = 'composer', 
   isOwner = false, 
+  uploadProgress, 
   onRemove, 
-  showRemoveButton = false,
+  onCancelUpload,
   className = ""
 }: AttachmentCardProps) {
-  const fileName = file.file_name || file.name || 'Attachment';
+  const fileName = file.file_name || file.name || 'Unknown file';
   const fileTypeInfo = getFileTypeInfo(fileName, file.content_type);
   const IconComponent = fileTypeInfo.icon;
-  
-  // Construct file URL if not provided
   const fileUrl = file.file_url || (file.id ? `https://api.baltek.net/api/files/${file.id}/` : '');
-  
-  // Check if it's an image and should show preview
   const isImage = fileTypeInfo.type === 'image' && fileUrl;
+  const isUploading = uploadProgress && uploadProgress.name === fileName;
 
-  // Card styling based on variant
-  const getCardStyles = () => {
+  // Dynamic styling based on variant and owner status
+  const getCardClasses = () => {
+    const baseClasses = "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300";
+    
     if (variant === 'composer') {
-      return "bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02]";
+      return `${baseClasses} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 p-3 hover:scale-[1.02]`;
     } else {
       // Message variant
       if (isOwner) {
-        return "bg-white/10 border-white/20 hover:bg-white/15 rounded-lg border transition-all hover:shadow-sm";
+        return `${baseClasses} bg-white/10 border-white/20 hover:bg-white/15 border p-3`;
       } else {
-        return "bg-card border-border hover:border-input rounded-lg border transition-all hover:shadow-sm";
+        return `${baseClasses} bg-card border-border hover:border-input border p-3`;
       }
     }
   };
@@ -167,143 +174,111 @@ export function AttachmentCard({
   };
 
   return (
-    <div className={`relative group ${getCardStyles()} ${className}`}>
-      {/* Remove Button (only for composer variant) */}
-      {showRemoveButton && onRemove && variant === 'composer' && (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="absolute -top-2 -right-2 h-6 w-6 p-0 bg-red-100 hover:bg-red-200 dark:bg-red-900 dark:hover:bg-red-800 text-red-600 dark:text-red-400 border-2 border-white dark:border-gray-800 rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300 z-10"
-          onClick={onRemove}
-        >
-          <X className="w-3 h-3" />
-        </Button>
+    <div className={`${getCardClasses()} ${className}`}>
+      {/* Upload Progress Overlay */}
+      {isUploading && uploadProgress && (
+        <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center z-10">
+          <div className="text-center text-white">
+            <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+            <div className="text-sm font-medium">{Math.round(uploadProgress.progress)}%</div>
+          </div>
+        </div>
       )}
 
-      {/* Image Preview */}
-      {isImage && (
-        <div className="relative mb-3 group/image">
+      {/* Remove Button (Composer only) */}
+      {variant === 'composer' && (onRemove || onCancelUpload) && (
+        <div className="absolute -top-2 -right-2 z-20">
+          <Button
+            variant="destructive"
+            size="sm"
+            className="h-6 w-6 p-0 rounded-full shadow-lg"
+            onClick={isUploading ? onCancelUpload : onRemove}
+            title={isUploading ? "Cancel upload" : "Remove file"}
+          >
+            <X className="w-3 h-3" />
+          </Button>
+        </div>
+      )}
+
+      {/* Image Thumbnail */}
+      {isImage ? (
+        <div className="relative mb-3">
           <img
             src={fileUrl}
             alt={fileName}
-            className={`w-full object-cover ${
-              variant === 'composer' 
-                ? 'h-20 rounded-lg border border-gray-200 dark:border-gray-600' 
-                : 'h-auto max-h-64 rounded-t-lg'
-            }`}
+            className="w-full h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
             loading="lazy"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
             }}
           />
-          <div className={`absolute inset-0 bg-black/0 group-hover/image:bg-black/10 ${
-            variant === 'composer' ? 'rounded-lg' : 'rounded-t-lg'
-          } transition-colors duration-200`} />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
           
-          {/* Image Action Buttons */}
-          <div className={`absolute ${
-            variant === 'composer' ? 'top-2 right-2' : 'top-3 right-3'
-          } flex space-x-2 opacity-0 group-hover/image:opacity-100 transition-all duration-300`}>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-              onClick={handleView}
-              title="View full size"
-            >
-              <Eye className="w-4 h-4" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="sm"
-              className="h-8 w-8 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-              onClick={handleDownload}
-              title="Download"
-            >
-              <Download className="w-4 h-4" />
-            </Button>
-          </div>
+          {/* Image Action Buttons (Message variant) */}
+          {variant === 'message' && (
+            <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
+                onClick={handleView}
+                title="View full size"
+              >
+                <Eye className="w-3 h-3" />
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
+                onClick={handleDownload}
+                title="Download"
+              >
+                <Download className="w-3 h-3" />
+              </Button>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* File Icon */
+        <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-3 ${fileTypeInfo.bgColor}`}>
+          <IconComponent className={`w-6 h-6 ${fileTypeInfo.color}`} />
         </div>
       )}
 
-      {/* File Icon and Info (for non-image files or below image) */}
-      <div className={isImage ? '' : 'p-3'}>
-        {!isImage && (
-          <div className="flex items-center gap-3 mb-3">
-            <div className={`p-2 rounded-lg ${fileTypeInfo.bgColor}`}>
-              <IconComponent className={`w-5 h-5 ${fileTypeInfo.color}`} />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className={`text-sm font-medium truncate ${
-                variant === 'message' && isOwner 
-                  ? 'text-white' 
-                  : 'text-foreground'
-              }`}>
-                {fileName}
-              </p>
-              {file.size && (
-                <p className={`text-xs ${
-                  variant === 'message' && isOwner 
-                    ? 'text-white/70' 
-                    : 'text-muted-foreground'
-                }`}>
-                  {formatFileSize(file.size)}
-                </p>
-              )}
-            </div>
+      {/* File Info */}
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-foreground truncate" title={fileName}>
+          {fileName}
+        </div>
+        
+        {file.size && (
+          <div className="text-xs text-muted-foreground">
+            {formatFileSize(file.size)}
           </div>
         )}
 
-        {/* File Actions */}
-        <div className="flex gap-2">
-          <Button
-            variant={variant === 'message' && isOwner ? "secondary" : "outline"}
-            size="sm"
-            className={`flex-1 h-8 text-xs ${
-              variant === 'message' && isOwner 
-                ? 'bg-white/20 hover:bg-white/30 text-white border-white/30' 
-                : ''
-            }`}
-            onClick={handleDownload}
-          >
-            <Download className="w-3 h-3 mr-1" />
-            Download
-          </Button>
-          
-          {isImage && (
+        {/* Action Buttons for Non-Images */}
+        {!isImage && variant === 'message' && fileUrl && (
+          <div className="flex space-x-2 pt-1">
             <Button
-              variant={variant === 'message' && isOwner ? "secondary" : "outline"}
+              variant="outline"
               size="sm"
-              className={`h-8 px-3 text-xs ${
-                variant === 'message' && isOwner 
-                  ? 'bg-white/20 hover:bg-white/30 text-white border-white/30' 
-                  : ''
-              }`}
-              onClick={handleView}
+              className="h-7 px-2 text-xs flex-1"
+              onClick={handleDownload}
             >
-              <Eye className="w-3 h-3" />
+              <Download className="w-3 h-3 mr-1" />
+              Download
             </Button>
-          )}
-        </div>
-
-        {/* File name and size for images (shown below image) */}
-        {isImage && (
-          <div className="mt-3 px-3 pb-3">
-            <p className={`text-sm font-medium truncate ${
-              variant === 'message' && isOwner 
-                ? 'text-white' 
-                : 'text-foreground'
-            }`}>
-              {fileName}
-            </p>
-            {file.size && (
-              <p className={`text-xs ${
-                variant === 'message' && isOwner 
-                  ? 'text-white/70' 
-                  : 'text-muted-foreground'
-              }`}>
-                {formatFileSize(file.size)}
-              </p>
+            {fileTypeInfo.type === 'pdf' && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-7 px-2 text-xs"
+                onClick={handleView}
+                title="View"
+              >
+                <Eye className="w-3 h-3" />
+              </Button>
             )}
           </div>
         )}
