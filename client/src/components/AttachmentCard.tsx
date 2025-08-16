@@ -161,6 +161,13 @@ export function AttachmentCard({
 
   // Unified styling for both variants
   const getCardClasses = () => {
+    const isMediaFile = ['image', 'video', 'audio'].includes(fileTypeInfo.type);
+    
+    if (isMediaFile) {
+      // Media files: no border, no padding, minimal styling
+      return "relative group rounded-xl hover:shadow-lg transition-all duration-300";
+    }
+    
     const baseClasses = "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-3";
     
     if (variant === 'composer') {
@@ -229,7 +236,7 @@ export function AttachmentCard({
             <img
               src={fileUrl}
               alt={fileName}
-              className="w-full h-48 object-cover rounded-t-lg"
+              className="w-full h-48 object-cover rounded-xl"
               loading="lazy"
               onError={(e) => {
                 console.log('Image failed to load:', fileUrl);
@@ -239,9 +246,8 @@ export function AttachmentCard({
                 console.log('Image loaded successfully:', fileUrl);
               }}
             />
-            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-t-lg transition-colors duration-200" />
+            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-xl transition-colors duration-200" />
           </div>
-          <div className="border-b border-gray-200 dark:border-gray-600"></div>
           
           <div className="flex items-center justify-between p-3">
             <div className="flex-1 min-w-0">
@@ -275,7 +281,7 @@ export function AttachmentCard({
         </div>
       ) : (
         /* File Layout - Icon, filename, and download button */
-        <div className="flex items-center space-x-3">
+        <div className={`flex items-center space-x-3 ${['image', 'video', 'audio'].includes(fileTypeInfo.type) ? '' : 'p-3'}`}>
           <div 
             className={`w-14 h-14 rounded-lg flex items-center justify-center flex-shrink-0 cursor-pointer ${fileTypeInfo.bgColor}`}
             onClick={fileTypeInfo.type === 'pdf' ? handleView : handleDownload}
