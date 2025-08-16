@@ -213,54 +213,22 @@ export function AttachmentCard({
   // For images in message variant, render directly without wrapper card
   if (isImage && fileUrl && variant === 'message') {
     return (
-      <div className="flex flex-col">
-        {/* Full-width image that fills parent bubble */}
-        <div className="relative cursor-pointer -mx-3 -mt-4" onClick={handleView}>
-          <img
-            src={fileUrl}
-            alt={fileName}
-            className="w-full h-auto object-cover rounded-t-xl"
-            style={{ minHeight: '120px', maxHeight: '400px' }}
-            loading="lazy"
-            onError={(e) => {
-              console.log('Image failed to load:', fileUrl);
-              e.currentTarget.style.display = 'none';
-            }}
-            onLoad={() => {
-              console.log('Image loaded successfully:', fileUrl);
-            }}
-          />
-          <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-t-xl transition-colors duration-200" />
-        </div>
-        
-        {/* Text section below image with padding */}
-        <div className="flex items-center justify-between p-3 pt-2">
-          <div className="flex-1 min-w-0">
-            <div 
-              className="text-sm font-medium text-foreground truncate cursor-pointer hover:text-blue-600 dark:hover:text-blue-400" 
-              title="Click to view"
-              onClick={handleView}
-            >
-              {fileName}
-            </div>
-            {file.size && (
-              <div className="text-xs text-muted-foreground">
-                {formatFileSize(file.size)}
-              </div>
-            )}
-          </div>
-          
-          {/* Action Button for Images */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="h-6 w-6 p-0 ml-2 bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 border-gray-300 dark:border-gray-600"
-            onClick={handleDownload}
-            title="Download"
-          >
-            <Download className="w-3 h-3 text-gray-700 dark:text-gray-300" />
-          </Button>
-        </div>
+      <div className="relative cursor-pointer -mx-3 -mt-4 border border-gray-300 dark:border-gray-600 rounded-xl overflow-hidden" onClick={handleView}>
+        <img
+          src={fileUrl}
+          alt={fileName}
+          className="w-full h-auto object-cover"
+          style={{ minHeight: '120px', maxHeight: '400px' }}
+          loading="lazy"
+          onError={(e) => {
+            console.log('Image failed to load:', fileUrl);
+            e.currentTarget.style.display = 'none';
+          }}
+          onLoad={() => {
+            console.log('Image loaded successfully:', fileUrl);
+          }}
+        />
+        <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors duration-200" />
       </div>
     );
   }
