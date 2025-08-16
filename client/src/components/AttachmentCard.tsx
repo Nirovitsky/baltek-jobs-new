@@ -142,18 +142,18 @@ export function AttachmentCard({
   const isImage = fileTypeInfo.type === 'image' && fileUrl;
   const isUploading = uploadProgress && uploadProgress.name === fileName;
 
-  // Dynamic styling based on variant and owner status
+  // Unified styling for both variants
   const getCardClasses = () => {
-    const baseClasses = "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300";
+    const baseClasses = "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-3";
     
     if (variant === 'composer') {
-      return `${baseClasses} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 p-3 hover:scale-[1.02]`;
+      return `${baseClasses} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:scale-[1.02]`;
     } else {
-      // Message variant
+      // Message variant - use same styling as composer but adapt colors for message context
       if (isOwner) {
-        return `${baseClasses} bg-white/10 border-white/20 hover:bg-white/15 border p-3`;
+        return `${baseClasses} bg-gradient-to-br from-white/10 to-white/5 dark:from-white/10 dark:to-white/5 border border-white/20 hover:bg-white/15`;
       } else {
-        return `${baseClasses} bg-card border-border hover:border-input border p-3`;
+        return `${baseClasses} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700`;
       }
     }
   };
@@ -200,49 +200,24 @@ export function AttachmentCard({
         </div>
       )}
 
-      {/* Content Layout */}
+      {/* Unified Content Layout */}
       {isImage ? (
-        /* Image Layout */
-        <div className="space-y-3">
-          <div className="relative">
+        /* Image Layout - Small thumbnail preview */
+        <div className="flex items-center space-x-3">
+          <div className="relative flex-shrink-0">
             <img
               src={fileUrl}
               alt={fileName}
-              className="w-full h-32 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+              className="w-16 h-16 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
               loading="lazy"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
             />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
-            
-            {/* Image Action Buttons (Message variant) */}
-            {variant === 'message' && (
-              <div className="absolute top-2 right-2 flex space-x-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-                  onClick={handleView}
-                  title="View full size"
-                >
-                  <Eye className="w-3 h-3" />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="h-7 w-7 p-0 bg-white/90 hover:bg-white text-gray-700 hover:text-gray-900 border-0 shadow-lg backdrop-blur-sm"
-                  onClick={handleDownload}
-                  title="Download"
-                >
-                  <Download className="w-3 h-3" />
-                </Button>
-              </div>
-            )}
           </div>
           
-          {/* Image File Info */}
-          <div className="text-center">
+          <div className="flex-1 min-w-0">
             <div className="text-sm font-medium text-foreground truncate" title={fileName}>
               {fileName}
             </div>
@@ -251,10 +226,35 @@ export function AttachmentCard({
                 {formatFileSize(file.size)}
               </div>
             )}
+            
+            {/* Action Buttons for Images */}
+            {variant === 'message' && fileUrl && (
+              <div className="flex space-x-2 mt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={handleView}
+                  title="View full size"
+                >
+                  <Eye className="w-3 h-3 mr-1" />
+                  View
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="h-7 px-2 text-xs"
+                  onClick={handleDownload}
+                >
+                  <Download className="w-3 h-3 mr-1" />
+                  Download
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       ) : (
-        /* File Layout */
+        /* File Layout - Icon, filename, and download button */
         <div className="flex items-center space-x-3">
           <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${fileTypeInfo.bgColor}`}>
             <IconComponent className={`w-6 h-6 ${fileTypeInfo.color}`} />
@@ -290,7 +290,8 @@ export function AttachmentCard({
                     onClick={handleView}
                     title="View"
                   >
-                    <Eye className="w-3 h-3" />
+                    <Eye className="w-3 h-3 mr-1" />
+                    View
                   </Button>
                 )}
               </div>
