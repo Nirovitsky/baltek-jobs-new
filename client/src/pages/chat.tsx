@@ -1049,22 +1049,27 @@ export default function ChatPage() {
                                       }`}
                                     >
                                       {!hasAttachments && renderAvatar()}
-                                      <div
-                                        className={`rounded-lg transition-all duration-200 ease-in-out hover:shadow-md ${
-                                          message.status === "failed"
-                                            ? "bg-red-500 text-white border-2 border-red-400 dark:bg-red-600 dark:border-red-500 p-2"
-                                            : message.status === "sending"
-                                            ? "bg-primary/70 text-primary-foreground p-2"
-                                            : message.owner === user?.id
-                                            ? "bg-primary text-primary-foreground hover:bg-primary/90 p-2"
-                                            : "bg-muted text-foreground p-2"
-                                        }`}
-                                      >
-                                        <MessageRenderer 
-                                          text={message.text} 
-                                          className={message.status === "failed" ? "text-white" : message.owner === user?.id ? "text-primary-foreground" : "text-foreground"}
-                                        />
-                                        {renderMessageMetadata()}
+                                      <div className={`max-w-xs rounded-lg px-3 py-2 ${
+                                        message.status === "failed"
+                                          ? "bg-red-500 text-white"
+                                          : message.status === "sending"
+                                          ? "bg-blue-400 text-white"
+                                          : message.owner === user?.id
+                                          ? "bg-blue-600 text-white"
+                                          : "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
+                                      }`}>
+                                        <p>
+                                          <MessageRenderer 
+                                            text={message.text} 
+                                          />
+                                        </p>
+                                        <span className={`text-xs ${
+                                          message.owner === user?.id || message.status === "failed" || message.status === "sending" 
+                                            ? "text-gray-300" 
+                                            : "text-gray-500 dark:text-gray-400"
+                                        }`}>
+                                          {renderMessageMetadata()}
+                                        </span>
                                       </div>
                                     </div>
                                   </div>
