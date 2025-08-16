@@ -268,7 +268,7 @@ export function AttachmentCard({
       {isImage && fileUrl ? (
         /* Image Layout - Full width preview with details below */
         <div className="flex flex-col">
-          <div className="relative cursor-pointer" onClick={handleView}>
+          <div className="cursor-pointer" onClick={handleView}>
             <img
               src={cachedImageUrl || fileUrl}
               alt={fileName}
@@ -282,7 +282,6 @@ export function AttachmentCard({
                 console.log('Image loaded successfully:', fileUrl);
               }}
             />
-            <div className="absolute inset-0 bg-black/0 hover:bg-black/10 rounded-xl transition-colors duration-200" />
           </div>
           
           {/* Only show image details in composer variant, hide in message variant */}
@@ -346,7 +345,7 @@ export function AttachmentCard({
       {/* Image Modal */}
       {isImage && (
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-          <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 border-none bg-transparent overflow-hidden">
+          <DialogContent className="max-w-[95vw] max-h-[95vh] w-auto h-auto p-0 border-none overflow-hidden">
             <img
               src={cachedImageUrl || fileUrl}
               alt={fileName}
