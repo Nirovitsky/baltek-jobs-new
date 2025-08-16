@@ -150,16 +150,31 @@ export function AttachmentCard({
   const isImage = fileTypeInfo.type === 'image';
   const isUploading = uploadProgress && uploadProgress.name === fileName;
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [imagePreloaded, setImagePreloaded] = useState(false);
+  const [imageCached, setImageCached] = useState(false);
+  const [modalImageLoaded, setModalImageLoaded] = useState(false);
 
-  // Preload image for faster modal display
+  // Aggressively preload and cache image
   useEffect(() => {
-    if (isImage && fileUrl && !imagePreloaded) {
+    if (isImage && fileUrl && !imageCached) {
       const img = new Image();
-      img.onload = () => setImagePreloaded(true);
+      img.crossOrigin = 'anonymous'; // Help with caching
+      img.onload = () => {
+        setImageCached(true);
+        // Force browser to cache by setting in memory
+        img.style.display = 'none';
+        document.body.appendChild(img);
+        setTimeout(() => document.body.removeChild(img), 100);
+      };
       img.src = fileUrl;
     }
-  }, [isImage, fileUrl, imagePreloaded]);
+  }, [isImage, fileUrl, imageCached]);
+
+  // Reset modal image loaded state when modal opens
+  useEffect(() => {
+    if (isImageModalOpen) {
+      setModalImageLoaded(imageCached); // If already cached, show immediately
+    }
+  }, [isImageModalOpen, imageCached]);
 
   // Debug log for images
   console.log('AttachmentCard Debug:', {
@@ -332,11 +347,19 @@ export function AttachmentCard({
       {isImage && (
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
           <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 border-none bg-transparent">
+            {!modalImageLoaded && (
+              <div className="w-full h-full flex items-center justify-center">
+                <Loader2 className="w-8 h-8 animate-spin text-white" />
+              </div>
+            )}
             <img
               src={fileUrl}
               alt={fileName}
-              className="w-full h-full object-contain"
-              loading="lazy"
+              className={`w-full h-full object-contain transition-opacity duration-200 ${
+                modalImageLoaded ? 'opacity-100' : 'opacity-0'
+              }`}
+              onLoad={() => setModalImageLoaded(true)}
+              style={{ display: modalImageLoaded ? 'block' : 'none' }}
             />
           </DialogContent>
         </Dialog>
