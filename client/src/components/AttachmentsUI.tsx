@@ -180,11 +180,11 @@ export function ComposerAttachments({
     <div className="p-3 border-t border-border space-y-2">
       {/* Upload Progress */}
       {uploadProgress.length > 0 && (
-        <div className="space-y-2">
+        <div className="flex flex-wrap gap-2">
           {uploadProgress.map((file, index) => (
-            <div key={index} className="flex items-center space-x-3">
-              <div className="relative w-10 h-10 flex-shrink-0">
-                <svg className="w-10 h-10 transform -rotate-90" viewBox="0 0 36 36">
+            <div key={index} className="flex items-center space-x-2 bg-card border border-border rounded-lg p-2 min-w-0 max-w-48">
+              <div className="relative w-8 h-8 flex-shrink-0">
+                <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 36 36">
                   <path
                     className="text-muted/20"
                     stroke="currentColor"
@@ -213,7 +213,7 @@ export function ComposerAttachments({
                   {file.name}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  {file.progress === -1 ? "Upload failed" : "Uploading..."}
+                  {file.progress === -1 ? "Failed" : "Uploading..."}
                 </div>
               </div>
             </div>
