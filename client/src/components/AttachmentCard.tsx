@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogOverlay,
 } from "@/components/ui/dialog";
+import { useImageCache } from "@/contexts/ImageCacheContext";
 import {
   X,
   Download,
@@ -150,31 +151,36 @@ export function AttachmentCard({
   const isImage = fileTypeInfo.type === 'image';
   const isUploading = uploadProgress && uploadProgress.name === fileName;
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [imageCached, setImageCached] = useState(false);
-  const [modalImageLoaded, setModalImageLoaded] = useState(false);
+  const [cachedImageUrl, setCachedImageUrl] = useState<string | null>(null);
+  const { getCachedImage, loadAndCacheImage, isLoading } = useImageCache();
 
-  // Aggressively preload and cache image
+  // Load and cache image when component mounts
   useEffect(() => {
-    if (isImage && fileUrl && !imageCached) {
-      const img = new Image();
-      img.crossOrigin = 'anonymous'; // Help with caching
-      img.onload = () => {
-        setImageCached(true);
-        // Force browser to cache by setting in memory
-        img.style.display = 'none';
-        document.body.appendChild(img);
-        setTimeout(() => document.body.removeChild(img), 100);
-      };
-      img.src = fileUrl;
+    if (isImage && fileUrl) {
+      const cached = getCachedImage(fileUrl);
+      if (cached) {
+        setCachedImageUrl(cached);
+      } else {
+        loadAndCacheImage(fileUrl)
+          .then((cachedUrl) => {
+            setCachedImageUrl(cachedUrl);
+          })
+          .catch((error) => {
+            console.error('Failed to cache image:', error);
+          });
+      }
     }
-  }, [isImage, fileUrl, imageCached]);
+  }, [isImage, fileUrl, getCachedImage, loadAndCacheImage]);
 
-  // Reset modal image loaded state when modal opens
+  // Update cached URL when cache changes
   useEffect(() => {
-    if (isImageModalOpen) {
-      setModalImageLoaded(imageCached); // If already cached, show immediately
+    if (isImage && fileUrl) {
+      const cached = getCachedImage(fileUrl);
+      if (cached && cached !== cachedImageUrl) {
+        setCachedImageUrl(cached);
+      }
     }
-  }, [isImageModalOpen, imageCached]);
+  });
 
   // Debug log for images
   console.log('AttachmentCard Debug:', {
@@ -270,7 +276,7 @@ export function AttachmentCard({
         <div className="flex flex-col">
           <div className="relative cursor-pointer" onClick={handleView}>
             <img
-              src={fileUrl}
+              src={cachedImageUrl || fileUrl}
               alt={fileName}
               className="w-full h-64 object-cover rounded-xl"
               loading="lazy"
@@ -347,20 +353,18 @@ export function AttachmentCard({
       {isImage && (
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
           <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 border-none bg-transparent">
-            {!modalImageLoaded && (
+            {!cachedImageUrl && isLoading(fileUrl) && (
               <div className="w-full h-full flex items-center justify-center">
                 <Loader2 className="w-8 h-8 animate-spin text-white" />
               </div>
             )}
-            <img
-              src={fileUrl}
-              alt={fileName}
-              className={`w-full h-full object-contain transition-opacity duration-200 ${
-                modalImageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-              onLoad={() => setModalImageLoaded(true)}
-              style={{ display: modalImageLoaded ? 'block' : 'none' }}
-            />
+            {cachedImageUrl && (
+              <img
+                src={cachedImageUrl}
+                alt={fileName}
+                className="w-full h-full object-contain"
+              />
+            )}
           </DialogContent>
         </Dialog>
       )}

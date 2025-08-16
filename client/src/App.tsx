@@ -5,6 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ImageCacheProvider } from "@/contexts/ImageCacheContext";
 import { useAuth } from "@/hooks/use-auth";
 import Navbar from "@/components/navbar";
 import NavbarSkeleton from "@/components/navbar-skeleton";
@@ -230,10 +231,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="system" storageKey="baltek-ui-theme">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <ImageCacheProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </ImageCacheProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
