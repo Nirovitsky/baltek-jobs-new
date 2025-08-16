@@ -20,6 +20,7 @@ interface AttachmentFile {
   file_name?: string;
   size?: number;
   file_url?: string;
+  path?: string; // Backend uses this field for actual file URLs
   content_type?: string;
 }
 
@@ -138,8 +139,8 @@ export function AttachmentCard({
   const fileName = file.file_name || file.name || 'Unknown file';
   const fileTypeInfo = getFileTypeInfo(fileName, file.content_type);
   const IconComponent = fileTypeInfo.icon;
-  // Fix URL construction - backend uses /media/file/ format
-  const fileUrl = file.file_url || (file.id ? `https://api.baltek.net/media/file/${file.id}` : '');
+  // Use path field from backend, fallback to file_url, then construct if needed
+  const fileUrl = file.path || file.file_url || (file.id ? `https://api.baltek.net/media/file/${file.id}` : '');
   const isImage = fileTypeInfo.type === 'image';
   const isUploading = uploadProgress && uploadProgress.name === fileName;
 
@@ -150,6 +151,7 @@ export function AttachmentCard({
     fileTypeInfo: fileTypeInfo.type,
     isImage,
     fileUrl,
+    pathFromBackend: file.path,
     actualFileUrl: file.file_url,
     hasUrl: !!fileUrl
   });
@@ -171,8 +173,8 @@ export function AttachmentCard({
   };
 
   const handleDownload = () => {
-    // Use the actual file_url from API response for download too
-    const downloadUrl = file.file_url || fileUrl;
+    // Use path field from backend first, then fallback
+    const downloadUrl = file.path || file.file_url || fileUrl;
     if (downloadUrl) {
       const link = document.createElement('a');
       link.href = downloadUrl;
@@ -182,8 +184,8 @@ export function AttachmentCard({
   };
 
   const handleView = () => {
-    // Use the actual file_url from API response, not constructed URL
-    const viewUrl = file.file_url || fileUrl;
+    // Use path field from backend first, then fallback
+    const viewUrl = file.path || file.file_url || fileUrl;
     if (viewUrl) {
       window.open(viewUrl, '_blank');
     }
