@@ -510,7 +510,10 @@ export class ApiClient {
         reject(new Error('Upload aborted'));
       });
 
-      // Set headers
+      // Open the request first
+      xhr.open('POST', `${API_BASE}/files/`);
+      
+      // Set headers after opening but before sending
       const authHeaders = AuthService.getAuthHeaders();
       Object.entries(authHeaders).forEach(([key, value]) => {
         if (key !== 'Content-Type') { // Don't set Content-Type for FormData
@@ -518,7 +521,6 @@ export class ApiClient {
         }
       });
 
-      xhr.open('POST', `${API_BASE}/files/`);
       xhr.send(formData);
     });
   }
