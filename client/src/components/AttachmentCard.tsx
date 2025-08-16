@@ -322,7 +322,6 @@ export function AttachmentCard({
       {isImage && (
         <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
           <DialogContent className="max-w-4xl w-full h-full max-h-[90vh] p-0 bg-black/95 border-none">
-            <DialogOverlay className="bg-black/80" />
             <div className="relative w-full h-full flex items-center justify-center p-4">
               <img
                 src={fileUrl}
