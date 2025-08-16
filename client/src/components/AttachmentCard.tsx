@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -150,6 +150,16 @@ export function AttachmentCard({
   const isImage = fileTypeInfo.type === 'image';
   const isUploading = uploadProgress && uploadProgress.name === fileName;
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [imagePreloaded, setImagePreloaded] = useState(false);
+
+  // Preload image for faster modal display
+  useEffect(() => {
+    if (isImage && fileUrl && !imagePreloaded) {
+      const img = new Image();
+      img.onload = () => setImagePreloaded(true);
+      img.src = fileUrl;
+    }
+  }, [isImage, fileUrl, imagePreloaded]);
 
   // Debug log for images
   console.log('AttachmentCard Debug:', {
