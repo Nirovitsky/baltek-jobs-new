@@ -1053,9 +1053,9 @@ export default function ChatPage() {
                                         message.status === "failed"
                                           ? "bg-red-500 text-white"
                                           : message.status === "sending"
-                                          ? "bg-blue-400 text-white"
+                                          ? "bg-primary/70 text-primary-foreground"
                                           : message.owner === user?.id
-                                          ? "bg-blue-600 text-white"
+                                          ? "bg-primary text-primary-foreground"
                                           : "bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100"
                                       }`}>
                                         <p>
