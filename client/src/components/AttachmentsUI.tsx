@@ -213,38 +213,36 @@ export function ComposerAttachments({
                   key={file.id}
                   className="relative group animate-in fade-in-0 slide-in-from-bottom-2 duration-300"
                 >
-                  <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-3 shadow-sm hover:shadow-lg transition-all duration-300 hover:scale-[1.02]">
-                    {/* Image Thumbnail */}
-                    {isImage ? (
-                      <div className="relative">
-                        <img
-                          src={file.file_url}
-                          alt={file.name}
-                          className="w-full h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
+                  {/* Image Thumbnail */}
+                  {isImage ? (
+                    <div className="relative">
+                      <img
+                        src={file.file_url}
+                        alt={file.name}
+                        className="w-full h-20 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                        loading="lazy"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 rounded-lg transition-colors duration-200" />
+                    </div>
+                  ) : (
+                    /* File Icon */
+                    <div className="flex items-center justify-center h-20">
+                      <div className={`p-3 rounded-xl ${fileTypeInfo.bgColor} group-hover:scale-110 transition-transform duration-200`}>
+                        <IconComponent className={`w-8 h-8 ${fileTypeInfo.color}`} />
                       </div>
-                    ) : (
-                      /* File Icon */
-                      <div className="flex items-center justify-center h-20">
-                        <div className={`p-3 rounded-xl ${fileTypeInfo.bgColor} group-hover:scale-110 transition-transform duration-200`}>
-                          <IconComponent className={`w-8 h-8 ${fileTypeInfo.color}`} />
-                        </div>
-                      </div>
-                    )}
-                    
-                    {/* File Info */}
-                    <div className="mt-3 text-center space-y-1">
-                      <div className="text-xs font-semibold text-foreground truncate" title={file.name}>
-                        {file.name}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {formatFileSize(file.size)}
-                      </div>
+                    </div>
+                  )}
+                  
+                  {/* File Info */}
+                  <div className="mt-3 text-center space-y-1">
+                    <div className="text-xs font-semibold text-foreground truncate" title={file.name}>
+                      {file.name}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {formatFileSize(file.size)}
                     </div>
                   </div>
 

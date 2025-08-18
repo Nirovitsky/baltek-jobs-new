@@ -190,27 +190,9 @@ export function AttachmentCard({
     isHEIC: getFileExtension(fileName) === 'heic' || file.content_type === 'image/heic'
   });
 
-  // Unified styling for both variants
+  // Simplified styling - no wrapper div needed
   const getCardClasses = () => {
-    const isMediaFile = ['image', 'video', 'audio'].includes(fileTypeInfo.type);
-    
-    if (isMediaFile) {
-      // Media files: no border, no padding, minimal styling
-      return "relative group rounded-xl hover:shadow-lg transition-all duration-300";
-    }
-    
-    const baseClasses = "relative group rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-3";
-    
-    if (variant === 'composer') {
-      return `${baseClasses} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:scale-[1.02]`;
-    } else {
-      // Message variant - use same styling as composer but adapt colors for message context
-      if (isOwner) {
-        return `${baseClasses} bg-gradient-to-br from-white/10 to-white/5 dark:from-white/10 dark:to-white/5 border border-white/20 hover:bg-white/15`;
-      } else {
-        return `${baseClasses} bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700`;
-      }
-    }
+    return "relative group transition-all duration-300";
   };
 
   const handleDownload = () => {
