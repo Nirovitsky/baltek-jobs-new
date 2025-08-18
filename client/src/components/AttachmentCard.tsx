@@ -190,9 +190,23 @@ export function AttachmentCard({
     isHEIC: getFileExtension(fileName) === 'heic' || file.content_type === 'image/heic'
   });
 
-  // Simplified styling - no wrapper div needed
+  // Style attachments to match message bubble colors
   const getCardClasses = () => {
-    return "relative group transition-all duration-300";
+    const baseClasses = "relative group transition-all duration-300 rounded-lg p-3";
+    
+    if (variant === 'composer') {
+      // Composer variant - keep neutral styling
+      return `${baseClasses} bg-muted/50 border border-border`;
+    } else {
+      // Message variant - match bubble colors exactly
+      if (isOwner) {
+        // User messages - match primary bubble colors
+        return `${baseClasses} bg-primary text-primary-foreground`;
+      } else {
+        // Company messages - match grey bubble colors
+        return `${baseClasses} bg-gray-200 text-gray-900 dark:bg-gray-700 dark:text-gray-100`;
+      }
+    }
   };
 
   const handleDownload = () => {
