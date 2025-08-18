@@ -756,9 +756,15 @@ export default function ChatPage() {
                 {roomsLoading ? (
                   <div className="p-4 space-y-4">
                     {[...Array(5)].map((_, i) => (
-                      <div key={i} className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-muted rounded-full animate-pulse" />
-                        <div className="flex-1">
+                      <div key={i} className="flex items-start space-x-3">
+                        <div className="relative flex-shrink-0">
+                          <Avatar className="w-14 h-14 ring-2 ring-background shadow-sm">
+                            <AvatarFallback className="bg-muted animate-pulse">
+                              <div className="w-full h-full bg-muted-foreground/20 rounded-full" />
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+                        <div className="flex-1 min-w-0">
                           <div className="h-4 bg-muted rounded animate-pulse mb-2" />
                           <div className="h-3 bg-muted rounded animate-pulse w-2/3" />
                         </div>
@@ -946,10 +952,14 @@ export default function ChatPage() {
                           >
                             <div className="flex items-end space-x-2 max-w-xs">
                               {i % 2 !== 0 && (
-                                <div className="w-8 h-8 bg-muted rounded-full animate-pulse" />
+                                <Avatar className="w-8 h-8">
+                                  <AvatarFallback className="bg-muted animate-pulse">
+                                    <div className="w-full h-full bg-muted rounded-full" />
+                                  </AvatarFallback>
+                                </Avatar>
                               )}
                               <div className="bg-muted rounded-lg p-3 animate-pulse">
-                                <div className="h-4 bg-muted rounded w-24" />
+                                <div className="h-4 bg-muted-foreground/20 rounded w-24" />
                               </div>
                             </div>
                           </div>
