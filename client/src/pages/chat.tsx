@@ -1067,7 +1067,7 @@ export default function ChatPage() {
                                           : ""
                                       }`}
                                     >
-                                      {!hasAttachments && renderAvatar()}
+                                      {renderAvatar()}
                                       <div className={`max-w-xs rounded-lg px-3 py-2 ${
                                         message.status === "failed"
                                           ? "bg-red-500 text-white"
