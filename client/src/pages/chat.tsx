@@ -977,8 +977,11 @@ export default function ChatPage() {
                             const renderAvatar = () => (
                               message.owner !== user?.id && (
                                 <Avatar className="w-8 h-8">
-                                  <AvatarImage src="" />
-                                  <AvatarFallback>
+                                  <AvatarImage 
+                                    src={selectedConversationData?.content_object?.job?.organization?.logo}
+                                    className="object-cover"
+                                  />
+                                  <AvatarFallback className="bg-primary/10 text-primary font-medium">
                                     {selectedConversationData?.content_object?.job?.organization?.display_name?.[0] ||
                                       selectedConversationData?.content_object?.job?.organization?.official_name?.[0] ||
                                       "R"}
