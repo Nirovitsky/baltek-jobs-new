@@ -206,7 +206,24 @@ export class ApiClient {
   }
 
   static async getCurrentUser() {
-    return this.makeRequest("/users/short/", {}, true);
+    // Try different endpoint patterns for getting current user
+    try {
+      return this.makeRequest("/users/me/", {}, true);
+    } catch (error: any) {
+      if (error.message?.includes('404')) {
+        // If /users/me/ doesn't exist, try /profile/
+        try {
+          return this.makeRequest("/profile/", {}, true);
+        } catch (profileError: any) {
+          if (profileError.message?.includes('404')) {
+            // If /profile/ doesn't exist, try /auth/user/
+            return this.makeRequest("/auth/user/", {}, true);
+          }
+          throw profileError;
+        }
+      }
+      throw error;
+    }
   }
 
   static async updateProfile(id: number, data: any) {
