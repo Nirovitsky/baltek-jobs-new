@@ -45,8 +45,9 @@ export default function AuthCallback() {
         // Store tokens and redirect immediately to jobs page
         AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
         
-        // Invalidate auth queries to update navbar and user state immediately
-        queryClient.invalidateQueries({ queryKey: ["auth"] });
+        // Invalidate and refetch auth queries to update navbar and user state immediately
+        await queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+        await queryClient.refetchQueries({ queryKey: ["auth", "user"] });
         
         navigate('/jobs');
 

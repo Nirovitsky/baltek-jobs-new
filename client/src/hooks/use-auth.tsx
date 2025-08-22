@@ -24,6 +24,8 @@ export function useAuth() {
     },
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
   });
 
   const logoutMutation = useMutation({
@@ -31,6 +33,8 @@ export function useAuth() {
       await AuthService.logout();
     },
     onSuccess: () => {
+      // Clear auth queries specifically and set user to null immediately
+      queryClient.setQueryData(["auth", "user"], null);
       queryClient.clear();
       navigate("/");
     },
