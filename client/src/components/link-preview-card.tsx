@@ -33,7 +33,6 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
         setJobId(parseInt(pathMatch[1]));
       }
     } catch (error) {
-      console.error("Failed to parse URL:", error);
     }
   }, [url]);
 

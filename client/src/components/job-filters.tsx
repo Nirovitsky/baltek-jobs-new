@@ -44,7 +44,6 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
     enabled: isAuthenticated,
   });
 
-  console.log("Saved filters data:", savedFilters);
 
   const { data: locations, isLoading: locationsLoading } = useQuery({
     queryKey: ["locations"],
@@ -101,7 +100,6 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
       });
     },
     onError: (error) => {
-      console.error("Save filter error:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to save filter",
@@ -122,7 +120,6 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
       });
     },
     onError: (error) => {
-      console.error("Delete filter error:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to delete filter",

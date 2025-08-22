@@ -92,19 +92,16 @@ export class OAuth2PKCEService {
 
   // Exchange authorization code for tokens - OAuth server validates and issues tokens
   async exchangeCodeForTokens(code: string, state: string): Promise<PKCETokens> {
-    console.log('Starting token exchange...', { code: code.substring(0, 10) + '...', state });
     
     // Verify state parameter
     const storedState = localStorage.getItem(OAuth2PKCEService.STATE_KEY);
     if (!storedState || storedState !== state) {
-      console.error('State mismatch:', { storedState, receivedState: state });
       throw new Error('Invalid state parameter - possible CSRF attack');
     }
 
     // Get stored code verifier
     const codeVerifier = localStorage.getItem(OAuth2PKCEService.CODE_VERIFIER_KEY);
     if (!codeVerifier) {
-      console.error('Code verifier not found in localStorage');
       throw new Error('Code verifier not found - restart auth flow');
     }
 
@@ -116,13 +113,6 @@ export class OAuth2PKCEService {
       code_verifier: codeVerifier,
     });
 
-    console.log('Token exchange request:', {
-      url: this.config.tokenUrl,
-      clientId: this.config.clientId,
-      redirectUri: this.config.redirectUri,
-      codeLength: code.length,
-      verifierLength: codeVerifier.length
-    });
 
     const response = await fetch(this.config.tokenUrl, {
       method: 'POST',
@@ -132,15 +122,9 @@ export class OAuth2PKCEService {
       body: params.toString(),
     });
 
-    console.log('Token exchange response status:', response.status);
 
     if (!response.ok) {
       const responseText = await response.text();
-      console.error('Token exchange failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        responseText
-      });
       
       let error;
       try {
@@ -153,7 +137,6 @@ export class OAuth2PKCEService {
     }
 
     const tokens = await response.json();
-    console.log('Token exchange successful, received tokens with keys:', Object.keys(tokens));
 
     // Clean up stored PKCE data
     localStorage.removeItem(OAuth2PKCEService.CODE_VERIFIER_KEY);
@@ -202,7 +185,6 @@ export class OAuth2PKCEService {
           }).toString(),
         });
       } catch (error) {
-        console.warn('Failed to revoke refresh token:', error);
       }
     }
 
@@ -219,7 +201,6 @@ export class OAuth2PKCEService {
         }).toString(),
       });
     } catch (error) {
-      console.warn('Failed to revoke access token:', error);
     }
 
     // Clean up any stored auth data

@@ -59,28 +59,20 @@ export class ApiClient {
         headers = filteredHeaders as typeof headers;
       }
 
-      console.log('Making API request to:', url, 'with options:', { ...options, headers });
-      
       let response: Response;
       try {
         response = await fetch(url, {
           ...options,
           headers,
         });
-        console.log('API response status:', response.status);
       } catch (error) {
-        console.error('Fetch error details:', error);
-        console.error('Failed URL:', url);
-        console.error('Request options:', { ...options, headers });
         throw error;
       }
 
       // Handle token expiration with automatic refresh (only if auth was required)
       if (response.status === 401 && token && requireAuth) {
-        console.log("Access token expired, attempting automatic refresh...");
         try {
           const newToken = await AuthService.refreshToken();
-          console.log("Token refresh successful, retrying original request...");
           
           // Retry with new token - ensure proper headers
           let retryHeaders = {
@@ -102,20 +94,17 @@ export class ApiClient {
           });
 
           if (retryResponse.status === 401) {
-            console.warn("Still unauthorized after token refresh - refresh token may be expired");
             AuthService.logout();
             throw new Error("Session expired, please login again");
           }
 
           if (!retryResponse.ok) {
             const retryErrorText = await retryResponse.text();
-            console.error(`Retry API request failed for ${endpoint}:`, retryErrorText);
             throw new Error(`API Error: ${retryResponse.status} - ${retryErrorText}`);
           }
 
           return retryResponse.json();
         } catch (refreshError) {
-          console.warn("Automatic token refresh failed:", refreshError);
           AuthService.logout();
           throw new Error("Session expired, please login again");
         }
@@ -123,13 +112,11 @@ export class ApiClient {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`API request failed for ${endpoint}:`, errorText);
         throw new Error(`API Error: ${response.status} - ${errorText}`);
       }
 
       return response.json();
     } catch (error) {
-      console.error(`API request failed for ${endpoint}:`, error);
       throw error;
     }
   }

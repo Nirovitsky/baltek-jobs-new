@@ -73,13 +73,9 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
         cover_letter: data.cover_letter || "",
       };
       
-      console.log("Submitting application:", applicationData);
-      console.log("Resume file:", uploadedFile);
-      console.log("Selected resume ID:", selectedResumeId);
       
       // Pass the file or selected resume ID to the application API (both optional now)
       const result = await ApiClient.applyToJob(applicationData, uploadedFile || undefined, selectedResumeId || undefined);
-      console.log("Application submission result:", result);
       return result;
     },
     onSuccess: () => {
@@ -98,7 +94,6 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
       setUploadedFile(null);
     },
     onError: (error) => {
-      console.error("Application submission error:", error);
       toast({
         title: "Application failed",
         description: error instanceof Error ? error.message : "Failed to submit application",
@@ -108,7 +103,6 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
   });
 
   const onSubmit = (data: JobApplication) => {
-    console.log("Form submitted with data:", data);
     applicationMutation.mutate(data);
   };
 

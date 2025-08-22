@@ -159,36 +159,19 @@ export function AttachmentCard({
     if (isImage && fileUrl) {
       const cached = getCachedImage(fileUrl);
       if (cached) {
-        console.log('✅ Using cached image:', fileUrl);
         setCachedImageUrl(cached);
       } else {
-        console.log('📥 Loading and caching image:', fileUrl);
         // Cache in background, but don't wait for it to display the image
         loadAndCacheImage(fileUrl)
           .then((cachedUrl) => {
-            console.log('✅ Image cached successfully:', fileUrl);
             setCachedImageUrl(cachedUrl);
           })
           .catch((error) => {
-            console.error('❌ Failed to cache image:', error);
           });
       }
     }
   }, [isImage, fileUrl]); // Remove function dependencies to prevent re-runs
 
-  // Debug log for images
-  console.log('AttachmentCard Debug:', {
-    fileName,
-    extension: getFileExtension(fileName),
-    contentType: file.content_type,
-    fileTypeInfo: fileTypeInfo.type,
-    isImage,
-    fileUrl,
-    pathFromBackend: file.path,
-    actualFileUrl: file.file_url,
-    hasUrl: !!fileUrl,
-    isHEIC: getFileExtension(fileName) === 'heic' || file.content_type === 'image/heic'
-  });
 
   // Simplified styling - no wrapper div needed
   const getCardClasses = () => {
@@ -257,11 +240,7 @@ export function AttachmentCard({
               className="w-full h-64 object-cover rounded-xl"
               loading="eager"
               onError={(e) => {
-                console.log('Image failed to load:', fileUrl);
                 e.currentTarget.style.display = 'none';
-              }}
-              onLoad={() => {
-                console.log('Image loaded successfully:', fileUrl);
               }}
             />
           </div>

@@ -66,7 +66,6 @@ export function ImageCacheProvider({ children }: { children: ReactNode }) {
       return objectUrl;
     } catch (error) {
       loadingImages.delete(url);
-      console.error('Failed to load and cache image:', url, error);
       throw error;
     }
   }, []);

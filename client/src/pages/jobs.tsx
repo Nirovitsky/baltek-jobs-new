@@ -94,17 +94,12 @@ export default function Jobs({}: JobsProps) {
         search: debouncedSearchQuery || undefined,
         ...filters,
       };
-      console.log("useInfiniteQuery - Making API call with params:", params);
-      console.log("useInfiniteQuery - Current filters state:", filters);
       return ApiClient.getJobs(params);
     },
     getNextPageParam: (lastPage: any, allPages: any[]) => {
-      console.log("getNextPageParam - lastPage:", lastPage);
-      console.log("getNextPageParam - allPages length:", allPages.length);
       
       // If there are no results in this page, stop pagination
       if (!lastPage?.results || lastPage.results.length === 0) {
-        console.log("No results in current page");
         return undefined;
       }
       
@@ -113,13 +108,11 @@ export default function Jobs({}: JobsProps) {
       
       // Check if the current page has fewer items than the limit (indicating end)
       if (lastPage.results.length < 10) {
-        console.log("Current page has fewer than 10 items, likely at end");
         return undefined;
       }
       
       // Check if we have reached the total count
       if (lastPage?.count && currentOffset >= lastPage.count) {
-        console.log("Reached end of results based on total count");
         return undefined;
       }
       
@@ -129,10 +122,8 @@ export default function Jobs({}: JobsProps) {
           const url = new URL(lastPage.next);
           const nextOffset = url.searchParams.get("offset");
           const parsedOffset = nextOffset ? parseInt(nextOffset) : currentOffset;
-          console.log("Next offset from URL:", parsedOffset);
           return parsedOffset;
         } catch (error) {
-          console.error("Error parsing next URL:", error);
           // Fallback to calculated offset
           return currentOffset;
         }
@@ -140,11 +131,9 @@ export default function Jobs({}: JobsProps) {
       
       // If no next URL but we still have a full page of results, continue
       if (lastPage.results.length === 10) {
-        console.log("No next URL but page is full, continuing with calculated offset:", currentOffset);
         return currentOffset;
       }
       
-      console.log("No more pages available");
       return undefined;
     },
     initialPageParam: 0,
@@ -203,8 +192,6 @@ export default function Jobs({}: JobsProps) {
   }, [location.search, markJobSelection]);
 
   const handleFiltersChange = useCallback((newFilters: JobFilters) => {
-    console.log("handleFiltersChange - old filters:", filters);
-    console.log("handleFiltersChange - new filters:", newFilters);
     
     // Reset infinite query data when filters change to prevent stale pagination
     queryClient.removeQueries({ queryKey: ["jobs"] });

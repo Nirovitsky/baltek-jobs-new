@@ -90,7 +90,6 @@ function generateNotificationDescription(apiNotification: ApiNotification): stri
 // Transform API notification to UI notification format
 function transformNotification(apiNotification: ApiNotification): Notification {
   // Debug: Log API notification data to understand structure
-  console.log('API Notification:', apiNotification);
   // Map notification types to UI types and determine priority
   const typeMapping: Record<string, { type: Notification["type"]; priority: Notification["priority"] }> = {
     // Job application notifications
@@ -122,12 +121,6 @@ function transformNotification(apiNotification: ApiNotification): Notification {
 
   const mapping = typeMapping[apiNotification.event.type] || typeMapping.default;
   
-  console.log('Notification type mapping:', {
-    eventType: apiNotification.event.type,
-    contentType: apiNotification.event.content_type,
-    mappedType: mapping.type,
-    priority: mapping.priority
-  });
   
   // Determine action URL based on notification type and related object
   let actionUrl: string | undefined;

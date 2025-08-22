@@ -58,13 +58,11 @@ export class AuthService {
   static async refreshToken(): Promise<string> {
     const refreshToken = this.getRefreshToken();
     if (!refreshToken) {
-      console.warn("No refresh token available - user needs to login again");
       this.clearTokens();
       throw new Error("No refresh token available");
     }
 
     try {
-      console.log("Attempting to refresh access token...");
       const response = await fetch(`${API_BASE}/token/refresh/`, {
         method: "POST",
         headers: {
@@ -75,9 +73,7 @@ export class AuthService {
 
       if (!response.ok) {
         if (response.status === 401) {
-          console.warn('Refresh token expired or invalid - user needs to login again');
         } else {
-          console.warn(`Token refresh failed with status: ${response.status}`);
         }
         this.clearTokens();
         throw new Error("Token refresh failed");
@@ -85,17 +81,14 @@ export class AuthService {
 
       const { access } = await response.json();
       localStorage.setItem(this.TOKEN_KEY, access);
-      console.log("Access token refreshed successfully");
       return access;
     } catch (error) {
-      console.warn('Token refresh error:', error);
       this.clearTokens();
       throw new Error("Token refresh failed");
     }
   }
 
   static async logout(): Promise<void> {
-    console.log('Logging out user and clearing tokens...');
     
     // Clear local tokens first
     this.clearTokens();
@@ -107,15 +100,12 @@ export class AuthService {
       
       if (clientId) {
         const logoutUrl = `https://api.baltek.net/api/oauth2/logout/?client_id=${encodeURIComponent(clientId)}&post_logout_redirect_uri=${encodeURIComponent(homeUrl)}`;
-        console.log('Redirecting to Baltek logout:', logoutUrl);
         window.location.href = logoutUrl;
       } else {
         // Fallback to local redirect if no client ID
-        console.warn('No OAuth client ID available, performing local logout only');
         window.location.href = "/";
       }
     } catch (error) {
-      console.warn('Error during logout redirect:', error);
       // Fallback to local redirect
       window.location.href = "/";
     }

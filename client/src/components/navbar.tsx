@@ -48,7 +48,6 @@ export default function Navbar({}: NavbarProps) {
       return await AuthService.startOAuthLogin();
     },
     onError: (error) => {
-      console.error('OAuth login failed:', error);
       toast({
         title: "Login Failed",
         description: error instanceof Error ? error.message : "Failed to start OAuth login",

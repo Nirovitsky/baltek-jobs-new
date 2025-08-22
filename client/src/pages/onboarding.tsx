@@ -229,13 +229,6 @@ export default function Onboarding() {
   // Debug locations data
   useEffect(() => {
     if (locations) {
-      console.log("Locations data received:", locations);
-      console.log("Is locations an array?", Array.isArray(locations));
-      console.log(
-        "Locations structure:",
-        typeof locations,
-        Object.keys(locations || {}),
-      );
     }
   }, [locations]);
 

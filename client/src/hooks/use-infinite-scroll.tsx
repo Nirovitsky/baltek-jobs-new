@@ -30,7 +30,6 @@ export function useInfiniteScroll({
         hasNextPage &&
         !isFetchingNextPage
       ) {
-        console.log("Loading more jobs...");
         fetchNextPage();
       }
     },
@@ -48,7 +47,6 @@ export function useInfiniteScroll({
     });
 
     observer.observe(element);
-    console.log("Infinite scroll observer set up with rootMargin:", rootMargin);
 
     return () => {
       observer.unobserve(element);

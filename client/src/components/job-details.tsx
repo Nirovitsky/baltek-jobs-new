@@ -58,11 +58,6 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   const hasApplied =
     job?.my_application_id !== null && job?.my_application_id !== undefined;
 
-  console.log("Job application check:", {
-    jobId: jobId,
-    my_application_id: job?.my_application_id,
-    hasApplied: hasApplied,
-  });
 
   const bookmarkMutation = useMutation({
     mutationFn: ({
