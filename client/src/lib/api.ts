@@ -179,8 +179,8 @@ export class ApiClient {
   }
 
   static async getMyApplications() {
-    // Use dedicated applications endpoint instead of fetching all jobs
-    return this.makeRequest("/jobs/applications/");
+    // Use applications endpoint with owner query parameter
+    return this.makeRequest("/applications/?owner");
   }
 
   static async getApplicationDetails(applicationId: number) {
