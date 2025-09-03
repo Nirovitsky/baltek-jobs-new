@@ -62,7 +62,7 @@ export default function Jobs({}: JobsProps) {
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [hasShownLoginModal, setHasShownLoginModal] = useState(false);
+  const [loginModalDismissed, setLoginModalDismissed] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   
   // Only sync with URL on browser navigation (back/forward buttons)
@@ -211,6 +211,8 @@ export default function Jobs({}: JobsProps) {
     setFilters(newFilters);
     // Clear selection when filters change to ensure proper job selection after filtering
     setSelectedJobId(null);
+    // Reset login modal state when filters change (new search context)
+    setLoginModalDismissed(false);
     // Navigate back to jobs list without specific job ID, maintaining other URL params if any
     const searchParams = new URLSearchParams(location.search);
     // Don't navigate to prevent URL-triggered re-renders that reset filters
@@ -227,6 +229,8 @@ export default function Jobs({}: JobsProps) {
     setSearchQuery(newValue);
     // Clear job selection when search changes
     setSelectedJobId(null);
+    // Reset login modal state when search changes (new search context)
+    setLoginModalDismissed(false);
     // Don't navigate to prevent URL-triggered re-renders that reset search
     // const searchParams = new URLSearchParams(location.search);
     // navigate(`/jobs${searchParams.toString() ? `?${searchParams.toString()}` : ''}`);
@@ -279,9 +283,8 @@ export default function Jobs({}: JobsProps) {
                 inputRef={inputRef}
                 isAuthenticated={isAuthenticated}
                 onLoginPrompt={() => {
-                  if (!hasShownLoginModal) {
+                  if (!loginModalDismissed) {
                     setShowLoginModal(true);
-                    setHasShownLoginModal(true);
                   }
                 }}
               />
@@ -315,9 +318,9 @@ export default function Jobs({}: JobsProps) {
         isOpen={showLoginModal} 
         onOpenChange={(open) => {
           setShowLoginModal(open);
-          // Reset the flag when modal is closed so it can be shown again later if needed
+          // If modal is being closed, mark it as dismissed for this session
           if (!open) {
-            setHasShownLoginModal(false);
+            setLoginModalDismissed(true);
           }
         }} 
       />
