@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -65,6 +66,7 @@ interface Conversation {
 }
 
 export default function ChatPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -118,8 +120,8 @@ export default function ChatPage() {
   const sendMessageViaWebSocket = (content: string, attachments: number[] = []) => {
     if (!selectedConversation) {
       toast({
-        title: "Error",
-        description: "No conversation selected",
+        title: t('common.error'),
+        description: t('chat.no_conversation_selected'),
         variant: "destructive",
       });
       return;
@@ -128,8 +130,8 @@ export default function ChatPage() {
     // Check if conversation is expired before sending
     if (selectedConversationData?.content_object?.status === "expired") {
       toast({
-        title: "Error",
-        description: "This conversation has expired and is read-only",
+        title: t('common.error'),
+        description: t('chat.conversation_expired'),
         variant: "destructive",
       });
       return;
@@ -137,8 +139,8 @@ export default function ChatPage() {
 
     if (!socket || socket.readyState !== WebSocket.OPEN) {
       toast({
-        title: "Error",
-        description: "Not connected to chat server. Please refresh the page.",
+        title: t('common.error'),
+        description: t('chat.not_connected'),
         variant: "destructive",
       });
       return;

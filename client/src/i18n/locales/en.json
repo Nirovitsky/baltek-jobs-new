@@ -43,9 +43,11 @@
     "logout": "Logout",
     "login": "Login",
     "register": "Register",
-    "error": "Error",
     "company": "Company",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "file": "File",
+    "unknown_company": "Unknown Company",
+    "recently": "Recently"
   },
   "navbar": {
     "baltek_jobs": "baltek jobs",
@@ -129,7 +131,9 @@
     "sign_in_to_apply": "Sign In to Apply",
     "share": "Share",
     "load_error": "Failed to load job details",
-    "copy_link_error": "Failed to copy link to clipboard"
+    "copy_link_error": "Failed to copy link to clipboard",
+    "select_job": "Select a job to view details",
+    "select_job_description": "Choose a job from the list to see more information"
   },
   "filters": {
     "clear_all": "Clear All",
@@ -269,7 +273,19 @@
     "delete_message": "Delete Message",
     "message_deleted": "Message deleted",
     "company": "Company",
-    "hr_representative": "HR Representative"
+    "hr_representative": "HR Representative",
+    "no_conversation_selected": "No conversation selected",
+    "conversation_expired": "This conversation has expired and is read-only",
+    "not_connected": "Not connected to chat server. Please refresh the page.",
+    "send_error": "Failed to send message",
+    "connection_error": "Please check your connection and try again",
+    "files_uploaded": "Files Uploaded",
+    "upload_error": "Upload Error",
+    "upload_failed": "Failed to upload files",
+    "yesterday": "Yesterday",
+    "search_conversations": "Search conversations...",
+    "retry_message": "Retry message",
+    "type_message": "Type your message..."
   },
   "notifications": {
     "title": "Notifications",
@@ -298,7 +314,18 @@
       "months_ago": "{{count}} months ago",
       "year_ago": "A year ago",
       "years_ago": "{{count}} years ago"
-    }
+    },
+    "application_submitted": "Your job application has been submitted successfully",
+    "application_status_updated": "There's an update on your job application status",
+    "application_approved": "Congratulations! Your job application has been approved",
+    "job_opportunities": "New job opportunities that match your profile",
+    "new_message_received": "You have received a new message",
+    "interview_scheduled": "An interview has been scheduled for you",
+    "interview_reminder": "Reminder about your upcoming interview",
+    "interview_cancelled": "Your interview has been cancelled",
+    "profile_updated": "Your profile has been updated",
+    "account_settings_updated": "Your account settings have been updated",
+    "new_notification": "You have a new notification"
   },
   "settings": {
     "title": "Settings",
@@ -385,7 +412,8 @@
     "browse_jobs": "Browse Jobs",
     "looking_for_something": "Looking for something specific?",
     "refresh_page": "Refresh Page",
-    "contact_support": "Contact Support"
+    "contact_support": "Contact Support",
+    "unknown_error": "Unknown error"
   },
   "about": {
     "title": "About Baltek Jobs",

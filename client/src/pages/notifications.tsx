@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Bell,
@@ -334,6 +335,7 @@ function NotificationCard({
 }
 
 export default function Notifications() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<string>("all");
   const queryClient = useQueryClient();
 

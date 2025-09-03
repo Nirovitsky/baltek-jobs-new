@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiClient } from "@/lib/api";
@@ -62,6 +63,7 @@ const MOCK_CATEGORIES = {
 
 // Company Suggestions Component
 function CompanySuggestions() {
+  const { t } = useTranslation();
   const { data: companiesData, isLoading } = useQuery({
     queryKey: ["organizations", "suggestions"],
     queryFn: () => ApiClient.getOrganizations({ limit: 15 }),
@@ -170,6 +172,7 @@ function CompanySuggestions() {
 }
 
 export default function Profile() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [modalTab, setModalTab] = useState<
