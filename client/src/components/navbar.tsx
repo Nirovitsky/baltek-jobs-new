@@ -47,6 +47,15 @@ export default function Navbar({}: NavbarProps) {
     mutationFn: async () => {
       return await AuthService.startOAuthLogin();
     },
+    onMutate: async () => {
+      // Show immediate feedback that login is starting
+      toast({
+        title: "Redirecting to login...",
+        description: "Opening authentication page",
+      });
+      
+      return {};
+    },
     onError: (error) => {
       toast({
         title: "Login Failed",
@@ -74,11 +83,20 @@ export default function Navbar({}: NavbarProps) {
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage);
+    // Show immediate feedback
     toast({
-      title: "Language updated",
-      description: `Language set to ${newLanguage}.`,
+      title: "Changing language...",
+      description: `Switching to ${newLanguage}`,
     });
+    
+    // Small delay to show the loading state
+    setTimeout(() => {
+      setLanguage(newLanguage);
+      toast({
+        title: "Language updated",
+        description: `Language set to ${newLanguage}.`,
+      });
+    }, 200);
   };
 
   return (
@@ -210,7 +228,19 @@ export default function Navbar({}: NavbarProps) {
                         <Button
                           variant={theme === "light" ? "default" : "ghost"}
                           size="sm"
-                          onClick={() => setTheme("light")}
+                          onClick={() => {
+                            toast({
+                              title: "Switching theme...",
+                              description: "Changing to light mode",
+                            });
+                            setTheme("light");
+                            setTimeout(() => {
+                              toast({
+                                title: "Theme changed",
+                                description: "Switched to light mode",
+                              });
+                            }, 300);
+                          }}
                           className="h-6 w-6 p-0"
                         >
                           <Sun className="h-3 w-3" />
@@ -218,7 +248,19 @@ export default function Navbar({}: NavbarProps) {
                         <Button
                           variant={theme === "dark" ? "default" : "ghost"}
                           size="sm"
-                          onClick={() => setTheme("dark")}
+                          onClick={() => {
+                            toast({
+                              title: "Switching theme...",
+                              description: "Changing to dark mode",
+                            });
+                            setTheme("dark");
+                            setTimeout(() => {
+                              toast({
+                                title: "Theme changed",
+                                description: "Switched to dark mode",
+                              });
+                            }, 300);
+                          }}
                           className="h-6 w-6 p-0"
                         >
                           <Moon className="h-3 w-3" />
@@ -226,7 +268,19 @@ export default function Navbar({}: NavbarProps) {
                         <Button
                           variant={theme === "system" ? "default" : "ghost"}
                           size="sm"
-                          onClick={() => setTheme("system")}
+                          onClick={() => {
+                            toast({
+                              title: "Switching theme...",
+                              description: "Changing to system mode",
+                            });
+                            setTheme("system");
+                            setTimeout(() => {
+                              toast({
+                                title: "Theme changed",
+                                description: "Switched to system mode",
+                              });
+                            }, 300);
+                          }}
                           className="h-6 w-6 p-0"
                         >
                           <Monitor className="h-3 w-3" />

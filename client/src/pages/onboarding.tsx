@@ -346,6 +346,14 @@ export default function Onboarding() {
   // Update profile mutation
   const updateProfileMutation = useMutation({
     mutationFn: (data: any) => ApiClient.updateProfile(user!.id, data),
+    onMutate: async (data: any) => {
+      // Show immediate feedback
+      toast({
+        title: "Updating profile...",
+        description: "Saving your personal information",
+      });
+      return {};
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
     },
@@ -354,16 +362,40 @@ export default function Onboarding() {
   // Add experience mutation
   const addExperienceMutation = useMutation({
     mutationFn: (data: any) => ApiClient.addExperience(data),
+    onMutate: async (data: any) => {
+      // Show immediate feedback
+      toast({
+        title: "Adding experience...",
+        description: "Saving your work experience",
+      });
+      return {};
+    },
   });
 
   // Add education mutation
   const addEducationMutation = useMutation({
     mutationFn: (data: any) => ApiClient.addEducation(data),
+    onMutate: async (data: any) => {
+      // Show immediate feedback
+      toast({
+        title: "Adding education...",
+        description: "Saving your education details",
+      });
+      return {};
+    },
   });
 
   // Complete onboarding mutation
   const completeOnboardingMutation = useMutation({
     mutationFn: () => ApiClient.completeOnboarding(),
+    onMutate: async () => {
+      // Show immediate feedback
+      toast({
+        title: "Completing onboarding...",
+        description: "Finalizing your profile setup",
+      });
+      return {};
+    },
     onSuccess: (data) => {
       console.log("Onboarding completed successfully:", data);
       console.log("Redirecting to /jobs page...");

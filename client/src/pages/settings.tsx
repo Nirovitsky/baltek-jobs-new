@@ -40,6 +40,16 @@ export default function SettingsPage() {
     mutationFn: async (userId: number) => {
       return await ApiClient.deleteAccount(userId);
     },
+    onMutate: async (userId: number) => {
+      // Show immediate feedback that deletion is in progress
+      toast({
+        title: "Deleting account...",
+        description: "Your account is being permanently deleted.",
+        variant: "destructive",
+      });
+      
+      return { userId };
+    },
     onSuccess: () => {
       toast({
         title: "Account deleted",

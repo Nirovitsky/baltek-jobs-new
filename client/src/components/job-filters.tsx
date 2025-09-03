@@ -89,6 +89,43 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   // Save filter mutation
   const saveFilterMutation = useMutation({
     mutationFn: (data: CreateSavedFilter) => ApiClient.saveFilter(data),
+    onMutate: async (data: CreateSavedFilter) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["savedFilters"] });
+
+      // Snapshot the previous value
+      const previousFilters = queryClient.getQueryData(["savedFilters"]);
+
+      // Optimistically add the new filter
+      queryClient.setQueryData(["savedFilters"], (old: any) => {
+        if (!old) return old;
+        const newFilter = {
+          ...data,
+          id: `temp-${Date.now()}`,
+          isOptimistic: true,
+          created_at: new Date().toISOString(),
+        };
+        
+        if (Array.isArray(old)) {
+          return [newFilter, ...old];
+        } else if (old.results && Array.isArray(old.results)) {
+          return {
+            ...old,
+            results: [newFilter, ...old.results],
+            count: (old.count || 0) + 1,
+          };
+        }
+        return old;
+      });
+
+      // Show immediate feedback
+      toast({
+        title: "Saving filter...",
+        description: "Your filter is being saved.",
+      });
+
+      return { previousFilters };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
       queryClient.refetchQueries({ queryKey: ["savedFilters"] });
@@ -99,18 +136,57 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
         description: "Your filter has been saved successfully.",
       });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousFilters) {
+        queryClient.setQueryData(["savedFilters"], context.previousFilters);
+      }
+      
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to save filter",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
+    },
   });
 
   // Delete filter mutation
   const deleteFilterMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteSavedFilter(id),
+    onMutate: async (id: number) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["savedFilters"] });
+
+      // Snapshot the previous value
+      const previousFilters = queryClient.getQueryData(["savedFilters"]);
+
+      // Optimistically remove the filter
+      queryClient.setQueryData(["savedFilters"], (old: any) => {
+        if (!old) return old;
+        
+        if (Array.isArray(old)) {
+          return old.filter((filter: any) => filter.id !== id);
+        } else if (old.results && Array.isArray(old.results)) {
+          return {
+            ...old,
+            results: old.results.filter((filter: any) => filter.id !== id),
+            count: Math.max((old.count || 0) - 1, 0),
+          };
+        }
+        return old;
+      });
+
+      // Show immediate feedback
+      toast({
+        title: "Deleting filter...",
+        description: "Removing your saved filter.",
+      });
+
+      return { previousFilters };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
       queryClient.refetchQueries({ queryKey: ["savedFilters"] });
@@ -119,12 +195,20 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
         description: "Your saved filter has been deleted.",
       });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousFilters) {
+        queryClient.setQueryData(["savedFilters"], context.previousFilters);
+      }
+      
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to delete filter",
         variant: "destructive",
       });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
     },
   });
 
@@ -145,13 +229,23 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   };
 
   const handleLoadSavedFilter = (savedFilter: SavedFilter) => {
-    // API might return filters in 'data' field instead of 'filters'
-    const filtersToApply = (savedFilter as any).data || savedFilter.filters || {};
-    onFiltersChange(filtersToApply);
+    // Show immediate feedback that filter is being applied
     toast({
-      title: "Filter loaded",
-      description: `Loaded filter: ${savedFilter.name}`,
+      title: "Applying filter...",
+      description: `Loading ${savedFilter.name}`,
     });
+    
+    // Small delay to show the loading toast, then apply filters
+    setTimeout(() => {
+      // API might return filters in 'data' field instead of 'filters'
+      const filtersToApply = (savedFilter as any).data || savedFilter.filters || {};
+      onFiltersChange(filtersToApply);
+      
+      toast({
+        title: "Filter loaded",
+        description: `Applied filter: ${savedFilter.name}`,
+      });
+    }, 100);
   };
 
   const handleDeleteSavedFilter = (id: number) => {

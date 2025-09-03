@@ -284,163 +284,459 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   // Mutations
   const updateProfileMutation = useMutation({
     mutationFn: (data: Partial<UserProfile>) => ApiClient.updateProfile(user!.id, data),
+    onMutate: async (data: Partial<UserProfile>) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically update the profile
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        return { ...old, ...data };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Saving...", description: "Updating your profile" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       toast({ title: "Profile updated", description: "Your profile has been updated successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Update failed",
         description: error instanceof Error ? error.message : "Failed to update profile",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const addEducationMutation = useMutation({
     mutationFn: (data: any) => ApiClient.addEducation(data),
+    onMutate: async (data: any) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically add the education
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        const newEducation = { ...data, id: `temp-${Date.now()}`, isOptimistic: true };
+        return {
+          ...old,
+          educations: [...(old.educations || []), newEducation],
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Adding...", description: "Adding education record" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       educationForm.reset();
       toast({ title: "Education added", description: "Education record added successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to add education",
         description: error instanceof Error ? error.message : "Failed to add education",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const updateEducationMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateEducation(id, data),
+    onMutate: async ({ id, data }: { id: number; data: any }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically update the education
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          educations: (old.educations || []).map((edu: any) =>
+            edu.id === id ? { ...edu, ...data, isOptimistic: true } : edu
+          ),
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Updating...", description: "Updating education record" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingEducation(null);
       educationForm.reset();
       toast({ title: "Education updated", description: "Education record updated successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to update education",
         description: error instanceof Error ? error.message : "Failed to update education",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const deleteEducationMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteEducation(id),
+    onMutate: async (id: number) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically remove the education
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          educations: (old.educations || []).filter((edu: any) => edu.id !== id),
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Deleting...", description: "Removing education record" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       toast({ title: "Education deleted", description: "Education record deleted successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to delete education",
         description: error instanceof Error ? error.message : "Failed to delete education",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const addExperienceMutation = useMutation({
     mutationFn: (data: any) => ApiClient.addExperience(data),
+    onMutate: async (data: any) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically add the experience
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        const newExperience = { ...data, id: `temp-${Date.now()}`, isOptimistic: true };
+        return {
+          ...old,
+          experiences: [...(old.experiences || []), newExperience],
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Adding...", description: "Adding work experience" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       experienceForm.reset();
       toast({ title: "Experience added", description: "Work experience added successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to add experience",
         description: error instanceof Error ? error.message : "Failed to add experience",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const updateExperienceMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateExperience(id, data),
+    onMutate: async ({ id, data }: { id: number; data: any }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically update the experience
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          experiences: (old.experiences || []).map((exp: any) =>
+            exp.id === id ? { ...exp, ...data, isOptimistic: true } : exp
+          ),
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Updating...", description: "Updating work experience" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingExperience(null);
       experienceForm.reset();
       toast({ title: "Experience updated", description: "Work experience updated successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to update experience",
         description: error instanceof Error ? error.message : "Failed to update experience",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const deleteExperienceMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteExperience(id),
+    onMutate: async (id: number) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically remove the experience
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          experiences: (old.experiences || []).filter((exp: any) => exp.id !== id),
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Deleting...", description: "Removing work experience" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       toast({ title: "Experience deleted", description: "Work experience deleted successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to delete experience",
         description: error instanceof Error ? error.message : "Failed to delete experience",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const addProjectMutation = useMutation({
     mutationFn: (data: any) => ApiClient.addProject(data),
+    onMutate: async (data: any) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically add the project
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        const newProject = { ...data, id: `temp-${Date.now()}`, isOptimistic: true };
+        return {
+          ...old,
+          projects: [...(old.projects || []), newProject],
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Adding...", description: "Adding project" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       projectForm.reset();
       toast({ title: "Project added", description: "Project added successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to add project",
         description: error instanceof Error ? error.message : "Failed to add project",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const updateProjectMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: any }) => 
       ApiClient.updateProject(id, data),
+    onMutate: async ({ id, data }: { id: number; data: any }) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically update the project
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          projects: (old.projects || []).map((proj: any) =>
+            proj.id === id ? { ...proj, ...data, isOptimistic: true } : proj
+          ),
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Updating...", description: "Updating project" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingProject(null);
       projectForm.reset();
       toast({ title: "Project updated", description: "Project updated successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to update project",
         description: error instanceof Error ? error.message : "Failed to update project",
         variant: "destructive",
       });
     },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
   });
 
   const deleteProjectMutation = useMutation({
     mutationFn: (id: number) => ApiClient.deleteProject(id),
+    onMutate: async (id: number) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Optimistically remove the project
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          projects: (old.projects || []).filter((proj: any) => proj.id !== id),
+        };
+      });
+
+      // Show immediate feedback
+      toast({ title: "Deleting...", description: "Removing project" });
+
+      return { previousProfile };
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       toast({ title: "Project deleted", description: "Project deleted successfully" });
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
       toast({
         title: "Failed to delete project",
         description: error instanceof Error ? error.message : "Failed to delete project",
         variant: "destructive",
       });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
     },
   });
 

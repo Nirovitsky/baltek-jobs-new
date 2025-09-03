@@ -78,6 +78,46 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
       const result = await ApiClient.applyToJob(applicationData, uploadedFile || undefined, selectedResumeId || undefined);
       return result;
     },
+    onMutate: async (data: JobApplication) => {
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ["job", job.id] });
+      await queryClient.cancelQueries({ queryKey: ["jobs"] });
+      await queryClient.cancelQueries({ queryKey: ["user", "applications"] });
+
+      // Snapshot the previous value
+      const previousJob = queryClient.getQueryData(["job", job.id]);
+      const previousJobs = queryClient.getQueryData(["jobs"]);
+      const previousApplications = queryClient.getQueryData(["user", "applications"]);
+
+      // Optimistically update the job to show as applied
+      queryClient.setQueryData(["job", job.id], (old: any) => {
+        if (!old) return old;
+        return { ...old, my_application_id: "temp-optimistic" };
+      });
+
+      // Optimistically update the jobs list
+      queryClient.setQueryData(["jobs"], (old: any) => {
+        if (!old) return old;
+        return {
+          ...old,
+          pages: old.pages?.map((page: any) => ({
+            ...page,
+            data: page.data?.map((jobItem: any) =>
+              jobItem.id === job.id ? { ...jobItem, my_application_id: "temp-optimistic" } : jobItem,
+            ),
+          })),
+        };
+      });
+
+      // Show immediate feedback toast
+      toast({
+        title: "Submitting application...",
+        description: "Your application is being processed.",
+      });
+
+      // Return a context object with the snapshotted values
+      return { previousJob, previousJobs, previousApplications };
+    },
     onSuccess: () => {
       // Invalidate job details query to refresh the my_application_id field
       queryClient.invalidateQueries({ queryKey: ["job", job.id] });
@@ -93,12 +133,29 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
       setSelectedResumeId("");
       setUploadedFile(null);
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousJob) {
+        queryClient.setQueryData(["job", job.id], context.previousJob);
+      }
+      if (context?.previousJobs) {
+        queryClient.setQueryData(["jobs"], context.previousJobs);
+      }
+      if (context?.previousApplications) {
+        queryClient.setQueryData(["user", "applications"], context.previousApplications);
+      }
+      
       toast({
         title: "Application failed",
         description: error instanceof Error ? error.message : "Failed to submit application",
         variant: "destructive",
       });
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure we have up-to-date data
+      queryClient.invalidateQueries({ queryKey: ["job", job.id] });
+      queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["user", "applications"] });
     },
   });
 
