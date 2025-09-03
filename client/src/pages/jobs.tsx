@@ -62,6 +62,7 @@ export default function Jobs({}: JobsProps) {
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [hasShownLoginModal, setHasShownLoginModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   
   // Only sync with URL on browser navigation (back/forward buttons)
@@ -277,7 +278,12 @@ export default function Jobs({}: JobsProps) {
                 isSearching={isSearching}
                 inputRef={inputRef}
                 isAuthenticated={isAuthenticated}
-                onLoginPrompt={() => setShowLoginModal(true)}
+                onLoginPrompt={() => {
+                  if (!hasShownLoginModal) {
+                    setShowLoginModal(true);
+                    setHasShownLoginModal(true);
+                  }
+                }}
               />
             </div>
           </div>
@@ -307,7 +313,13 @@ export default function Jobs({}: JobsProps) {
       
       <LoginPromptModal 
         isOpen={showLoginModal} 
-        onOpenChange={setShowLoginModal} 
+        onOpenChange={(open) => {
+          setShowLoginModal(open);
+          // Reset the flag when modal is closed so it can be shown again later if needed
+          if (!open) {
+            setHasShownLoginModal(false);
+          }
+        }} 
       />
     </div>
   );

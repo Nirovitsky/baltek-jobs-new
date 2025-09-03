@@ -30,7 +30,7 @@ export function useInfiniteScroll({
     (entries: IntersectionObserverEntry[]) => {
       const [entry] = entries;
       if (entry.isIntersecting && !isFetchingNextPage) {
-        // If user is not authenticated and has viewed 20+ jobs, show login prompt
+        // If user is not authenticated and has viewed 20+ jobs, show login prompt (only once per session)
         if (!isAuthenticated && jobs.length >= 20) {
           if (onLoginPrompt) {
             onLoginPrompt();
