@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useTranslation } from "react-i18next";
 import type { Job } from "@shared/schema";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { Card } from "@/components/ui/card";
@@ -48,6 +49,7 @@ export default function JobList({
   isAuthenticated = false,
   onLoginPrompt,
 }: JobListProps) {
+  const { t } = useTranslation();
   // Use a ref to track the actual input value independently
   const localInputRef = useRef<HTMLInputElement>(null);
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
@@ -102,12 +104,12 @@ export default function JobList({
         </div>
         <div>
           <h2 className="text-lg font-semibold text-primary">
-            {isLoading ? "Loading..." : 
+            {isLoading ? t('common.loading') : 
              totalCount !== undefined
                ? totalCount.toLocaleString()
                : jobs.length.toLocaleString()}{" "}
-            Job{(totalCount !== undefined ? totalCount : jobs.length) !== 1 ? "s" : ""}{" "}
-            {!isLoading && "Found"}
+            {t('jobs.job', { count: totalCount !== undefined ? totalCount : jobs.length })}{" "}
+            {!isLoading && t('jobs.found')}
           </h2>
         </div>
       </div>
@@ -125,7 +127,7 @@ export default function JobList({
           <Input
             ref={localInputRef || inputRef}
             type="text"
-            placeholder="Search jobs, companies, skills..."
+            placeholder={t('jobs.search_placeholder')}
             defaultValue={searchQuery}
             onChange={handleLocalSearchChange}
             className="pl-12 pr-4 py-3 bg-background border-border rounded-lg shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200 text-sm placeholder:text-muted-foreground"
@@ -166,8 +168,8 @@ export default function JobList({
         
         <div className="flex-1 flex items-center justify-center p-8">
           <div className="text-center">
-            <h3 className="text-lg font-medium text-foreground mb-2">No jobs found</h3>
-            <p className="text-muted-foreground">Try adjusting your filters or search terms</p>
+            <h3 className="text-lg font-medium text-foreground mb-2">{t('jobs.no_jobs_found')}</h3>
+            <p className="text-muted-foreground">{t('jobs.try_adjusting_filters')}</p>
           </div>
         </div>
       </div>

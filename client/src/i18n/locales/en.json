@@ -47,7 +47,10 @@
     "unknown": "Unknown",
     "file": "File",
     "unknown_company": "Unknown Company",
-    "recently": "Recently"
+    "recently": "Recently",
+    "primary": "Primary",
+    "updated": "Updated",
+    "loading": "Loading..."
   },
   "navbar": {
     "baltek_jobs": "baltek jobs",
@@ -133,7 +136,31 @@
     "load_error": "Failed to load job details",
     "copy_link_error": "Failed to copy link to clipboard",
     "select_job": "Select a job to view details",
-    "select_job_description": "Choose a job from the list to see more information"
+    "select_job_description": "Choose a job from the list to see more information",
+    "bookmark_error": "Failed to update bookmark",
+    "no_jobs_found": "No jobs found",
+    "try_adjusting_filters": "Try adjusting your filters or search terms",
+    "found": "Found",
+    "up_to": "Up to"
+  },
+  "bookmarks": {
+    "bookmark_added": "Job bookmarked",
+    "bookmark_removed": "Bookmark removed",
+    "bookmark_added_desc": "Job added to your bookmarks",
+    "bookmark_removed_desc": "Job removed from your bookmarks"
+  },
+  "auth": {
+    "want_to_see_more_jobs": "Want to see more jobs?",
+    "guest_limit_description": "You've viewed 20 jobs as a guest. To see more opportunities and access additional features, please sign in to your account.",
+    "benefits_title": "Benefits of signing in",
+    "benefit_unlimited_browse": "Browse unlimited job listings",
+    "benefit_save_apply": "Save jobs and apply with one click",
+    "benefit_track_applications": "Track your applications",
+    "sign_in_to_continue": "Sign in to continue",
+    "continue_browsing": "Continue browsing (limited view)"
+  },
+  "errors": {
+    "something_went_wrong": "Something went wrong"
   },
   "filters": {
     "clear_all": "Clear All",
@@ -158,6 +185,40 @@
     "master": "Master",
     "doctorate": "Doctorate"
   },
+  "application_modal": {
+    "apply_for": "Apply for",
+    "quick_apply_for": "Quick Apply for",
+    "quick_apply_description": "Quick application - no cover letter or resume required",
+    "cover_letter": "Cover Letter",
+    "cover_letter_placeholder": "Write a compelling cover letter explaining why you're the perfect fit for this role. Highlight your relevant experience, skills, and enthusiasm for the position...",
+    "resume_upload": "Resume/CV",
+    "select_resume": "Select from your resumes",
+    "upload_new_resume": "Or upload a new resume",
+    "resume_optional_note": "You can apply without a resume, but including one improves your chances.",
+    "quick_apply": "Quick Apply",
+    "quick_apply_info": "Your application will be submitted immediately without additional documents. You can always add a cover letter and resume later.",
+    "submit_application": "Submit Application",
+    "submitting": "Submitting...",
+    "processing": "Your application is being processed.",
+    "application_submitted": "Application submitted",
+    "application_success": "Your application has been sent successfully!",
+    "application_error": "Failed to submit application"
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "profile": "Profile",
+    "applications": "Applications",
+    "bookmarks": "Bookmarks",
+    "settings": "Settings",
+    "chat": "Chat",
+    "notifications": "Notifications",
+    "terms": "Terms and Agreement",
+    "privacy_policy": "Privacy Policy",
+    "about_us": "About Us",
+    "contact_us": "Contact Us",
+    "companies": "Companies",
+    "company_profile": "Company Profile"
+  },
   "applications": {
     "title": "My Applications",
     "no_applications": "No applications yet",
@@ -176,20 +237,6 @@
     "resume": "Resume",
     "job_application": "Job Application",
     "documents": "Documents"
-  },
-  "application_modal": {
-    "apply_for": "Apply for {{title}}",
-    "cover_letter": "Cover Letter",
-    "cover_letter_placeholder": "Write a brief cover letter explaining why you're interested in this position...",
-    "resume_upload": "Upload Resume",
-    "additional_documents": "Additional Documents",
-    "drag_drop": "Drag and drop files here, or click to select",
-    "supported_formats": "Supported formats: PDF, DOC, DOCX (Max 10MB)",
-    "submitting": "Submitting...",
-    "submit_application": "Submit Application",
-    "application_submitted": "Application Submitted",
-    "application_success": "Your application has been submitted successfully",
-    "application_error": "Failed to submit application. Please try again."
   },
   "bookmarks": {
     "title": "Bookmarked Jobs",

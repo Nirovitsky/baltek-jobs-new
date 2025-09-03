@@ -121,8 +121,8 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
     
     if (min && max) return `${currencySymbol}${min.toLocaleString('de-DE')} - ${currencySymbol}${max.toLocaleString('de-DE')}`;
     if (min) return `${t('jobs.from')} ${currencySymbol}${min.toLocaleString('de-DE')}`;
-    if (max) return `Up to ${currencySymbol}${max.toLocaleString('de-DE')}`;
-    return "Salary not specified";
+    if (max) return `${t('jobs.up_to')} ${currencySymbol}${max.toLocaleString('de-DE')}`;
+    return t('jobs.salary_not_specified');
   };
 
   const formatJobType = (type: string) => {

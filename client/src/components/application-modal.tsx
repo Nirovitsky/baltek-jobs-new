@@ -113,8 +113,8 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
 
       // Show immediate feedback toast
       toast({
-        title: "Submitting application...",
-        description: "Your application is being processed.",
+        title: t('application_modal.submitting'),
+        description: t('application_modal.processing'),
       });
 
       // Return a context object with the snapshotted values
@@ -127,8 +127,8 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
       queryClient.invalidateQueries({ queryKey: ["user", "applications"] });
       queryClient.invalidateQueries({ queryKey: ["user", "resumes", "current"] });
       toast({
-        title: "Application submitted",
-        description: "Your application has been sent successfully!",
+        title: t('application_modal.application_submitted'),
+        description: t('application_modal.application_success'),
       });
       onClose();
       reset();
@@ -148,8 +148,8 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
       }
       
       toast({
-        title: "Application failed",
-        description: error instanceof Error ? error.message : "Failed to submit application",
+        title: t('application_modal.application_error'),
+        description: error instanceof Error ? error.message : t('application_modal.application_error'),
         variant: "destructive",
       });
     },
@@ -182,11 +182,11 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
       <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto mx-4">
         <DialogHeader>
           <DialogTitle className="text-xl">
-            {isQuickApply ? "Quick Apply for" : "Apply for"} {job.title}
+            {isQuickApply ? t('application_modal.quick_apply_for') : t('application_modal.apply_for')} {job.title}
           </DialogTitle>
           <DialogDescription>
             {job.organization?.display_name || job.organization?.name} • {job.location?.name}, {job.location?.country}
-            {isQuickApply && <span className="block text-sm text-primary mt-1">Quick application - no cover letter or resume required</span>}
+            {isQuickApply && <span className="block text-sm text-primary mt-1">{t('application_modal.quick_apply_description')}</span>}
           </DialogDescription>
         </DialogHeader>
 
@@ -194,12 +194,12 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
           {/* Cover Letter */}
           {!isQuickApply && (
             <div className="space-y-2">
-              <Label htmlFor="cover_letter">Cover Letter <span className="text-sm text-muted-foreground">(Optional)</span></Label>
+              <Label htmlFor="cover_letter">{t('application_modal.cover_letter')} <span className="text-sm text-muted-foreground">({t('common.optional')})</span></Label>
               <Textarea
                 id="cover_letter"
                 rows={6}
                 {...register("cover_letter")}
-                placeholder="Write a compelling cover letter explaining why you're the perfect fit for this role. Highlight your relevant experience, skills, and enthusiasm for the position..."
+                placeholder={t('application_modal.cover_letter_placeholder')}
                 className="resize-none"
               />
               {errors.cover_letter && (
@@ -211,7 +211,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
           {/* Resume Selection */}
           {!isQuickApply && (
             <div className="space-y-4">
-              <Label>Resume/CV <span className="text-sm text-muted-foreground">(Optional)</span></Label>
+              <Label>{t('application_modal.resume_upload')} <span className="text-sm text-muted-foreground">({t('common.optional')})</span></Label>
               
               {/* Existing Resumes */}
               {!resumesLoading && (
@@ -221,7 +221,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
                  ((resumes as any)?.count > 0))
               ) && (
                 <div className="space-y-3">
-                  <Label className="text-sm text-muted-foreground">Select from your resumes:</Label>
+                  <Label className="text-sm text-muted-foreground">{t('application_modal.select_resume')}:</Label>
                   <div className="grid gap-2">
                     {(() => {
                       let resumeList = [];
@@ -266,12 +266,12 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
                                   <div className="flex items-center space-x-2 mt-1">
                                     {resume.is_primary && (
                                       <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
-                                        Primary
+                                        {t('common.primary')}
                                       </span>
                                     )}
                                     {resume.updated_at && (
                                       <p className="text-xs text-muted-foreground">
-                                        Updated {new Date(resume.updated_at).toLocaleDateString()}
+                                        {t('common.updated')} {new Date(resume.updated_at).toLocaleDateString()}
                                       </p>
                                     )}
                                   </div>
@@ -304,7 +304,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
 
               {/* File Upload */}
               <div className="space-y-2">
-                <Label className="text-sm text-muted-foreground">Or upload a new resume:</Label>
+                <Label className="text-sm text-muted-foreground">{t('application_modal.upload_new_resume')}:</Label>
                 <FileUpload
                   onFileSelect={handleFileUpload}
                   accept=".pdf,.doc,.docx"
@@ -314,7 +314,7 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
               </div>
 
               <p className="text-sm text-muted-foreground">
-                You can apply without a resume, but including one improves your chances.
+                {t('application_modal.resume_optional_note')}
               </p>
             </div>
           )}
@@ -323,11 +323,10 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
             <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
               <div className="flex items-center space-x-2 text-primary">
                 <img src={baltekIcon} alt="" className="w-5 h-5" />
-                <span className="font-medium">Quick Apply</span>
+                <span className="font-medium">{t('application_modal.quick_apply')}</span>
               </div>
               <p className="text-sm text-primary mt-1">
-                Your application will be submitted immediately without additional documents. 
-                You can always add a cover letter and resume later.
+                {t('application_modal.quick_apply_info')}
               </p>
             </div>
           )}
@@ -337,18 +336,18 @@ export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = 
           {/* Submit Buttons */}
           <div className="flex justify-end space-x-3 pt-4 border-t">
             <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
               disabled={applicationMutation.isPending}
             >
               {applicationMutation.isPending ? (
-                "Submitting..."
+                t('application_modal.submitting')
               ) : (
                 <>
                   {isQuickApply ? <img src={baltekIcon} alt="" className="w-4 h-4 mr-2" /> : <Send className="w-4 h-4 mr-2" />}
-                  {isQuickApply ? "Quick Apply" : "Submit Application"}
+                  {isQuickApply ? t('application_modal.quick_apply') : t('application_modal.submit_application')}
                 </>
               )}
             </Button>

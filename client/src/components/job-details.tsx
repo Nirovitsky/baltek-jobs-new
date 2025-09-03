@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { ApiClient } from "@/lib/api";
 import { AuthService } from "@/lib/auth";
 import type { Job } from "@shared/schema";
@@ -42,6 +43,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuth();
+  const { t } = useTranslation();
 
   // Fetch detailed job data
   const {
@@ -119,18 +121,18 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
       }
 
       toast({
-        title: "Error",
+        title: t('common.error'),
         description:
-          error instanceof Error ? error.message : "Failed to update bookmark",
+          error instanceof Error ? error.message : t('jobs.bookmark_error'),
         variant: "destructive",
       });
     },
     onSuccess: (_, { isBookmarked }) => {
       toast({
-        title: isBookmarked ? "Bookmark removed" : "Job bookmarked",
+        title: isBookmarked ? t('bookmarks.bookmark_removed') : t('bookmarks.bookmark_added'),
         description: isBookmarked
-          ? "Job removed from your bookmarks"
-          : "Job added to your bookmarks",
+          ? t('bookmarks.bookmark_removed_desc')
+          : t('bookmarks.bookmark_added_desc'),
       });
     },
     onSettled: (_, __, { jobId }) => {
@@ -154,13 +156,13 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     try {
       await navigator.clipboard.writeText(window.location.href);
       toast({
-        title: "Link copied",
-        description: "Job link copied to clipboard",
+        title: t('jobs.link_copied'),
+        description: t('jobs.link_copied'),
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to copy link to clipboard",
+        title: t('common.error'),
+        description: t('jobs.copy_link_error'),
         variant: "destructive",
       });
     }
@@ -176,10 +178,10 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
       <Card className="h-full w-full">
         <CardContent className="p-6 text-center">
           <h3 className="text-lg font-semibold text-foreground mb-2">
-            Failed to load job details
+            {t('jobs.load_error')}
           </h3>
           <p className="text-muted-foreground">
-            {error instanceof Error ? error.message : "Something went wrong"}
+            {error instanceof Error ? error.message : t('errors.something_went_wrong')}
           </p>
         </CardContent>
       </Card>

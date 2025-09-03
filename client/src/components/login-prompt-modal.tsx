@@ -32,27 +32,27 @@ export default function LoginPromptModal({ isOpen, onOpenChange }: LoginPromptMo
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Eye className="h-5 w-5 text-primary" />
-            Want to see more jobs?
+            {t('auth.want_to_see_more_jobs')}
           </DialogTitle>
           <DialogDescription className="text-left space-y-3 pt-2">
             <p>
-              You've viewed 20 jobs as a guest. To see more opportunities and access additional features, please sign in to your account.
+              {t('auth.guest_limit_description')}
             </p>
             
             <div className="space-y-2">
-              <h4 className="font-medium text-foreground">Benefits of signing in:</h4>
+              <h4 className="font-medium text-foreground">{t('auth.benefits_title')}:</h4>
               <div className="space-y-1 text-sm">
                 <div className="flex items-center gap-2">
                   <Eye className="h-4 w-4 text-muted-foreground" />
-                  <span>Browse unlimited job listings</span>
+                  <span>{t('auth.benefit_unlimited_browse')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Filter className="h-4 w-4 text-muted-foreground" />
-                  <span>Save jobs and apply with one click</span>
+                  <span>{t('auth.benefit_save_apply')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span>Track your applications</span>
+                  <span>{t('auth.benefit_track_applications')}</span>
                 </div>
               </div>
             </div>
@@ -62,10 +62,10 @@ export default function LoginPromptModal({ isOpen, onOpenChange }: LoginPromptMo
         <div className="flex flex-col gap-3 pt-4">
           <Button onClick={handleLogin} className="w-full">
             <LogIn className="h-4 w-4 mr-2" />
-            Sign in to continue
+            {t('auth.sign_in_to_continue')}
           </Button>
           <Button variant="outline" onClick={handleContinueBrowsing} className="w-full">
-            Continue browsing (limited view)
+            {t('auth.continue_browsing')}
           </Button>
         </div>
       </DialogContent>

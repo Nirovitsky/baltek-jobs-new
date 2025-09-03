@@ -1,4 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -16,61 +17,61 @@ interface BreadcrumbItem {
   icon?: React.ComponentType<{ className?: string }>;
 }
 
-const routeMap: Record<string, BreadcrumbItem[]> = {
+const getRouteMap = (t: (key: string) => string): Record<string, BreadcrumbItem[]> => ({
   "/profile": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Profile", icon: User }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.profile'), icon: User }
   ],
   "/applications": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Applications", icon: Briefcase }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.applications'), icon: Briefcase }
   ],
   "/bookmarks": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Bookmarks", icon: Bookmark }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.bookmarks'), icon: Bookmark }
   ],
   "/settings": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Settings", icon: Settings }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.settings'), icon: Settings }
   ],
   "/chat": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Chat", icon: MessageCircle }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.chat'), icon: MessageCircle }
   ],
   "/notifications": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Notifications", icon: Bell }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.notifications'), icon: Bell }
   ],
   "/terms": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Settings", href: "/settings", icon: Settings },
-    { label: "Terms and Agreement" }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.settings'), href: "/settings", icon: Settings },
+    { label: t('breadcrumb.terms') }
   ],
   "/privacy-policy": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Settings", href: "/settings", icon: Settings },
-    { label: "Privacy Policy" }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.settings'), href: "/settings", icon: Settings },
+    { label: t('breadcrumb.privacy_policy') }
   ],
   "/about-us": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Settings", href: "/settings", icon: Settings },
-    { label: "About Us" }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.settings'), href: "/settings", icon: Settings },
+    { label: t('breadcrumb.about_us') }
   ],
   "/contact-us": [
-    { label: "Home", href: "/jobs", icon: Home },
-    { label: "Settings", href: "/settings", icon: Settings },
-    { label: "Contact Us" }
+    { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+    { label: t('breadcrumb.settings'), href: "/settings", icon: Settings },
+    { label: t('breadcrumb.contact_us') }
   ]
-};
+});
 
 // Dynamic route pattern for company profiles
-const getCompanyBreadcrumb = (path: string): BreadcrumbItem[] => {
+const getCompanyBreadcrumb = (path: string, t: (key: string) => string): BreadcrumbItem[] => {
   const companyIdMatch = path.match(/^\/company\/(\d+)$/);
   if (companyIdMatch) {
     return [
-      { label: "Home", href: "/jobs", icon: Home },
-      { label: "Companies", href: "/jobs", icon: Building },
-      { label: "Company Profile", icon: Building }
+      { label: t('breadcrumb.home'), href: "/jobs", icon: Home },
+      { label: t('breadcrumb.companies'), href: "/jobs", icon: Building },
+      { label: t('breadcrumb.company_profile'), icon: Building }
     ];
   }
   return [];
@@ -78,15 +79,18 @@ const getCompanyBreadcrumb = (path: string): BreadcrumbItem[] => {
 
 export default function BreadcrumbNavigation() {
   const location = useLocation();
+  const { t } = useTranslation();
   
   // Get breadcrumb items for current route
   let breadcrumbItems: BreadcrumbItem[] = [];
+  
+  const routeMap = getRouteMap(t);
   
   if (routeMap[location.pathname]) {
     breadcrumbItems = routeMap[location.pathname];
   } else {
     // Check for dynamic routes like company profiles
-    breadcrumbItems = getCompanyBreadcrumb(location.pathname);
+    breadcrumbItems = getCompanyBreadcrumb(location.pathname, t);
   }
 
   // Don't render if no breadcrumb items found
