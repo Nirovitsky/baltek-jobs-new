@@ -76,7 +76,9 @@
     "changing_to_dark": "Garaňkylyk temasyna geçilýär",
     "switched_to_dark": "Garaňkylyk temasyna geçirildi",
     "changing_to_system": "Ulgam temasyna geçilýär",
-    "switched_to_system": "Ulgam temasyna geçirildi"
+    "switched_to_system": "Ulgam temasyna geçirildi",
+    "confirm_logout": "Çykmagy tassykla",
+    "logout_confirmation_message": "Çykmak isleýärsiňizmi? Hasabyňyza girişmek üçin gaýtadan girmeli bolarsyňyz."
   },
   "jobs": {
     "title": "Iş ýerleri",

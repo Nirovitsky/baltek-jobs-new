@@ -13,6 +13,17 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -43,6 +54,7 @@ export default function Navbar({}: NavbarProps) {
   const { theme, setTheme } = useTheme();
   const { t, i18n } = useTranslation();
   const location = useLocation();
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const oauthLoginMutation = useMutation({
     mutationFn: async () => {
@@ -289,7 +301,7 @@ export default function Navbar({}: NavbarProps) {
                       </div>
                     </div>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => logout()}>
+                    <DropdownMenuItem onClick={() => setShowLogoutDialog(true)}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>{t('navbar.logout')}</span>
                     </DropdownMenuItem>
@@ -355,6 +367,27 @@ export default function Navbar({}: NavbarProps) {
           </div>
         </div>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t('navbar.confirm_logout')}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t('navbar.logout_confirmation_message')}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+            <AlertDialogAction onClick={() => {
+              setShowLogoutDialog(false);
+              logout();
+            }}>
+              {t('navbar.logout')}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </nav>
   );
 }

@@ -76,7 +76,9 @@
     "changing_to_dark": "Changing to dark mode",
     "switched_to_dark": "Switched to dark mode",
     "changing_to_system": "Changing to system mode",
-    "switched_to_system": "Switched to system mode"
+    "switched_to_system": "Switched to system mode",
+    "confirm_logout": "Confirm Logout",
+    "logout_confirmation_message": "Are you sure you want to logout? You will need to login again to access your account."
   },
   "jobs": {
     "title": "Jobs",
