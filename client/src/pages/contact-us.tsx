@@ -96,18 +96,18 @@ export default function ContactUs() {
                   </div>
 
                   <div>
-                    <Label htmlFor="category">Category</Label>
+                    <Label htmlFor="category">{t('categories.category')}</Label>
                     <Select value={formData.category} onValueChange={(value) => handleChange("category", value)}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
+                        <SelectValue placeholder={t('categories.select_category')} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="general">General Inquiry</SelectItem>
-                        <SelectItem value="technical">Technical Support</SelectItem>
-                        <SelectItem value="account">Account Issues</SelectItem>
-                        <SelectItem value="jobs">Job Posting</SelectItem>
-                        <SelectItem value="partnership">Partnership</SelectItem>
-                        <SelectItem value="feedback">Feedback</SelectItem>
+                        <SelectItem value="general">{t('categories.general_inquiry')}</SelectItem>
+                        <SelectItem value="technical">{t('categories.technical_support')}</SelectItem>
+                        <SelectItem value="account">{t('categories.account_issues')}</SelectItem>
+                        <SelectItem value="jobs">{t('categories.job_posting')}</SelectItem>
+                        <SelectItem value="partnership">{t('categories.partnership')}</SelectItem>
+                        <SelectItem value="feedback">{t('categories.feedback')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -119,7 +119,7 @@ export default function ContactUs() {
                       value={formData.subject}
                       onChange={(e) => handleChange("subject", e.target.value)}
                       required
-                      placeholder="Brief description of your inquiry"
+                      placeholder={t('contact.subject_placeholder')}
                     />
                   </div>
 
@@ -130,18 +130,18 @@ export default function ContactUs() {
                       value={formData.message}
                       onChange={(e) => handleChange("message", e.target.value)}
                       required
-                      placeholder="Please provide detailed information about your inquiry..."
+                      placeholder={t('contact.message_placeholder')}
                       rows={6}
                     />
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isSubmitting}>
                     {isSubmitting ? (
-                      <>Sending...</>
+                      <>{t('contact.sending')}</>
                     ) : (
                       <>
                         <Send className="h-4 w-4 mr-2" />
-                        Send Message
+                        {t('contact.send_message_btn')}
                       </>
                     )}
                   </Button>
@@ -154,7 +154,7 @@ export default function ContactUs() {
               {/* Contact Details */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Get in Touch</CardTitle>
+                  <CardTitle>{t('contact_info.get_in_touch')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center gap-3">
@@ -162,7 +162,7 @@ export default function ContactUs() {
                       <Mail className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-medium">Email</div>
+                      <div className="font-medium">{t('contact_info.email')}</div>
                       <div className="text-sm text-muted-foreground">support@baltek.net</div>
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export default function ContactUs() {
                       <Phone className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-medium">Phone</div>
+                      <div className="font-medium">{t('contact_info.phone')}</div>
                       <div className="text-sm text-muted-foreground">+993 12 345 678</div>
                     </div>
                   </div>
@@ -182,7 +182,7 @@ export default function ContactUs() {
                       <MapPin className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-medium">Address</div>
+                      <div className="font-medium">{t('contact_info.address')}</div>
                       <div className="text-sm text-muted-foreground">Ashgabat, Turkmenistan</div>
                     </div>
                   </div>
@@ -192,30 +192,30 @@ export default function ContactUs() {
               {/* Support Categories */}
               <Card>
                 <CardHeader>
-                  <CardTitle>How can we help?</CardTitle>
+                  <CardTitle>{t('contact_info.how_can_help')}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
                     <HelpCircle className="h-5 w-5 text-primary" />
                     <div>
-                      <div className="font-medium text-sm">General Support</div>
-                      <div className="text-xs text-muted-foreground">Account help, technical issues</div>
+                      <div className="font-medium text-sm">{t('contact_info.general_support')}</div>
+                      <div className="text-xs text-muted-foreground">{t('contact_info.general_support_desc')}</div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
                     <Briefcase className="h-5 w-5 text-primary" />
                     <div>
-                      <div className="font-medium text-sm">For Employers</div>
-                      <div className="text-xs text-muted-foreground">Job posting, recruitment solutions</div>
+                      <div className="font-medium text-sm">{t('contact_info.for_employers')}</div>
+                      <div className="text-xs text-muted-foreground">{t('contact_info.for_employers_desc')}</div>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3 p-3 bg-background rounded-lg">
                     <MessageCircle className="h-5 w-5 text-primary" />
                     <div>
-                      <div className="font-medium text-sm">Feedback</div>
-                      <div className="text-xs text-muted-foreground">Suggestions, feature requests</div>
+                      <div className="font-medium text-sm">{t('contact_info.feedback_option')}</div>
+                      <div className="text-xs text-muted-foreground">{t('contact_info.feedback_desc')}</div>
                     </div>
                   </div>
                 </CardContent>
@@ -224,9 +224,9 @@ export default function ContactUs() {
               {/* Response Time */}
               <Card className="bg-primary text-primary-foreground">
                 <CardContent className="p-6 text-center">
-                  <h3 className="font-semibold mb-2">Quick Response</h3>
+                  <h3 className="font-semibold mb-2">{t('contact_info.quick_response')}</h3>
                   <p className="text-sm opacity-90">
-                    We typically respond to all inquiries within 24 hours during business days.
+                    {t('contact_info.response_time')}
                   </p>
                 </CardContent>
               </Card>

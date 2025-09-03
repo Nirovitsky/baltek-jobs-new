@@ -131,11 +131,11 @@ export default function AboutUs() {
                 {t('about_stats.technology_description')}
               </p>
               <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">AI-Powered Matching</Badge>
-                <Badge variant="secondary">Real-time Notifications</Badge>
-                <Badge variant="secondary">Advanced Filtering</Badge>
-                <Badge variant="secondary">Mobile Optimized</Badge>
-                <Badge variant="secondary">Secure & Private</Badge>
+                <Badge variant="secondary">{t('technology_badges.ai_powered_matching')}</Badge>
+                <Badge variant="secondary">{t('technology_badges.real_time_notifications')}</Badge>
+                <Badge variant="secondary">{t('technology_badges.advanced_filtering')}</Badge>
+                <Badge variant="secondary">{t('technology_badges.mobile_optimized')}</Badge>
+                <Badge variant="secondary">{t('technology_badges.secure_private')}</Badge>
               </div>
             </CardContent>
           </Card>
@@ -143,16 +143,16 @@ export default function AboutUs() {
           {/* Contact CTA */}
           <Card className="text-center bg-primary text-primary-foreground">
             <CardContent className="py-8">
-              <h3 className="text-2xl font-bold mb-2">Ready to Start Your Career Journey?</h3>
+              <h3 className="text-2xl font-bold mb-2">{t('cta.career_journey_title')}</h3>
               <p className="mb-4 opacity-90">
-                Join thousands of professionals who have found their dream jobs through Baltek Jobs.
+                {t('cta.career_journey_desc')}
               </p>
               <div className="space-x-4">
                 <a href="/" className="inline-block bg-background text-primary px-6 py-2 rounded-lg font-medium hover:bg-muted transition-colors">
-                  Browse Jobs
+                  {t('cta.browse_jobs')}
                 </a>
                 <a href="/contact-us" className="inline-block border border-white px-6 py-2 rounded-lg font-medium hover:bg-background/10 transition-colors">
-                  Contact Us
+                  {t('cta.contact_us')}
                 </a>
               </div>
             </CardContent>

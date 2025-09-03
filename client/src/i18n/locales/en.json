@@ -321,6 +321,70 @@
     "bookmark_error": "Failed to update bookmark",
     "load_error": "Failed to load bookmarked jobs. Please try again."
   },
+  "validation": {
+    "first_name_required": "First name is required",
+    "last_name_required": "Last name is required"
+  },
+  "onboarding": {
+    "personal_info_title": "Personal Information",
+    "personal_info_subtitle": "Tell us about yourself",
+    "work_experience_title": "Work Experience",
+    "work_experience_subtitle": "Your professional journey", 
+    "education_title": "Education",
+    "education_subtitle": "Your academic background",
+    "complete_profile_title": "Complete Profile",
+    "experience_added": "Experience added",
+    "experience_added_desc": "Experience added to your profile",
+    "education_added": "Education added",
+    "education_added_desc": "Education added to your profile",
+    "saving_personal_info": "Saving your personal information",
+    "saving_work_experience": "Saving your work experience",
+    "saving_education": "Saving your education details",
+    "finalizing_profile": "Finalizing your profile setup",
+    "completion_failed": "Completion failed",
+    "update_failed": "Update failed",
+    "profile_alt": "Profile",
+    "first_name_placeholder": "First name",
+    "last_name_placeholder": "Last name",
+    "profession_placeholder": "Your profession",
+    "position_placeholder": "Position",
+    "company_placeholder": "Company",
+    "company_name_placeholder": "Company name",
+    "job_title_placeholder": "Job title",
+    "education_level_placeholder": "Education Level",
+    "university_placeholder": "University",
+    "start_date_placeholder": "Start",
+    "present_placeholder": "Present",
+    "experience_completed": "Experience section completed",
+    "education_completed": "Education section completed",
+    "complete_profile_cta": "Click \"Complete Profile\" to start exploring job opportunities",
+    "complete_profile_btn": "Complete Profile"
+  },
+  "companies": {
+    "suggested_companies": "Suggested Companies",
+    "business_services": "Business Services",
+    "it_technology": "IT & Technology",
+    "healthcare": "Healthcare",
+    "marketing_advertising": "Marketing & Advertising",
+    "finance_banking": "Finance & Banking",
+    "education": "Education",
+    "manufacturing": "Manufacturing",
+    "retail_ecommerce": "Retail & E-commerce",
+    "construction": "Construction",
+    "transportation": "Transportation",
+    "food_beverage": "Food & Beverage",
+    "media_entertainment": "Media & Entertainment",
+    "real_estate": "Real Estate",
+    "consulting": "Consulting",
+    "energy_utilities": "Energy & Utilities",
+    "telecommunications": "Telecommunications",
+    "automotive": "Automotive",
+    "pharmaceutical": "Pharmaceutical",
+    "legal_services": "Legal Services",
+    "tourism_hospitality": "Tourism & Hospitality",
+    "agriculture": "Agriculture",
+    "fashion_apparel": "Fashion & Apparel"
+  },
   "profile": {
     "title": "Profile",
     "personal_info": "Personal Information",
@@ -619,6 +683,19 @@
     "bytes": "Bytes",
     "view_image": "View image"
   },
+  "technology_badges": {
+    "ai_powered_matching": "AI-Powered Matching",
+    "real_time_notifications": "Real-time Notifications",
+    "advanced_filtering": "Advanced Filtering",
+    "mobile_optimized": "Mobile Optimized",
+    "secure_private": "Secure & Private"
+  },
+  "cta": {
+    "career_journey_title": "Ready to Start Your Career Journey?",
+    "career_journey_desc": "Join thousands of professionals who have found their dream jobs through Baltek Jobs.",
+    "browse_jobs": "Browse Jobs",
+    "contact_us": "Contact Us"
+  },
   "about_stats": {
     "by_the_numbers": "By the Numbers",
     "active_job_seekers": "Active Job Seekers",
@@ -630,8 +707,37 @@
     "excellence": "Excellence",
     "excellence_desc": "We strive for the highest quality in everything we do, from our platform to our support."
   },
+  "categories": {
+    "category": "Category",
+    "select_category": "Select a category",
+    "general_inquiry": "General Inquiry",
+    "technical_support": "Technical Support",
+    "account_issues": "Account Issues",
+    "job_posting": "Job Posting",
+    "partnership": "Partnership",
+    "feedback": "Feedback"
+  },
+  "contact_info": {
+    "get_in_touch": "Get in Touch",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "how_can_help": "How can we help?",
+    "general_support": "General Support",
+    "general_support_desc": "Account help, technical issues",
+    "for_employers": "For Employers",
+    "for_employers_desc": "Job posting, recruitment solutions",
+    "feedback_option": "Feedback",
+    "feedback_desc": "Suggestions, feature requests",
+    "quick_response": "Quick Response",
+    "response_time": "We typically respond to all inquiries within 24 hours during business days."
+  },
   "contact": {
     "title": "Contact Us",
+    "subject_placeholder": "Brief description of your inquiry",
+    "message_placeholder": "Please provide detailed information about your inquiry...",
+    "sending": "Sending...",
+    "send_message_btn": "Send Message",
     "subtitle": "Get in touch with our team",
     "description": "Have questions or need support? We're here to help you succeed in your career journey.",
     "general_inquiries": "General Inquiries",
@@ -811,5 +917,15 @@
     "item_deleted": "Item deleted successfully",
     "operation_failed": "Operation failed",
     "please_try_again": "Please try again"
+  },
+  "notifications": {
+    "unknown_time": "Unknown time",
+    "failed_mark_read": "Failed to mark notification as read",
+    "all_marked_read": "All notifications marked as read",
+    "failed_mark_all_read": "Failed to mark all notifications as read"
+  },
+  "placeholders": {
+    "remote": "Remote",
+    "usd": "USD"
   }
 }

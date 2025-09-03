@@ -93,7 +93,7 @@ function CompanySuggestions() {
       <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-border dark:border-border">
         <h3 className="text-lg font-semibold text-foreground dark:text-foreground flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" />
-          Suggested Companies
+          {t('companies.suggested_companies')}
         </h3>
       </div>
 

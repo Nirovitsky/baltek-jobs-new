@@ -315,7 +315,7 @@ function NotificationCard({
             <span className="text-xs text-muted-foreground dark:text-muted-foreground font-medium">
               {notification.createdAt && !isNaN(notification.createdAt.getTime()) 
                 ? formatDistanceToNow(notification.createdAt, { addSuffix: true })
-                : "Unknown time"}
+                : t('notifications.unknown_time')}
             </span>
 
             {!notification.isRead && (
@@ -370,7 +370,7 @@ export default function Notifications() {
       console.error("Mark as read error:", error);
       toast({
         title: t('common.error'),
-        description: "Failed to mark notification as read",
+        description: t('notifications.failed_mark_read'),
         variant: "destructive",
       });
     },
@@ -393,7 +393,7 @@ export default function Notifications() {
       );
       
       await Promise.all(promises);
-      return { message: "All notifications marked as read" };
+      return { message: t('notifications.all_marked_read') };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
@@ -406,7 +406,7 @@ export default function Notifications() {
       console.error("Mark all as read error:", error);
       toast({
         title: t('common.error'),
-        description: "Failed to mark all notifications as read",
+        description: t('notifications.failed_mark_all_read'),
         variant: "destructive",
       });
     },

@@ -67,9 +67,9 @@ export default function ApplicationsPage() {
         // Add placeholder data so JobCard can render
         min_salary: 0,
         max_salary: 0,
-        currency: 'USD',
+        currency: t('placeholders.usd'),
         payment_frequency: 'monthly',
-        location: 'Remote',
+        location: t('placeholders.remote'),
         skills: [],
         description: '',
         requirements: '',
