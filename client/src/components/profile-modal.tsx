@@ -318,18 +318,10 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
         setAvatarPreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
-    }
-  };
 
-  const handleAvatarUpload = () => {
-    if (selectedAvatarFile) {
-      uploadAvatarMutation.mutate(selectedAvatarFile);
+      // Automatically start upload
+      uploadAvatarMutation.mutate(file);
     }
-  };
-
-  const clearAvatarSelection = () => {
-    setSelectedAvatarFile(null);
-    setAvatarPreview(null);
   };
 
   // Mutations
@@ -1113,36 +1105,12 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                   
                   <div className="flex-1">
                     <h3 className="text-xl font-semibold">{user.first_name} {user.last_name}</h3>
-                    <p className="text-muted-foreground mb-3">{user.email}</p>
+                    <p className="text-muted-foreground">{user.email}</p>
                     
-                    {selectedAvatarFile && (
-                      <div className="flex items-center gap-2">
-                        <Button
-                          onClick={handleAvatarUpload}
-                          disabled={uploadAvatarMutation.isPending}
-                          size="sm"
-                          className="bg-green-600 hover:bg-green-700"
-                        >
-                          {uploadAvatarMutation.isPending ? (
-                            <>
-                              <Upload className="w-4 h-4 mr-2 animate-spin" />
-                              Uploading...
-                            </>
-                          ) : (
-                            <>
-                              <Upload className="w-4 h-4 mr-2" />
-                              Upload Avatar
-                            </>
-                          )}
-                        </Button>
-                        <Button
-                          onClick={clearAvatarSelection}
-                          variant="outline"
-                          size="sm"
-                        >
-                          <X className="w-4 h-4 mr-2" />
-                          Cancel
-                        </Button>
+                    {uploadAvatarMutation.isPending && (
+                      <div className="flex items-center gap-2 mt-2">
+                        <Upload className="w-4 h-4 animate-spin text-primary" />
+                        <span className="text-sm text-primary">Uploading avatar...</span>
                       </div>
                     )}
                   </div>
