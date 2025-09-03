@@ -5,6 +5,7 @@ import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollPreserve } from "@/hooks/use-scroll-preserve";
+import { useAuth } from "@/hooks/use-auth";
 import { useTranslation } from "react-i18next";
 import type { Job, JobFilters } from "@shared/schema";
 
@@ -14,6 +15,7 @@ import JobDetails from "@/components/job-details";
 import JobDetailsSkeleton from "@/components/job-details-skeleton";
 
 import ChatWidget from "@/components/chat-widget";
+import LoginPromptModal from "@/components/login-prompt-modal";
 import { Card, CardContent } from "@/components/ui/card";
 
 interface JobsProps {}
@@ -23,6 +25,7 @@ export default function Jobs({}: JobsProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { markJobSelection } = useScrollPreserve('job-list-container');
+  const { isAuthenticated } = useAuth();
   
   // Handle routing
   const navigate = useNavigate();
@@ -58,6 +61,7 @@ export default function Jobs({}: JobsProps) {
     organizationParam ? { organization: parseInt(organizationParam) } : {},
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   
   // Only sync with URL on browser navigation (back/forward buttons)
@@ -107,6 +111,11 @@ export default function Jobs({}: JobsProps) {
       
       // Calculate the current offset based on pages loaded
       const currentOffset = allPages.length * 10; // Each page has 10 items
+      
+      // For unauthenticated users, limit to 20 jobs (2 pages)
+      if (!isAuthenticated && currentOffset >= 20) {
+        return undefined;
+      }
       
       // Check if the current page has fewer items than the limit (indicating end)
       if (lastPage.results.length < 10) {
@@ -267,6 +276,8 @@ export default function Jobs({}: JobsProps) {
                 onSearchSubmit={handleSearchSubmit}
                 isSearching={isSearching}
                 inputRef={inputRef}
+                isAuthenticated={isAuthenticated}
+                onLoginPrompt={() => setShowLoginModal(true)}
               />
             </div>
           </div>
@@ -293,6 +304,11 @@ export default function Jobs({}: JobsProps) {
           </div>
         </div>
       </div>
+      
+      <LoginPromptModal 
+        isOpen={showLoginModal} 
+        onOpenChange={setShowLoginModal} 
+      />
     </div>
   );
 }

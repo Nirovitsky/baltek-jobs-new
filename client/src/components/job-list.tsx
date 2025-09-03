@@ -25,6 +25,8 @@ interface JobListProps {
   inputRef?: React.RefObject<HTMLInputElement>;
   hideAppliedBadge?: boolean;
   disableViewedOpacity?: boolean;
+  isAuthenticated?: boolean;
+  onLoginPrompt?: () => void;
 }
 
 export default function JobList({
@@ -43,6 +45,8 @@ export default function JobList({
   inputRef,
   hideAppliedBadge = false,
   disableViewedOpacity = false,
+  isAuthenticated = false,
+  onLoginPrompt,
 }: JobListProps) {
   // Use a ref to track the actual input value independently
   const localInputRef = useRef<HTMLInputElement>(null);
@@ -78,10 +82,22 @@ export default function JobList({
     onSearchChange(clearEvent);
   };
 
+  // Handle the case where unauthenticated users reach 20 jobs
+  const handleFetchNextPage = () => {
+    if (!isAuthenticated && jobs.length >= 20) {
+      // Show login prompt instead of fetching more
+      if (onLoginPrompt) {
+        onLoginPrompt();
+      }
+      return;
+    }
+    fetchNextPage();
+  };
+
   const loadMoreRef = useInfiniteScroll({
     hasNextPage,
     isFetchingNextPage,
-    fetchNextPage,
+    fetchNextPage: handleFetchNextPage,
     jobs,
     prefetchThreshold: 4, // Start prefetching when user has scrolled through 6 of 10 jobs
   });
@@ -192,14 +208,23 @@ export default function JobList({
 
         {/* Infinite scroll trigger */}
         <div ref={loadMoreRef} className="h-20 flex items-center justify-center">
-          {hasNextPage && !isFetchingNextPage && (
+          {!isAuthenticated && jobs.length >= 20 ? (
+            <div className="text-center space-y-2">
+              <p className="text-sm text-muted-foreground">You've viewed 20 jobs as a guest</p>
+              <button 
+                onClick={onLoginPrompt}
+                className="text-sm text-primary hover:underline"
+              >
+                Sign in to see more jobs
+              </button>
+            </div>
+          ) : hasNextPage && !isFetchingNextPage ? (
             <p className="text-sm text-muted-foreground">Scroll for more jobs...</p>
-          )}
-          {!hasNextPage && jobs.length > 0 && (
+          ) : !hasNextPage && jobs.length > 0 ? (
             <div className="text-center">
               <p className="text-sm text-muted-foreground">No more jobs to load</p>
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>
