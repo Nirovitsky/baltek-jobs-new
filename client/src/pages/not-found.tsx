@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Home, SearchX, ArrowLeft, Briefcase } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export default function NotFound() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -23,15 +25,15 @@ export default function NotFound() {
         <Card className="theme-transition">
           <CardContent className="pt-8 pb-8">
             <h2 className="text-3xl font-semibold text-foreground mb-4">
-              Page Not Found
+              {t('errors.page_not_found')}
             </h2>
             
             <p className="text-lg text-muted-foreground mb-2">
-              Oops! The page you're looking for doesn't exist.
+              {t('errors.page_not_found_description')}
             </p>
             
             <p className="text-sm text-muted-foreground mb-8">
-              It might have been moved, deleted, or you entered the wrong URL.
+              {t('errors.page_not_found_details')}
             </p>
 
             {/* Action Buttons */}
@@ -43,7 +45,7 @@ export default function NotFound() {
               >
                 <Link to="/jobs">
                   <Home className="h-4 w-4 mr-2" />
-                  Go Home
+                  {t('errors.go_home')}
                 </Link>
               </Button>
               
@@ -55,7 +57,7 @@ export default function NotFound() {
               >
                 <Link to="/jobs">
                   <Briefcase className="h-4 w-4 mr-2" />
-                  Browse Jobs
+                  {t('errors.browse_jobs')}
                 </Link>
               </Button>
               
@@ -72,7 +74,7 @@ export default function NotFound() {
                 className="w-full sm:w-auto min-w-[160px]"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Go Back
+                {t('errors.go_back')}
               </Button>
             </div>
           </CardContent>
@@ -81,7 +83,7 @@ export default function NotFound() {
         {/* Helpful Links */}
         <div className="mt-8 text-center">
           <p className="text-sm text-muted-foreground mb-4">
-            Looking for something specific?
+            {t('errors.looking_for_something')}
           </p>
           
           <div className="flex flex-wrap justify-center gap-4 text-sm">
@@ -89,28 +91,28 @@ export default function NotFound() {
               to="/jobs" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
-              Job Listings
+              {t('jobs.title')}
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link 
               to="/profile" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
-              My Profile
+              {t('navbar.profile')}
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link 
               to="/applications" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
-              Applications
+              {t('navbar.applications')}
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link 
               to="/contact-us" 
               className="text-primary hover:text-primary/80 transition-colors"
             >
-              Contact Support
+              {t('errors.contact_support')}
             </Link>
           </div>
         </div>

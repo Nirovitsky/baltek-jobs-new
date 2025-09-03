@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
+import { useTranslation } from "react-i18next";
 import type { Job, JobsListResponse } from "@shared/schema";
 
 import JobDetails from "@/components/job-details";
@@ -13,6 +14,7 @@ import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 interface BookmarksProps {}
 
 export default function Bookmarks({}: BookmarksProps) {
+  const { t } = useTranslation();
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -65,7 +67,7 @@ export default function Bookmarks({}: BookmarksProps) {
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Failed to load bookmarked jobs. Please try again.
+            {t('bookmarks.load_error')}
           </AlertDescription>
         </Alert>
       </div>

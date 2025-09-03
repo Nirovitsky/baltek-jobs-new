@@ -42,7 +42,10 @@
     "profile": "Profile",
     "logout": "Logout",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "error": "Error",
+    "company": "Company",
+    "unknown": "Unknown"
   },
   "navbar": {
     "baltek_jobs": "baltek jobs",
@@ -119,7 +122,14 @@
     "description": "Description",
     "benefits": "Benefits",
     "authentication_failed": "Authentication Failed",
-    "auth_error_description": "There was an error during login. Please try again."
+    "auth_error_description": "There was an error during login. Please try again.",
+    "salary_not_specified": "Salary not specified",
+    "from": "From",
+    "applied": "Applied",
+    "sign_in_to_apply": "Sign In to Apply",
+    "share": "Share",
+    "load_error": "Failed to load job details",
+    "copy_link_error": "Failed to copy link to clipboard"
   },
   "filters": {
     "clear_all": "Clear All",
@@ -160,6 +170,7 @@
     "application_details": "Application Details",
     "cover_letter": "Cover Letter",
     "resume": "Resume",
+    "job_application": "Job Application",
     "documents": "Documents"
   },
   "application_modal": {
@@ -181,8 +192,12 @@
     "no_bookmarks": "No bookmarked jobs",
     "no_bookmarks_description": "Jobs you bookmark will appear here",
     "remove_bookmark": "Remove Bookmark",
-    "bookmark_removed": "Bookmark removed",
-    "bookmark_added": "Job bookmarked"
+    "bookmark_removed": "Job unbookmarked",
+    "bookmark_removed_desc": "Job removed from your bookmarks",
+    "bookmark_added": "Job bookmarked",
+    "bookmark_added_desc": "Job added to your bookmarks",
+    "bookmark_error": "Failed to update bookmark",
+    "load_error": "Failed to load bookmarked jobs. Please try again."
   },
   "profile": {
     "title": "Profile",
@@ -358,14 +373,34 @@
   "errors": {
     "something_went_wrong": "Something went wrong",
     "page_not_found": "Page not found",
+    "page_not_found_description": "Oops! The page you're looking for doesn't exist.",
+    "page_not_found_details": "It might have been moved, deleted, or you entered the wrong URL.",
     "network_error": "Network error",
     "server_error": "Server error",
     "unauthorized": "Unauthorized",
     "forbidden": "Forbidden",
     "try_again": "Try Again",
     "go_home": "Go Home",
+    "go_back": "Go Back",
+    "browse_jobs": "Browse Jobs",
+    "looking_for_something": "Looking for something specific?",
     "refresh_page": "Refresh Page",
     "contact_support": "Contact Support"
+  },
+  "about": {
+    "title": "About Baltek Jobs",
+    "subtitle": "Connecting talented professionals with exceptional career opportunities through innovative job matching technology.",
+    "our_mission": "Our Mission",
+    "mission_text": "To revolutionize the job search experience by creating meaningful connections between job seekers and employers, making career advancement accessible, efficient, and rewarding for everyone.",
+    "our_vision": "Our Vision",
+    "vision_text": "To become the leading global platform where talent meets opportunity, fostering professional growth and building thriving careers across all industries and skill levels.",
+    "our_values": "Our Values",
+    "people_first": "People First",
+    "people_first_desc": "Every decision we make prioritizes the success and well-being of our users.",
+    "innovation": "Innovation",
+    "innovation_desc": "We continuously evolve and improve our platform to meet changing needs.",
+    "integrity": "Integrity",
+    "integrity_desc": "We maintain transparency, honesty, and ethical practices in everything we do."
   },
   "footer": {
     "about_us": "About Us",

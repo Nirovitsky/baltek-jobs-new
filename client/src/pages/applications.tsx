@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslation } from "react-i18next";
 import { Briefcase, Clock, CheckCircle, XCircle, AlertCircle, Building } from "lucide-react";
 import JobDetails from "@/components/job-details";
 import JobList from "@/components/job-list";
@@ -10,6 +11,7 @@ import JobListSkeleton from "@/components/job-list-skeleton";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 
 export default function ApplicationsPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [selectedJobId, setSelectedJobId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,8 +58,8 @@ export default function ApplicationsPage() {
     if (application.job_id || application.job) {
       return {
         id: application.job_id || application.job,
-        title: application.job_title || application.title || 'Job Application',
-        company: application.company || { name: 'Company' },
+        title: application.job_title || application.title || t('applications.job_application'),
+        company: application.company || { name: t('common.company') },
         my_application_id: application.id,
         application_status: application.status,
         application_date: application.created_at || application.date_created,

@@ -6,6 +6,7 @@ import type { Job } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 
 import { 
@@ -29,6 +30,7 @@ interface JobCardProps {
 }
 
 export default function JobCard({ job, isSelected = false, onSelect, showBookmark = true, disableViewedOpacity = false, hideAppliedBadge = false }: JobCardProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -81,15 +83,15 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
       }
       
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to update bookmark",
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : t('bookmarks.bookmark_error'),
         variant: "destructive",
       });
     },
     onSuccess: (_, { isBookmarked }) => {
       toast({
-        title: isBookmarked ? "Job unbookmarked" : "Job bookmarked",
-        description: isBookmarked ? "Job removed from your bookmarks" : "Job added to your bookmarks",
+        title: isBookmarked ? t('bookmarks.bookmark_removed') : t('bookmarks.bookmark_added'),
+        description: isBookmarked ? t('bookmarks.bookmark_removed_desc') : t('bookmarks.bookmark_added_desc'),
       });
     },
     onSettled: () => {
@@ -109,7 +111,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
     const max = job.payment_to || job.salary_max;
     const currency = job.currency || "TMT";
     
-    if (!min && !max) return "Salary not specified";
+    if (!min && !max) return t('jobs.salary_not_specified');
     
     const currencySymbol = currency === "EUR" ? "€" : 
                            currency === "GBP" ? "£" : 
@@ -118,7 +120,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                            currency;
     
     if (min && max) return `${currencySymbol}${min.toLocaleString('de-DE')} - ${currencySymbol}${max.toLocaleString('de-DE')}`;
-    if (min) return `From ${currencySymbol}${min.toLocaleString('de-DE')}`;
+    if (min) return `${t('jobs.from')} ${currencySymbol}${min.toLocaleString('de-DE')}`;
     if (max) return `Up to ${currencySymbol}${max.toLocaleString('de-DE')}`;
     return "Salary not specified";
   };

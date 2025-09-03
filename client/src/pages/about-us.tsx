@@ -2,8 +2,10 @@ import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Users, Target, Award, Heart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function AboutUs() {
+  const { t } = useTranslation();
   return (
     <div className="h-full overflow-y-auto bg-background">
       <BreadcrumbNavigation />
@@ -12,9 +14,9 @@ export default function AboutUs() {
         <div className="mt-6 space-y-8">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-foreground mb-4">About Baltek Jobs</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-4">{t('about.title')}</h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Connecting talented professionals with exceptional career opportunities through innovative job matching technology.
+              {t('about.subtitle')}
             </p>
           </div>
 
@@ -24,13 +26,12 @@ export default function AboutUs() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Target className="h-5 w-5 text-primary" />
-                  Our Mission
+                  {t('about.our_mission')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  To revolutionize the job search experience by creating meaningful connections between job seekers and employers, 
-                  making career advancement accessible, efficient, and rewarding for everyone.
+                  {t('about.mission_text')}
                 </p>
               </CardContent>
             </Card>
@@ -39,13 +40,12 @@ export default function AboutUs() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Award className="h-5 w-5 text-primary" />
-                  Our Vision
+                  {t('about.our_vision')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  To become the leading global platform where talent meets opportunity, fostering professional growth and 
-                  building thriving careers across all industries and skill levels.
+                  {t('about.vision_text')}
                 </p>
               </CardContent>
             </Card>
@@ -56,7 +56,7 @@ export default function AboutUs() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Heart className="h-5 w-5 text-primary" />
-                Our Values
+                {t('about.our_values')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -65,9 +65,9 @@ export default function AboutUs() {
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Users className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold mb-2">People First</h3>
+                  <h3 className="font-semibold mb-2">{t('about.people_first')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Every decision we make prioritizes the success and well-being of our users.
+                    {t('about.people_first_desc')}
                   </p>
                 </div>
                 
