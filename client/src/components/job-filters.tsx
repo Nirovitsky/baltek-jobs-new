@@ -183,8 +183,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
 
       // Show immediate feedback
       toast({
-        title: "Deleting filter...",
-        description: "Removing your saved filter.",
+        title: t('job_filters.deleting_filter'),
+        description: t('job_filters.removing_filter'),
       });
 
       return { previousFilters };
@@ -193,8 +193,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
       queryClient.invalidateQueries({ queryKey: ["savedFilters"] });
       queryClient.refetchQueries({ queryKey: ["savedFilters"] });
       toast({
-        title: "Filter deleted",
-        description: "Your saved filter has been deleted.",
+        title: t('job_filters.filter_deleted'),
+        description: t('job_filters.filter_deleted_desc'),
       });
     },
     onError: (error, variables, context) => {
@@ -204,8 +204,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
       }
       
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete filter",
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : t('job_filters.delete_failed'),
         variant: "destructive",
       });
     },
@@ -217,8 +217,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   const handleSaveFilter = () => {
     if (!saveFilterName.trim()) {
       toast({
-        title: "Error",
-        description: "Please enter a filter name",
+        title: t('common.error'),
+        description: t('job_filters.filter_name_required'),
         variant: "destructive",
       });
       return;
@@ -233,8 +233,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
   const handleLoadSavedFilter = (savedFilter: SavedFilter) => {
     // Show immediate feedback that filter is being applied
     toast({
-      title: "Applying filter...",
-      description: `Loading ${savedFilter.name}`,
+      title: t('job_filters.applying_filter'),
+      description: t('job_filters.loading_filter', { name: savedFilter.name }),
     });
     
     // Small delay to show the loading toast, then apply filters
@@ -244,8 +244,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
       onFiltersChange(filtersToApply);
       
       toast({
-        title: "Filter loaded",
-        description: `Applied filter: ${savedFilter.name}`,
+        title: t('job_filters.filter_loaded'),
+        description: t('job_filters.applied_filter', { name: savedFilter.name }),
       });
     }, 100);
   };
@@ -264,10 +264,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onValueChange={(value) => handleFilterChange("location", value !== "all" ? parseInt(value) : undefined)}
           >
             <SelectTrigger className="w-[90px] sm:w-[110px] h-8 text-xs focus:border-ring focus-visible:ring-0">
-              <SelectValue placeholder="Location" />
+              <SelectValue placeholder={t('job_filters.location')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Location</SelectItem>
+              <SelectItem value="all">{t('job_filters.location')}</SelectItem>
               {!locationsLoading && (locations as any)?.results?.map((location: Location) => (
                 <SelectItem key={location.id} value={location.id.toString()}>
                   {location.name} {location.country}
@@ -281,10 +281,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onValueChange={(value) => handleFilterChange("category", value !== "all" ? parseInt(value) : undefined)}
           >
             <SelectTrigger className="w-[80px] sm:w-[100px] h-8 text-xs focus:border-ring focus-visible:ring-0">
-              <SelectValue placeholder="Category" />
+              <SelectValue placeholder={t('job_filters.category')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Category</SelectItem>
+              <SelectItem value="all">{t('job_filters.category')}</SelectItem>
               {!categoriesLoading && (categories as any)?.results?.map((category: Category) => (
                 <SelectItem key={category.id} value={category.id.toString()}>
                   {category.name}
@@ -298,10 +298,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onValueChange={(value) => handleFilterChange("job_type", value)}
           >
             <SelectTrigger className="w-[65px] sm:w-[75px] h-8 text-xs focus:border-ring focus-visible:ring-0">
-              <SelectValue placeholder="Job Type" />
+              <SelectValue placeholder={t('job_filters.job_type')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Type</SelectItem>
+              <SelectItem value="all">{t('job_filters.type')}</SelectItem>
               {jobTypes?.map((jobType: any) => (
                 <SelectItem key={jobType.value} value={jobType.value}>
                   {jobType.label}
@@ -315,10 +315,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onValueChange={(value) => handleFilterChange("workplace_type", value)}
           >
             <SelectTrigger className="w-[65px] sm:w-[75px] h-8 text-xs focus:border-ring focus-visible:ring-0">
-              <SelectValue placeholder="Remote" />
+              <SelectValue placeholder={t('job_filters.remote')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Work</SelectItem>
+              <SelectItem value="all">{t('job_filters.work')}</SelectItem>
               {workplaceTypes?.map((workplaceType: any) => (
                 <SelectItem key={workplaceType.value} value={workplaceType.value}>
                   {workplaceType.label}
@@ -330,7 +330,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
           <div className="flex items-center space-x-2">
             <Input
               type="number"
-              placeholder="Min"
+              placeholder={t('job_filters.min')}
               value={filters.salary_min || ""}
               onChange={(e) => handleFilterChange("salary_min", e.target.value ? parseInt(e.target.value) : undefined)}
               className="w-[70px] sm:w-[80px] h-8 text-xs focus-visible:ring-0"
@@ -338,7 +338,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             <span className="text-muted-foreground">-</span>
             <Input
               type="number"
-              placeholder="Max"
+              placeholder={t('job_filters.max')}
               value={filters.salary_max || ""}
               onChange={(e) => handleFilterChange("salary_max", e.target.value ? parseInt(e.target.value) : undefined)}
               className="w-[70px] sm:w-[80px] h-8 text-xs focus-visible:ring-0"
@@ -350,10 +350,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onValueChange={(value) => handleFilterChange("currency", value)}
           >
             <SelectTrigger className="w-[80px] sm:w-[95px] h-8 text-xs focus:border-ring focus-visible:ring-0">
-              <SelectValue placeholder="Currency" />
+              <SelectValue placeholder={t('job_filters.currency')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Currency</SelectItem>
+              <SelectItem value="all">{t('job_filters.currency')}</SelectItem>
               {currencies?.map((currency: any) => (
                 <SelectItem key={currency.value} value={currency.value}>
                   {currency.label}
@@ -367,10 +367,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onValueChange={(value) => handleFilterChange("payment_frequency", value)}
           >
             <SelectTrigger className="w-[90px] sm:w-[105px] h-8 text-xs focus:border-ring focus-visible:ring-0">
-              <SelectValue placeholder="Per Month" />
+              <SelectValue placeholder={t('job_filters.per_month')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Frequency</SelectItem>
+              <SelectItem value="all">{t('job_filters.frequency')}</SelectItem>
               {paymentFrequencies?.map((frequency: any) => (
                 <SelectItem key={frequency.value} value={frequency.value}>
                   {frequency.label}
@@ -384,10 +384,10 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
             onValueChange={(value) => handleFilterChange("min_education_level", value)}
           >
             <SelectTrigger className="w-[85px] sm:w-[100px] h-8 text-xs focus:border-ring focus-visible:ring-0">
-              <SelectValue placeholder="Education" />
+              <SelectValue placeholder={t('job_filters.education')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Education</SelectItem>
+              <SelectItem value="all">{t('job_filters.education')}</SelectItem>
               {educationLevels?.map((level: any) => (
                 <SelectItem key={level.value} value={level.value}>
                   {level.label}
@@ -413,7 +413,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
               }}>
                 <SelectTrigger className="w-[100px] sm:w-[120px] h-8 text-xs">
                   <Star className="h-3 w-3 mr-1" />
-                  <SelectValue placeholder="Saved Filters" />
+                  <SelectValue placeholder={t('job_filters.saved_filters')} />
                 </SelectTrigger>
                 <SelectContent>
                   {(Array.isArray(savedFilters) ? savedFilters : (savedFilters as any)?.results || []).map((savedFilter: SavedFilter) => (
@@ -452,27 +452,27 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                     disabled={!hasActiveFilters}
                   >
                     <Save className="h-3 w-3 mr-1" />
-                    Save
+                    {t('common.save')}
                   </Button>
                 </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                  <DialogTitle>Save Filter</DialogTitle>
+                  <DialogTitle>{t('job_filters.save_filter')}</DialogTitle>
                   <DialogDescription>
-                    Give your filter a name to save it for later use.
+                    {t('job_filters.save_filter_name')}
                   </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
                   <div className="grid grid-cols-4 items-center gap-4">
                     <Label htmlFor="filter-name" className="text-right">
-                      Name
+                      {t('job_filters.filter_name')}
                     </Label>
                     <Input
                       id="filter-name"
                       value={saveFilterName}
                       onChange={(e) => setSaveFilterName(e.target.value)}
                       className="col-span-3"
-                      placeholder="e.g., Remote Developer Jobs"
+                      placeholder={t('job_filters.filter_name_placeholder')}
                     />
                   </div>
                 </div>
@@ -482,14 +482,14 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                     variant="outline"
                     onClick={() => setSaveFilterDialogOpen(false)}
                   >
-                    Cancel
+                    {t('common.cancel')}
                   </Button>
                   <Button
                     type="submit"
                     onClick={handleSaveFilter}
                     disabled={saveFilterMutation.isPending || !saveFilterName.trim()}
                   >
-                    {saveFilterMutation.isPending ? "Saving..." : "Save Filter"}
+                    {saveFilterMutation.isPending ? t('job_filters.saving') : t('job_filters.save_filter_button')}
                   </Button>
                 </DialogFooter>
               </DialogContent>
@@ -501,7 +501,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
                 onClick={clearFilters}
                 variant="ghost"
                 className="text-foreground hover:text-foreground h-8 w-8 p-0 border-0"
-                title="Clear filters"
+                title={t('job_filters.clear_filters')}
               >
                 <X className="h-4 w-4" />
               </Button>
