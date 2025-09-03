@@ -122,8 +122,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
 
       // Show immediate feedback
       toast({
-        title: "Saving filter...",
-        description: "Your filter is being saved.",
+        title: t('job_filters.saving_filter'),
+        description: t('job_filters.saving_filter'),
       });
 
       return { previousFilters };
@@ -134,8 +134,8 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
       setSaveFilterDialogOpen(false);
       setSaveFilterName("");
       toast({
-        title: "Filter saved",
-        description: "Your filter has been saved successfully.",
+        title: t('job_filters.filter_saved'),
+        description: t('job_filters.filter_saved_desc'),
       });
     },
     onError: (error, variables, context) => {
@@ -146,7 +146,7 @@ export default function JobFiltersComponent({ filters, onFiltersChange }: JobFil
       
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to save filter",
+        description: error instanceof Error ? error.message : t('job_filters.save_failed'),
         variant: "destructive",
       });
     },

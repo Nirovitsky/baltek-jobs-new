@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { ApiClient } from "@/lib/api";
 import type { ChatRoom } from "@shared/schema";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 
 export default function ChatWidget() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: chatRooms, isLoading, error } = useQuery({
@@ -30,7 +32,7 @@ export default function ChatWidget() {
     const diffInMs = now.getTime() - date.getTime();
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
     
-    if (diffInHours < 1) return "now";
+    if (diffInHours < 1) return t('chat_widget.now');
     if (diffInHours < 24) return `${diffInHours}h`;
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 7) return `${diffInDays}d`;
@@ -62,7 +64,7 @@ export default function ChatWidget() {
       <Card className="shadow-lg">
         <CardHeader className="bg-primary text-primary-foreground rounded-t-lg">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-lg">Messages</CardTitle>
+            <CardTitle className="text-lg">{t('chat_widget.messages')}</CardTitle>
             <Button
               variant="ghost"
               size="sm"
@@ -78,19 +80,19 @@ export default function ChatWidget() {
           <div className="max-h-64 overflow-y-auto">
             {isLoading ? (
               <div className="p-4 text-center text-muted-foreground">
-                Loading conversations...
+                {t('chat_widget.loading_conversations')}
               </div>
             ) : error ? (
               <div className="p-4 text-center text-muted-foreground">
                 <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>Failed to load conversations</p>
-                <p className="text-xs">Please try again later</p>
+                <p>{t('chat_widget.failed_to_load')}</p>
+                <p className="text-xs">{t('chat_widget.try_again_later')}</p>
               </div>
             ) : (chatRooms as any)?.results?.length === 0 ? (
               <div className="p-4 text-center text-muted-foreground">
                 <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>No messages yet</p>
-                <p className="text-xs">Start applying to jobs to chat with employers</p>
+                <p>{t('chat_widget.no_messages_yet')}</p>
+                <p className="text-xs">{t('chat_widget.start_applying_jobs')}</p>
               </div>
             ) : (
               (chatRooms as any)?.results?.map((room: ChatRoom) => (

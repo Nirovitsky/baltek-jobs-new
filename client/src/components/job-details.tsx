@@ -213,9 +213,9 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
 
     if (min && max)
       return `${currencySymbol}${min.toLocaleString('de-DE')} - ${currencySymbol}${max.toLocaleString('de-DE')}`;
-    if (min) return `From ${currencySymbol}${min.toLocaleString('de-DE')}`;
-    if (max) return `Up to ${currencySymbol}${max.toLocaleString('de-DE')}`;
-    return "Salary not specified";
+    if (min) return `${t('jobs.from')} ${currencySymbol}${min.toLocaleString('de-DE')}`;
+    if (max) return `${t('jobs.up_to')} ${currencySymbol}${max.toLocaleString('de-DE')}`;
+    return t('jobs.salary_not_specified');
   };
 
   const formatJobType = (type: string) => {
@@ -262,7 +262,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   alt={
                     job.organization.display_name ||
                     job.organization.official_name ||
-                    "Company"
+                    t('common.company')
                   }
                   className="w-12 h-12 sm:w-16 sm:h-16 rounded-full object-cover"
                 />
@@ -272,7 +272,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
             </RouterLink>
             <div className="min-w-0 flex-1">
               <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground leading-tight">
-                {job.title || "Job Title"}
+                {job.title || t('jobs.title')}
               </h1>
               <div className="flex items-center gap-2 mt-1">
                 <RouterLink
@@ -281,7 +281,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                 >
                   {job.organization?.display_name ||
                     job.organization?.official_name ||
-                    "Unknown Company"}
+                    t('common.unknown_company')}
                 </RouterLink>
                 <RouterLink
                   to={`/company/${job.organization?.id}`}
@@ -293,12 +293,12 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
               <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 text-xs sm:text-sm text-muted-foreground mt-1 gap-1 sm:gap-0">
                 <span className="flex items-center">
                   <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
-                  <span className="truncate">{job.location?.name || "Unknown"}</span>
+                  <span className="truncate">{job.location?.name || t('common.unknown')}</span>
                 </span>
                 <span className="flex items-center">
                   <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
-                  Posted{" "}
-                  {job.created_at ? getTimeAgo(job.created_at) : "Recently"}
+                  {t('jobs.posted')}{" "}
+                  {job.created_at ? getTimeAgo(job.created_at) : t('common.recently')}
                 </span>
               </div>
             </div>
@@ -331,14 +331,14 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
         {/* Quick Info Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
           <div className="bg-muted p-3 lg:p-4 rounded-lg">
-            <h3 className="font-semibold text-foreground mb-2 text-sm lg:text-base">Salary Range</h3>
+            <h3 className="font-semibold text-foreground mb-2 text-sm lg:text-base">{t('job_details.salary_range')}</h3>
             <p className="text-lg lg:text-xl font-bold text-primary">
               {formatSalary(job)}
             </p>
-            <p className="text-xs lg:text-sm text-muted-foreground">per year</p>
+            <p className="text-xs lg:text-sm text-muted-foreground">{t('jobs.yearly')}</p>
           </div>
           <div className="bg-muted p-3 lg:p-4 rounded-lg">
-            <h3 className="font-semibold text-foreground mb-2 text-sm lg:text-base">Job Type</h3>
+            <h3 className="font-semibold text-foreground mb-2 text-sm lg:text-base">{t('job_details.job_type')}</h3>
             <p className="text-base lg:text-lg">{formatJobType(job.job_type)}</p>
             <p className="text-xs lg:text-sm text-muted-foreground">
               {formatWorkplaceType(job.workplace_type)}
@@ -355,11 +355,11 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
           {/* Description */}
           <div className="mb-6">
             <h3 className="font-semibold text-foreground mb-3">
-              Job Description
+              {t('job_details.job_description')}
             </h3>
             <div className="prose max-w-none text-foreground">
               <div className="whitespace-pre-wrap">
-                {job.description || "No description available"}
+                {job.description || t('jobs.description')}
               </div>
             </div>
           </div>
@@ -367,7 +367,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
           {/* Requirements */}
           {job.requirements && (
             <div className="mb-6">
-              <h3 className="font-semibold text-foreground mb-3">Requirements</h3>
+              <h3 className="font-semibold text-foreground mb-3">{t('job_details.requirements')}</h3>
               <div className="prose max-w-none text-foreground">
                 <div className="whitespace-pre-wrap">{job.requirements}</div>
               </div>
@@ -377,7 +377,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
           {/* Benefits */}
           {job.benefits && (
             <div className="mb-6">
-              <h3 className="font-semibold text-foreground mb-3">Benefits</h3>
+              <h3 className="font-semibold text-foreground mb-3">{t('job_details.benefits')}</h3>
               <div className="prose max-w-none text-foreground">
                 <div className="whitespace-pre-wrap">{job.benefits}</div>
               </div>
@@ -395,7 +395,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                 data-testid="button-sign-in"
               >
                 <LogIn className="w-4 h-4 mr-2" />
-                Sign in to Apply
+                {t('job_details.sign_in_to_apply')}
               </Button>
             ) : hasApplied ? (
               <Button
@@ -405,7 +405,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                 disabled={true}
               >
                 <CheckCircle className="w-4 h-4 mr-2" />
-                Applied
+                {t('jobs.applied')}
               </Button>
             ) : (
               <>
@@ -416,7 +416,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   data-testid="button-apply-now"
                 >
                   <Send className="w-4 h-4 mr-2" />
-                  Apply Now
+                  {t('job_details.apply_now')}
                 </Button>
                 <Button
                   onClick={() => setIsQuickApplyModalOpen(true)}
@@ -426,7 +426,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
                   data-testid="button-quick-apply"
                 >
                   <img src={baltekIcon} alt="" className="w-4 h-4 mr-2" />
-                  Quick Apply
+                  {t('job_details.quick_apply')}
                 </Button>
               </>
             )}

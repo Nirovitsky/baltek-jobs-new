@@ -121,14 +121,14 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
           // Show toast for invalid date selection
           if (maxDate && jsDate > maxDate) {
             toast({
-              title: "Invalid Date",
-              description: "Date cannot be in the future",
+              title: t('profile_modal.invalid_date'),
+              description: t('profile_modal.date_cannot_be_future'),
               variant: "destructive",
             });
           } else if (minDate && jsDate < minDate) {
             toast({
-              title: "Invalid Date", 
-              description: "Please select a valid date",
+              title: t('profile_modal.invalid_date'), 
+              description: t('profile_modal.date_cannot_be_past'),
               variant: "destructive",
             });
           }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { ApiClient } from "@/lib/api";
 import type { Job } from "@shared/schema";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,6 +21,7 @@ interface LinkPreviewCardProps {
 }
 
 export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps) {
+  const { t } = useTranslation();
   const [jobId, setJobId] = useState<number | null>(null);
   const navigate = useNavigate();
   
@@ -92,7 +94,7 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
     const max = job.payment_to || job.salary_max;
     const currency = job.currency || "TMT";
 
-    if (!min && !max) return "Salary not specified";
+    if (!min && !max) return t('link_preview.salary_not_specified');
 
     const currencySymbol =
       currency === "EUR"
@@ -106,9 +108,9 @@ export default function LinkPreviewCard({ url, className }: LinkPreviewCardProps
     if (min && max) {
       return `${currencySymbol}${min.toLocaleString()} - ${currencySymbol}${max.toLocaleString()}`;
     } else if (min) {
-      return `From ${currencySymbol}${min.toLocaleString()}`;
+      return `${t('link_preview.from')} ${currencySymbol}${min.toLocaleString()}`;
     } else if (max) {
-      return `Up to ${currencySymbol}${max.toLocaleString()}`;
+      return `${t('link_preview.up_to')} ${currencySymbol}${max.toLocaleString()}`;
     }
   };
 
