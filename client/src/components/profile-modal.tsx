@@ -111,7 +111,15 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     minDate?: Date;
   }) => {
     const selectedDate = value
-      ? dayjs(value)
+      ? (() => {
+          // Handle DD.MM.YYYY format from API
+          if (value.includes('.')) {
+            const [day, month, year] = value.split('.');
+            return dayjs(new Date(parseInt(year), parseInt(month) - 1, parseInt(day)));
+          }
+          // Handle YYYY-MM-DD format
+          return dayjs(value);
+        })()
       : null;
 
     const handleDateChange = (date: any) => {
@@ -915,9 +923,19 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
 
   const formatDateForAPI = (dateString: string) => {
     if (!dateString) return "";
+    
+    // Check if it's already in DD.MM.YYYY format
+    if (dateString.includes('.')) {
+      return dateString; // Already in correct format
+    }
+    
     // Convert from YYYY-MM-DD to DD.MM.YYYY
-    const [year, month, day] = dateString.split("-");
-    return `${day}.${month}.${year}`;
+    if (dateString.includes('-')) {
+      const [year, month, day] = dateString.split("-");
+      return `${day}.${month}.${year}`;
+    }
+    
+    return dateString; // Return as-is if format is unclear
   };
 
   const formatDateForForm = (dateString: string) => {
