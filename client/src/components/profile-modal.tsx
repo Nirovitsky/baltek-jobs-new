@@ -43,6 +43,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FileUpload from "@/components/file-upload";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import { 
   User, 
@@ -85,6 +86,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   const [editingExperience, setEditingExperience] = useState<any>(null);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [uploadingResume, setUploadingResume] = useState<File | null>(null);
+  const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   // Update active tab when initialTab prop changes
   useEffect(() => {
@@ -283,6 +286,52 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     },
   });
 
+  // Avatar upload handlers
+  const handleAvatarSelect = (file: File) => {
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: t('profile.invalid_file_type'),
+          description: t('profile.please_select_image'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Validate file size (5MB max)
+      const maxSize = 5 * 1024 * 1024;
+      if (file.size > maxSize) {
+        toast({
+          title: t('profile.file_too_large'),
+          description: t('profile.image_size_limit'),
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setSelectedAvatarFile(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setAvatarPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleAvatarUpload = () => {
+    if (selectedAvatarFile) {
+      uploadAvatarMutation.mutate(selectedAvatarFile);
+    }
+  };
+
+  const clearAvatarSelection = () => {
+    setSelectedAvatarFile(null);
+    setAvatarPreview(null);
+  };
+
   // Mutations
   const updateProfileMutation = useMutation({
     mutationFn: (data: Partial<UserProfile>) => ApiClient.updateProfile(user!.id, data),
@@ -317,6 +366,58 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       toast({
         title: t('profile.update_failed'),
         description: error instanceof Error ? error.message : t('profile.profile_update_failed'),
+        variant: "destructive",
+      });
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+    },
+  });
+
+  // Avatar upload mutation
+  const uploadAvatarMutation = useMutation({
+    mutationFn: (file: File) => ApiClient.uploadProfilePicture(file),
+    onMutate: async (file: File) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
+
+      // Snapshot the previous value
+      const previousProfile = queryClient.getQueryData(["auth", "user"]);
+
+      // Create preview URL for optimistic update
+      const previewUrl = URL.createObjectURL(file);
+
+      // Optimistically update the avatar
+      queryClient.setQueryData(["auth", "user"], (old: any) => {
+        if (!old) return old;
+        return { ...old, avatar: previewUrl };
+      });
+
+      // Show immediate feedback
+      toast({ title: t('profile.uploading'), description: t('profile.uploading_avatar') });
+
+      return { previousProfile, previewUrl };
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
+      setSelectedAvatarFile(null);
+      setAvatarPreview(null);
+      toast({ title: t('profile.avatar_updated'), description: t('profile.avatar_update_success') });
+    },
+    onError: (error, variables, context) => {
+      // Clean up preview URL
+      if (context?.previewUrl) {
+        URL.revokeObjectURL(context.previewUrl);
+      }
+
+      // Rollback on error
+      if (context?.previousProfile) {
+        queryClient.setQueryData(["auth", "user"], context.previousProfile);
+      }
+      
+      toast({
+        title: t('profile.failed_upload_avatar'),
+        description: error instanceof Error ? error.message : t('profile.failed_upload_avatar'),
         variant: "destructive",
       });
     },
@@ -979,24 +1080,71 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
             {/* Personal Information Tab */}
             {activeTab === "personal" && (
               <div className="space-y-6">
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center relative group cursor-pointer">
-                    {user.avatar ? (
-                      <img
-                        src={user.avatar}
+                {/* Avatar Upload Section */}
+                <div className="flex items-center space-x-6 mb-6">
+                  <div className="relative">
+                    <Avatar className="w-20 h-20">
+                      <AvatarImage
+                        src={avatarPreview || user.avatar}
                         alt="Profile"
-                        className="w-20 h-20 rounded-full object-cover"
+                        className="object-cover"
                       />
-                    ) : (
-                      <User className="w-10 h-10 text-white" />
-                    )}
-                    <div className="absolute inset-0 bg-background bg-opacity-50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <AvatarFallback className="text-lg bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
+                        {(user.first_name?.[0] || "") + (user.last_name?.[0] || "")}
+                      </AvatarFallback>
+                    </Avatar>
+                    <label
+                      htmlFor="avatar-upload"
+                      className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity cursor-pointer"
+                    >
                       <Camera className="w-6 h-6 text-white" />
-                    </div>
+                    </label>
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleAvatarSelect(file);
+                      }}
+                      className="hidden"
+                    />
                   </div>
-                  <div>
+                  
+                  <div className="flex-1">
                     <h3 className="text-xl font-semibold">{user.first_name} {user.last_name}</h3>
-                    <p className="text-muted-foreground">{user.email}</p>
+                    <p className="text-muted-foreground mb-3">{user.email}</p>
+                    
+                    {selectedAvatarFile && (
+                      <div className="flex items-center gap-2">
+                        <Button
+                          onClick={handleAvatarUpload}
+                          disabled={uploadAvatarMutation.isPending}
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700"
+                        >
+                          {uploadAvatarMutation.isPending ? (
+                            <>
+                              <Upload className="w-4 h-4 mr-2 animate-spin" />
+                              Uploading...
+                            </>
+                          ) : (
+                            <>
+                              <Upload className="w-4 h-4 mr-2" />
+                              Upload Avatar
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          onClick={clearAvatarSelection}
+                          variant="outline"
+                          size="sm"
+                        >
+                          <X className="w-4 h-4 mr-2" />
+                          Cancel
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
 
