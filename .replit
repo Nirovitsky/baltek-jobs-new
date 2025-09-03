@@ -36,7 +36,7 @@ author = "agent"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "VITE_OAUTH_AUTH_URL=https://api.baltek.net/api/oauth2/authorize/ VITE_OAUTH_TOKEN_URL=https://api.baltek.net/api/oauth2/token/ NODE_ENV=development npm run dev"
+args = "npm run dev"
 waitForPort = 5000
 
 [workflows.workflow.metadata]
