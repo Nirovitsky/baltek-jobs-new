@@ -200,6 +200,23 @@
     "years_experience": "лет опыта",
     "or_more": "или больше"
   },
+  "breadcrumb": {
+    "home": "Главная",
+    "profile": "Профиль",
+    "applications": "Заявки",
+    "bookmarks": "Закладки",
+    "settings": "Настройки",
+    "chat": "Чат",
+    "notifications": "Уведомления",
+    "terms": "Пользовательское соглашение",
+    "privacy_policy": "Политика конфиденциальности",
+    "about_us": "О нас",
+    "contact_us": "Связаться с нами",
+    "companies": "Компании",
+    "company_profile": "Профиль компании",
+    "more": "Ещё",
+    "other_companies": "Другие компании"
+  },
   "applications": {
     "title": "Мои заявки",
     "no_applications": "Заявок пока нет",

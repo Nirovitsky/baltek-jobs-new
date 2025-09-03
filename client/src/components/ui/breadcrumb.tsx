@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { ChevronRight, MoreHorizontal } from "lucide-react"
+import { useTranslation } from "react-i18next"
 
 import { cn } from "@/lib/utils"
 
@@ -99,10 +100,16 @@ const BreadcrumbEllipsis = ({
     {...props}
   >
     <MoreHorizontal className="h-4 w-4" />
-    <span className="sr-only">More</span>
+    <BreadcrumbEllipsisText />
   </span>
 )
 BreadcrumbEllipsis.displayName = "BreadcrumbElipssis"
+
+// Localized text component for BreadcrumbEllipsis
+function BreadcrumbEllipsisText() {
+  const { t } = useTranslation();
+  return <span className="sr-only">{t('breadcrumb.more')}</span>;
+}
 
 export {
   Breadcrumb,

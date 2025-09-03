@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import type { Organization } from "@shared/schema";
 import { ApiClient } from "@/lib/api";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
@@ -50,6 +51,7 @@ import {
 
 // Company Suggestions Component
 function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | undefined }) {
+  const { t } = useTranslation();
   const { data: companiesData, isLoading } = useQuery({
     queryKey: ["organizations", "suggestions"],
     queryFn: () => ApiClient.getOrganizations({ limit: 15 }),
@@ -73,7 +75,7 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
       <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-foreground dark:text-foreground flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" />
-          Other Companies
+          {t('breadcrumb.other_companies')}
         </h3>
       </div>
       

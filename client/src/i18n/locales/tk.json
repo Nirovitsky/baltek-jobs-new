@@ -192,6 +192,23 @@
     "years_experience": "ýyl tejribe",
     "or_more": "ýa-da köp"
   },
+  "breadcrumb": {
+    "home": "Baş sahypa",
+    "profile": "Profil",
+    "applications": "Arzalar",
+    "bookmarks": "Belgilenler",
+    "settings": "Sazlamalar",
+    "chat": "Chat",
+    "notifications": "Duýdurylar",
+    "terms": "Şertler we şertnamalar",
+    "privacy_policy": "Gizlinlik syýasaty",
+    "about_us": "Biz hakda",
+    "contact_us": "Biz bilen araş sakla",
+    "companies": "Kompaniýalar",
+    "company_profile": "Kompaniýanyň profili",
+    "more": "Koňrak",
+    "other_companies": "Beýleki kompaniýalar"
+  },
   "applications": {
     "title": "Meniň arzalarym",
     "no_applications": "Entek arza ýok",

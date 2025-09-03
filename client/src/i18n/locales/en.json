@@ -265,7 +265,9 @@
     "about_us": "About Us",
     "contact_us": "Contact Us",
     "companies": "Companies",
-    "company_profile": "Company Profile"
+    "company_profile": "Company Profile",
+    "more": "More",
+    "other_companies": "Other Companies"
   },
   "applications": {
     "title": "My Applications",
