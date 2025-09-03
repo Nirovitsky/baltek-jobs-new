@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiClient } from "@/lib/api";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -75,6 +76,7 @@ interface ExperienceFormData extends Experience {}
 interface ProjectFormData extends Project {}
 
 export default function ProfileModal({ isOpen, onClose, initialTab = "personal" }: ProfileModalProps) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
