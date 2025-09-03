@@ -121,14 +121,14 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
           // Show toast for invalid date selection
           if (maxDate && jsDate > maxDate) {
             toast({
-              title: t('profile_modal.invalid_date'),
-              description: t('profile_modal.date_cannot_be_future'),
+              title: t('profile.invalid_date'),
+              description: t('profile.date_cannot_be_future'),
               variant: "destructive",
             });
           } else if (minDate && jsDate < minDate) {
             toast({
-              title: t('profile_modal.invalid_date'), 
-              description: t('profile_modal.date_cannot_be_past'),
+              title: t('profile.invalid_date'), 
+              description: t('profile.date_cannot_be_past'),
               variant: "destructive",
             });
           }
@@ -223,8 +223,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
 
   // Personal info validation schema  
   const personalInfoSchema = z.object({
-    first_name: z.string().min(1, "First name is required"),
-    last_name: z.string().min(1, "Last name is required"),
+    first_name: z.string().min(1, t('profile.first_name_required')),
+    last_name: z.string().min(1, t('profile.last_name_required')),
     email: z.string().optional(),
     phone: z.string().optional(),
     profession: z.string().optional(),
@@ -298,13 +298,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Saving...", description: "Updating your profile" });
+      toast({ title: t('profile.saving'), description: t('profile.updating_profile') });
 
       return { previousProfile };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
-      toast({ title: "Profile updated", description: "Your profile has been updated successfully" });
+      toast({ title: t('profile.profile_updated'), description: t('profile.profile_update_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -313,8 +313,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Update failed",
-        description: error instanceof Error ? error.message : "Failed to update profile",
+        title: t('profile.update_failed'),
+        description: error instanceof Error ? error.message : t('profile.profile_update_failed'),
         variant: "destructive",
       });
     },
@@ -343,14 +343,14 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Adding...", description: "Adding education record" });
+      toast({ title: t('profile.adding'), description: t('profile.adding_education') });
 
       return { previousProfile };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       educationForm.reset();
-      toast({ title: "Education added", description: "Education record added successfully" });
+      toast({ title: t('profile.education_added'), description: t('profile.education_add_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -359,8 +359,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to add education",
-        description: error instanceof Error ? error.message : "Failed to add education",
+        title: t('profile.failed_add_education'),
+        description: error instanceof Error ? error.message : t('profile.failed_add_education'),
         variant: "destructive",
       });
     },
@@ -391,7 +391,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Updating...", description: "Updating education record" });
+      toast({ title: t('profile.updating'), description: t('profile.updating_education') });
 
       return { previousProfile };
     },
@@ -399,7 +399,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingEducation(null);
       educationForm.reset();
-      toast({ title: "Education updated", description: "Education record updated successfully" });
+      toast({ title: t('profile.education_updated'), description: t('profile.education_update_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -408,8 +408,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to update education",
-        description: error instanceof Error ? error.message : "Failed to update education",
+        title: t('profile.failed_update_education'),
+        description: error instanceof Error ? error.message : t('profile.failed_update_education'),
         variant: "destructive",
       });
     },
@@ -437,13 +437,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Deleting...", description: "Removing education record" });
+      toast({ title: t('profile.deleting'), description: t('profile.removing_education') });
 
       return { previousProfile };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
-      toast({ title: "Education deleted", description: "Education record deleted successfully" });
+      toast({ title: t('profile.education_deleted'), description: t('profile.education_delete_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -452,8 +452,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to delete education",
-        description: error instanceof Error ? error.message : "Failed to delete education",
+        title: t('profile.failed_delete_education'),
+        description: error instanceof Error ? error.message : t('profile.failed_delete_education'),
         variant: "destructive",
       });
     },
@@ -482,14 +482,14 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Adding...", description: "Adding work experience" });
+      toast({ title: t('profile.adding'), description: t('profile.adding_experience') });
 
       return { previousProfile };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       experienceForm.reset();
-      toast({ title: "Experience added", description: "Work experience added successfully" });
+      toast({ title: t('profile.experience_added'), description: t('profile.experience_add_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -498,8 +498,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to add experience",
-        description: error instanceof Error ? error.message : "Failed to add experience",
+        title: t('profile.failed_add_experience'),
+        description: error instanceof Error ? error.message : t('profile.failed_add_experience'),
         variant: "destructive",
       });
     },
@@ -530,7 +530,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Updating...", description: "Updating work experience" });
+      toast({ title: t('profile.updating'), description: t('profile.updating_experience') });
 
       return { previousProfile };
     },
@@ -538,7 +538,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingExperience(null);
       experienceForm.reset();
-      toast({ title: "Experience updated", description: "Work experience updated successfully" });
+      toast({ title: t('profile.experience_updated'), description: t('profile.experience_update_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -547,8 +547,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to update experience",
-        description: error instanceof Error ? error.message : "Failed to update experience",
+        title: t('profile.failed_update_experience'),
+        description: error instanceof Error ? error.message : t('profile.failed_update_experience'),
         variant: "destructive",
       });
     },
@@ -576,13 +576,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Deleting...", description: "Removing work experience" });
+      toast({ title: t('profile.deleting'), description: t('profile.removing_experience') });
 
       return { previousProfile };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
-      toast({ title: "Experience deleted", description: "Work experience deleted successfully" });
+      toast({ title: t('profile.experience_deleted'), description: t('profile.experience_delete_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -591,8 +591,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to delete experience",
-        description: error instanceof Error ? error.message : "Failed to delete experience",
+        title: t('profile.failed_delete_experience'),
+        description: error instanceof Error ? error.message : t('profile.failed_delete_experience'),
         variant: "destructive",
       });
     },
@@ -621,14 +621,14 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Adding...", description: "Adding project" });
+      toast({ title: t('profile.adding'), description: t('profile.adding_project') });
 
       return { previousProfile };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       projectForm.reset();
-      toast({ title: "Project added", description: "Project added successfully" });
+      toast({ title: t('profile.project_added'), description: t('profile.project_add_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -637,8 +637,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to add project",
-        description: error instanceof Error ? error.message : "Failed to add project",
+        title: t('profile.failed_add_project'),
+        description: error instanceof Error ? error.message : t('profile.failed_add_project'),
         variant: "destructive",
       });
     },
@@ -669,7 +669,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Updating...", description: "Updating project" });
+      toast({ title: t('profile.updating'), description: t('profile.updating_project') });
 
       return { previousProfile };
     },
@@ -677,7 +677,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
       setEditingProject(null);
       projectForm.reset();
-      toast({ title: "Project updated", description: "Project updated successfully" });
+      toast({ title: t('profile.project_updated'), description: t('profile.project_update_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -686,8 +686,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to update project",
-        description: error instanceof Error ? error.message : "Failed to update project",
+        title: t('profile.failed_update_project'),
+        description: error instanceof Error ? error.message : t('profile.failed_update_project'),
         variant: "destructive",
       });
     },

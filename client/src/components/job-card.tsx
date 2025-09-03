@@ -139,11 +139,10 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
     const diffInMs = now.getTime() - date.getTime();
     const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
     
-    if (diffInDays === 0) return "Today";
-    if (diffInDays === 1) return "1 day ago";
-    if (diffInDays < 7) return `${diffInDays} days ago`;
-    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} weeks ago`;
-    return `${Math.floor(diffInDays / 30)} months ago`;
+    if (diffInDays === 0) return t('common.today');
+    if (diffInDays < 7) return t('common.days_ago', { count: diffInDays });
+    if (diffInDays < 30) return t('common.weeks_ago', { count: Math.floor(diffInDays / 7) });
+    return t('common.months_ago', { count: Math.floor(diffInDays / 30) });
   };
 
   return (
@@ -163,13 +162,13 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
           {/* Top Row: Job Title and Salary */}
           <div className="flex justify-between items-start">
             <h3 className="font-semibold text-base text-foreground line-clamp-2 leading-tight flex-1 pr-4">
-              {job.title || 'Job Title'}
+              {job.title || t('common.job_title')}
             </h3>
             <div className="flex items-center gap-2 flex-shrink-0">
               {job.my_application_id && !hideAppliedBadge && (
                 <div className="flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-200 text-xs font-medium rounded-full">
                   <CheckCircle className="w-3 h-3" />
-                  <span>Applied</span>
+                  <span>{t('jobs.applied')}</span>
                 </div>
               )}
               <span className="text-sm font-semibold text-primary whitespace-nowrap">
@@ -210,11 +209,11 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                 )}
               </div>
               <span className="font-medium text-foreground text-sm truncate">
-                {job.organization?.display_name || job.organization?.name || 'Unknown'}
+                {job.organization?.display_name || job.organization?.name || t('common.unknown')}
               </span>
             </div>
             <span className="text-xs text-muted-foreground flex-shrink-0">
-              {job.location?.name || 'Unknown'}
+              {job.location?.name || t('common.unknown')}
             </span>
           </div>
         </div>

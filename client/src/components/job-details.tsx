@@ -198,7 +198,7 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
     const max = job.payment_to || job.salary_max;
     const currency = job.currency || "TMT";
 
-    if (!min && !max) return "Salary not specified";
+    if (!min && !max) return t('jobs.salary_not_specified');
 
     const currencySymbol =
       currency === "EUR"

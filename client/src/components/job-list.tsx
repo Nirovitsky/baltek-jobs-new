@@ -202,14 +202,14 @@ export default function JobList({
         <div ref={loadMoreRef} className="h-20 flex items-center justify-center">
           {!isAuthenticated && jobs.length >= 20 ? (
             <div className="text-center space-y-2">
-              <p className="text-sm text-muted-foreground">You've viewed 20 jobs as a guest</p>
-              <p className="text-xs text-muted-foreground">Scroll down to sign in and see more jobs</p>
+              <p className="text-sm text-muted-foreground">{t('common.guest_viewed_jobs')}</p>
+              <p className="text-xs text-muted-foreground">{t('common.scroll_sign_in')}</p>
             </div>
           ) : hasNextPage && !isFetchingNextPage ? (
-            <p className="text-sm text-muted-foreground">Scroll for more jobs...</p>
+            <p className="text-sm text-muted-foreground">{t('common.scroll_more_jobs')}</p>
           ) : !hasNextPage && jobs.length > 0 ? (
             <div className="text-center">
-              <p className="text-sm text-muted-foreground">No more jobs to load</p>
+              <p className="text-sm text-muted-foreground">{t('common.no_more_jobs')}</p>
             </div>
           ) : null}
         </div>
