@@ -878,7 +878,12 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
 
   // Form handlers
   const handlePersonalSubmit = (data: any) => {
-    updateProfileMutation.mutate(data);
+    // Format date_of_birth for API if it exists
+    const formattedData = {
+      ...data,
+      date_of_birth: data.date_of_birth ? formatDateForAPI(data.date_of_birth) : data.date_of_birth,
+    };
+    updateProfileMutation.mutate(formattedData);
   };
 
   const handleEducationSubmit = (data: any) => {
