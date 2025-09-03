@@ -24,53 +24,51 @@ export default function PrivacyPolicy() {
                     {t('privacy.info_text')}
                   </p>
                   <ul className="list-disc pl-6 text-foreground space-y-1">
-                    <li>Personal information (name, email address, phone number)</li>
-                    <li>Professional information (resume, work experience, education)</li>
-                    <li>Account credentials and preferences</li>
-                    <li>Communications with us</li>
+                    <li>{t('privacy_content.personal_info_list.personal_info')}</li>
+                    <li>{t('privacy_content.personal_info_list.professional_info')}</li>
+                    <li>{t('privacy_content.personal_info_list.account_credentials')}</li>
+                    <li>{t('privacy_content.personal_info_list.communications')}</li>
                   </ul>
                 </section>
 
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">2. How We Use Your Information</h3>
-                  <p className="text-foreground leading-relaxed mb-3">We use the information we collect to:</p>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">2. {t('privacy_content.how_we_use_title')}</h3>
+                  <p className="text-foreground leading-relaxed mb-3">{t('privacy_content.how_we_use_intro')}</p>
                   <ul className="list-disc pl-6 text-foreground space-y-1">
-                    <li>Provide, maintain, and improve our services</li>
-                    <li>Process job applications and connect you with employers</li>
-                    <li>Send you notifications about job opportunities</li>
-                    <li>Respond to your comments and questions</li>
-                    <li>Analyze usage patterns to improve our platform</li>
+                    <li>{t('privacy_content.how_we_use_list.provide_services')}</li>
+                    <li>{t('privacy_content.how_we_use_list.process_applications')}</li>
+                    <li>{t('privacy_content.how_we_use_list.send_notifications')}</li>
+                    <li>{t('privacy_content.how_we_use_list.respond_questions')}</li>
+                    <li>{t('privacy_content.how_we_use_list.analyze_usage')}</li>
                   </ul>
                 </section>
 
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">3. Information Sharing</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">3. {t('privacy_content.info_sharing_title')}</h3>
                   <p className="text-foreground leading-relaxed mb-3">
-                    We may share your information in the following circumstances:
+                    {t('privacy_content.info_sharing_intro')}
                   </p>
                   <ul className="list-disc pl-6 text-foreground space-y-1">
-                    <li>With employers when you apply for jobs (resume, application materials)</li>
-                    <li>With service providers who assist us in operating our platform</li>
-                    <li>When required by law or to protect our rights</li>
-                    <li>In connection with a merger, acquisition, or sale of assets</li>
+                    <li>{t('privacy_content.info_sharing_list.with_employers')}</li>
+                    <li>{t('privacy_content.info_sharing_list.service_providers')}</li>
+                    <li>{t('privacy_content.info_sharing_list.legal_requirements')}</li>
+                    <li>{t('privacy_content.info_sharing_list.business_transfer')}</li>
                   </ul>
                   <p className="text-foreground leading-relaxed mt-3">
-                    We do not sell, rent, or trade your personal information to third parties for marketing purposes.
+                    {t('privacy_content.no_sell_policy')}
                   </p>
                 </section>
 
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">4. Data Security</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">4. {t('privacy_content.data_security_title')}</h3>
                   <p className="text-foreground leading-relaxed">
-                    We implement appropriate technical and organizational measures to protect your personal information 
-                    against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission 
-                    over the Internet or electronic storage is 100% secure.
+                    {t('privacy_content.data_security_text')}
                   </p>
                 </section>
 
@@ -163,14 +161,14 @@ export default function PrivacyPolicy() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">12. Contact Us</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">12. {t('privacy_content.contact_title')}</h3>
                   <p className="text-foreground leading-relaxed">
-                    If you have any questions about this Privacy Policy or our data practices, please contact us at:
+                    {t('privacy_content.contact_intro')}
                   </p>
                   <div className="mt-3 p-4 bg-muted rounded-lg">
                     <p className="text-foreground">
-                      <strong className="text-foreground">Email:</strong> privacy@baltek.net<br />
-                      <strong className="text-foreground">Address:</strong> Ashgabat, Turkmenistan
+                      <strong className="text-foreground">{t('privacy_content.contact_email')}</strong> privacy@baltek.net<br />
+                      <strong className="text-foreground">{t('privacy_content.contact_address')}</strong> Ashgabat, Turkmenistan
                     </p>
                   </div>
                 </section>

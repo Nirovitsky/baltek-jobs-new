@@ -28,26 +28,24 @@ export default function Terms() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">2. Use License</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">2. {t('terms_content.use_license_title')}</h3>
                   <p className="text-foreground leading-relaxed mb-3">
-                    Permission is granted to temporarily access Baltek Jobs for personal, non-commercial transitory viewing only. 
-                    This is the grant of a license, not a transfer of title, and under this license you may not:
+                    {t('terms_content.use_license_intro')}
                   </p>
                   <ul className="list-disc pl-6 text-foreground space-y-1">
-                    <li>modify or copy the materials</li>
-                    <li>use the materials for any commercial purpose or for any public display</li>
-                    <li>attempt to reverse engineer any software contained on the website</li>
-                    <li>remove any copyright or other proprietary notations from the materials</li>
+                    <li>{t('terms_content.use_license_list.modify_copy')}</li>
+                    <li>{t('terms_content.use_license_list.commercial_use')}</li>
+                    <li>{t('terms_content.use_license_list.reverse_engineer')}</li>
+                    <li>{t('terms_content.use_license_list.remove_copyright')}</li>
                   </ul>
                 </section>
 
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">3. User Accounts</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">3. {t('terms_content.user_accounts_title')}</h3>
                   <p className="text-foreground leading-relaxed">
-                    When you create an account with us, you must provide information that is accurate, complete, and current at all times. 
-                    You are responsible for safeguarding the password and for all activities that occur under your account.
+                    {t('terms_content.user_accounts_text')}
                   </p>
                 </section>
 
@@ -160,9 +158,9 @@ export default function Terms() {
                 <Separator />
 
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">13. Contact Information</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">13. {t('terms_content.contact_info_title')}</h3>
                   <p className="text-foreground leading-relaxed">
-                    If you have any questions about these Terms and Agreement, please contact us at support@baltek.net
+                    {t('terms_content.contact_info_text')}
                   </p>
                 </section>
               </div>

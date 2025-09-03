@@ -362,6 +362,7 @@
   },
   "companies": {
     "suggested_companies": "Suggested Companies",
+    "other_companies": "Other Companies",
     "business_services": "Business Services",
     "it_technology": "IT & Technology",
     "healthcare": "Healthcare",
@@ -927,5 +928,148 @@
   "placeholders": {
     "remote": "Remote",
     "usd": "USD"
+  },
+  "privacy_content": {
+    "personal_info_list": {
+      "personal_info": "Personal information (name, email address, phone number)",
+      "professional_info": "Professional information (resume, work experience, education)",
+      "account_credentials": "Account credentials and preferences",
+      "communications": "Communications with us"
+    },
+    "how_we_use_title": "How We Use Your Information",
+    "how_we_use_intro": "We use the information we collect to:",
+    "how_we_use_list": {
+      "provide_services": "Provide, maintain, and improve our services",
+      "process_applications": "Process job applications and connect you with employers",
+      "send_notifications": "Send you notifications about job opportunities",
+      "respond_questions": "Respond to your comments and questions",
+      "analyze_usage": "Analyze usage patterns to improve our platform"
+    },
+    "info_sharing_title": "Information Sharing",
+    "info_sharing_intro": "We may share your information in the following circumstances:",
+    "info_sharing_list": {
+      "with_employers": "With employers when you apply for jobs (resume, application materials)",
+      "service_providers": "With service providers who assist us in operating our platform",
+      "legal_requirements": "When required by law or to protect our rights",
+      "business_transfer": "In connection with a merger, acquisition, or sale of assets"
+    },
+    "no_sell_policy": "We do not sell, rent, or trade your personal information to third parties for marketing purposes.",
+    "data_security_title": "Data Security",
+    "data_security_text": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet or electronic storage is 100% secure.",
+    "data_retention_title": "Data Retention",
+    "data_retention_text": "We retain your personal information for as long as your account is active or as needed to provide services. We will delete your information when you request account deletion, subject to legal obligations that may require us to retain certain information.",
+    "cookies_title": "Cookies and Tracking",
+    "cookies_intro": "We use cookies and similar tracking technologies to:",
+    "cookies_list": {
+      "remember_preferences": "Remember your preferences and settings",
+      "analyze_traffic": "Analyze site traffic and usage patterns",
+      "personalize_content": "Personalize content and advertisements",
+      "improve_services": "Improve our services"
+    },
+    "cookies_control": "You can control cookies through your browser settings, but disabling them may affect site functionality.",
+    "your_rights_title": "Your Rights and Choices",
+    "your_rights_intro": "You have the right to:",
+    "your_rights_list": {
+      "access_update": "Access and update your personal information",
+      "delete_account": "Delete your account and associated data",
+      "opt_out_marketing": "Opt out of marketing communications",
+      "request_copy": "Request a copy of your data",
+      "object_processing": "Object to processing of your personal information"
+    },
+    "third_party_title": "Third-Party Links",
+    "third_party_text": "Our service may contain links to third-party websites. We are not responsible for the privacy practices or content of these external sites. We encourage you to review the privacy policies of any third-party sites you visit.",
+    "children_title": "Children's Privacy",
+    "children_text": "Our service is not intended for children under 16 years of age. We do not knowingly collect personal information from children under 16. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.",
+    "international_title": "International Transfers",
+    "international_text": "Your information may be transferred to and processed in countries other than your own. We ensure that such transfers comply with applicable data protection laws and implement appropriate safeguards.",
+    "policy_changes_title": "Changes to This Policy",
+    "policy_changes_text": "We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the \"Last updated\" date. Changes are effective immediately upon posting.",
+    "contact_title": "Contact Us",
+    "contact_intro": "If you have any questions about this Privacy Policy or our data practices, please contact us at:",
+    "contact_email": "Email:",
+    "contact_address": "Address:"
+  },
+  "terms_content": {
+    "use_license_title": "Use License",
+    "use_license_intro": "Permission is granted to temporarily access Baltek Jobs for personal, non-commercial transitory viewing only. This is the grant of a license, not a transfer of title, and under this license you may not:",
+    "use_license_list": {
+      "modify_copy": "modify or copy the materials",
+      "commercial_use": "use the materials for any commercial purpose or for any public display",
+      "reverse_engineer": "attempt to reverse engineer any software contained on the website",
+      "remove_copyright": "remove any copyright or other proprietary notations from the materials"
+    },
+    "user_accounts_title": "User Accounts",
+    "user_accounts_text": "When you create an account with us, you must provide information that is accurate, complete, and current at all times. You are responsible for safeguarding the password and for all activities that occur under your account.",
+    "job_postings_title": "Job Postings and Applications",
+    "job_postings_intro": "Baltek Jobs serves as a platform connecting job seekers with employers. We do not guarantee:",
+    "job_postings_list": {
+      "accuracy": "The accuracy of job postings",
+      "legitimacy": "The legitimacy of employers",
+      "placement": "Successful job placement",
+      "quality": "The quality of employment opportunities"
+    },
+    "user_content_title": "User Content",
+    "user_content_text": "By uploading content (including but not limited to resumes, cover letters, and profile information), you grant Baltek Jobs a non-exclusive, royalty-free license to use, reproduce, and distribute your content for the purpose of providing our services.",
+    "privacy_policy_title": "Privacy Policy",
+    "privacy_policy_text": "Your privacy is important to us. Please review our Privacy Policy, which also governs your use of the Service, to understand our practices.",
+    "prohibited_title": "Prohibited Uses",
+    "prohibited_intro": "You may not use our service:",
+    "prohibited_list": {
+      "unlawful": "For any unlawful purpose or to solicit others to perform unlawful acts",
+      "regulations": "To violate any international, federal, provincial, or state regulations, rules, laws, or local ordinances",
+      "ip_rights": "To infringe upon or violate our intellectual property rights or the intellectual property rights of others",
+      "harassment": "To harass, abuse, insult, harm, defame, slander, disparage, intimidate, or discriminate",
+      "false_info": "To submit false or misleading information"
+    },
+    "disclaimer_title": "Disclaimer",
+    "disclaimer_text": "The materials on Baltek Jobs are provided on an 'as is' basis. Baltek Jobs makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.",
+    "limitations_title": "Limitations",
+    "limitations_text": "In no event shall Baltek Jobs or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on Baltek Jobs, even if Baltek Jobs or an authorized representative has been notified orally or in writing of the possibility of such damage.",
+    "revisions_title": "Revisions and Errata",
+    "revisions_text": "The materials appearing on Baltek Jobs could include technical, typographical, or photographic errors. Baltek Jobs does not warrant that any of the materials on its website are accurate, complete, or current. Baltek Jobs may make changes to the materials contained on its website at any time without notice.",
+    "termination_title": "Termination",
+    "termination_text": "We may terminate or suspend your account and bar access to the Service immediately, without prior notice or liability, under our sole discretion, for any reason whatsoever and without limitation, including but not limited to a breach of the Terms.",
+    "governing_law_title": "Governing Law",
+    "governing_law_text": "Any claim relating to Baltek Jobs shall be governed by the laws of Turkmenistan without regard to its conflict of law provisions.",
+    "contact_info_title": "Contact Information",
+    "contact_info_text": "If you have any questions about these Terms and Agreement, please contact us at support@baltek.net"
+  },
+  "onboarding_content": {
+    "personal_info_step": {
+      "title": "Personal Information",
+      "subtitle": "Tell us about yourself",
+      "required_note": "Name fields are required - other fields are optional",
+      "upload_photo": "Upload a profile photo",
+      "first_name_label": "First Name",
+      "last_name_label": "Last Name",
+      "profession_label": "Profession",
+      "gender_label": "Gender",
+      "gender_placeholder": "Select gender (optional)",
+      "male": "Male",
+      "female": "Female",
+      "date_birth_label": "Date of Birth",
+      "location_label": "Location",
+      "location_placeholder": "Select your location (optional)"
+    },
+    "experience_step": {
+      "title": "Work Experience",
+      "subtitle": "Your professional journey",
+      "add_experience": "Add Experience",
+      "edit_experience": "Edit Experience",
+      "no_experience": "No work experience added yet",
+      "add_first": "Add your first work experience"
+    },
+    "education_step": {
+      "title": "Education",
+      "subtitle": "Your academic background",
+      "add_education": "Add Education",
+      "edit_education": "Edit Education",
+      "no_education": "No education added yet",
+      "add_first": "Add your first education"
+    },
+    "complete_step": {
+      "title": "Complete Profile",
+      "subtitle": "You're all set!"
+    }
   }
 }

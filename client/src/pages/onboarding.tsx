@@ -507,10 +507,10 @@ export default function Onboarding() {
         return (
           <div className="space-y-6">
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">Personal Information</h2>
-              <p className="text-muted-foreground">Tell us about yourself</p>
+              <h2 className="text-2xl font-bold mb-2">{t('onboarding_content.personal_info_step.title')}</h2>
+              <p className="text-muted-foreground">{t('onboarding_content.personal_info_step.subtitle')}</p>
               <p className="text-sm text-blue-600 dark:text-blue-400 mt-2">
-                Name fields are required - other fields are optional
+                {t('onboarding_content.personal_info_step.required_note')}
               </p>
             </div>
 
@@ -542,14 +542,14 @@ export default function Onboarding() {
                   />
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  Upload a profile photo
+                  {t('onboarding_content.personal_info_step.upload_photo')}
                 </p>
               </div>
 
               {/* Name Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="first_name">First Name</Label>
+                  <Label htmlFor="first_name">{t('onboarding_content.personal_info_step.first_name_label')}</Label>
                   <Input
                     {...personalForm.register("first_name")}
                     placeholder="First name"
@@ -562,7 +562,7 @@ export default function Onboarding() {
                   )}
                 </div>
                 <div>
-                  <Label htmlFor="last_name">Last Name</Label>
+                  <Label htmlFor="last_name">{t('onboarding_content.personal_info_step.last_name_label')}</Label>
                   <Input
                     {...personalForm.register("last_name")}
                     placeholder="Last name"
@@ -578,7 +578,7 @@ export default function Onboarding() {
 
               {/* Profession */}
               <div>
-                <Label htmlFor="profession">Profession</Label>
+                <Label htmlFor="profession">{t('onboarding_content.personal_info_step.profession_label')}</Label>
                 <Input
                   {...personalForm.register("profession")}
                   placeholder="Your profession"

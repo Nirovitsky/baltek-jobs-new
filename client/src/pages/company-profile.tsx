@@ -75,7 +75,7 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
       <div className="px-6 py-4 bg-gradient-to-r from-primary/5 to-blue-50 dark:from-primary/10 dark:to-blue-900/20 border-b border-gray-200 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-foreground dark:text-foreground flex items-center gap-2">
           <Building2 className="h-5 w-5 text-primary" />
-          {t('breadcrumb.other_companies')}
+          {t('companies.other_companies')}
         </h3>
       </div>
       
