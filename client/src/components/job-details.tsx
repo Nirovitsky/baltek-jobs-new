@@ -385,28 +385,16 @@ export default function JobDetails({ jobId }: JobDetailsProps) {
           {/* Action Buttons */}
           <div className="flex space-x-3">
             {!isAuthenticated ? (
-              <>
-                <Button
-                  onClick={() => AuthService.startOAuthLogin()}
-                  className="flex-1"
-                  size="lg"
-                  variant="outline"
-                  data-testid="button-sign-in"
-                >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Sign In to Apply
-                </Button>
-                <Button
-                  onClick={() => AuthService.startOAuthLogin()}
-                  className="flex-1"
-                  size="lg"
-                  variant="default"
-                  data-testid="button-sign-up"
-                >
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Sign Up to Apply
-                </Button>
-              </>
+              <Button
+                onClick={() => AuthService.startOAuthLogin()}
+                className="w-full"
+                size="lg"
+                variant="default"
+                data-testid="button-sign-in"
+              >
+                <LogIn className="w-4 h-4 mr-2" />
+                Sign in to Apply
+              </Button>
             ) : hasApplied ? (
               <Button
                 className="flex-1"
