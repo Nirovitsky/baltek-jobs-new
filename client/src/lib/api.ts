@@ -178,9 +178,9 @@ export class ApiClient {
     });
   }
 
-  static async getMyApplications() {
+  static async getMyApplications(userId: number) {
     // Use applications endpoint with owner query parameter
-    return this.makeRequest("/applications/?owner");
+    return this.makeRequest(`/applications/?owner=${userId}`);
   }
 
   static async getApplicationDetails(applicationId: number) {

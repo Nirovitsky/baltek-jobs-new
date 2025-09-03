@@ -19,7 +19,7 @@ export default function ApplicationsPage() {
 
   const { data: applications, isLoading, error } = useQuery({
     queryKey: ["user", "applications"],
-    queryFn: () => ApiClient.getMyApplications(),
+    queryFn: () => ApiClient.getMyApplications(user!.id),
     enabled: !!user?.id,
   });
 
