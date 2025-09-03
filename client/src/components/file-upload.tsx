@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useDropzone } from "react-dropzone";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -19,6 +20,7 @@ export default function FileUpload({
 }: FileUploadProps) {
   const [isDragActive, setIsDragActive] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const onDrop = useCallback(
     (acceptedFiles: File[], rejectedFiles: any[]) => {
@@ -28,20 +30,20 @@ export default function FileUpload({
         const rejection = rejectedFiles[0];
         if (rejection.errors.some((e: any) => e.code === "file-too-large")) {
           toast({
-            title: "File too large",
-            description: `File size must be less than ${Math.round(maxSize / 1024 / 1024)}MB`,
+            title: t('file.file_too_large'),
+            description: t('file.file_size_limit', { size: Math.round(maxSize / 1024 / 1024) }),
             variant: "destructive",
           });
         } else if (rejection.errors.some((e: any) => e.code === "file-invalid-type")) {
           toast({
-            title: "Invalid file type",
-            description: "Please upload a PDF, DOC, or DOCX file",
+            title: t('file.invalid_file_type'),
+            description: t('file.upload_pdf_doc'),
             variant: "destructive",
           });
         } else {
           toast({
-            title: "Upload failed",
-            description: "Please try again with a valid file",
+            title: t('file.upload_failed'),
+            description: t('file.try_again_valid_file'),
             variant: "destructive",
           });
         }
@@ -51,8 +53,8 @@ export default function FileUpload({
       if (acceptedFiles.length > 0) {
         onFileSelect(acceptedFiles[0]);
         toast({
-          title: "File selected",
-          description: `${acceptedFiles[0].name} is ready to upload`,
+          title: t('file.file_selected'),
+          description: t('file.ready_to_upload', { filename: acceptedFiles[0].name }),
         });
       }
     },
@@ -78,9 +80,9 @@ export default function FileUpload({
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return "0 Bytes";
+    if (bytes === 0) return `0 ${t('file.bytes')}`;
     const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const sizes = [t('file.bytes'), "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
@@ -128,17 +130,17 @@ export default function FileUpload({
         
         <div>
           <p className="text-muted-foreground">
-            Drag and drop your resume here, or{" "}
+            {t('file.drag_drop_resume')}{" "}
             <button
               type="button"
               onClick={open}
               className="text-primary font-semibold hover:underline"
             >
-              browse files
+              {t('file.browse_files')}
             </button>
           </p>
           <p className="text-sm text-muted-foreground mt-1">
-            PDF, DOC, DOCX up to {Math.round(maxSize / 1024 / 1024)}MB
+            {t('file.pdf_doc_size_limit', { size: Math.round(maxSize / 1024 / 1024) })}
           </p>
         </div>
       </div>

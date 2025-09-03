@@ -1,8 +1,10 @@
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 export default function PrivacyPolicy() {
+  const { t } = useTranslation();
   return (
     <div className="h-full overflow-y-auto bg-background">
       <BreadcrumbNavigation />
@@ -11,16 +13,15 @@ export default function PrivacyPolicy() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Privacy Policy</CardTitle>
-              <p className="text-sm text-muted-foreground">Last updated: August 12, 2025</p>
+              <CardTitle className="text-2xl">{t('privacy.title')}</CardTitle>
+              <p className="text-sm text-muted-foreground">{t('privacy.last_updated', { date: 'August 12, 2025' })}</p>
             </CardHeader>
             <CardContent className="prose max-w-none">
               <div className="space-y-6">
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">1. Information We Collect</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">1. {t('privacy.information_collected')}</h3>
                   <p className="text-foreground leading-relaxed mb-3">
-                    We collect information you provide directly to us, such as when you create an account, 
-                    apply for jobs, or contact us for support. This includes:
+                    {t('privacy.info_text')}
                   </p>
                   <ul className="list-disc pl-6 text-foreground space-y-1">
                     <li>Personal information (name, email address, phone number)</li>

@@ -75,9 +75,9 @@ export default function AboutUs() {
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Target className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold mb-2">Innovation</h3>
+                  <h3 className="font-semibold mb-2">{t('about.innovation')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    We continuously evolve our technology to provide the best job matching experience.
+                    {t('about.innovation_desc')}
                   </p>
                 </div>
                 
@@ -85,9 +85,9 @@ export default function AboutUs() {
                   <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Award className="h-6 w-6 text-primary" />
                   </div>
-                  <h3 className="font-semibold mb-2">Excellence</h3>
+                  <h3 className="font-semibold mb-2">{t('about_stats.excellence')}</h3>
                   <p className="text-sm text-muted-foreground">
-                    We strive for the highest quality in everything we do, from our platform to our support.
+                    {t('about_stats.excellence_desc')}
                   </p>
                 </div>
               </div>
@@ -97,25 +97,25 @@ export default function AboutUs() {
           {/* Company Stats */}
           <Card>
             <CardHeader>
-              <CardTitle>By the Numbers</CardTitle>
+              <CardTitle>{t('about_stats.by_the_numbers')}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">50K+</div>
-                  <div className="text-sm text-muted-foreground">Active Job Seekers</div>
+                  <div className="text-sm text-muted-foreground">{t('about_stats.active_job_seekers')}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">5K+</div>
-                  <div className="text-sm text-muted-foreground">Partner Companies</div>
+                  <div className="text-sm text-muted-foreground">{t('about_stats.partner_companies')}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">100K+</div>
-                  <div className="text-sm text-muted-foreground">Job Placements</div>
+                  <div className="text-sm text-muted-foreground">{t('about_stats.job_placements')}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-bold text-primary mb-2">95%</div>
-                  <div className="text-sm text-muted-foreground">Satisfaction Rate</div>
+                  <div className="text-sm text-muted-foreground">{t('about_stats.satisfaction_rate')}</div>
                 </div>
               </div>
             </CardContent>
@@ -124,12 +124,11 @@ export default function AboutUs() {
           {/* Technology */}
           <Card>
             <CardHeader>
-              <CardTitle>Our Technology</CardTitle>
+              <CardTitle>{t('about_stats.our_technology')}</CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground mb-4 leading-relaxed">
-                Built with cutting-edge technology, Baltek Jobs leverages advanced algorithms and machine learning 
-                to deliver personalized job recommendations and streamline the hiring process.
+                {t('about_stats.technology_description')}
               </p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">AI-Powered Matching</Badge>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -126,10 +127,10 @@ const getFileTypeInfo = (fileName: string, contentType?: string) => {
   };
 };
 
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 B';
+const formatFileSize = (bytes: number, t: any): string => {
+  if (bytes === 0) return `0 ${t('file.bytes')}`;
   const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const sizes = [t('file.bytes'), 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 };
@@ -143,7 +144,8 @@ export function AttachmentCard({
   onCancelUpload,
   className = ""
 }: AttachmentCardProps) {
-  const fileName = file.file_name || file.name || 'Unknown file';
+  const { t } = useTranslation();
+  const fileName = file.file_name || file.name || t('file.unknown_file');
   const fileTypeInfo = getFileTypeInfo(fileName, file.content_type);
   const IconComponent = fileTypeInfo.icon;
   // Use path field from backend, fallback to file_url, then construct if needed
@@ -222,7 +224,7 @@ export function AttachmentCard({
             size="sm"
             className="h-6 w-6 p-0 rounded-full shadow-lg"
             onClick={isUploading ? onCancelUpload : onRemove}
-            title={isUploading ? "Cancel upload" : "Remove file"}
+            title={isUploading ? t('file.cancel_upload') : t('file.remove_file')}
           >
             <X className="w-3 h-3" />
           </Button>
@@ -258,7 +260,7 @@ export function AttachmentCard({
                 </div>
                 {file.size && (
                   <div className="text-xs text-muted-foreground">
-                    {formatFileSize(file.size)}
+                    {formatFileSize(file.size, t)}
                   </div>
                 )}
               </div>
@@ -275,7 +277,7 @@ export function AttachmentCard({
             {fileName}
             {file.size && (
               <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                ({formatFileSize(file.size)})
+                ({formatFileSize(file.size, t)})
               </span>
             )}
           </span>
@@ -283,7 +285,7 @@ export function AttachmentCard({
             className="text-blue-600 dark:text-blue-400 text-sm hover:underline"
             onClick={fileTypeInfo.type === 'pdf' ? handleView : handleDownload}
           >
-            {fileTypeInfo.type === 'pdf' ? 'View' : 'Download'}
+            {fileTypeInfo.type === 'pdf' ? t('file.view_file') : t('file.download_file')}
           </button>
         </div>
       )}

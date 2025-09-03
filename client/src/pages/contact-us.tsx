@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import { Mail, Phone, MapPin, Send, MessageCircle, HelpCircle, Briefcase } from 
 import { toast } from "@/hooks/use-toast";
 
 export default function ContactUs() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -26,8 +28,8 @@ export default function ContactUs() {
     // Simulate form submission
     setTimeout(() => {
       toast({
-        title: "Message sent successfully!",
-        description: "We'll get back to you within 24 hours.",
+        title: t('contact.message_sent'),
+        description: t('contact.message_sent_desc'),
       });
       setFormData({
         name: "",
@@ -52,9 +54,9 @@ export default function ContactUs() {
         <div className="mt-6 space-y-8">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-foreground mb-4">Contact Us</h1>
+            <h1 className="text-4xl font-bold text-foreground mb-4">{t('contact.title')}</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Have questions or need support? We're here to help. Reach out to our team and we'll respond as soon as possible.
+              {t('contact.description')}
             </p>
           </div>
 
@@ -64,31 +66,31 @@ export default function ContactUs() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Send className="h-5 w-5 text-primary" />
-                  Send us a message
+                  {t('contact.send_message')}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="name">Name *</Label>
+                      <Label htmlFor="name">{t('contact.your_name')} *</Label>
                       <Input
                         id="name"
                         value={formData.name}
                         onChange={(e) => handleChange("name", e.target.value)}
                         required
-                        placeholder="Your full name"
+                        placeholder={t('contact.your_name')}
                       />
                     </div>
                     <div>
-                      <Label htmlFor="email">Email *</Label>
+                      <Label htmlFor="email">{t('contact.your_email')} *</Label>
                       <Input
                         id="email"
                         type="email"
                         value={formData.email}
                         onChange={(e) => handleChange("email", e.target.value)}
                         required
-                        placeholder="your.email@example.com"
+                        placeholder={t('contact.your_email')}
                       />
                     </div>
                   </div>

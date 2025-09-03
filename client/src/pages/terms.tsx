@@ -1,8 +1,10 @@
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
+import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
 export default function Terms() {
+  const { t } = useTranslation();
   return (
     <div className="h-full overflow-y-auto bg-background">
       <BreadcrumbNavigation />
@@ -11,16 +13,15 @@ export default function Terms() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="text-2xl">Terms and Agreement</CardTitle>
-              <p className="text-sm text-muted-foreground">Last updated: August 12, 2025</p>
+              <CardTitle className="text-2xl">{t('terms.title')}</CardTitle>
+              <p className="text-sm text-muted-foreground">{t('terms.last_updated', { date: 'August 12, 2025' })}</p>
             </CardHeader>
             <CardContent className="prose max-w-none">
               <div className="space-y-6">
                 <section>
-                  <h3 className="text-lg font-semibold mb-3 text-foreground">1. Acceptance of Terms</h3>
+                  <h3 className="text-lg font-semibold mb-3 text-foreground">1. {t('terms.acceptance')}</h3>
                   <p className="text-foreground leading-relaxed">
-                    By accessing and using Baltek Jobs ("the Service"), you accept and agree to be bound by the terms 
-                    and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+                    {t('terms.acceptance_text')}
                   </p>
                 </section>
 
