@@ -91,26 +91,29 @@ export class AuthService {
     }
 
     try {
-      const response = await fetch(`${API_BASE}/token/refresh/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refresh: refreshToken }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Token refresh failed");
-      }
-
-      const data = await response.json();
-      const newAccessToken = data.access;
+      // Use OAuth2 service for proper token refresh
+      const { OAuth2PKCEService } = await import('./oauth');
       
-      // Update only the access token, keep the same refresh token and set new expiration
+      const oauthConfig = {
+        clientId: import.meta.env.VITE_OAUTH_CLIENT_ID || '',
+        authorizationUrl: import.meta.env.VITE_OAUTH_AUTH_URL || '',
+        tokenUrl: import.meta.env.VITE_OAUTH_TOKEN_URL || '',
+        redirectUri: `${window.location.origin}/auth/callback`,
+        scopes: [],
+      };
+
+      const oauthService = new OAuth2PKCEService(oauthConfig);
+      const tokens = await oauthService.refreshTokens(refreshToken);
+      
+      // Update both access and refresh tokens (in case refresh token is rotated)
+      const newAccessToken = tokens.access_token;
+      const newRefreshToken = tokens.refresh_token || refreshToken; // Keep old if not rotated
+      
       localStorage.setItem(this.TOKEN_KEY, newAccessToken);
+      localStorage.setItem(this.REFRESH_TOKEN_KEY, newRefreshToken);
       
       // Set expiration time (assume 1 hour if not provided)
-      const expiresIn = data.expires_in || 3600;
+      const expiresIn = tokens.expires_in || 3600;
       const expirationTime = Date.now() + (expiresIn * 1000);
       localStorage.setItem(this.TOKEN_EXPIRES_KEY, expirationTime.toString());
       
