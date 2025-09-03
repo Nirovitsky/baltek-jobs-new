@@ -23,6 +23,7 @@ import { ApiClient } from "@/lib/api";
 import { useAuth } from "@/hooks/use-auth";
 import { useMutation } from "@tanstack/react-query";
 import BreadcrumbNavigation from "@/components/breadcrumb-navigation";
+import { useTranslation } from "react-i18next";
 import {
   Trash2,
   Info,
@@ -33,6 +34,7 @@ import {
 } from "lucide-react";
 
 export default function SettingsPage() {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { toast } = useToast();
 
@@ -43,8 +45,8 @@ export default function SettingsPage() {
     onMutate: async (userId: number) => {
       // Show immediate feedback that deletion is in progress
       toast({
-        title: "Deleting account...",
-        description: "Your account is being permanently deleted.",
+        title: t('settings.deleting_account'),
+        description: t('settings.account_being_deleted'),
         variant: "destructive",
       });
       
@@ -52,15 +54,15 @@ export default function SettingsPage() {
     },
     onSuccess: () => {
       toast({
-        title: "Account deleted",
-        description: "Your account has been permanently deleted.",
+        title: t('settings.account_deleted'),
+        description: t('settings.account_permanently_deleted'),
       });
       logout();
     },
     onError: (error) => {
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to delete account. Please try again later.",
+        title: t('common.error'),
+        description: error instanceof Error ? error.message : t('settings.delete_account_error'),
         variant: "destructive",
       });
     },
@@ -69,8 +71,8 @@ export default function SettingsPage() {
   const handleDeleteAccount = async () => {
     if (!user?.id) {
       toast({
-        title: "Error",
-        description: "User ID not found",
+        title: t('common.error'),
+        description: t('settings.user_id_not_found'),
         variant: "destructive",
       });
       return;
@@ -91,17 +93,17 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-2 mb-3">
                   <Info className="h-5 w-5 text-primary" />
                   <h2 className="text-lg font-semibold">
-                    Information & Support
+                    {t('settings.information_support')}
                   </h2>
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Learn more about Baltek Jobs and get help
+                  {t('settings.learn_more_help')}
                 </p>
                 <div className="space-y-2">
                   <Link to="/about-us">
                     <Button variant="ghost" className="w-full justify-start">
                       <Info className="h-4 w-4 mr-2" />
-                      About Us
+                      {t('settings.about_us')}
                       <ExternalLink className="h-4 w-4 ml-auto" />
                     </Button>
                   </Link>
@@ -109,7 +111,7 @@ export default function SettingsPage() {
                   <Link to="/contact-us">
                     <Button variant="ghost" className="w-full justify-start">
                       <Mail className="h-4 w-4 mr-2" />
-                      Contact Us
+                      {t('settings.contact_us')}
                       <ExternalLink className="h-4 w-4 ml-auto" />
                     </Button>
                   </Link>
@@ -117,7 +119,7 @@ export default function SettingsPage() {
                   <Link to="/terms">
                     <Button variant="ghost" className="w-full justify-start">
                       <FileText className="h-4 w-4 mr-2" />
-                      Terms and Agreement
+                      {t('settings.terms_agreement')}
                       <ExternalLink className="h-4 w-4 ml-auto" />
                     </Button>
                   </Link>

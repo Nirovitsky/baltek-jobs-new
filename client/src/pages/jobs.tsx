@@ -5,6 +5,7 @@ import { ApiClient } from "@/lib/api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollPreserve } from "@/hooks/use-scroll-preserve";
+import { useTranslation } from "react-i18next";
 import type { Job, JobFilters } from "@shared/schema";
 
 import JobFiltersComponent from "@/components/job-filters";
@@ -18,6 +19,7 @@ import { Card, CardContent } from "@/components/ui/card";
 interface JobsProps {}
 
 export default function Jobs({}: JobsProps) {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { markJobSelection } = useScrollPreserve('job-list-container');
@@ -36,8 +38,8 @@ export default function Jobs({}: JobsProps) {
   useEffect(() => {
     if (authError) {
       toast({
-        title: "Authentication Failed",
-        description: "There was an error during login. Please try again.",
+        title: t('jobs.authentication_failed'),
+        description: t('jobs.auth_error_description'),
         variant: "destructive",
       });
       // Clean up URL using React Router navigation

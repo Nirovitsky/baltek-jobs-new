@@ -4,6 +4,7 @@ import { ApiClient } from "@/lib/api";
 import type { JobFilters, Location, Category, SavedFilter, CreateSavedFilter } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/use-auth";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -31,6 +32,7 @@ interface JobFiltersProps {
 }
 
 export default function JobFiltersComponent({ filters, onFiltersChange }: JobFiltersProps) {
+  const { t } = useTranslation();
   const [saveFilterDialogOpen, setSaveFilterDialogOpen] = useState(false);
   const [saveFilterName, setSaveFilterName] = useState("");
   const { toast } = useToast();

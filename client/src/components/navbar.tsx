@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { AuthService } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "@/components/theme-provider";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -40,7 +41,7 @@ export default function Navbar({}: NavbarProps) {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
-  const [language, setLanguage] = useState("english");
+  const { t, i18n } = useTranslation();
   const location = useLocation();
 
   const oauthLoginMutation = useMutation({
@@ -50,16 +51,16 @@ export default function Navbar({}: NavbarProps) {
     onMutate: async () => {
       // Show immediate feedback that login is starting
       toast({
-        title: "Redirecting to login...",
-        description: "Opening authentication page",
+        title: t('navbar.redirecting_login'),
+        description: t('navbar.opening_auth'),
       });
       
       return {};
     },
     onError: (error) => {
       toast({
-        title: "Login Failed",
-        description: error instanceof Error ? error.message : "Failed to start OAuth login",
+        title: t('navbar.login_failed'),
+        description: error instanceof Error ? error.message : t('navbar.oauth_error'),
         variant: "destructive",
       });
     },
@@ -85,16 +86,16 @@ export default function Navbar({}: NavbarProps) {
   const handleLanguageChange = (newLanguage: string) => {
     // Show immediate feedback
     toast({
-      title: "Changing language...",
-      description: `Switching to ${newLanguage}`,
+      title: t('navbar.changing_language'),
+      description: t('navbar.switching_to', { language: t(`navbar.${newLanguage}`) }),
     });
     
     // Small delay to show the loading state
     setTimeout(() => {
-      setLanguage(newLanguage);
+      i18n.changeLanguage(newLanguage === 'english' ? 'en' : newLanguage === 'russian' ? 'ru' : 'tk');
       toast({
-        title: "Language updated",
-        description: `Language set to ${newLanguage}.`,
+        title: t('navbar.language_updated'),
+        description: t('navbar.language_set', { language: t(`navbar.${newLanguage}`) }),
       });
     }, 200);
   };
@@ -108,7 +109,7 @@ export default function Navbar({}: NavbarProps) {
             <Link to="/jobs" className="flex-shrink-0">
               <div className="flex items-center space-x-2">
                 <Briefcase className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
-                <h1 className="text-lg sm:text-xl font-bold text-primary">baltek jobs</h1>
+                <h1 className="text-lg sm:text-xl font-bold text-primary">{t('navbar.baltek_jobs')}</h1>
               </div>
             </Link>
           </div>
@@ -165,56 +166,56 @@ export default function Navbar({}: NavbarProps) {
                     <DropdownMenuItem asChild>
                       <Link to="/profile" className="flex items-center">
                         <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
+                        <span>{t('navbar.profile')}</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/bookmarks" className="flex items-center">
                         <Bookmark className="mr-2 h-4 w-4" />
-                        <span>Bookmarks</span>
+                        <span>{t('navbar.bookmarks')}</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/applications" className="flex items-center">
                         <FileText className="mr-2 h-4 w-4" />
-                        <span>Applications</span>
+                        <span>{t('navbar.applications')}</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/settings" className="flex items-center">
                         <Settings className="mr-2 h-4 w-4" />
-                        <span>Settings</span>
+                        <span>{t('navbar.settings')}</span>
                       </Link>
                     </DropdownMenuItem>
                     {/* Language Switcher */}
                     <div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
                       <Globe className="mr-2 h-4 w-4" />
-                      <span className="flex-1">Language</span>
+                      <span className="flex-1">{t('common.language')}</span>
                       <div className="flex items-center gap-1">
                         <Button
-                          variant={language === "turkmen" ? "default" : "ghost"}
+                          variant={i18n.language === "tk" ? "default" : "ghost"}
                           size="sm"
                           onClick={() => handleLanguageChange("turkmen")}
                           className="h-6 w-6 p-0 text-xs"
-                          title="Türkmen"
+                          title={t('navbar.turkmen')}
                         >
                           TM
                         </Button>
                         <Button
-                          variant={language === "english" ? "default" : "ghost"}
+                          variant={i18n.language === "en" ? "default" : "ghost"}
                           size="sm"
                           onClick={() => handleLanguageChange("english")}
                           className="h-6 w-6 p-0 text-xs"
-                          title="English"
+                          title={t('navbar.english')}
                         >
                           EN
                         </Button>
                         <Button
-                          variant={language === "russian" ? "default" : "ghost"}
+                          variant={i18n.language === "ru" ? "default" : "ghost"}
                           size="sm"
                           onClick={() => handleLanguageChange("russian")}
                           className="h-6 w-6 p-0 text-xs"
-                          title="Русский"
+                          title={t('navbar.russian')}
                         >
                           RU
                         </Button>
@@ -223,21 +224,21 @@ export default function Navbar({}: NavbarProps) {
                     {/* Theme Switcher */}
                     <div className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50">
                       <Palette className="mr-2 h-4 w-4" />
-                      <span className="flex-1">Theme</span>
+                      <span className="flex-1">{t('common.theme')}</span>
                       <div className="flex items-center gap-1">
                         <Button
                           variant={theme === "light" ? "default" : "ghost"}
                           size="sm"
                           onClick={() => {
                             toast({
-                              title: "Switching theme...",
-                              description: "Changing to light mode",
+                              title: t('navbar.changing_theme'),
+                              description: t('navbar.changing_to_light'),
                             });
                             setTheme("light");
                             setTimeout(() => {
                               toast({
-                                title: "Theme changed",
-                                description: "Switched to light mode",
+                                title: t('navbar.theme_changed'),
+                                description: t('navbar.switched_to_light'),
                               });
                             }, 300);
                           }}
@@ -250,14 +251,14 @@ export default function Navbar({}: NavbarProps) {
                           size="sm"
                           onClick={() => {
                             toast({
-                              title: "Switching theme...",
-                              description: "Changing to dark mode",
+                              title: t('navbar.changing_theme'),
+                              description: t('navbar.changing_to_dark'),
                             });
                             setTheme("dark");
                             setTimeout(() => {
                               toast({
-                                title: "Theme changed",
-                                description: "Switched to dark mode",
+                                title: t('navbar.theme_changed'),
+                                description: t('navbar.switched_to_dark'),
                               });
                             }, 300);
                           }}
@@ -270,14 +271,14 @@ export default function Navbar({}: NavbarProps) {
                           size="sm"
                           onClick={() => {
                             toast({
-                              title: "Switching theme...",
-                              description: "Changing to system mode",
+                              title: t('navbar.changing_theme'),
+                              description: t('navbar.changing_to_system'),
                             });
                             setTheme("system");
                             setTimeout(() => {
                               toast({
-                                title: "Theme changed",
-                                description: "Switched to system mode",
+                                title: t('navbar.theme_changed'),
+                                description: t('navbar.switched_to_system'),
                               });
                             }, 300);
                           }}
@@ -290,7 +291,7 @@ export default function Navbar({}: NavbarProps) {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => logout()}>
                       <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
+                      <span>{t('navbar.logout')}</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -347,7 +348,7 @@ export default function Navbar({}: NavbarProps) {
                 
                 {/* OAuth Login button for unauthenticated users */}
                 <Button size="sm" onClick={handleOAuthLogin}>
-                  Login
+                  {t('navbar.login')}
                 </Button>
               </>
             )}

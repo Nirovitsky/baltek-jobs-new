@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { jobApplicationSchema, type JobApplication, type Job } from "@shared/schema";
 import { ApiClient } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +36,7 @@ interface ApplicationModalProps {
 }
 
 export default function ApplicationModal({ job, isOpen, onClose, isQuickApply = false }: ApplicationModalProps) {
+  const { t } = useTranslation();
   const [selectedResumeId, setSelectedResumeId] = useState<string>("");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const { toast } = useToast();
