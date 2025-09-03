@@ -318,9 +318,6 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
         setAvatarPreview(e.target?.result as string);
       };
       reader.readAsDataURL(file);
-
-      // Automatically start upload
-      uploadAvatarMutation.mutate(file);
     }
   };
 
@@ -877,13 +874,28 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   });
 
   // Form handlers
-  const handlePersonalSubmit = (data: any) => {
-    // Format date_of_birth for API if it exists
-    const formattedData = {
-      ...data,
-      date_of_birth: data.date_of_birth ? formatDateForAPI(data.date_of_birth) : data.date_of_birth,
-    };
-    updateProfileMutation.mutate(formattedData);
+  const handlePersonalSubmit = async (data: any) => {
+    try {
+      // Format date_of_birth for API if it exists
+      const formattedData = {
+        ...data,
+        date_of_birth: data.date_of_birth ? formatDateForAPI(data.date_of_birth) : data.date_of_birth,
+      };
+
+      // Update profile first
+      await updateProfileMutation.mutateAsync(formattedData);
+
+      // If there's a selected avatar file, upload it after profile update
+      if (selectedAvatarFile) {
+        await uploadAvatarMutation.mutateAsync(selectedAvatarFile);
+        // Clear avatar selection after successful upload
+        setSelectedAvatarFile(null);
+        setAvatarPreview(null);
+      }
+    } catch (error) {
+      // Error handling is already done in the mutation error handlers
+      console.error('Profile update failed:', error);
+    }
   };
 
   const handleEducationSubmit = (data: any) => {
@@ -1112,10 +1124,10 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     <h3 className="text-xl font-semibold">{user.first_name} {user.last_name}</h3>
                     <p className="text-muted-foreground">{user.email}</p>
                     
-                    {uploadAvatarMutation.isPending && (
+                    {selectedAvatarFile && !uploadAvatarMutation.isPending && (
                       <div className="flex items-center gap-2 mt-2">
-                        <Upload className="w-4 h-4 animate-spin text-primary" />
-                        <span className="text-sm text-primary">Uploading avatar...</span>
+                        <Camera className="w-4 h-4 text-primary" />
+                        <span className="text-sm text-primary">New avatar selected - click "Save Changes" to upload</span>
                       </div>
                     )}
                   </div>
@@ -1213,11 +1225,15 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
 
                   <Button 
                     type="submit" 
-                    disabled={updateProfileMutation.isPending}
+                    disabled={updateProfileMutation.isPending || uploadAvatarMutation.isPending}
                     className="w-full"
                   >
                     <Save className="w-4 h-4 mr-2" />
-                    {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
+                    {updateProfileMutation.isPending 
+                      ? "Saving profile..." 
+                      : uploadAvatarMutation.isPending 
+                        ? "Uploading avatar..." 
+                        : "Save Changes"}
                   </Button>
                 </form>
               </div>
