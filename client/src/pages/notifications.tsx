@@ -54,42 +54,42 @@ interface Notification {
 }
 
 // Generate a better description based on notification type and content
-function generateNotificationDescription(apiNotification: ApiNotification): string {
+function generateNotificationDescription(apiNotification: ApiNotification, t: (key: string) => string): string {
   const eventType = apiNotification.event.type;
   const title = apiNotification.title;
 
   switch (eventType) {
     case "JOB_APPLICATION_CREATED":
-      return "Your job application has been submitted successfully";
+      return t('notifications.application_submitted');
     case "JOB_APPLICATION_STATUS_CHANGED":
-      return "There's an update on your job application status";
+      return t('notifications.application_status_updated');
     case "JOB_APPLICATION_APPROVED":
-      return "Congratulations! Your job application has been approved";
+      return t('notifications.application_approved');
     case "JOB_APPLICATION_REJECTED":
-      return "Your job application status has been updated";
+      return t('notifications.application_status_updated');
     case "JOB_MATCH_CREATED":
     case "JOB_RECOMMENDATION":
-      return "New job opportunities that match your profile";
+      return t('notifications.job_opportunities');
     case "MESSAGE_RECEIVED":
     case "CHAT_MESSAGE":
-      return "You have received a new message";
+      return t('notifications.new_message_received');
     case "INTERVIEW_SCHEDULED":
-      return "An interview has been scheduled for you";
+      return t('notifications.interview_scheduled');
     case "INTERVIEW_REMINDER":
-      return "Reminder about your upcoming interview";
+      return t('notifications.interview_reminder');
     case "INTERVIEW_CANCELLED":
-      return "Your interview has been cancelled";
+      return t('notifications.interview_cancelled');
     case "PROFILE_UPDATE":
-      return "Your profile has been updated";
+      return t('notifications.profile_updated');
     case "ACCOUNT_UPDATE":
-      return "Your account settings have been updated";
+      return t('notifications.account_settings_updated');
     default:
-      return title || "You have a new notification";
+      return title || t('notifications.new_notification');
   }
 }
 
 // Transform API notification to UI notification format
-function transformNotification(apiNotification: ApiNotification): Notification {
+function transformNotification(apiNotification: ApiNotification, t: (key: string) => string): Notification {
   // Debug: Log API notification data to understand structure
   // Map notification types to UI types and determine priority
   const typeMapping: Record<string, { type: Notification["type"]; priority: Notification["priority"] }> = {
@@ -169,7 +169,7 @@ function transformNotification(apiNotification: ApiNotification): Notification {
     id: apiNotification.id,
     type: mapping.type,
     title: apiNotification.title,
-    description: generateNotificationDescription(apiNotification),
+    description: generateNotificationDescription(apiNotification, t),
     isRead: apiNotification.is_read,
     createdAt,
     actionUrl,
@@ -221,10 +221,12 @@ function NotificationCard({
   notification,
   onMarkAsRead,
   eventType,
+  t,
 }: {
   notification: Notification;
   onMarkAsRead: (id: number) => void;
   eventType?: string;
+  t: (key: string) => string;
 }) {
   const priorityColors = {
     low: "bg-muted text-muted-foreground",
@@ -324,7 +326,7 @@ function NotificationCard({
                 data-action="mark-read"
                 className="text-xs px-2 py-1 hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/30 dark:hover:text-blue-400 transition-colors"
               >
-                Mark as read
+                {t('notifications.mark_read')}
               </Button>
             )}
           </div>
@@ -360,14 +362,14 @@ export default function Notifications() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       toast({
-        title: "Success",
-        description: "Notification marked as read",
+        title: t('common.success'),
+        description: t('notifications.mark_read'),
       });
     },
     onError: (error: any) => {
       console.error("Mark as read error:", error);
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to mark notification as read",
         variant: "destructive",
       });
@@ -396,14 +398,14 @@ export default function Notifications() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       toast({
-        title: "Success",
-        description: "All notifications marked as read",
+        title: t('common.success'),
+        description: t('notifications.mark_all_read'),
       });
     },
     onError: (error: any) => {
       console.error("Mark all as read error:", error);
       toast({
-        title: "Error",
+        title: t('common.error'),
         description: "Failed to mark all notifications as read",
         variant: "destructive",
       });
@@ -423,7 +425,7 @@ export default function Notifications() {
 
 
   // Transform API notifications to UI format
-  const notifications = notificationsData?.results.map(transformNotification) || [];
+  const notifications = notificationsData?.results.map(notification => transformNotification(notification, t)) || [];
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
   
@@ -448,10 +450,10 @@ export default function Notifications() {
               {markAllAsReadMutation.isPending ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Marking all...
+                  {t('notifications.mark_all_read')}...
                 </>
               ) : (
-                "Mark all as read"
+                t('notifications.mark_all_read')
               )}
             </Button>
           </div>
@@ -548,6 +550,7 @@ export default function Notifications() {
                     notification={notification}
                     onMarkAsRead={handleMarkAsRead}
                     eventType={notification.eventType}
+                    t={t}
                   />
                 ))}
               </div>

@@ -214,8 +214,8 @@ export default function ChatPage() {
         )
       );
       toast({
-        title: "Failed to send message",
-        description: "Please check your connection and try again",
+        title: t('chat.send_error'),
+        description: t('chat.connection_error'),
         variant: "destructive",
       });
     }
@@ -431,7 +431,7 @@ export default function ChatPage() {
               });
               
               toast({
-                title: "Failed to send message",
+                title: t('chat.send_error'),
                 description: errorMsg,
                 variant: "destructive",
               });
@@ -598,15 +598,15 @@ export default function ChatPage() {
       
       if (successfulUploads.length > 0) {
         toast({
-          title: "Files Uploaded",
+          title: t('chat.files_uploaded'),
           description: `${successfulUploads.length} file(s) attached successfully`,
         });
       }
     } catch (error) {
       console.error("Upload error:", error);
       toast({
-        title: "Upload Error",
-        description: "Failed to upload files",
+        title: t('chat.upload_error'),
+        description: t('chat.upload_failed'),
         variant: "destructive",
       });
     } finally {
@@ -649,7 +649,7 @@ export default function ChatPage() {
         minute: "2-digit",
       });
     } else if (diffInDays === 1) {
-      return "Yesterday";
+      return t('chat.yesterday');
     } else if (diffInDays < 7) {
       return date.toLocaleDateString([], { weekday: "short" });
     } else {
