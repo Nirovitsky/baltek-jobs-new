@@ -34,6 +34,10 @@ Authentication: OAuth2-only authentication system - all login/register functiona
 - **Chat System**: Real-time messaging via WebSocket, conversation management, history, robust file attachment support with progress indicators, and clickable company profile links.
 - **Company Profile Pages**: Dedicated company profiles accessible from job listings and chat.
 
+## Recent Changes
+
+- **September 3, 2025**: Successfully imported GitHub project to Replit environment. Installed all dependencies, configured Vite dev server with proper host settings (0.0.0.0:5000, allowedHosts: true) for Replit proxy compatibility. Set up deployment configuration for autoscale with npm build/start scripts. Application is running successfully with frontend and backend integrated via ViteExpress on port 5000.
+
 ## External Dependencies
 
 - **React**: Frontend framework.
