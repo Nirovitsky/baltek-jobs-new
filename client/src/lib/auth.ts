@@ -5,6 +5,8 @@ const API_BASE = "https://api.baltek.net/api";
 export class AuthService {
   private static TOKEN_KEY = "baltek_access_token";
   private static REFRESH_TOKEN_KEY = "baltek_refresh_token";
+  private static TOKEN_EXPIRES_KEY = "baltek_token_expires";
+  private static refreshPromise: Promise<string> | null = null;
 
   static getToken(): string | null {
     return localStorage.getItem(this.TOKEN_KEY);
@@ -14,18 +16,109 @@ export class AuthService {
     return localStorage.getItem(this.REFRESH_TOKEN_KEY);
   }
 
-  static setTokens(accessToken: string, refreshToken: string): void {
+  static setTokens(accessToken: string, refreshToken: string, expiresIn?: number): void {
     localStorage.setItem(this.TOKEN_KEY, accessToken);
     localStorage.setItem(this.REFRESH_TOKEN_KEY, refreshToken);
+    
+    // Store token expiration time (default to 1 hour if not provided)
+    const expirationTime = Date.now() + (expiresIn ? expiresIn * 1000 : 3600 * 1000);
+    localStorage.setItem(this.TOKEN_EXPIRES_KEY, expirationTime.toString());
   }
 
   static clearTokens(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     localStorage.removeItem(this.REFRESH_TOKEN_KEY);
+    localStorage.removeItem(this.TOKEN_EXPIRES_KEY);
+    this.refreshPromise = null;
   }
 
   static isAuthenticated(): boolean {
     return !!this.getToken();
+  }
+
+  static getTokenExpiresAt(): number | null {
+    const expires = localStorage.getItem(this.TOKEN_EXPIRES_KEY);
+    return expires ? parseInt(expires, 10) : null;
+  }
+
+  static isTokenExpiringSoon(bufferMinutes: number = 5): boolean {
+    const expiresAt = this.getTokenExpiresAt();
+    if (!expiresAt) return true; // Assume expiring if no expiration info
+    
+    const bufferMs = bufferMinutes * 60 * 1000;
+    return Date.now() + bufferMs >= expiresAt;
+  }
+
+  static async getValidToken(): Promise<string | null> {
+    const token = this.getToken();
+    if (!token) return null;
+
+    // If token is expiring soon, refresh it proactively
+    if (this.isTokenExpiringSoon()) {
+      try {
+        return await this.ensureTokenRefreshed();
+      } catch (error) {
+        console.warn('Failed to refresh token proactively:', error);
+        return token; // Return current token as fallback
+      }
+    }
+
+    return token;
+  }
+
+  static async ensureTokenRefreshed(): Promise<string> {
+    // Prevent multiple simultaneous refresh attempts
+    if (this.refreshPromise) {
+      return this.refreshPromise;
+    }
+
+    this.refreshPromise = this.performTokenRefresh();
+    
+    try {
+      const newToken = await this.refreshPromise;
+      this.refreshPromise = null;
+      return newToken;
+    } catch (error) {
+      this.refreshPromise = null;
+      throw error;
+    }
+  }
+
+  private static async performTokenRefresh(): Promise<string> {
+    const refreshToken = this.getRefreshToken();
+    if (!refreshToken) {
+      throw new Error("No refresh token available");
+    }
+
+    try {
+      const response = await fetch(`${API_BASE}/token/refresh/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refresh: refreshToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Token refresh failed");
+      }
+
+      const data = await response.json();
+      const newAccessToken = data.access;
+      
+      // Update only the access token, keep the same refresh token and set new expiration
+      localStorage.setItem(this.TOKEN_KEY, newAccessToken);
+      
+      // Set expiration time (assume 1 hour if not provided)
+      const expiresIn = data.expires_in || 3600;
+      const expirationTime = Date.now() + (expiresIn * 1000);
+      localStorage.setItem(this.TOKEN_EXPIRES_KEY, expirationTime.toString());
+      
+      return newAccessToken;
+    } catch (error) {
+      // Don't clear tokens here - let the calling code decide
+      throw error;
+    }
   }
 
 
@@ -56,32 +149,8 @@ export class AuthService {
 
 
   static async refreshToken(): Promise<string> {
-    const refreshToken = this.getRefreshToken();
-    if (!refreshToken) {
-      this.clearTokens();
-      throw new Error("No refresh token available");
-    }
-
     try {
-      const response = await fetch(`${API_BASE}/token/refresh/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ refresh: refreshToken }),
-      });
-
-      if (!response.ok) {
-        if (response.status === 401) {
-        } else {
-        }
-        this.clearTokens();
-        throw new Error("Token refresh failed");
-      }
-
-      const { access } = await response.json();
-      localStorage.setItem(this.TOKEN_KEY, access);
-      return access;
+      return await this.ensureTokenRefreshed();
     } catch (error) {
       this.clearTokens();
       throw new Error("Token refresh failed");

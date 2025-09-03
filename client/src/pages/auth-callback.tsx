@@ -43,7 +43,7 @@ export default function AuthCallback() {
         const tokens = await oauthService.exchangeCodeForTokens(code, state);
         
         // Store tokens and redirect immediately to jobs page
-        AuthService.setTokens(tokens.access_token, tokens.refresh_token || '');
+        AuthService.setTokens(tokens.access_token, tokens.refresh_token || '', tokens.expires_in);
         
         // Invalidate and refetch auth queries to update navbar and user state immediately
         await queryClient.invalidateQueries({ queryKey: ["auth", "user"] });

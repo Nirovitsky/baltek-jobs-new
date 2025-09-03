@@ -43,7 +43,9 @@ export class ApiClient {
   ): Promise<T> {
     try {
       const url = `${API_BASE}${endpoint}`;
-      const token = AuthService.getToken();
+      
+      // Get a valid token (refreshes proactively if expiring soon)
+      const token = requireAuth ? await AuthService.getValidToken() : AuthService.getToken();
 
       let headers = {
         "Content-Type": "application/json",
@@ -72,12 +74,13 @@ export class ApiClient {
       // Handle token expiration with automatic refresh (only if auth was required)
       if (response.status === 401 && token && requireAuth) {
         try {
+          // Force a token refresh (this will handle refresh token expiry)
           const newToken = await AuthService.refreshToken();
           
           // Retry with new token - ensure proper headers
           let retryHeaders = {
             ...headers,
-            ...AuthService.getAuthHeaders(),
+            Authorization: `Bearer ${newToken}`,
           };
 
           // Handle FormData case for retry
@@ -94,6 +97,7 @@ export class ApiClient {
           });
 
           if (retryResponse.status === 401) {
+            // If still 401 after refresh, the refresh token is also expired
             AuthService.logout();
             throw new Error("Session expired, please login again");
           }
@@ -105,6 +109,7 @@ export class ApiClient {
 
           return retryResponse.json();
         } catch (refreshError) {
+          // Clear tokens and logout if refresh fails
           AuthService.logout();
           throw new Error("Session expired, please login again");
         }
