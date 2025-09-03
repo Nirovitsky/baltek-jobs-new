@@ -8,6 +8,8 @@ interface UseInfiniteScrollOptions {
   rootMargin?: string;
   threshold?: number;
   prefetchThreshold?: number; // Number of jobs before end to start prefetching
+  isAuthenticated?: boolean;
+  onLoginPrompt?: () => void;
 }
 
 export function useInfiniteScroll({
@@ -18,6 +20,8 @@ export function useInfiniteScroll({
   rootMargin = "300px", // Increased for better UX
   threshold = 0.1,
   prefetchThreshold = 3, // Start prefetching when 3 jobs remain
+  isAuthenticated = true,
+  onLoginPrompt,
 }: UseInfiniteScrollOptions) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
@@ -25,15 +29,19 @@ export function useInfiniteScroll({
   const handleIntersection = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const [entry] = entries;
-      if (
-        entry.isIntersecting &&
-        hasNextPage &&
-        !isFetchingNextPage
-      ) {
-        fetchNextPage();
+      if (entry.isIntersecting && !isFetchingNextPage) {
+        // If user is not authenticated and has viewed 20+ jobs, show login prompt
+        if (!isAuthenticated && jobs.length >= 20) {
+          if (onLoginPrompt) {
+            onLoginPrompt();
+          }
+        } else if (hasNextPage) {
+          // Normal case: fetch next page
+          fetchNextPage();
+        }
       }
     },
-    [hasNextPage, isFetchingNextPage, fetchNextPage]
+    [hasNextPage, isFetchingNextPage, fetchNextPage, isAuthenticated, jobs.length, onLoginPrompt]
   );
 
   // Set up intersection observer for the bottom trigger element

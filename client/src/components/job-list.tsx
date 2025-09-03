@@ -82,24 +82,14 @@ export default function JobList({
     onSearchChange(clearEvent);
   };
 
-  // Handle the case where unauthenticated users reach 20 jobs
-  const handleFetchNextPage = () => {
-    if (!isAuthenticated && jobs.length >= 20) {
-      // Show login prompt instead of fetching more
-      if (onLoginPrompt) {
-        onLoginPrompt();
-      }
-      return;
-    }
-    fetchNextPage();
-  };
-
   const loadMoreRef = useInfiniteScroll({
     hasNextPage,
     isFetchingNextPage,
-    fetchNextPage: handleFetchNextPage,
+    fetchNextPage,
     jobs,
     prefetchThreshold: 4, // Start prefetching when user has scrolled through 6 of 10 jobs
+    isAuthenticated,
+    onLoginPrompt,
   });
 
   // Always render the search bar, even during loading
@@ -211,12 +201,7 @@ export default function JobList({
           {!isAuthenticated && jobs.length >= 20 ? (
             <div className="text-center space-y-2">
               <p className="text-sm text-muted-foreground">You've viewed 20 jobs as a guest</p>
-              <button 
-                onClick={onLoginPrompt}
-                className="text-sm text-primary hover:underline"
-              >
-                Sign in to see more jobs
-              </button>
+              <p className="text-xs text-muted-foreground">Scroll down to sign in and see more jobs</p>
             </div>
           ) : hasNextPage && !isFetchingNextPage ? (
             <p className="text-sm text-muted-foreground">Scroll for more jobs...</p>
