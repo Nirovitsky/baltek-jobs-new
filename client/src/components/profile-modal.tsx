@@ -374,7 +374,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
 
   // Avatar upload mutation
   const uploadAvatarMutation = useMutation({
-    mutationFn: (file: File) => ApiClient.uploadProfilePicture(file),
+    mutationFn: (file: File) => ApiClient.uploadProfilePicture(user!.id, file),
     onMutate: async (file: File) => {
       // Cancel any outgoing refetches
       await queryClient.cancelQueries({ queryKey: ["auth", "user"] });
@@ -931,15 +931,15 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   const formatDateForAPI = (dateString: string) => {
     if (!dateString) return "";
     
-    // Check if it's already in DD.MM.YYYY format
-    if (dateString.includes('.')) {
+    // Check if it's already in YYYY-MM-DD format
+    if (dateString.includes('-') && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
       return dateString; // Already in correct format
     }
     
-    // Convert from YYYY-MM-DD to DD.MM.YYYY
-    if (dateString.includes('-')) {
-      const [year, month, day] = dateString.split("-");
-      return `${day}.${month}.${year}`;
+    // Convert from DD.MM.YYYY to YYYY-MM-DD
+    if (dateString.includes('.')) {
+      const [day, month, year] = dateString.split(".");
+      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     }
     
     return dateString; // Return as-is if format is unclear

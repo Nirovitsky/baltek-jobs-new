@@ -348,10 +348,10 @@ export class ApiClient {
   }
 
   // Profile picture upload
-  static async uploadProfilePicture(file: File) {
+  static async uploadProfilePicture(id: number, file: File) {
     const formData = new FormData();
     formData.append('avatar', file);
-    return this.makeRequest('/users/short/', {
+    return this.makeRequest(`/users/${id}/`, {
       method: 'PATCH',
       body: formData,
     });
