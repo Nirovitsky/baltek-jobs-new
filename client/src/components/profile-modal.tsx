@@ -1307,9 +1307,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         <div>
                           <h4 className="font-semibold">{edu.level || edu.degree}</h4>
                           <p className="text-muted-foreground">
-                            {edu.university_name || 
-                             (edu.university?.name || edu.university?.display_name) ||
-                             ((universities as any)?.results?.find((uni: any) => uni.id === edu.university?.id || uni.id === edu.university)?.name)}
+                            {edu.university?.name || edu.university_name || edu.university?.display_name}
                           </p>
                           <p className="text-sm text-muted-foreground">{edu.field_of_study}</p>
                           <p className="text-sm text-muted-foreground">
