@@ -85,6 +85,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   const [uploadingResume, setUploadingResume] = useState<File | null>(null);
   const [selectedAvatarFile, setSelectedAvatarFile] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [showOrgSuggestions, setShowOrgSuggestions] = useState(false);
 
   // Update active tab when initialTab prop changes
   useEffect(() => {
@@ -1375,6 +1376,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               const value = e.target.value;
                               experienceForm.setValue("organization_name", value);
                               experienceForm.setValue("organization", 0);
+                              setShowOrgSuggestions(true); // Show suggestions when typing
                               
                               // Find matching organization
                               const matchingOrg = (organizations as any)?.results?.find((org: any) => 
@@ -1384,10 +1386,16 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                                 experienceForm.setValue("organization", matchingOrg.id);
                               }
                             }}
+                            onFocus={() => setShowOrgSuggestions(true)}
+                            onBlur={() => {
+                              // Delay hiding to allow clicking on suggestions
+                              setTimeout(() => setShowOrgSuggestions(false), 150);
+                            }}
                           />
                           
                           {/* Show suggestions when typing */}
-                          {experienceForm.watch("organization_name") && 
+                          {showOrgSuggestions &&
+                           experienceForm.watch("organization_name") && 
                            experienceForm.watch("organization_name").length > 0 && 
                            !organizationsLoading && (
                             <div className="absolute top-full left-0 right-0 bg-background border border-border rounded-md shadow-lg z-10 max-h-40 overflow-y-auto">
@@ -1405,6 +1413,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                                     onClick={() => {
                                       experienceForm.setValue("organization_name", org.official_name || org.display_name);
                                       experienceForm.setValue("organization", org.id);
+                                      setShowOrgSuggestions(false); // Hide suggestions after selection
                                     }}
                                   >
                                     {org.official_name || org.display_name}
