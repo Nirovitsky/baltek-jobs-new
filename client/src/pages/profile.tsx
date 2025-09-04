@@ -522,7 +522,7 @@ export default function Profile() {
                             {education.level}
                           </h4>
                           <p className="text-green-600 font-medium">
-                            {education.university_name}
+                            {education.university?.name || education.university_name}
                           </p>
                           <p className="text-sm text-muted-foreground mt-1">
                             {education.date_started} -{" "}

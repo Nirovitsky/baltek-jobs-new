@@ -1,0 +1,75 @@
+chunk-RPCDYKBN.js?v=b6d3f714:521 Warning: validateDOMNesting(...): <li> cannot appear as a descendant of <li>.
+    at li
+    at BreadcrumbSeparator (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/components/ui/breadcrumb.tsx:118:3)
+    at li
+    at _c5 (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/components/ui/breadcrumb.tsx:54:12)
+    at ol
+    at _c3 (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/components/ui/breadcrumb.tsx:31:12)
+    at nav
+    at _c (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/components/ui/breadcrumb.tsx:23:48)
+    at div
+    at div
+    at BreadcrumbNavigation (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/components/breadcrumb-navigation.tsx:88:20)
+    at div
+    at Profile (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/pages/profile.tsx?t=1756970364361:264:17)
+    at main
+    at div
+    at ProtectedLayout (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/App.tsx?t=1756970364361:98:30)
+    at OnboardingGuard (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/components/onboarding-guard.tsx:20:35)
+    at ProtectedRoute (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/App.tsx?t=1756970364361:44:27)
+    at RenderedRoute (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-router-dom.js?v=b6d3f714:5594:26)
+    at Routes (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-router-dom.js?v=b6d3f714:6357:3)
+    at Router (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/App.tsx?t=1756970364361:77:42)
+    at Provider (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=b6d3f714:38:15)
+    at TooltipProvider (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=b6d3f714:63:5)
+    at ImageCacheProvider (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/contexts/ImageCacheContext.tsx:22:38)
+    at ThemeProvider (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/src/components/theme-provider.tsx:25:3)
+    at QueryClientProvider (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=b6d3f714:2946:3)
+    at App
+    at Router (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-router-dom.js?v=b6d3f714:6300:13)
+    at BrowserRouter (https://e54c24fa-f9ab-49f2-889b-f902c77a6fa1-00-10jf839tvbtzo.kirk.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-router-dom.js?v=b6d3f714:9401:3)
+printWarning @ chunk-RPCDYKBN.js?v=b6d3f714:521
+error @ chunk-RPCDYKBN.js?v=b6d3f714:505
+validateDOMNesting @ chunk-RPCDYKBN.js?v=b6d3f714:8256
+createInstance @ chunk-RPCDYKBN.js?v=b6d3f714:8328
+completeWork @ chunk-RPCDYKBN.js?v=b6d3f714:16290
+completeUnitOfWork @ chunk-RPCDYKBN.js?v=b6d3f714:19224
+performUnitOfWork @ chunk-RPCDYKBN.js?v=b6d3f714:19206
+workLoopSync @ chunk-RPCDYKBN.js?v=b6d3f714:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=b6d3f714:19116
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=b6d3f714:18874
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=b6d3f714:9119
+(anonymous) @ chunk-RPCDYKBN.js?v=b6d3f714:18627
+setTimeout
+defaultScheduler @ @tanstack_react-query.js?v=b6d3f714:564
+flush @ @tanstack_react-query.js?v=b6d3f714:588
+batch @ @tanstack_react-query.js?v=b6d3f714:606
+dispatch_fn @ @tanstack_react-query.js?v=b6d3f714:1046
+setData @ @tanstack_react-query.js?v=b6d3f714:717
+fetch @ @tanstack_react-query.js?v=b6d3f714:939
+await in fetch
+executeFetch_fn @ @tanstack_react-query.js?v=b6d3f714:2288
+onSubscribe @ @tanstack_react-query.js?v=b6d3f714:1984
+subscribe @ @tanstack_react-query.js?v=b6d3f714:24
+(anonymous) @ @tanstack_react-query.js?v=b6d3f714:3163
+subscribeToStore @ chunk-RPCDYKBN.js?v=b6d3f714:11984
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=b6d3f714:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=b6d3f714:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=b6d3f714:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=b6d3f714:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=b6d3f714:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=b6d3f714:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=b6d3f714:19447
+performSyncWorkOnRoot @ chunk-RPCDYKBN.js?v=b6d3f714:18868
+flushSyncCallbacks @ chunk-RPCDYKBN.js?v=b6d3f714:9119
+commitRootImpl @ chunk-RPCDYKBN.js?v=b6d3f714:19432
+commitRoot @ chunk-RPCDYKBN.js?v=b6d3f714:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=b6d3f714:18805
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=b6d3f714:18718
+workLoop @ chunk-RPCDYKBN.js?v=b6d3f714:197
+flushWork @ chunk-RPCDYKBN.js?v=b6d3f714:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=b6d3f714:384Understand this error
+profile-modal.tsx:1304 Education data: {id: 14, university: {…}, level: 'master', date_started: '06.09.2024', date_finished: '01.09.2025'}date_finished: "01.09.2025"date_started: "06.09.2024"id: 14level: "master"university: {id: 1, name: 'Harvard University', location: {…}}[[Prototype]]: Object
+profile-modal.tsx:1305 University name should be: Harvard University
+profile-modal.tsx:1304 Education data: {id: 14, university: {…}, level: 'master', date_started: '06.09.2024', date_finished: '01.09.2025'}date_finished: "01.09.2025"date_started: "06.09.2024"id: 14level: "master"university: {id: 1, name: 'Harvard University', location: {…}}[[Prototype]]: Object
+profile-modal.tsx:1305 University name should be: Harvard University
