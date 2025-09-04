@@ -8,6 +8,7 @@ import { ApiClient } from "@/lib/api";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker as ShadcnDatePicker } from "@/components/ui/date-picker";
 import dayjs from 'dayjs';
 import { z } from "zod";
 import { 
@@ -1216,10 +1217,10 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="date_of_birth">Date of Birth</Label>
-                      <DatePicker
+                      <ShadcnDatePicker
                         value={personalForm.watch("date_of_birth") || ""}
                         onChange={(date) => personalForm.setValue("date_of_birth", date)}
-                        label="Date of Birth"
+                        placeholder="Select your birth date"
                         maxDate={new Date()}
                         minDate={new Date(1900, 0, 1)}
                       />
