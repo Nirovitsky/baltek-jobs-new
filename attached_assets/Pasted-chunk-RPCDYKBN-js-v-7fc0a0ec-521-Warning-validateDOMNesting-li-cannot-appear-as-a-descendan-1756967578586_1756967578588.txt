@@ -1,0 +1,35 @@
+chunk-RPCDYKBN.js?v=7fc0a0ec:521 Warning: validateDOMNesting(...): <li> cannot appear as a descendant of <li>.
+    at li
+    at BreadcrumbSeparator (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/components/ui/breadcrumb.tsx:118:3)
+    at li
+    at _c5 (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/components/ui/breadcrumb.tsx:54:12)
+    at ol
+    at _c3 (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/components/ui/breadcrumb.tsx:31:12)
+    at nav
+    at _c (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/components/ui/breadcrumb.tsx:23:48)
+    at div
+    at div
+    at BreadcrumbNavigation (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/components/breadcrumb-navigation.tsx:88:20)
+    at div
+    at Profile (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/pages/profile.tsx?t=1756966194142:264:17)
+    at main
+    at div
+    at ProtectedLayout (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/App.tsx?t=1756966194142:98:30)
+    at OnboardingGuard (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/components/onboarding-guard.tsx?t=1756965741188:20:35)
+    at ProtectedRoute (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/App.tsx?t=1756966194142:44:27)
+    at RenderedRoute (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.repli…r/workspace/node_modules/.vite/deps/react-router-dom.js?v=7fc0a0ec:5594:26)
+    at Routes (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.repli…er/workspace/node_modules/.vite/deps/react-router-dom.js?v=7fc0a0ec:6357:3)
+    at Router (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/App.tsx?t=1756966194142:77:42)
+    at Provider (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.repli…unner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=7fc0a0ec:38:15)
+    at TooltipProvider (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.repli…rkspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=7fc0a0ec:63:5)
+    at ImageCacheProvider (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/contexts/ImageCacheContext.tsx:22:38)
+    at ThemeProvider (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.replit.dev/src/components/theme-provider.tsx:25:3)
+    at QueryClientProvider (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.repli…rkspace/node_modules/.vite/deps/@tanstack_react-query.js?v=7fc0a0ec:2946:3)
+    at App
+    at Router (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.repli…r/workspace/node_modules/.vite/deps/react-router-dom.js?v=7fc0a0ec:6300:13)
+    at BrowserRouter (https://17a8115b-23d3-429f-a4bd-a485e38b3e58-00-2uc7ct2bfc65s.janeway.repli…er/workspace/node_modules/.vite/deps/react-router-dom.js?v=7fc0a0ec:9401:3)
+api.baltek.net/api/users/educations/:1 
+ Failed to load resource: the server responded with a status of 400 (Bad Request)
+2
+profile.tsx:286 Profile loading error: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+Profile	@	profile.tsx:286

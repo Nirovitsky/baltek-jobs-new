@@ -1207,11 +1207,20 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
 
                       <div className="space-y-2">
                         <Label htmlFor="level">Education Level</Label>
-                        <Input
-                          id="level"
-                          {...educationForm.register("level")}
-                          placeholder="Bachelor of Science in Computer Science"
-                        />
+                        <Select
+                          value={educationForm.watch("level") || ""}
+                          onValueChange={(value) => educationForm.setValue("level", value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select education level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="secondary">Secondary</SelectItem>
+                            <SelectItem value="undergraduate">Undergraduate</SelectItem>
+                            <SelectItem value="master">Master</SelectItem>
+                            <SelectItem value="doctorate">Doctorate</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4">
