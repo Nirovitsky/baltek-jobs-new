@@ -75,7 +75,7 @@ interface ProjectFormData extends Project {}
 
 export default function ProfileModal({ isOpen, onClose, initialTab = "personal" }: ProfileModalProps) {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<"personal" | "education" | "experience" | "projects" | "resumes">(initialTab);
@@ -930,7 +930,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     });
   };
 
-  if (!user) return null;
+  // Don't close modal during loading states - only close if user is null and not loading
+  if (!user && !isLoading) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
