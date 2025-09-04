@@ -933,7 +933,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   if (!user) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-[95vw] sm:max-w-4xl max-h-[90vh] overflow-hidden mx-4">
         <DialogHeader>
           <div className="flex items-center justify-between">
