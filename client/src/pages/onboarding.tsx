@@ -9,6 +9,7 @@ import { format } from "date-fns";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker as ShadcnDatePicker } from "@/components/ui/date-picker";
 import dayjs from 'dayjs';
 
 import { Button } from "@/components/ui/button";
@@ -45,6 +46,7 @@ import {
 } from "lucide-react";
 
 import { ApiClient } from "@/lib/api";
+import { useTranslation } from "react-i18next";
 
 // Schemas - name fields required, others optional for flexible onboarding
 const personalInfoSchema = z.object({
@@ -74,89 +76,6 @@ const educationSchema = z.object({
   date_finished: z.string().optional(),
 });
 
-// MUI Date Picker Component
-const MUIDatePicker = ({
-  value,
-  onChange,
-  label,
-}: {
-  value: string;
-  onChange: (date: string) => void;
-  label: string;
-}) => {
-  const selectedDate = value
-    ? (() => {
-        if (value.includes(".")) {
-          // DD.MM.YYYY format
-          const [day, month, year] = value.split(".");
-          return dayjs(new Date(parseInt(year), parseInt(month) - 1, parseInt(day)));
-        } else {
-          return dayjs(value);
-        }
-      })()
-    : null;
-
-  const handleDateChange = (date: any) => {
-    if (date) {
-      // Format as DD.MM.YYYY for API compatibility
-      const jsDate = date.toDate();
-      const year = jsDate.getFullYear();
-      const month = String(jsDate.getMonth() + 1).padStart(2, "0");
-      const day = String(jsDate.getDate()).padStart(2, "0");
-      onChange(`${day}.${month}.${year}`);
-    } else {
-      onChange("");
-    }
-  };
-
-  return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DatePicker
-        label={label}
-        value={selectedDate}
-        onChange={handleDateChange}
-        slotProps={{
-          textField: {
-            fullWidth: true,
-            variant: "outlined",
-            size: "small",
-            sx: {
-              '& .MuiOutlinedInput-root': {
-                borderRadius: '6px',
-                fontSize: '14px',
-                '& fieldset': {
-                  borderColor: 'hsl(var(--border))',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'hsl(var(--border))',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: 'hsl(var(--ring))',
-                  borderWidth: '2px',
-                },
-                '&.Mui-error fieldset': {
-                  borderColor: 'hsl(var(--destructive))',
-                },
-              },
-              '& .MuiInputLabel-root': {
-                color: 'hsl(var(--muted-foreground))',
-                fontSize: '14px',
-                '&.Mui-focused': {
-                  color: 'hsl(var(--foreground))',
-                },
-              },
-              '& .MuiInputBase-input': {
-                color: 'hsl(var(--foreground))',
-                backgroundColor: 'hsl(var(--background))',
-                padding: '8px 12px',
-              },
-            }
-          }
-        }}
-      />
-    </LocalizationProvider>
-  );
-};
 
 type OnboardingStep = {
   id: number;
@@ -201,6 +120,7 @@ export default function Onboarding() {
   const [currentStep, setCurrentStep] = useState(1);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [profilePicturePreview, setProfilePicturePreview] =
@@ -607,27 +527,24 @@ export default function Onboarding() {
               {/* Date of Birth */}
               <div>
                 <Label>Date of Birth</Label>
-                <MUIDatePicker
+                <ShadcnDatePicker
                   value={
                     birthDate
-                      ? `${String(birthDate.getDate()).padStart(2, "0")}.${String(birthDate.getMonth() + 1).padStart(2, "0")}.${birthDate.getFullYear()}`
+                      ? `${birthDate.getFullYear()}-${String(birthDate.getMonth() + 1).padStart(2, "0")}-${String(birthDate.getDate()).padStart(2, "0")}`
                       : ""
                   }
                   onChange={(dateString) => {
                     if (dateString) {
-                      // Parse DD.MM.YYYY format
-                      const [day, month, year] = dateString.split(".");
-                      const date = new Date(
-                        parseInt(year),
-                        parseInt(month) - 1,
-                        parseInt(day),
-                      );
+                      // Parse YYYY-MM-DD format from shadcn DatePicker
+                      const date = new Date(dateString);
                       handleDateChange(date);
                     } else {
                       handleDateChange(undefined);
                     }
                   }}
-                  label="Date of Birth (optional)"
+                  placeholder="Select your birth date"
+                  maxDate={new Date()}
+                  minDate={new Date(1900, 0, 1)}
                 />
               </div>
 
@@ -769,22 +686,22 @@ export default function Onboarding() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label>Start Date</Label>
-                      <MUIDatePicker
-                        value={experienceForm.watch("date_started")}
+                      <ShadcnDatePicker
+                        value={experienceForm.watch("date_started") || ""}
                         onChange={(date) =>
                           experienceForm.setValue("date_started", date)
                         }
-                        label="Start Date (optional)"
+                        placeholder="Select start date (optional)"
                       />
                     </div>
                     <div>
                       <Label>End Date</Label>
-                      <MUIDatePicker
-                        value={experienceForm.watch("date_finished")}
+                      <ShadcnDatePicker
+                        value={experienceForm.watch("date_finished") || ""}
                         onChange={(date) =>
                           experienceForm.setValue("date_finished", date)
                         }
-                        label="End Date (optional)"
+                        placeholder="Select end date (optional)"
                       />
                     </div>
                   </div>
@@ -932,22 +849,22 @@ export default function Onboarding() {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label>Start Date</Label>
-                      <MUIDatePicker
-                        value={educationForm.watch("date_started")}
+                      <ShadcnDatePicker
+                        value={educationForm.watch("date_started") || ""}
                         onChange={(date) =>
                           educationForm.setValue("date_started", date)
                         }
-                        label="Start Date (optional)"
+                        placeholder="Select start date (optional)"
                       />
                     </div>
                     <div>
                       <Label>End Date</Label>
-                      <MUIDatePicker
-                        value={educationForm.watch("date_finished")}
+                      <ShadcnDatePicker
+                        value={educationForm.watch("date_finished") || ""}
                         onChange={(date) =>
                           educationForm.setValue("date_finished", date)
                         }
-                        label="End Date (optional)"
+                        placeholder="Select end date (optional)"
                       />
                     </div>
                   </div>

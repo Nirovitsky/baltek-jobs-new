@@ -37,6 +37,7 @@ Authentication: OAuth2-only authentication system - all login/register functiona
 ## Recent Changes
 
 - **September 3, 2025**: Successfully imported GitHub project to Replit environment. Installed all dependencies, resolved TypeScript compilation issues by adding missing useTranslation import to profile-modal.tsx. Configured Vite dev server with proper host settings (0.0.0.0:5000, allowedHosts: true) for Replit proxy compatibility. Set up deployment configuration for autoscale deployment with npm build/start scripts. Application is running successfully with frontend and backend integrated via ViteExpress on port 5000. All workflows are operational and the platform is ready for development and deployment.
+- **September 4, 2025**: Replaced MUI DatePicker with enhanced shadcn DatePicker for all date of birth fields. The new date picker features easy year navigation with dropdown selectors for both month and year, making it much more user-friendly for selecting birth dates from many years ago. Updated both profile modal and onboarding page to use the consistent shadcn/ui DatePicker component with proper date validation and format handling.
 
 ## External Dependencies
 
