@@ -1,0 +1,107 @@
+Form submission started with data: 
+{first_name: 'Atashka', last_name: 'Saparov', email: 'ata@baltek.net', phone: '+99371266560', profession: 'Software Engineer', …}
+date_of_birth
+: 
+"20.03.2001"
+email
+: 
+"ata@baltek.net"
+first_name
+: 
+"Atashka"
+gender
+: 
+"male"
+last_name
+: 
+"Saparov"
+phone
+: 
+"+99371266560"
+profession
+: 
+"Software Engineer"
+[[Prototype]]
+: 
+Object
+profile-modal.tsx:896 Formatted data for API: 
+{first_name: 'Atashka', last_name: 'Saparov', email: 'ata@baltek.net', phone: '+99371266560', profession: 'Software Engineer', …}
+date_of_birth
+: 
+"20.03.2001"
+email
+: 
+"ata@baltek.net"
+first_name
+: 
+"Atashka"
+gender
+: 
+"male"
+last_name
+: 
+"Saparov"
+phone
+: 
+"+99371266560"
+profession
+: 
+"Software Engineer"
+[[Prototype]]
+: 
+Object
+api.ts:66 
+ PATCH https://api.baltek.net/api/users/8/ 400 (Bad Request)
+makeRequest	@	api.ts:66
+await in makeRequest		
+updateProfile	@	api.ts:222
+mutationFn	@	profile-modal.tsx:335
+await in execute		
+handlePersonalSubmit	@	profile-modal.tsx:899
+onClick	@	profile-modal.tsx:1275
+profile-modal.tsx:912 Profile update failed: Error: API Error: 400 - {"gender":["\"male\" is not a valid choice."]}
+    at ApiClient.makeRequest (api.ts:120:15)
+handlePersonalSubmit	@	profile-modal.tsx:912
+await in handlePersonalSubmit		
+onClick	@	profile-modal.tsx:1275
+api.ts:66 
+ GET https://api.baltek.net/api/jobs/applications/?owner=undefined 400 (Bad Request)
+makeRequest	@	api.ts:66
+await in makeRequest		
+getMyApplications	@	api.ts:188
+queryFn	@	profile.tsx:195
+setTimeout		
+onMutate	@	profile-modal.tsx:344
+await in execute		
+handlePersonalSubmit	@	profile-modal.tsx:899
+onClick	@	profile-modal.tsx:1275
+2
+profile.tsx:286 Profile loading error: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+Profile	@	profile.tsx:286
+await in fetch		
+onSettled	@	profile-modal.tsx:371
+await in execute		
+handlePersonalSubmit	@	profile-modal.tsx:899
+onClick	@	profile-modal.tsx:1275
+api.ts:66 
+ GET https://api.baltek.net/api/jobs/applications/?owner=undefined 400 (Bad Request)
+makeRequest	@	api.ts:66
+await in makeRequest		
+getMyApplications	@	api.ts:188
+queryFn	@	profile.tsx:195
+await in fetch		
+onSettled	@	profile-modal.tsx:371
+await in execute		
+handlePersonalSubmit	@	profile-modal.tsx:899
+onClick	@	profile-modal.tsx:1275
+api.ts:66 
+ GET https://api.baltek.net/api/jobs/applications/?owner=undefined 400 (Bad Request)
+makeRequest	@	api.ts:66
+await in makeRequest		
+getMyApplications	@	api.ts:188
+queryFn	@	profile.tsx:195
+await in fetch		
+onSettled	@	profile-modal.tsx:371
+await in execute		
+handlePersonalSubmit	@	profile-modal.tsx:899
+onClick	@	profile-modal.tsx:1275

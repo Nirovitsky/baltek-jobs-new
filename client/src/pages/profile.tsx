@@ -192,7 +192,7 @@ export default function Profile() {
   // Fetch user applications for stats
   const { data: applications } = useQuery({
     queryKey: ["user", "applications"],
-    queryFn: () => ApiClient.getMyApplications(),
+    queryFn: () => ApiClient.getMyApplications(user!.id),
     enabled: !!user?.id,
   });
 
