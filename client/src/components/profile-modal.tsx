@@ -1300,7 +1300,10 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 </Card>
 
                 {/* Education List */}
-                {userEducation?.map((edu: any) => (
+                {userEducation?.map((edu: any) => {
+                  console.log('Education data:', edu);
+                  console.log('University name should be:', edu.university?.name);
+                  return (
                   <Card key={edu.id}>
                     <CardContent className="pt-4">
                       <div className="flex items-start justify-between">
@@ -1338,7 +1341,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       </div>
                     </CardContent>
                   </Card>
-                ))}
+                  );
+                })}
               </div>
             )}
 
