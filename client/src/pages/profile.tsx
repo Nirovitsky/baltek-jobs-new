@@ -301,47 +301,108 @@ export default function Profile() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-background">
+    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
       <BreadcrumbNavigation />
-      <div className="layout-container-body py-4">
-        {/* Two Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Profile Sections */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Personal Information Card */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="space-y-6">
-                  {/* Profile Header with Avatar */}
-                  <div className="flex items-center space-x-4 pb-4 border-b">
-                    <Avatar className="w-16 h-16">
+      
+      {/* LinkedIn-style Layout */}
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Column - Main Profile Content */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Profile Header Card - LinkedIn Style */}
+            <Card className="overflow-hidden">
+              {/* Cover Photo Area */}
+              <div className="h-32 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary opacity-90"></div>
+              </div>
+              
+              <CardContent className="relative pt-0 px-6 pb-6">
+                {/* Profile Picture positioned over cover */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-start space-x-4 -mt-16 relative z-10">
+                    <Avatar className="w-32 h-32 ring-4 ring-white dark:ring-gray-800 bg-white">
                       {displayProfile.avatar ? (
                         <AvatarImage
                           src={displayProfile.avatar}
                           alt={`${displayProfile.first_name} ${displayProfile.last_name}`}
                         />
                       ) : (
-                        <AvatarFallback className="text-lg bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
+                        <AvatarFallback className="text-2xl font-semibold bg-white text-gray-800">
                           {(displayProfile.first_name?.[0] || "") +
                             (displayProfile.last_name?.[0] || "")}
                         </AvatarFallback>
                       )}
                     </Avatar>
-                    <div className="flex-1">
-                      <h1 className="text-xl font-bold text-foreground">
-                        {displayProfile.first_name} {displayProfile.last_name}
-                      </h1>
-                      {displayProfile.profession && (
-                        <p className="text-muted-foreground">
-                          {displayProfile.profession}
-                        </p>
-                      )}
-                      {displayProfile.bio && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {displayProfile.bio}
-                        </p>
-                      )}
+                    
+                    <div className="pt-16 flex-1">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h1 className="text-3xl font-bold text-foreground mb-1">
+                            {displayProfile.first_name} {displayProfile.last_name}
+                          </h1>
+                          {displayProfile.profession && (
+                            <p className="text-xl text-muted-foreground mb-3 font-medium">
+                              {displayProfile.profession}
+                            </p>
+                          )}
+                          {displayProfile.location && (
+                            <div className="flex items-center mb-2">
+                              <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
+                              <p className="text-sm text-muted-foreground">
+                                {typeof displayProfile.location === "string"
+                                  ? displayProfile.location
+                                  : displayProfile.location?.name ||
+                                    displayProfile.location}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setModalTab("personal");
+                            setIsProfileModalOpen(true);
+                          }}
+                          className="ml-4 mt-16"
+                        >
+                          <Edit className="w-4 h-4 mr-2" />
+                          Edit Profile
+                        </Button>
+                      </div>
                     </div>
+                  </div>
+                </div>
+
+                {/* Contact Information - LinkedIn Style */}
+                <div className="pt-4 border-t border-border">
+                  <div className="flex flex-wrap gap-6">
+                    {displayProfile.email && (
+                      <div className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors">
+                        <Mail className="w-4 h-4 mr-2" />
+                        <span>{displayProfile.email}</span>
+                      </div>
+                    )}
+                    {displayProfile.phone && (
+                      <div className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors">
+                        <Phone className="w-4 h-4 mr-2" />
+                        <span>{displayProfile.phone}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* About Section - LinkedIn Style */}
+            {displayProfile.bio && (
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-xl font-semibold flex items-center gap-2">
+                      <User className="w-5 h-5" />
+                      About
+                    </CardTitle>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -349,102 +410,30 @@ export default function Profile() {
                         setModalTab("personal");
                         setIsProfileModalOpen(true);
                       }}
+                      className="text-muted-foreground hover:text-primary"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
                   </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-foreground leading-relaxed whitespace-pre-wrap text-sm">
+                    {displayProfile.bio}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
 
-                  {/* Personal Details Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">
-                        Email
-                      </label>
-                      <p className="text-foreground flex items-center">
-                        <Mail className="w-4 h-4 mr-2 text-muted-foreground/60" />
-                        {displayProfile.email || "Not provided"}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">
-                        Phone
-                      </label>
-                      <p className="text-foreground flex items-center">
-                        <Phone className="w-4 h-4 mr-2 text-muted-foreground/60" />
-                        {displayProfile.phone || "Not provided"}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">
-                        Location
-                      </label>
-                      <p className="text-foreground flex items-center">
-                        <MapPin className="w-4 h-4 mr-2 text-muted-foreground/60" />
-                        {typeof displayProfile.location === "string"
-                          ? displayProfile.location
-                          : displayProfile.location?.name ||
-                            displayProfile.location ||
-                            "Not provided"}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">
-                        Date of Birth
-                      </label>
-                      <p className="text-foreground">
-                        {displayProfile.date_of_birth || "Not provided"}
-                      </p>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-foreground">
-                        Gender
-                      </label>
-                      <p className="text-foreground">
-                        {displayProfile.gender
-                          ? displayProfile.gender.charAt(0).toUpperCase() +
-                            displayProfile.gender.slice(1)
-                          : "Not provided"}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Skills Section */}
-                  {displayProfile.skills &&
-                    displayProfile.skills.length > 0 && (
-                      <div className="pt-4 border-t">
-                        <label className="text-sm font-medium text-foreground mb-3 block">
-                          Skills
-                        </label>
-                        <div className="flex flex-wrap gap-2">
-                          {displayProfile.skills.map(
-                            (skill: string, index: number) => (
-                              <Badge key={index} variant="secondary">
-                                {skill}
-                              </Badge>
-                            ),
-                          )}
-                        </div>
-                      </div>
-                    )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Experience Section */}
+            {/* Experience Section - LinkedIn Style */}
             {(fullProfile as any)?.experiences &&
               (fullProfile as any).experiences.length > 0 && (
                 <Card>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div>
-                          <CardTitle>Experience</CardTitle>
-                        </div>
-                      </div>
+                      <CardTitle className="text-xl font-semibold flex items-center gap-2">
+                        <Briefcase className="w-5 h-5" />
+                        Experience
+                      </CardTitle>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -452,53 +441,75 @@ export default function Profile() {
                           setModalTab("experience");
                           setIsProfileModalOpen(true);
                         }}
+                        className="text-muted-foreground hover:text-primary"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      {(fullProfile as any).experiences.map(
-                        (experience: any) => (
-                          <div
-                            key={experience.id}
-                            className="border-l-2 border-blue-200 pl-4"
-                          >
-                            <h4 className="font-semibold text-foreground">
-                              {experience.position}
-                            </h4>
-                            <p className="text-primary font-medium">
-                              {experience.organization_name}
+                    <div className="space-y-6">
+                      {(fullProfile as any).experiences.map((experience: any, index: number) => (
+                        <div key={experience.id} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <Avatar className="w-12 h-12 border-2 border-border">
+                              <AvatarImage src={experience.organization?.logo} />
+                              <AvatarFallback className="text-xs font-semibold bg-primary/10 text-primary">
+                                {(experience.organization?.display_name || experience.organization?.official_name || experience.organization_name || "CO")
+                                  .split(" ")
+                                  .map((word: string) => word.charAt(0))
+                                  .join("")
+                                  .toUpperCase()
+                                  .slice(0, 2)}
+                              </AvatarFallback>
+                            </Avatar>
+                            {index < (fullProfile as any).experiences.length - 1 && (
+                              <div className="w-0.5 h-16 bg-border mt-2"></div>
+                            )}
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between mb-1">
+                              <h3 className="font-semibold text-foreground text-lg">
+                                {experience.title || experience.position}
+                              </h3>
+                            </div>
+                            
+                            <p className="text-muted-foreground font-medium mb-1">
+                              {experience.organization?.display_name ||
+                                experience.organization?.official_name ||
+                                experience.organization_name}
                             </p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {experience.date_started} -{" "}
-                              {experience.date_finished || "Present"}
-                            </p>
+                            
+                            <div className="flex items-center text-sm text-muted-foreground mb-3">
+                              <span>
+                                {experience.date_started} - {experience.date_finished || "Present"}
+                              </span>
+                            </div>
+                            
                             {experience.description && (
-                              <p className="text-foreground mt-2">
+                              <p className="text-sm text-muted-foreground leading-relaxed">
                                 {experience.description}
                               </p>
                             )}
                           </div>
-                        ),
-                      )}
+                        </div>
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
               )}
 
-            {/* Education Section */}
+            {/* Education Section - LinkedIn Style */}
             {(fullProfile as any)?.educations &&
               (fullProfile as any).educations.length > 0 && (
                 <Card>
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div>
-                          <CardTitle>Education</CardTitle>
-                        </div>
-                      </div>
+                      <CardTitle className="text-xl font-semibold flex items-center gap-2">
+                        <GraduationCap className="w-5 h-5" />
+                        Education
+                      </CardTitle>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -506,33 +517,53 @@ export default function Profile() {
                           setModalTab("education");
                           setIsProfileModalOpen(true);
                         }}
+                        className="text-muted-foreground hover:text-primary"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      {(fullProfile as any).educations.map((education: any) => (
-                        <div
-                          key={education.id}
-                          className="border-l-2 border-green-200 pl-4"
-                        >
-                          <h4 className="font-semibold text-foreground capitalize">
-                            {education.level}
-                          </h4>
-                          <p className="text-green-600 font-medium">
-                            {education.university?.name || education.university_name}
-                          </p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {education.date_started} -{" "}
-                            {education.date_finished || "Present"}
-                          </p>
-                          {education.description && (
-                            <p className="text-foreground mt-2">
-                              {education.description}
+                    <div className="space-y-6">
+                      {(fullProfile as any).educations.map((education: any, index: number) => (
+                        <div key={education.id} className="flex gap-4">
+                          <div className="flex flex-col items-center">
+                            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                              <GraduationCap className="w-6 h-6 text-primary" />
+                            </div>
+                            {index < (fullProfile as any).educations.length - 1 && (
+                              <div className="w-0.5 h-16 bg-border mt-2"></div>
+                            )}
+                          </div>
+                          
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between mb-1">
+                              <h3 className="font-semibold text-foreground text-lg">
+                                {education.university?.name || education.university_name}
+                              </h3>
+                            </div>
+                            
+                            <p className="text-muted-foreground font-medium mb-1">
+                              {education.level === 'master' ? 'Master\'s degree' : 
+                               education.level === 'bachelor' ? 'Bachelor\'s degree' :
+                               education.level === 'doctorate' ? 'Doctorate degree' :
+                               education.level === 'undergraduate' ? 'Undergraduate degree' :
+                               education.level === 'secondary' ? 'High School' :
+                               education.level}
                             </p>
-                          )}
+                            
+                            <div className="flex items-center text-sm text-muted-foreground mb-3">
+                              <span>
+                                {education.date_started} - {education.date_finished || "Present"}
+                              </span>
+                            </div>
+                            
+                            {education.description && (
+                              <p className="text-sm text-muted-foreground leading-relaxed">
+                                {education.description}
+                              </p>
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -678,8 +709,52 @@ export default function Profile() {
             </Card>
           </div>
 
-          {/* Right Column - Company Suggestions */}
-          <div className="lg:col-span-1">
+          {/* Right Column - Sidebar */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Profile Stats Card */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">Profile Stats</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-sm text-muted-foreground">Job Applications</span>
+                  <span className="font-semibold text-primary">
+                    {Array.isArray(applications) ? applications.length : 0}
+                  </span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-sm text-muted-foreground">Resumes</span>
+                  <span className="font-semibold text-green-600">
+                    {resumesList.length}
+                  </span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-sm text-muted-foreground">Education</span>
+                  <span className="font-semibold text-blue-600">
+                    {(fullProfile as any)?.educations?.length || 0}
+                  </span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-sm text-muted-foreground">Experience</span>
+                  <span className="font-semibold text-purple-600">
+                    {(fullProfile as any)?.experiences?.length || 0}
+                  </span>
+                </div>
+                
+                <div className="flex justify-between items-center py-2">
+                  <span className="text-sm text-muted-foreground">Projects</span>
+                  <span className="font-semibold text-orange-600">
+                    {(fullProfile as any)?.projects?.length || 0}
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Company Suggestions */}
             <CompanySuggestions />
           </div>
         </div>
