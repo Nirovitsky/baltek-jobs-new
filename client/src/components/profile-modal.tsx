@@ -931,15 +931,15 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   const formatDateForAPI = (dateString: string) => {
     if (!dateString) return "";
     
-    // Check if it's already in YYYY-MM-DD format
-    if (dateString.includes('-') && dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    // Check if it's already in DD.MM.YYYY format
+    if (dateString.includes('.')) {
       return dateString; // Already in correct format
     }
     
-    // Convert from DD.MM.YYYY to YYYY-MM-DD
-    if (dateString.includes('.')) {
-      const [day, month, year] = dateString.split(".");
-      return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+    // Convert from YYYY-MM-DD to DD.MM.YYYY
+    if (dateString.includes('-')) {
+      const [year, month, day] = dateString.split("-");
+      return `${day}.${month}.${year}`;
     }
     
     return dateString; // Return as-is if format is unclear
