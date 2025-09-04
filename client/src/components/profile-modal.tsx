@@ -885,15 +885,11 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   // Form handlers
   const handlePersonalSubmit = async (data: any) => {
     try {
-      console.log("Form submission started with data:", data);
-      
       // Format date_of_birth for API if it exists
       const formattedData = {
         ...data,
         date_of_birth: data.date_of_birth ? formatDateForAPI(data.date_of_birth) : data.date_of_birth,
       };
-
-      console.log("Formatted data for API:", formattedData);
 
       // Update profile first
       await updateProfileMutation.mutateAsync(formattedData);
@@ -905,8 +901,6 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
         setSelectedAvatarFile(null);
         setAvatarPreview(null);
       }
-      
-      console.log("Profile update completed successfully");
     } catch (error) {
       // Error handling is already done in the mutation error handlers
       console.error('Profile update failed:', error);
@@ -1149,12 +1143,6 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     <h3 className="text-xl font-semibold">{user.first_name} {user.last_name}</h3>
                     <p className="text-muted-foreground">{user.email}</p>
                     
-                    {selectedAvatarFile && !uploadAvatarMutation.isPending && (
-                      <div className="flex items-center gap-2 mt-2">
-                        <Camera className="w-4 h-4 text-primary" />
-                        <span className="text-sm text-primary">New avatar selected - click "Save Changes" to upload</span>
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -1264,21 +1252,6 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                   </div>
 
                   <div className="space-y-2">
-                    <Button 
-                      type="button" 
-                      onClick={() => {
-                        console.log("🐛 Test button clicked!");
-                        console.log("🔒 User authenticated:", !!user);
-                        console.log("👤 User data:", user);
-                        console.log("📋 Form data:", personalForm.getValues());
-                        console.log("🚀 Calling handlePersonalSubmit...");
-                        handlePersonalSubmit(personalForm.getValues());
-                      }}
-                      className="w-full mb-2"
-                      variant="outline"
-                    >
-                      🐛 Test Submit (Debug)
-                    </Button>
                     <Button 
                       type="submit" 
                       disabled={updateProfileMutation.isPending || uploadAvatarMutation.isPending}
