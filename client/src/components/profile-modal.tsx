@@ -936,14 +936,9 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-[95vw] sm:max-w-4xl max-h-[90vh] overflow-hidden mx-4">
         <DialogHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <DialogTitle className="text-2xl">My Profile</DialogTitle>
-              <DialogDescription>Manage your professional profile and career information</DialogDescription>
-            </div>
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
+          <div>
+            <DialogTitle className="text-2xl">My Profile</DialogTitle>
+            <DialogDescription>Manage your professional profile and career information</DialogDescription>
           </div>
         </DialogHeader>
 
