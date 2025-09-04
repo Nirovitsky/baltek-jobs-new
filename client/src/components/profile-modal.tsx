@@ -885,11 +885,15 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   // Form handlers
   const handlePersonalSubmit = async (data: any) => {
     try {
+      console.log("Form submission started with data:", data);
+      
       // Format date_of_birth for API if it exists
       const formattedData = {
         ...data,
         date_of_birth: data.date_of_birth ? formatDateForAPI(data.date_of_birth) : data.date_of_birth,
       };
+
+      console.log("Formatted data for API:", formattedData);
 
       // Update profile first
       await updateProfileMutation.mutateAsync(formattedData);
@@ -901,6 +905,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
         setSelectedAvatarFile(null);
         setAvatarPreview(null);
       }
+      
+      console.log("Profile update completed successfully");
     } catch (error) {
       // Error handling is already done in the mutation error handlers
       console.error('Profile update failed:', error);
@@ -1257,18 +1263,35 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     </div>
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    disabled={updateProfileMutation.isPending || uploadAvatarMutation.isPending}
-                    className="w-full"
-                  >
-                    <Save className="w-4 h-4 mr-2" />
-                    {updateProfileMutation.isPending 
-                      ? "Saving profile..." 
-                      : uploadAvatarMutation.isPending 
-                        ? "Uploading avatar..." 
-                        : "Save Changes"}
-                  </Button>
+                  <div className="space-y-2">
+                    <Button 
+                      type="button" 
+                      onClick={() => {
+                        console.log("🐛 Test button clicked!");
+                        console.log("🔒 User authenticated:", !!user);
+                        console.log("👤 User data:", user);
+                        console.log("📋 Form data:", personalForm.getValues());
+                        console.log("🚀 Calling handlePersonalSubmit...");
+                        handlePersonalSubmit(personalForm.getValues());
+                      }}
+                      className="w-full mb-2"
+                      variant="outline"
+                    >
+                      🐛 Test Submit (Debug)
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      disabled={updateProfileMutation.isPending || uploadAvatarMutation.isPending}
+                      className="w-full"
+                    >
+                      <Save className="w-4 h-4 mr-2" />
+                      {updateProfileMutation.isPending 
+                        ? "Saving profile..." 
+                        : uploadAvatarMutation.isPending 
+                          ? "Uploading avatar..." 
+                          : "Save Changes"}
+                    </Button>
+                  </div>
                 </form>
               </div>
             )}
