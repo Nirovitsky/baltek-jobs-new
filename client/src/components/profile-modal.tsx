@@ -1306,7 +1306,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="flex items-start justify-between">
                         <div>
                           <h4 className="font-semibold">{edu.degree}</h4>
-                          <p className="text-muted-foreground">{edu.university_name}</p>
+                          <p className="text-muted-foreground">{edu.university_name || (edu.university?.name || edu.university?.display_name)}</p>
                           <p className="text-sm text-muted-foreground">{edu.field_of_study}</p>
                           <p className="text-sm text-muted-foreground">
                             {edu.start_date} - {edu.end_date || "Present"}
