@@ -5,11 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/hooks/use-auth";
 import { ApiClient } from "@/lib/api";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DatePicker as ShadcnDatePicker } from "@/components/ui/date-picker";
-import dayjs from 'dayjs';
 import { z } from "zod";
 import { 
   userProfileSchema, 
@@ -97,111 +93,6 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     }
   }, [isOpen, initialTab]);
 
-  // MUI DatePicker component for start and end dates
-  const DatePicker = ({ 
-    value, 
-    onChange, 
-    label,
-    maxDate, 
-    minDate 
-  }: { 
-    value: string; 
-    onChange: (date: string) => void; 
-    label: string;
-    maxDate?: Date;
-    minDate?: Date;
-  }) => {
-    const selectedDate = value
-      ? (() => {
-          // Handle DD.MM.YYYY format from API
-          if (value.includes('.')) {
-            const [day, month, year] = value.split('.');
-            return dayjs(new Date(parseInt(year), parseInt(month) - 1, parseInt(day)));
-          }
-          // Handle YYYY-MM-DD format
-          return dayjs(value);
-        })()
-      : null;
-
-    const handleDateChange = (date: any) => {
-      if (date) {
-        // Check if date is within allowed range
-        const jsDate = date.toDate();
-        const isValid = (!maxDate || jsDate <= maxDate) && (!minDate || jsDate >= minDate);
-        
-        if (isValid) {
-          onChange(date.format('YYYY-MM-DD'));
-        } else {
-          // Show toast for invalid date selection
-          if (maxDate && jsDate > maxDate) {
-            toast({
-              title: t('profile.invalid_date'),
-              description: t('profile.date_cannot_be_future'),
-              variant: "destructive",
-            });
-          } else if (minDate && jsDate < minDate) {
-            toast({
-              title: t('profile.invalid_date'), 
-              description: t('profile.date_cannot_be_past'),
-              variant: "destructive",
-            });
-          }
-        }
-      } else {
-        onChange("");
-      }
-    };
-
-    return (
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <MUIDatePicker
-          label={label}
-          value={selectedDate}
-          onChange={handleDateChange}
-          maxDate={maxDate ? dayjs(maxDate) : undefined}
-          minDate={minDate ? dayjs(minDate) : undefined}
-          slotProps={{
-            textField: {
-              fullWidth: true,
-              variant: "outlined",
-              size: "small",
-              sx: {
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '6px',
-                  fontSize: '14px',
-                  '& fieldset': {
-                    borderColor: 'hsl(var(--border))',
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'hsl(var(--border))',
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'hsl(var(--ring))',
-                    borderWidth: '2px',
-                  },
-                  '&.Mui-error fieldset': {
-                    borderColor: 'hsl(var(--destructive))',
-                  },
-                },
-                '& .MuiInputLabel-root': {
-                  color: 'hsl(var(--muted-foreground))',
-                  fontSize: '14px',
-                  '&.Mui-focused': {
-                    color: 'hsl(var(--foreground))',
-                  },
-                },
-                '& .MuiInputBase-input': {
-                  color: 'hsl(var(--foreground))',
-                  backgroundColor: 'hsl(var(--background))',
-                  padding: '8px 12px',
-                },
-              }
-            }
-          }}
-        />
-      </LocalizationProvider>
-    );
-  };
 
   // Fetch additional data
   const { data: universities, isLoading: universitiesLoading } = useQuery({
@@ -1326,18 +1217,52 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="date_started">Start Date</Label>
-                          <DatePicker
-                            value={educationForm.watch("date_started") || ""}
-                            onChange={(date) => educationForm.setValue("date_started", date)}
-                            label="Start Date"
+                          <ShadcnDatePicker
+                            value={(() => {
+                              const date = educationForm.watch("date_started");
+                              if (!date) return "";
+                              // Convert DD.MM.YYYY to YYYY-MM-DD for picker
+                              if (date.includes(".")) {
+                                const [day, month, year] = date.split(".");
+                                return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+                              }
+                              return date;
+                            })()}
+                            onChange={(date) => {
+                              if (!date) return educationForm.setValue("date_started", "");
+                              // Convert YYYY-MM-DD to DD.MM.YYYY for storage
+                              const [year, month, day] = date.split("-");
+                              const formattedDate = `${day}.${month}.${year}`;
+                              educationForm.setValue("date_started", formattedDate);
+                            }}
+                            placeholder="Select start date"
+                            maxDate={new Date()}
+                            minDate={new Date(1900, 0, 1)}
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="date_finished">End Date</Label>
-                          <DatePicker
-                            value={educationForm.watch("date_finished") || ""}
-                            onChange={(date) => educationForm.setValue("date_finished", date)}
-                            label="End Date"
+                          <ShadcnDatePicker
+                            value={(() => {
+                              const date = educationForm.watch("date_finished");
+                              if (!date) return "";
+                              // Convert DD.MM.YYYY to YYYY-MM-DD for picker
+                              if (date.includes(".")) {
+                                const [day, month, year] = date.split(".");
+                                return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+                              }
+                              return date;
+                            })()}
+                            onChange={(date) => {
+                              if (!date) return educationForm.setValue("date_finished", "");
+                              // Convert YYYY-MM-DD to DD.MM.YYYY for storage
+                              const [year, month, day] = date.split("-");
+                              const formattedDate = `${day}.${month}.${year}`;
+                              educationForm.setValue("date_finished", formattedDate);
+                            }}
+                            placeholder="Select end date"
+                            maxDate={new Date()}
+                            minDate={new Date(1900, 0, 1)}
                           />
                         </div>
                       </div>
@@ -1497,18 +1422,52 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="exp_date_started">Start Date</Label>
-                          <DatePicker
-                            value={experienceForm.watch("date_started") || ""}
-                            onChange={(date) => experienceForm.setValue("date_started", date)}
-                            label="Start Date"
+                          <ShadcnDatePicker
+                            value={(() => {
+                              const date = experienceForm.watch("date_started");
+                              if (!date) return "";
+                              // Convert DD.MM.YYYY to YYYY-MM-DD for picker
+                              if (date.includes(".")) {
+                                const [day, month, year] = date.split(".");
+                                return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+                              }
+                              return date;
+                            })()}
+                            onChange={(date) => {
+                              if (!date) return experienceForm.setValue("date_started", "");
+                              // Convert YYYY-MM-DD to DD.MM.YYYY for storage
+                              const [year, month, day] = date.split("-");
+                              const formattedDate = `${day}.${month}.${year}`;
+                              experienceForm.setValue("date_started", formattedDate);
+                            }}
+                            placeholder="Select start date"
+                            maxDate={new Date()}
+                            minDate={new Date(1900, 0, 1)}
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="exp_date_finished">End Date</Label>
-                          <DatePicker
-                            value={experienceForm.watch("date_finished") || ""}
-                            onChange={(date) => experienceForm.setValue("date_finished", date)}
-                            label="End Date"
+                          <ShadcnDatePicker
+                            value={(() => {
+                              const date = experienceForm.watch("date_finished");
+                              if (!date) return "";
+                              // Convert DD.MM.YYYY to YYYY-MM-DD for picker
+                              if (date.includes(".")) {
+                                const [day, month, year] = date.split(".");
+                                return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+                              }
+                              return date;
+                            })()}
+                            onChange={(date) => {
+                              if (!date) return experienceForm.setValue("date_finished", "");
+                              // Convert YYYY-MM-DD to DD.MM.YYYY for storage
+                              const [year, month, day] = date.split("-");
+                              const formattedDate = `${day}.${month}.${year}`;
+                              experienceForm.setValue("date_finished", formattedDate);
+                            }}
+                            placeholder="Select end date"
+                            maxDate={new Date()}
+                            minDate={new Date(1900, 0, 1)}
                           />
                         </div>
                       </div>
@@ -1643,18 +1602,52 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label htmlFor="proj_date_started">Start Date</Label>
-                          <DatePicker
-                            value={projectForm.watch("date_started") || ""}
-                            onChange={(date) => projectForm.setValue("date_started", date)}
-                            label="Start Date"
+                          <ShadcnDatePicker
+                            value={(() => {
+                              const date = projectForm.watch("date_started");
+                              if (!date) return "";
+                              // Convert DD.MM.YYYY to YYYY-MM-DD for picker
+                              if (date.includes(".")) {
+                                const [day, month, year] = date.split(".");
+                                return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+                              }
+                              return date;
+                            })()}
+                            onChange={(date) => {
+                              if (!date) return projectForm.setValue("date_started", "");
+                              // Convert YYYY-MM-DD to DD.MM.YYYY for storage
+                              const [year, month, day] = date.split("-");
+                              const formattedDate = `${day}.${month}.${year}`;
+                              projectForm.setValue("date_started", formattedDate);
+                            }}
+                            placeholder="Select start date"
+                            maxDate={new Date()}
+                            minDate={new Date(1900, 0, 1)}
                           />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="proj_date_finished">End Date</Label>
-                          <DatePicker
-                            value={projectForm.watch("date_finished") || ""}
-                            onChange={(date) => projectForm.setValue("date_finished", date)}
-                            label="End Date"
+                          <ShadcnDatePicker
+                            value={(() => {
+                              const date = projectForm.watch("date_finished");
+                              if (!date) return "";
+                              // Convert DD.MM.YYYY to YYYY-MM-DD for picker
+                              if (date.includes(".")) {
+                                const [day, month, year] = date.split(".");
+                                return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+                              }
+                              return date;
+                            })()}
+                            onChange={(date) => {
+                              if (!date) return projectForm.setValue("date_finished", "");
+                              // Convert YYYY-MM-DD to DD.MM.YYYY for storage
+                              const [year, month, day] = date.split("-");
+                              const formattedDate = `${day}.${month}.${year}`;
+                              projectForm.setValue("date_finished", formattedDate);
+                            }}
+                            placeholder="Select end date"
+                            maxDate={new Date()}
+                            minDate={new Date(1900, 0, 1)}
                           />
                         </div>
                       </div>
