@@ -1218,8 +1218,23 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     <div className="space-y-2">
                       <Label htmlFor="date_of_birth">Date of Birth</Label>
                       <ShadcnDatePicker
-                        value={personalForm.watch("date_of_birth") || ""}
-                        onChange={(date) => personalForm.setValue("date_of_birth", date)}
+                        value={(() => {
+                          const dob = personalForm.watch("date_of_birth");
+                          if (!dob) return "";
+                          // Convert DD.MM.YYYY to YYYY-MM-DD for picker
+                          if (dob.includes(".")) {
+                            const [day, month, year] = dob.split(".");
+                            return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+                          }
+                          return dob;
+                        })()}
+                        onChange={(date) => {
+                          if (!date) return personalForm.setValue("date_of_birth", "");
+                          // Convert YYYY-MM-DD to DD.MM.YYYY for storage
+                          const [year, month, day] = date.split("-");
+                          const formattedDate = `${day}.${month}.${year}`;
+                          personalForm.setValue("date_of_birth", formattedDate);
+                        }}
                         placeholder="Select your birth date"
                         maxDate={new Date()}
                         minDate={new Date(1900, 0, 1)}
