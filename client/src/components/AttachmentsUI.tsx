@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import AttachmentCard from "@/components/AttachmentCard";
@@ -110,10 +111,10 @@ const getFileTypeInfo = (fileName: string, contentType?: string) => {
   };
 };
 
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
+const formatFileSize = (bytes: number, t: any): string => {
+  if (bytes === 0) return '0 ' + t('file_attachment.bytes');
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = t('file_attachment.file_sizes', { returnObjects: true }) as string[];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
@@ -130,6 +131,7 @@ export function ComposerAddAttachment({
   uploadingFiles, 
   fileInputRef 
 }: ComposerAddAttachmentProps) {
+  const { t } = useTranslation();
   return (
     <>
       <Button
@@ -139,7 +141,7 @@ export function ComposerAddAttachment({
         className="h-8 w-8 p-0 shrink-0 hover:bg-primary/10 hover:text-primary transition-all duration-200 rounded-full"
         onClick={() => fileInputRef.current?.click()}
         disabled={uploadingFiles}
-        title="Attach files"
+        title={t('file_attachment.attach_files')}
       >
         {uploadingFiles ? (
           <Loader2 className="w-4 h-4 animate-spin text-primary" />
@@ -175,6 +177,7 @@ export function ComposerAttachments({
   onCancelUpload,
   uploadingFiles 
 }: ComposerAttachmentsProps) {
+  const { t } = useTranslation();
   if (attachedFiles.length === 0 && uploadProgress.length === 0) {
     return null;
   }
@@ -242,7 +245,7 @@ export function ComposerAttachments({
                       {file.name}
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {formatFileSize(file.size)}
+                      {formatFileSize(file.size, t)}
                     </div>
                   </div>
 
@@ -252,7 +255,7 @@ export function ComposerAttachments({
                     size="sm"
                     className="absolute -top-2 -right-2 h-6 w-6 p-0 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg hover:scale-110"
                     onClick={() => onRemoveFile(file.id)}
-                    title="Remove file"
+                    title={t('file_attachment.remove_file')}
                   >
                     <X className="w-3 h-3" />
                   </Button>
@@ -313,7 +316,7 @@ export function ComposerAttachments({
                         {file.name}
                       </div>
                       <div className="text-xs text-blue-600 dark:text-blue-400">
-                        {file.progress === -1 ? "Upload failed" : "Uploading..."}
+                        {file.progress === -1 ? t('file_attachment.upload_failed') : t('file_attachment.uploading')}
                       </div>
                     </div>
                   </div>
@@ -330,7 +333,7 @@ export function ComposerAttachments({
                         size="sm"
                         className="h-6 w-6 p-0 rounded-full bg-gray-500 hover:bg-red-500 text-white border-0 shadow-lg transition-colors duration-200"
                         onClick={() => onCancelUpload(index)}
-                        title="Cancel upload"
+                        title={t('file_attachment.cancel_upload')}
                       >
                         <X className="w-3 h-3" />
                       </Button>

@@ -96,20 +96,32 @@ export default function Navbar({}: NavbarProps) {
   const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const handleLanguageChange = (newLanguage: string) => {
+    const languageCode = newLanguage === 'english' ? 'en' : newLanguage === 'russian' ? 'ru' : 'tk';
+    
     // Show immediate feedback
     toast({
       title: t('navbar.changing_language'),
       description: t('navbar.switching_to', { language: t(`navbar.${newLanguage}`) }),
     });
     
-    // Small delay to show the loading state
-    setTimeout(() => {
-      i18n.changeLanguage(newLanguage === 'english' ? 'en' : newLanguage === 'russian' ? 'ru' : 'tk');
+    // Immediately save to localStorage to ensure persistence
+    try {
+      localStorage.setItem('i18nextLng', languageCode);
+    } catch (error) {
+      console.error('Failed to save language to localStorage:', error);
+    }
+    
+    // Change language
+    i18n.changeLanguage(languageCode).then(() => {
+      // Force a page reload to ensure all components use the new language
+      window.location.reload();
+    }).catch((error) => {
+      console.error('Failed to change language:', error);
       toast({
         title: t('navbar.language_updated'),
-        description: t('navbar.language_set', { language: t(`navbar.${newLanguage}`) }),
+        description: 'Failed to change language. Please try again.',
       });
-    }, 200);
+    });
   };
 
   return (
@@ -159,7 +171,7 @@ export default function Navbar({}: NavbarProps) {
                       {user?.avatar ? (
                         <img
                           src={user.avatar}
-                          alt="User profile"
+                          alt={t('navbar.profile')}
                           className="w-8 h-8 rounded-full object-cover"
                         />
                       ) : (

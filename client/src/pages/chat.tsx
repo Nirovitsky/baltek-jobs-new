@@ -707,12 +707,12 @@ export default function ChatPage() {
           <div className="text-center py-8">
             <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground/60" />
             <h3 className="text-lg font-medium text-foreground mb-2">
-              Unable to load conversations
+              {t('chat.unable_to_load')}
             </h3>
             <p className="text-muted-foreground mb-4">
               {roomsError instanceof Error
                 ? roomsError.message
-                : "Something went wrong"}
+                : t('common.something_went_wrong')}
             </p>
             <Button
               onClick={() =>
@@ -720,7 +720,7 @@ export default function ChatPage() {
               }
               variant="outline"
             >
-              Try again
+              {t('chat.try_again')}
             </Button>
           </div>
         </div>
@@ -737,14 +737,14 @@ export default function ChatPage() {
           <Card className="lg:col-span-1">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Conversations</CardTitle>
+                <CardTitle className="text-lg">{t('chat.conversations')}</CardTitle>
               </div>
 
               {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground/60 w-4 h-4" />
                 <Input
-                  placeholder="Search conversations..."
+                  placeholder={t('chat.search_conversations')}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-9"
@@ -776,10 +776,9 @@ export default function ChatPage() {
                 ) : conversations.length === 0 ? (
                   <div className="p-8 text-center text-muted-foreground">
                     <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground/60" />
-                    <p className="font-medium mb-2">No conversations yet</p>
+                    <p className="font-medium mb-2">{t('chat.no_conversations_yet')}</p>
                     <p className="text-sm">
-                      When recruiters contact you about opportunities, your
-                      conversations will appear here.
+                      {t('chat.conversations_description')}
                     </p>
                   </div>
                 ) : (
@@ -830,7 +829,7 @@ export default function ChatPage() {
                                     : "text-foreground"
                                 } break-words`}>
                                   {(conversation.content_object?.job?.organization?.display_name || 
-                                    conversation.content_object?.job?.organization?.official_name || "Unknown Company") + 
+                                    conversation.content_object?.job?.organization?.official_name || t('chat.unknown_company')) + 
                                    (conversation.content_object?.job?.title ? ` - ${conversation.content_object.job.title}` : "")}
                                 </h3>
                                 {conversation.content_object?.status === "expired" && (
@@ -838,14 +837,14 @@ export default function ChatPage() {
                                     variant="destructive"
                                     className="text-xs px-2 py-0.5 bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-400 border-red-200 dark:border-red-800 font-medium flex-shrink-0"
                                   >
-                                    Expired
+                                    {t('chat.expired')}
                                   </Badge>
                                 )}
                               </div>
                               <span className="text-xs text-muted-foreground flex-shrink-0 ml-2 font-medium">
                                 {conversation.last_message_date_created 
                                   ? formatTime(new Date(conversation.last_message_date_created * 1000).toISOString())
-                                  : "Recently"}
+                                  : t('common.recently')}
                               </span>
                             </div>
 
@@ -861,7 +860,7 @@ export default function ChatPage() {
                                 </p>
                               ) : (
                                 <p className="text-sm text-muted-foreground/60 italic flex-1">
-                                  Start the conversation
+                                  {t('chat.start_conversation')}
                                 </p>
                               )}
                             </div>
@@ -918,19 +917,19 @@ export default function ChatPage() {
                             }}
                           >
                             {(selectedConversationData?.content_object?.job?.organization?.display_name || 
-                              selectedConversationData?.content_object?.job?.organization?.official_name || "Unknown Company") + 
+                              selectedConversationData?.content_object?.job?.organization?.official_name || t('chat.unknown_company')) + 
                              (selectedConversationData?.content_object?.job?.title ? ` - ${selectedConversationData?.content_object?.job?.title}` : "")}
                           </h3>
                           {selectedConversationData?.content_object?.status === "expired" && (
                             <Badge variant="secondary" className="text-xs">
-                              Expired
+                              {t('chat.expired')}
                             </Badge>
                           )}
                         </div>
 
                         {selectedConversationData?.content_object?.status === "expired" && (
                           <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
-                            This conversation has expired and is now read-only.
+                            {t('chat.conversation_expired_message')}
                           </p>
                         )}
                       </div>
@@ -971,7 +970,7 @@ export default function ChatPage() {
                       <div className="flex items-center justify-center h-full text-muted-foreground">
                         <div className="text-center">
                           <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground/60" />
-                          <p>Start the conversation!</p>
+                          <p>{t('chat.start_conversation_title')}</p>
                         </div>
                       </div>
                     ) : (
@@ -1031,7 +1030,7 @@ export default function ChatPage() {
                                         size="sm"
                                         className="h-5 w-5 p-0 text-red-400 hover:text-red-300"
                                         onClick={() => retryMessage(message.id)}
-                                        title="Retry message"
+                                        title={t('chat.retry_message')}
                                       >
                                         <RotateCcw className="w-3 h-3" />
                                       </Button>
@@ -1135,10 +1134,10 @@ export default function ChatPage() {
                         uploadingFiles={uploadingFiles}
                         fileInputRef={fileInputRef}
                       />
-                      <Input
+                                              <Input
                         value={messageInput}
                         onChange={(e) => setMessageInput(e.target.value)}
-                        placeholder="Type your message..."
+                        placeholder={t('chat.type_message')}
                         className="flex-1"
                         data-testid="input-message"
                       />
@@ -1162,10 +1161,10 @@ export default function ChatPage() {
                       <div className="text-center text-muted-foreground">
                         <Clock className="w-5 h-5 mx-auto mb-2 text-muted-foreground/60" />
                         <p className="text-sm font-medium">
-                          Conversation Expired
+                          {t('chat.conversation_expired')}
                         </p>
                         <p className="text-xs">
-                          This conversation is now read-only
+                          {t('chat.conversation_expired_message')}
                         </p>
                       </div>
                     </div>
@@ -1177,9 +1176,9 @@ export default function ChatPage() {
               <CardContent className="flex items-center justify-center h-full">
                 <div className="text-center text-muted-foreground">
                   <Users className="w-16 h-16 mx-auto mb-4 text-muted-foreground/60" />
-                  <h3 className="font-medium mb-2">Select a conversation</h3>
+                  <h3 className="font-medium mb-2">{t('chat.select_conversation')}</h3>
                   <p className="text-sm">
-                    Choose a conversation from the left to start messaging
+                    {t('chat.select_conversation_description')}
                   </p>
                 </div>
               </CardContent>

@@ -1,6 +1,8 @@
 import { AuthService } from "./auth";
+import Logger from "./logger";
+import { apiBaseUrl } from "@/config/environment";
 
-const API_BASE = "https://api.baltek.net/api";
+const API_BASE = apiBaseUrl;
 
 // Static enum data for filters (not provided as API endpoints by Baltek)
 const STATIC_FILTER_OPTIONS = {
@@ -226,35 +228,35 @@ export class ApiClient {
   }
 
   static async completeOnboarding() {
-    console.log('API: Completing onboarding...');
+    Logger.info('Completing onboarding', undefined, 'API');
     
     try {
       // Get the current user first to verify current status and get user ID
       const currentUser = await this.getCurrentUser() as any;
-      console.log('API: Current user from /users/short/:', currentUser);
-      console.log('API: Current onboarding status:', currentUser.is_jobs_onboarding_completed);
-      console.log('API: User ID:', currentUser.id);
+      Logger.debug('Current user from /users/short/', currentUser, 'API');
+      Logger.debug('Current onboarding status', { status: currentUser.is_jobs_onboarding_completed }, 'API');
+      Logger.debug('User ID', { id: currentUser.id }, 'API');
       
       // Update the onboarding status using PATCH on users/{id} endpoint
       const updateData = { 
         is_jobs_onboarding_completed: true
       };
-      console.log('API: Sending update data to /users/' + currentUser.id + '/:', updateData);
+      Logger.debug('Sending update data to /users/' + currentUser.id + '/', updateData, 'API');
       
       const result = await this.makeRequest(`/users/${currentUser.id}/`, {
         method: 'PATCH',
         body: JSON.stringify(updateData),
       });
-      console.log('API: PATCH response from /users/' + currentUser.id + '/:', result);
+      Logger.debug('PATCH response from /users/' + currentUser.id + '/', result, 'API');
       
       // Verify the update by fetching user again
       const updatedUser = await this.getCurrentUser() as any;
-      console.log('API: User after update:', updatedUser);
-      console.log('API: Updated onboarding status:', updatedUser.is_jobs_onboarding_completed);
+      Logger.debug('User after update', updatedUser, 'API');
+      Logger.debug('Updated onboarding status', { status: updatedUser.is_jobs_onboarding_completed }, 'API');
       
       return result;
     } catch (error) {
-      console.error('API: Onboarding completion failed:', error);
+      Logger.error('Onboarding completion failed', error, 'API');
       throw error;
     }
   }

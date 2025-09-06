@@ -708,13 +708,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       });
 
       // Show immediate feedback
-      toast({ title: "Deleting...", description: "Removing project" });
+      toast({ title: t('profile_modal.deleting_project'), description: t('profile_modal.removing_project') });
 
       return { previousProfile };
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["auth", "user"] });
-      toast({ title: "Project deleted", description: "Project deleted successfully" });
+      toast({ title: t('profile_modal.project_deleted'), description: t('profile_modal.project_deleted_success') });
     },
     onError: (error, variables, context) => {
       // Rollback on error
@@ -723,8 +723,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       }
       
       toast({
-        title: "Failed to delete project",
-        description: error instanceof Error ? error.message : "Failed to delete project",
+        title: t('profile_modal.failed_delete_project'),
+        description: error instanceof Error ? error.message : t('profile_modal.failed_delete_project'),
         variant: "destructive",
       });
     },
@@ -748,12 +748,12 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
       queryClient.invalidateQueries({ queryKey: ["user", "resumes", "current"] });
       queryClient.refetchQueries({ queryKey: ["user", "resumes", "current"] });
       setUploadingResume(null);
-      toast({ title: "Resume uploaded", description: "Resume uploaded successfully" });
+      toast({ title: t('profile_modal.resume_uploaded'), description: t('profile_modal.resume_uploaded_success') });
     },
     onError: (error) => {
       toast({
-        title: "Failed to upload resume",
-        description: error instanceof Error ? error.message : "Failed to upload resume",
+        title: t('profile_modal.failed_upload_resume'),
+        description: error instanceof Error ? error.message : t('profile_modal.failed_upload_resume'),
         variant: "destructive",
       });
     },
@@ -763,12 +763,12 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
     mutationFn: (id: number) => ApiClient.deleteResume(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user", "resumes", "current"] });
-      toast({ title: "Resume deleted", description: "Resume deleted successfully" });
+      toast({ title: t('profile_modal.resume_deleted_success'), description: t('profile_modal.resume_deleted_success') });
     },
     onError: (error) => {
       toast({
-        title: "Failed to delete resume",
-        description: error instanceof Error ? error.message : "Failed to delete resume",
+        title: t('profile_modal.failed_delete_resume'),
+        description: error instanceof Error ? error.message : t('profile_modal.failed_delete_resume'),
         variant: "destructive",
       });
     },
@@ -883,8 +883,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
   const handleResumeUpload = (file: File) => {
     if (resumesList.length >= 3) {
       toast({
-        title: "Upload limit reached",
-        description: "You can only upload up to 3 resumes",
+        title: t('profile_modal.upload_limit_reached'),
+        description: t('profile_modal.upload_limit_description'),
         variant: "destructive",
       });
       return;
@@ -962,7 +962,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 onClick={() => setActiveTab("education")}
               >
                 <GraduationCap className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Education</span>
+                <span className="hidden sm:inline">{t('profile.education')}</span>
               </Button>
               <Button
                 variant={activeTab === "experience" ? "default" : "ghost"}
@@ -970,7 +970,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 onClick={() => setActiveTab("experience")}
               >
                 <Briefcase className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Experience</span>
+                <span className="hidden sm:inline">{t('profile.experience')}</span>
               </Button>
               <Button
                 variant={activeTab === "projects" ? "default" : "ghost"}
@@ -978,7 +978,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 onClick={() => setActiveTab("projects")}
               >
                 <Code className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Projects</span>
+                <span className="hidden sm:inline">{t('profile.projects')}</span>
               </Button>
               <Button
                 variant={activeTab === "resumes" ? "default" : "ghost"}
@@ -986,7 +986,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 onClick={() => setActiveTab("resumes")}
               >
                 <FileText className="w-4 h-4 mr-2" />
-                <span className="hidden sm:inline">Resumes ({resumesList.length}/3)</span>
+                <span className="hidden sm:inline">{t('profile.resumes')} ({resumesList.length}/3)</span>
               </Button>
             </div>
           </div>
@@ -1001,12 +1001,12 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                   <div className="relative">
                     <Avatar className="w-20 h-20">
                       <AvatarImage
-                        src={avatarPreview || user.avatar}
-                        alt="Profile"
+                        src={avatarPreview || user?.avatar}
+                        alt={t('profile_modal.profile_alt')}
                         className="object-cover"
                       />
                       <AvatarFallback className="text-lg bg-gradient-to-br from-blue-400 to-indigo-500 text-white">
-                        {(user.first_name?.[0] || "") + (user.last_name?.[0] || "")}
+                        {(user?.first_name?.[0] || "") + (user?.last_name?.[0] || "")}
                       </AvatarFallback>
                     </Avatar>
                     <label
@@ -1028,8 +1028,8 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="text-xl font-semibold">{user.first_name} {user.last_name}</h3>
-                    <p className="text-muted-foreground">{user.email}</p>
+                    <h3 className="text-xl font-semibold">{user?.first_name} {user?.last_name}</h3>
+                    <p className="text-muted-foreground">{user?.email}</p>
                     
                   </div>
                 </div>
@@ -1041,7 +1041,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <Input
                         id="first_name"
                         {...personalForm.register("first_name")}
-                        placeholder="John"
+                        placeholder={t('profile_modal.first_name_placeholder')}
                         className={personalForm.formState.errors.first_name ? "border-red-500" : ""}
                       />
                       {personalForm.formState.errors.first_name && (
@@ -1055,7 +1055,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <Input
                         id="last_name"
                         {...personalForm.register("last_name")}
-                        placeholder="Doe"
+                        placeholder={t('profile_modal.last_name_placeholder')}
                         className={personalForm.formState.errors.last_name ? "border-red-500" : ""}
                       />
                       {personalForm.formState.errors.last_name && (
@@ -1090,7 +1090,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     <Input
                       id="profession"
                       {...personalForm.register("profession")}
-                      placeholder="Software Engineer"
+                      placeholder={t('profile_modal.profession_placeholder')}
                     />
                   </div>
 
@@ -1117,7 +1117,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           const formattedDate = `${day}.${month}.${year}`;
                           personalForm.setValue("date_of_birth", formattedDate);
                         }}
-                        placeholder="Select your birth date"
+                        placeholder={t('profile_modal.birth_date_placeholder')}
                         maxDate={new Date()}
                         minDate={new Date(1900, 0, 1)}
                       />
@@ -1129,7 +1129,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         onValueChange={(value) => personalForm.setValue("gender", value)}
                       >
                         <SelectTrigger>
-                          <SelectValue placeholder="Select gender" />
+                          <SelectValue placeholder={t('profile_modal.gender_placeholder')} />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="m">Male</SelectItem>
@@ -1147,10 +1147,10 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     >
                       <Save className="w-4 h-4 mr-2" />
                       {updateProfileMutation.isPending 
-                        ? "Saving profile..." 
+                        ? t('profile_modal.saving_profile')
                         : uploadAvatarMutation.isPending 
-                          ? "Uploading avatar..." 
-                          : "Save Changes"}
+                          ? t('profile_modal.uploading_avatar')
+                          : t('profile_modal.save_changes')}
                     </Button>
                   </div>
                 </form>
@@ -1161,7 +1161,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
             {activeTab === "education" && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Education</h3>
+                  <h3 className="text-lg font-semibold">{t('profile.education')}</h3>
                   <Button
                     onClick={() => {
                       setEditingEducation(null);
@@ -1170,7 +1170,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Education
+{t('profile_modal.add_education')}
                   </Button>
                 </div>
 
@@ -1178,7 +1178,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-base">
-                      {editingEducation ? "Edit Education" : "Add Education"}
+                      {editingEducation ? t('profile_modal.edit_education_modal') : t('profile_modal.add_education_modal')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -1190,7 +1190,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           onValueChange={(value) => educationForm.setValue("university", parseInt(value))}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select university" />
+                            <SelectValue placeholder={t('profile_modal.university_placeholder')} />
                           </SelectTrigger>
                           <SelectContent>
                             {!universitiesLoading && (universities as any)?.results?.map((uni: any) => (
@@ -1203,13 +1203,13 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="level">Education Level</Label>
+                        <Label htmlFor="level">{t('profile_modal.education_level')}</Label>
                         <Select
                           value={educationForm.watch("level") || ""}
                           onValueChange={(value) => educationForm.setValue("level", value)}
                         >
                           <SelectTrigger>
-                            <SelectValue placeholder="Select education level" />
+                            <SelectValue placeholder={t('profile_modal.education_level_placeholder')} />
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="secondary">Secondary</SelectItem>
@@ -1241,7 +1241,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               const formattedDate = `${day}.${month}.${year}`;
                               educationForm.setValue("date_started", formattedDate);
                             }}
-                            placeholder="Select start date"
+                            placeholder={t('profile_modal.start_date_placeholder')}
                             maxDate={new Date()}
                             minDate={new Date(1900, 0, 1)}
                           />
@@ -1266,7 +1266,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               const formattedDate = `${day}.${month}.${year}`;
                               educationForm.setValue("date_finished", formattedDate);
                             }}
-                            placeholder="Select end date"
+                            placeholder={t('profile_modal.end_date_placeholder')}
                             maxDate={new Date()}
                             minDate={new Date(1900, 0, 1)}
                           />
@@ -1280,7 +1280,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           type="submit"
                           disabled={addEducationMutation.isPending || updateEducationMutation.isPending}
                         >
-                          {editingEducation ? "Update" : "Add"} Education
+                          {editingEducation ? t('profile_modal.update_education') : t('profile_modal.add_education_btn')}
                         </Button>
                         {editingEducation && (
                           <Button
@@ -1291,7 +1291,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               educationForm.reset();
                             }}
                           >
-                            Cancel
+                            {t('common.cancel')}
                           </Button>
                         )}
                       </div>
@@ -1311,7 +1311,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           </p>
                           <p className="text-sm text-muted-foreground">{edu.field_of_study}</p>
                           <p className="text-sm text-muted-foreground">
-                            {edu.start_date} - {edu.end_date || "Present"}
+                            {edu.start_date} - {edu.end_date || t('profile_modal.present')}
                             {edu.grade && ` • ${edu.grade}`}
                           </p>
                           {edu.description && (
@@ -1346,7 +1346,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
             {activeTab === "experience" && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Work Experience</h3>
+                  <h3 className="text-lg font-semibold">{t('profile_modal.work_experience')}</h3>
                   <Button
                     onClick={() => {
                       setEditingExperience(null);
@@ -1355,7 +1355,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Experience
+{t('profile_modal.add_experience')}
                   </Button>
                 </div>
 
@@ -1363,7 +1363,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-base">
-                      {editingExperience ? "Edit Experience" : "Add Experience"}
+                      {editingExperience ? t('profile_modal.edit_experience_modal') : t('profile_modal.add_experience_modal')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -1372,7 +1372,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         <Label htmlFor="organization">Organization</Label>
                         <div className="relative">
                           <Input
-                            placeholder="Type organization name (select from suggestions or add new)"
+                            placeholder={t('profile_modal.organization_placeholder')}
                             value={experienceForm.watch("organization_name") || ""}
                             onChange={(e) => {
                               const value = e.target.value;
@@ -1431,7 +1431,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                         <Input
                           id="position"
                           {...experienceForm.register("position")}
-                          placeholder="Senior Frontend Developer"
+                          placeholder={t('profile_modal.position_placeholder')}
                         />
                       </div>
 
@@ -1456,7 +1456,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               const formattedDate = `${day}.${month}.${year}`;
                               experienceForm.setValue("date_started", formattedDate);
                             }}
-                            placeholder="Select start date"
+                            placeholder={t('profile_modal.start_date_placeholder')}
                             maxDate={new Date()}
                             minDate={new Date(1900, 0, 1)}
                           />
@@ -1481,7 +1481,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               const formattedDate = `${day}.${month}.${year}`;
                               experienceForm.setValue("date_finished", formattedDate);
                             }}
-                            placeholder="Select end date"
+                            placeholder={t('profile_modal.end_date_placeholder')}
                             maxDate={new Date()}
                             minDate={new Date(1900, 0, 1)}
                           />
@@ -1494,7 +1494,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           id="exp_description"
                           rows={3}
                           {...experienceForm.register("description")}
-                          placeholder="Describe your role and achievements..."
+                          placeholder={t('profile_modal.role_description_placeholder')}
                         />
                       </div>
 
@@ -1503,7 +1503,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           type="submit"
                           disabled={addExperienceMutation.isPending || updateExperienceMutation.isPending}
                         >
-                          {editingExperience ? "Update" : "Add"} Experience
+                          {editingExperience ? t('profile_modal.update_experience') : t('profile_modal.add_experience')}
                         </Button>
                         {editingExperience && (
                           <Button
@@ -1514,7 +1514,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               experienceForm.reset();
                             }}
                           >
-                            Cancel
+                            {t('common.cancel')}
                           </Button>
                         )}
                       </div>
@@ -1531,7 +1531,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           <h4 className="font-semibold">{exp.position}</h4>
                           <p className="text-muted-foreground">{exp.organization_name}</p>
                           <p className="text-sm text-muted-foreground">
-                            {exp.date_started} - {exp.date_finished || "Present"}
+                            {exp.date_started} - {exp.date_finished || t('profile_modal.present')}
                           </p>
                           {exp.description && (
                             <p className="text-sm text-foreground mt-2">{exp.description}</p>
@@ -1565,7 +1565,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
             {activeTab === "projects" && (
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold">Projects</h3>
+                  <h3 className="text-lg font-semibold">{t('profile.projects')}</h3>
                   <Button
                     onClick={() => {
                       setEditingProject(null);
@@ -1574,7 +1574,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                     size="sm"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Add Project
+{t('profile_modal.add_project')}
                   </Button>
                 </div>
 
@@ -1582,7 +1582,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-base">
-                      {editingProject ? "Edit Project" : "Add Project"}
+                      {editingProject ? t('profile_modal.edit_project') : t('profile_modal.add_project')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -1602,7 +1602,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           id="proj_description"
                           rows={3}
                           {...projectForm.register("description")}
-                          placeholder="Describe your project..."
+                          placeholder={t('profile_modal.project_description_placeholder')}
                         />
                       </div>
 
@@ -1636,7 +1636,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               const formattedDate = `${day}.${month}.${year}`;
                               projectForm.setValue("date_started", formattedDate);
                             }}
-                            placeholder="Select start date"
+                            placeholder={t('profile_modal.start_date_placeholder')}
                             maxDate={new Date()}
                             minDate={new Date(1900, 0, 1)}
                           />
@@ -1661,7 +1661,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               const formattedDate = `${day}.${month}.${year}`;
                               projectForm.setValue("date_finished", formattedDate);
                             }}
-                            placeholder="Select end date"
+                            placeholder={t('profile_modal.end_date_placeholder')}
                             maxDate={new Date()}
                             minDate={new Date(1900, 0, 1)}
                           />
@@ -1673,7 +1673,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           type="submit"
                           disabled={addProjectMutation.isPending || updateProjectMutation.isPending}
                         >
-                          {editingProject ? "Update" : "Add"} Project
+                          {editingProject ? t('profile_modal.update_project') : t('profile_modal.add_project')}
                         </Button>
                         {editingProject && (
                           <Button
@@ -1684,7 +1684,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                               projectForm.reset();
                             }}
                           >
-                            Cancel
+                            {t('common.cancel')}
                           </Button>
                         )}
                       </div>
@@ -1709,7 +1709,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                           </div>
                           {(project.date_started || project.date_finished) && (
                             <p className="text-sm text-muted-foreground mt-1">
-                              {project.date_started} - {project.date_finished || "Ongoing"}
+                              {project.date_started} - {project.date_finished || t('profile_modal.ongoing')}
                             </p>
                           )}
                         </div>
@@ -1759,7 +1759,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                       <div className="text-center p-6 bg-muted rounded-lg">
                         <FileText className="w-12 h-12 text-muted-foreground/60 mx-auto mb-3" />
                         <p className="text-muted-foreground font-medium">Resume limit reached</p>
-                        <p className="text-sm text-muted-foreground">You can upload up to 3 resumes. Delete one to upload another.</p>
+                        <p className="text-sm text-muted-foreground">{t('profile_modal.resume_upload_limit')}</p>
                       </div>
                     )}
                   </CardContent>
@@ -1768,7 +1768,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                 {/* Resume List */}
                 {resumesList.length > 0 && (
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">My Resumes</h3>
+                    <h3 className="text-lg font-semibold">{t('profile_modal.my_resumes')}</h3>
                     {resumesList.map((resume: any) => (
                       <Card key={resume.id}>
                         <CardContent className="pt-4">
@@ -1776,7 +1776,7 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                             <div className="flex items-center space-x-3">
                               <FileText className="w-8 h-8 text-primary" />
                               <div>
-                                <h4 className="font-medium">{resume.title || resume.filename || "Resume"}</h4>
+                                <h4 className="font-medium">{resume.title || resume.filename || t('profile_modal.resume')}</h4>
                                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                                   {resume.created_at && (
                                     <span>
@@ -1787,9 +1787,9 @@ export default function ProfileModal({ isOpen, onClose, initialTab = "personal" 
                                             ? new Date(resume.created_at * 1000) // Convert timestamp to milliseconds
                                             : new Date(resume.created_at);
                                           
-                                          return isNaN(date.getTime()) ? "Recently" : date.toLocaleDateString();
+                                          return isNaN(date.getTime()) ? t('common.recently') : date.toLocaleDateString();
                                         } catch {
-                                          return "Recently";
+                                          return t('common.recently');
                                         }
                                       })()}
                                     </span>

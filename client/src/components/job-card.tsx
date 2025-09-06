@@ -199,7 +199,7 @@ export default function JobCard({ job, isSelected = false, onSelect, showBookmar
                 {job.organization?.logo ? (
                   <img
                     src={job.organization.logo}
-                    alt={job.organization.display_name || job.organization.name || 'Company'}
+                    alt={job.organization.display_name || job.organization.name || t('common.company_fallback')}
                     className="w-6 h-6 object-cover rounded-full"
                   />
                 ) : (

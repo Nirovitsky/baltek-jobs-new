@@ -12,12 +12,25 @@ const resources = {
   tk: { translation: tk },
 };
 
+// Get stored language from localStorage
+const getStoredLanguage = (): string => {
+  try {
+    const stored = localStorage.getItem('i18nextLng');
+    if (stored && ['en', 'ru', 'tk'].includes(stored)) {
+      return stored;
+    }
+  } catch (error) {
+    console.warn('Failed to read language from localStorage:', error);
+  }
+  return 'en'; // fallback to English
+};
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    lng: 'en', // default language
+    lng: getStoredLanguage(), // Use stored language or fallback to English
     fallbackLng: 'en',
     
     interpolation: {
@@ -27,7 +40,15 @@ i18n
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
+      cookieMinutes: 10080, // 7 days
+      cookieDomain: 'localhost',
+      cookieOptions: { path: '/', sameSite: 'strict' }
     },
+    
+    // Ensure language is persisted properly
+    saveMissing: false,
+    debug: false,
   });
 
 export default i18n;

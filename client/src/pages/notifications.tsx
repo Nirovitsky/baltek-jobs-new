@@ -504,25 +504,25 @@ export default function Notifications() {
                 <div className="max-w-md mx-auto">
                   <AlertCircle className="w-16 h-16 text-amber-400 mx-auto mb-6" />
                   <h3 className="text-xl font-semibold text-foreground dark:text-gray-100 mb-3">
-                    Notifications Coming Soon
+                    {t('notifications.notifications_coming_soon')}
                   </h3>
                   <p className="text-muted-foreground dark:text-muted-foreground/60 mb-6 leading-relaxed">
-                    The notification system is being set up on the server. This feature will be available soon!
+                    {t('notifications.notifications_setup_message')}
                   </p>
                   <div className="bg-white dark:bg-background rounded-xl p-6 text-left border border-gray-200 dark:border-gray-700">
-                    <p className="text-sm font-medium text-foreground dark:text-muted-foreground/60 mb-3">In the meantime, you can:</p>
+                    <p className="text-sm font-medium text-foreground dark:text-muted-foreground/60 mb-3">{t('notifications.in_the_meantime')}</p>
                     <ul className="space-y-2 text-sm text-muted-foreground dark:text-muted-foreground/60">
                       <li className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                        Check your applications page for updates
+                        {t('notifications.check_applications')}
                       </li>
                       <li className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                        Visit the chat page for messages
+                        {t('notifications.visit_chat')}
                       </li>
                       <li className="flex items-center gap-2">
                         <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-                        Browse new job listings
+                        {t('notifications.browse_jobs')}
                       </li>
                     </ul>
                   </div>
@@ -532,14 +532,14 @@ export default function Notifications() {
               <div className="text-center py-12">
                 <Bell className="w-16 h-16 text-muted-foreground/60 dark:text-muted-foreground mx-auto mb-6" />
                 <h3 className="text-xl font-semibold text-foreground dark:text-gray-100 mb-3">
-                  No notifications
+                  {t('notifications.no_notifications')}
                 </h3>
                 <p className="text-muted-foreground dark:text-muted-foreground/60">
                   {activeTab === "unread"
-                    ? "You're all caught up! No unread notifications."
+                    ? t('notifications.all_caught_up')
                     : activeTab === "read"
-                      ? "No read notifications yet."
-                      : "You don't have any notifications yet."}
+                      ? t('notifications.no_read_notifications')
+                      : t('notifications.no_notifications_yet')}
                 </p>
               </div>
             ) : (

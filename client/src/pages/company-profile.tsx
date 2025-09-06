@@ -58,7 +58,9 @@ function CompanySuggestions({ currentCompanyId }: { currentCompanyId: string | u
   });
 
   // Handle both array and paginated response formats
-  const allCompanies = Array.isArray(companiesData) ? companiesData : ((companiesData as any)?.results || []);
+  const allCompanies = Array.isArray(companiesData) 
+    ? companiesData 
+    : (companiesData as { results?: Organization[] })?.results || [];
   
   // Add mock categories to companies
   const companiesWithCategories = allCompanies.map((company: Organization) => ({

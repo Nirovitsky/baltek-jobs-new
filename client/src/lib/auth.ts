@@ -1,6 +1,8 @@
 import type { UserProfile } from "@shared/schema";
+import Logger from "./logger";
+import { apiBaseUrl } from "@/config/environment";
 
-const API_BASE = "https://api.baltek.net/api";
+const API_BASE = apiBaseUrl;
 
 export class AuthService {
   private static TOKEN_KEY = "baltek_access_token";
@@ -58,7 +60,7 @@ export class AuthService {
       try {
         return await this.ensureTokenRefreshed();
       } catch (error) {
-        console.warn('Failed to refresh token proactively:', error);
+        Logger.warn('Failed to refresh token proactively', error, 'AUTH');
         return token; // Return current token as fallback
       }
     }

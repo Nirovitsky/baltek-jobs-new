@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import {
   FileText,
@@ -106,15 +107,16 @@ const getFileTypeInfo = (fileName: string, contentType?: string) => {
 };
 
 // Helper function to format file size
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '0 Bytes';
+const formatFileSize = (bytes: number, t: any): string => {
+  if (bytes === 0) return '0 ' + t('file_attachment.bytes');
   const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const sizes = t('file_attachment.file_sizes', { returnObjects: true }) as string[];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
 export default function FileAttachment({ attachment, isOwner, index }: FileAttachmentProps) {
+  const { t } = useTranslation();
   const fileName = attachment.file_name || attachment.name || `Attachment ${index + 1}`;
   const fileTypeInfo = getFileTypeInfo(fileName, attachment.content_type);
   const IconComponent = fileTypeInfo.icon;
@@ -152,7 +154,7 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
               size="sm"
               className="h-8 w-8 p-0 bg-black/50 hover:bg-black/70 text-white border-0"
               onClick={() => window.open(fileUrl, '_blank')}
-              title="View full size"
+              title={t('file_attachment.view_full_size')}
             >
               <Eye className="w-4 h-4" />
             </Button>
@@ -166,7 +168,7 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
                 link.download = fileName;
                 link.click();
               }}
-              title="Download"
+              title={t('file_attachment.download')}
             >
               <Download className="w-4 h-4" />
             </Button>
@@ -192,7 +194,7 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
               <div className={`text-xs ${
                 isOwner ? "text-primary-foreground/70" : "text-muted-foreground"
               }`}>
-                {formatFileSize(attachment.size)}
+                {formatFileSize(attachment.size, t)}
               </div>
             )}
           </div>
@@ -210,7 +212,7 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               }`}
               onClick={() => window.open(fileUrl, '_blank')}
-              title="View file"
+              title={t('file_attachment.view_file')}
             >
               <Eye className="w-4 h-4" />
             </Button>
@@ -228,7 +230,7 @@ export default function FileAttachment({ attachment, isOwner, index }: FileAttac
                 link.download = fileName;
                 link.click();
               }}
-              title="Download file"
+              title={t('file_attachment.download')}
             >
               <Download className="w-4 h-4" />
             </Button>

@@ -105,10 +105,7 @@ export default function JobList({
         <div>
           <h2 className="text-lg font-semibold text-primary">
             {isLoading ? t('common.loading') : 
-             totalCount !== undefined
-               ? totalCount.toLocaleString()
-               : jobs.length.toLocaleString()}{" "}
-            {t('jobs.job', { count: totalCount !== undefined ? totalCount : jobs.length })}{" "}
+             t('jobs.job', { count: totalCount !== undefined ? totalCount : jobs.length })}{" "}
             {!isLoading && t('jobs.found')}
           </h2>
         </div>

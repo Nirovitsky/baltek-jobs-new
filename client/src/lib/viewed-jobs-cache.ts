@@ -1,5 +1,6 @@
 // Cache to track which jobs have been viewed per user
 // Persists in localStorage across reloads and hot reloads
+import Logger from './logger';
 class ViewedJobsCache {
   private getStorageKey(userId: number): string {
     return `viewed_jobs_user_${userId}`;
@@ -13,7 +14,7 @@ class ViewedJobsCache {
         return new Set(jobIds);
       }
     } catch (error) {
-      console.warn('Failed to load viewed jobs from localStorage:', error);
+      Logger.warn('Failed to load viewed jobs from localStorage', error, 'CACHE');
     }
     return new Set();
   }
@@ -23,7 +24,7 @@ class ViewedJobsCache {
       const jobIds = Array.from(viewedJobs);
       localStorage.setItem(this.getStorageKey(userId), JSON.stringify(jobIds));
     } catch (error) {
-      console.warn('Failed to save viewed jobs to localStorage:', error);
+      Logger.warn('Failed to save viewed jobs to localStorage', error, 'CACHE');
     }
   }
 
@@ -48,7 +49,7 @@ class ViewedJobsCache {
     try {
       localStorage.removeItem(this.getStorageKey(userId));
     } catch (error) {
-      console.warn('Failed to clear viewed jobs from localStorage:', error);
+      Logger.warn('Failed to clear viewed jobs from localStorage', error, 'CACHE');
     }
   }
 

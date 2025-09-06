@@ -47,6 +47,11 @@ import {
 
 import { ApiClient } from "@/lib/api";
 import { useTranslation } from "react-i18next";
+import type { UserProfile, Education, Experience, Project, Resume, Location, University } from "@shared/schema";
+
+// Extended types for local state management with IDs
+type ExperienceWithId = Experience & { id: string };
+type EducationWithId = Education & { id: string };
 
 // Schemas - name fields required, others optional for flexible onboarding
 const personalInfoSchema = z.object({
@@ -128,8 +133,8 @@ export default function Onboarding() {
   const [birthDate, setBirthDate] = useState<Date>();
 
   // Experience and education lists
-  const [experiences, setExperiences] = useState<any[]>([]);
-  const [educations, setEducations] = useState<any[]>([]);
+  const [experiences, setExperiences] = useState<ExperienceWithId[]>([]);
+  const [educations, setEducations] = useState<EducationWithId[]>([]);
   const [showExperienceForm, setShowExperienceForm] = useState(false);
   const [showEducationForm, setShowEducationForm] = useState(false);
 
@@ -254,12 +259,12 @@ export default function Onboarding() {
   };
 
   // Remove experience
-  const removeExperience = (id: number) => {
+  const removeExperience = (id: string) => {
     setExperiences(experiences.filter((exp) => exp.id !== id));
   };
 
   // Remove education
-  const removeEducation = (id: number) => {
+  const removeEducation = (id: string) => {
     setEducations(educations.filter((edu) => edu.id !== id));
   };
 
@@ -369,13 +374,14 @@ export default function Onboarding() {
             !profileData.date_of_birth ||
             profileData.date_of_birth.trim() === ""
           ) {
-            delete (profileData as any).date_of_birth;
+            const { date_of_birth, ...sanitizedProfileData } = profileData;
+            Object.assign(profileData, sanitizedProfileData);
           }
 
           await updateProfileMutation.mutateAsync(profileData);
 
-          if (profilePicture) {
-            await ApiClient.uploadProfilePicture(profilePicture);
+          if (profilePicture && user?.id) {
+            await ApiClient.uploadProfilePicture(user.id, profilePicture);
           }
         } catch (error) {
           console.error("Profile update failed:", error);
@@ -575,9 +581,9 @@ export default function Onboarding() {
                         </SelectItem>
                       ))
                     ) : locations &&
-                      (locations as any).results &&
-                      Array.isArray((locations as any).results) ? (
-                      (locations as any).results.map((location: any) => (
+                      (locations as { results?: Location[] })?.results &&
+                      Array.isArray((locations as { results?: Location[] }).results) ? (
+                      (locations as { results: Location[] }).results.map((location: Location) => (
                         <SelectItem
                           key={location.id}
                           value={location.id.toString()}
@@ -620,15 +626,15 @@ export default function Onboarding() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <h4 className="font-medium">
-                        {exp.position || "Position"}
+                        {exp.title || "Position"}
                       </h4>
                       <p className="text-sm text-muted-foreground">
-                        {exp.organization_name || "Company"}
+                        {exp.company || "Company"}
                       </p>
-                      {(exp.date_started || exp.date_finished) && (
+                      {(exp.start_date || exp.end_date) && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          {exp.date_started || "Start"} -{" "}
-                          {exp.date_finished || "Present"}
+                          {exp.start_date || "Start"} -{" "}
+                          {exp.end_date || "Present"}
                         </p>
                       )}
                       {exp.description && (
@@ -764,17 +770,17 @@ export default function Onboarding() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <h4 className="font-medium">
-                        {edu.level || "Education Level"}
+                        {edu.degree || "Education Level"}
                       </h4>
                       <p className="text-sm text-muted-foreground">
-                        {(universities as any)?.results?.find(
-                          (u: any) => u.id === edu.university,
+                        {(universities as { results?: University[] })?.results?.find(
+                          (u: University) => u.id === edu.university,
                         )?.name || "University"}
                       </p>
-                      {(edu.date_started || edu.date_finished) && (
+                      {(edu.start_date || edu.end_date) && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          {edu.date_started || "Start"} -{" "}
-                          {edu.date_finished || "Present"}
+                          {edu.start_date || "Start"} -{" "}
+                          {edu.end_date || "Present"}
                         </p>
                       )}
                     </div>

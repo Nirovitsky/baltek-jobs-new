@@ -189,12 +189,6 @@ export default function Profile() {
     enabled: false, // Don't fetch - use cached data from useAuth hook
   });
 
-  // Fetch user applications for stats
-  const { data: applications } = useQuery({
-    queryKey: ["user", "applications"],
-    queryFn: () => ApiClient.getMyApplications(user!.id),
-    enabled: !!user?.id,
-  });
 
   // Use cached resumes data from profile modal (if available) or fetch fresh data
   const { data: resumes } = useQuery({
@@ -301,54 +295,58 @@ export default function Profile() {
   };
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50 dark:bg-gray-900">
+    <div className="h-full overflow-y-auto bg-gradient-to-br from-background via-background to-muted/20">
       <BreadcrumbNavigation />
       
-      {/* LinkedIn-style Layout */}
-      <div className="max-w-6xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      {/* Enhanced LinkedIn-style Layout */}
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Left Column - Main Profile Content */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Profile Header Card - LinkedIn Style */}
-            <Card className="overflow-hidden">
+          <div className="lg:col-span-3 space-y-8">
+            {/* Profile Header Card - Enhanced LinkedIn Style */}
+            <Card className="overflow-hidden shadow-xl border-0 bg-card/80 backdrop-blur-sm">
               {/* Cover Photo Area */}
-              <div className="h-32 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-primary opacity-90"></div>
+              <div className="h-48 bg-gradient-to-r from-primary via-primary/90 to-primary/80 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/70 to-primary/50"></div>
+                <div className="absolute inset-0 opacity-20" style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+                }}></div>
               </div>
               
-              <CardContent className="relative pt-0 px-6 pb-6">
+              <CardContent className="relative pt-0 px-8 pb-8">
                 {/* Profile Picture positioned over cover */}
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-start space-x-4 -mt-16 relative z-10">
-                    <Avatar className="w-32 h-32 ring-4 ring-white dark:ring-gray-800 bg-white">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex items-start space-x-6 -mt-20 relative z-10">
+                    <Avatar className="w-40 h-40 ring-4 ring-background shadow-2xl bg-background">
                       {displayProfile.avatar ? (
                         <AvatarImage
                           src={displayProfile.avatar}
                           alt={`${displayProfile.first_name} ${displayProfile.last_name}`}
+                          className="object-cover"
                         />
                       ) : (
-                        <AvatarFallback className="text-2xl font-semibold bg-white text-gray-800">
+                        <AvatarFallback className="text-3xl font-bold bg-gradient-to-br from-primary/10 to-primary/20 text-primary border-2 border-primary/20">
                           {(displayProfile.first_name?.[0] || "") +
                             (displayProfile.last_name?.[0] || "")}
                         </AvatarFallback>
                       )}
                     </Avatar>
                     
-                    <div className="pt-16 flex-1">
+                    <div className="pt-20 flex-1">
                       <div className="flex items-start justify-between">
-                        <div>
-                          <h1 className="text-3xl font-bold text-foreground mb-1">
+                        <div className="flex-1">
+                          <h1 className="text-4xl font-bold text-foreground mb-2 tracking-tight">
                             {displayProfile.first_name} {displayProfile.last_name}
                           </h1>
                           {displayProfile.profession && (
-                            <p className="text-xl text-muted-foreground mb-3 font-medium">
+                            <p className="text-xl text-muted-foreground mb-4 font-medium">
                               {displayProfile.profession}
                             </p>
                           )}
                           {displayProfile.location && (
-                            <div className="flex items-center mb-2">
-                              <MapPin className="w-4 h-4 mr-2 text-muted-foreground" />
-                              <p className="text-sm text-muted-foreground">
+                            <div className="flex items-center mb-3">
+                              <MapPin className="w-5 h-5 mr-2 text-muted-foreground" />
+                              <p className="text-base text-muted-foreground font-medium">
                                 {typeof displayProfile.location === "string"
                                   ? displayProfile.location
                                   : displayProfile.location?.name ||
@@ -356,37 +354,53 @@ export default function Profile() {
                               </p>
                             </div>
                           )}
+                          
+                          {/* Contact Info */}
+                          {displayProfile.email && (
+                            <div className="flex items-center gap-6 mt-4">
+                              <div className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                                <Mail className="w-4 h-4 mr-2" />
+                                <span>{t('profile.contact_info')}</span>
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            setModalTab("personal");
-                            setIsProfileModalOpen(true);
-                          }}
-                          className="ml-4 mt-16"
-                        >
-                          <Edit className="w-4 h-4 mr-2" />
-                          Edit Profile
-                        </Button>
                       </div>
                     </div>
                   </div>
+                  
+                  {/* Edit Profile Button - Right Corner */}
+                  <div className="flex justify-end -mt-16 relative z-10">
+                    <Button
+                      onClick={() => {
+                        setModalTab("personal");
+                        setIsProfileModalOpen(true);
+                      }}
+                      className="shadow-sm hover:shadow-md transition-all duration-200"
+                    >
+                      <Edit className="w-4 h-4 mr-2" />
+{t('profile.edit_profile')}
+                    </Button>
+                  </div>
                 </div>
 
-                {/* Contact Information - LinkedIn Style */}
-                <div className="pt-4 border-t border-border">
-                  <div className="flex flex-wrap gap-6">
+                {/* Contact Information - Enhanced LinkedIn Style */}
+                <div className="pt-6 border-t border-border/50">
+                  <div className="flex flex-wrap gap-8">
                     {displayProfile.email && (
-                      <div className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors">
-                        <Mail className="w-4 h-4 mr-2" />
-                        <span>{displayProfile.email}</span>
+                      <div className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer group">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 group-hover:bg-primary/20 transition-colors">
+                          <Mail className="w-4 h-4 text-primary" />
+                        </div>
+                        <span className="font-medium">{displayProfile.email}</span>
                       </div>
                     )}
                     {displayProfile.phone && (
-                      <div className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors">
-                        <Phone className="w-4 h-4 mr-2" />
-                        <span>{displayProfile.phone}</span>
+                      <div className="flex items-center text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer group">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 group-hover:bg-primary/20 transition-colors">
+                          <Phone className="w-4 h-4 text-primary" />
+                        </div>
+                        <span className="font-medium">{displayProfile.phone}</span>
                       </div>
                     )}
                   </div>
@@ -394,14 +408,16 @@ export default function Profile() {
               </CardContent>
             </Card>
 
-            {/* About Section - LinkedIn Style */}
+            {/* About Section - Enhanced LinkedIn Style */}
             {displayProfile.bio && (
-              <Card>
-                <CardHeader>
+              <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+                <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-xl font-semibold flex items-center gap-2">
-                      <User className="w-5 h-5" />
-                      About
+                    <CardTitle className="text-2xl font-bold flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <User className="w-5 h-5 text-primary" />
+                      </div>
+{t('profile.about')}
                     </CardTitle>
                     <Button
                       variant="ghost"
@@ -410,29 +426,31 @@ export default function Profile() {
                         setModalTab("personal");
                         setIsProfileModalOpen(true);
                       }}
-                      className="text-muted-foreground hover:text-primary"
+                      className="text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all duration-200"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-foreground leading-relaxed whitespace-pre-wrap text-sm">
+                <CardContent className="pt-0">
+                  <p className="text-foreground leading-relaxed whitespace-pre-wrap text-base">
                     {displayProfile.bio}
                   </p>
                 </CardContent>
               </Card>
             )}
 
-            {/* Experience Section - LinkedIn Style */}
+            {/* Experience Section - Enhanced LinkedIn Style */}
             {(fullProfile as any)?.experiences &&
               (fullProfile as any).experiences.length > 0 && (
-                <Card>
-                  <CardHeader>
+                <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+                  <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl font-semibold flex items-center gap-2">
-                        <Briefcase className="w-5 h-5" />
-                        Experience
+                      <CardTitle className="text-2xl font-bold flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Briefcase className="w-5 h-5 text-primary" />
+                        </div>
+{t('profile.experience')}
                       </CardTitle>
                       <Button
                         variant="ghost"
@@ -441,20 +459,20 @@ export default function Profile() {
                           setModalTab("experience");
                           setIsProfileModalOpen(true);
                         }}
-                        className="text-muted-foreground hover:text-primary"
+                        className="text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all duration-200"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
+                  <CardContent className="pt-0">
+                    <div className="space-y-8">
                       {(fullProfile as any).experiences.map((experience: any, index: number) => (
-                        <div key={experience.id} className="flex gap-4">
+                        <div key={experience.id} className="flex gap-6 group">
                           <div className="flex flex-col items-center">
-                            <Avatar className="w-12 h-12 border-2 border-border">
+                            <Avatar className="w-16 h-16 border-2 border-border shadow-sm group-hover:shadow-md transition-all duration-200">
                               <AvatarImage src={experience.organization?.logo} />
-                              <AvatarFallback className="text-xs font-semibold bg-primary/10 text-primary">
+                              <AvatarFallback className="text-sm font-bold bg-gradient-to-br from-primary/10 to-primary/20 text-primary border-2 border-primary/20">
                                 {(experience.organization?.display_name || experience.organization?.official_name || experience.organization_name || "CO")
                                   .split(" ")
                                   .map((word: string) => word.charAt(0))
@@ -464,31 +482,31 @@ export default function Profile() {
                               </AvatarFallback>
                             </Avatar>
                             {index < (fullProfile as any).experiences.length - 1 && (
-                              <div className="w-0.5 h-16 bg-border mt-2"></div>
+                              <div className="w-0.5 h-20 bg-border/50 mt-3"></div>
                             )}
                           </div>
                           
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between mb-1">
-                              <h3 className="font-semibold text-foreground text-lg">
+                            <div className="flex items-start justify-between mb-2">
+                              <h3 className="font-bold text-foreground text-xl group-hover:text-primary transition-colors">
                                 {experience.title || experience.position}
                               </h3>
                             </div>
                             
-                            <p className="text-muted-foreground font-medium mb-1">
+                            <p className="text-muted-foreground font-semibold mb-2 text-lg">
                               {experience.organization?.display_name ||
                                 experience.organization?.official_name ||
                                 experience.organization_name}
                             </p>
                             
-                            <div className="flex items-center text-sm text-muted-foreground mb-3">
-                              <span>
-                                {experience.date_started} - {experience.date_finished || "Present"}
+                            <div className="flex items-center text-sm text-muted-foreground mb-4">
+                              <span className="font-medium">
+                                {experience.date_started} - {experience.date_finished || t('profile.present')}
                               </span>
                             </div>
                             
                             {experience.description && (
-                              <p className="text-sm text-muted-foreground leading-relaxed">
+                              <p className="text-muted-foreground leading-relaxed text-base">
                                 {experience.description}
                               </p>
                             )}
@@ -500,15 +518,17 @@ export default function Profile() {
                 </Card>
               )}
 
-            {/* Education Section - LinkedIn Style */}
+            {/* Education Section - Enhanced LinkedIn Style */}
             {(fullProfile as any)?.educations &&
               (fullProfile as any).educations.length > 0 && (
-                <Card>
-                  <CardHeader>
+                <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+                  <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl font-semibold flex items-center gap-2">
-                        <GraduationCap className="w-5 h-5" />
-                        Education
+                      <CardTitle className="text-2xl font-bold flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <GraduationCap className="w-5 h-5 text-primary" />
+                        </div>
+{t('profile.education')}
                       </CardTitle>
                       <Button
                         variant="ghost"
@@ -517,49 +537,49 @@ export default function Profile() {
                           setModalTab("education");
                           setIsProfileModalOpen(true);
                         }}
-                        className="text-muted-foreground hover:text-primary"
+                        className="text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all duration-200"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-6">
+                  <CardContent className="pt-0">
+                    <div className="space-y-8">
                       {(fullProfile as any).educations.map((education: any, index: number) => (
-                        <div key={education.id} className="flex gap-4">
+                        <div key={education.id} className="flex gap-6 group">
                           <div className="flex flex-col items-center">
-                            <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
-                              <GraduationCap className="w-6 h-6 text-primary" />
+                            <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-200 border-2 border-primary/20">
+                              <GraduationCap className="w-8 h-8 text-primary" />
                             </div>
                             {index < (fullProfile as any).educations.length - 1 && (
-                              <div className="w-0.5 h-16 bg-border mt-2"></div>
+                              <div className="w-0.5 h-20 bg-border/50 mt-3"></div>
                             )}
                           </div>
                           
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between mb-1">
-                              <h3 className="font-semibold text-foreground text-lg">
+                            <div className="flex items-start justify-between mb-2">
+                              <h3 className="font-bold text-foreground text-xl group-hover:text-primary transition-colors">
                                 {education.university?.name || education.university_name}
                               </h3>
                             </div>
                             
-                            <p className="text-muted-foreground font-medium mb-1">
-                              {education.level === 'master' ? 'Master\'s degree' : 
-                               education.level === 'bachelor' ? 'Bachelor\'s degree' :
-                               education.level === 'doctorate' ? 'Doctorate degree' :
-                               education.level === 'undergraduate' ? 'Undergraduate degree' :
-                               education.level === 'secondary' ? 'High School' :
+                            <p className="text-muted-foreground font-semibold mb-2 text-lg">
+                              {education.level === 'master' ? t('profile.masters_degree') : 
+                               education.level === 'bachelor' ? t('profile.bachelors_degree') :
+                               education.level === 'doctorate' ? t('profile.doctorate_degree') :
+                               education.level === 'undergraduate' ? t('profile.undergraduate_degree') :
+                               education.level === 'secondary' ? t('profile.high_school') :
                                education.level}
                             </p>
                             
-                            <div className="flex items-center text-sm text-muted-foreground mb-3">
-                              <span>
-                                {education.date_started} - {education.date_finished || "Present"}
+                            <div className="flex items-center text-sm text-muted-foreground mb-4">
+                              <span className="font-medium">
+                                {education.date_started} - {education.date_finished || t('profile.present')}
                               </span>
                             </div>
                             
                             {education.description && (
-                              <p className="text-sm text-muted-foreground leading-relaxed">
+                              <p className="text-muted-foreground leading-relaxed text-base">
                                 {education.description}
                               </p>
                             )}
@@ -571,17 +591,18 @@ export default function Profile() {
                 </Card>
               )}
 
-            {/* Projects Section */}
+            {/* Projects Section - Enhanced LinkedIn Style */}
             {(fullProfile as any)?.projects &&
               (fullProfile as any).projects.length > 0 && (
-                <Card>
-                  <CardHeader>
+                <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+                  <CardHeader className="pb-4">
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-4">
-                        <div>
-                          <CardTitle>Projects</CardTitle>
+                      <CardTitle className="text-2xl font-bold flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Code2 className="w-5 h-5 text-primary" />
                         </div>
-                      </div>
+{t('profile.projects')}
+                      </CardTitle>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -589,19 +610,20 @@ export default function Profile() {
                           setModalTab("projects");
                           setIsProfileModalOpen(true);
                         }}
+                        className="text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all duration-200"
                       >
                         <Edit className="w-4 h-4" />
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
+                  <CardContent className="pt-0">
+                    <div className="space-y-6">
                       {(fullProfile as any).projects.map((project: any) => (
                         <div
                           key={project.id}
-                          className="border-l-2 border-purple-200 pl-4"
+                          className="border-l-4 border-primary/30 pl-6 py-4 bg-gradient-to-r from-primary/5 to-transparent rounded-r-lg hover:from-primary/10 transition-all duration-200 group"
                         >
-                          <h4 className="font-semibold text-foreground">
+                          <h4 className="font-bold text-foreground text-xl group-hover:text-primary transition-colors mb-2">
                             {project.title}
                           </h4>
                           {project.url && (
@@ -609,17 +631,17 @@ export default function Profile() {
                               href={project.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-purple-600 hover:text-purple-800 text-sm flex items-center mt-1"
+                              className="text-primary hover:text-primary/80 text-sm flex items-center mt-2 font-medium"
                             >
-                              <ExternalLink className="w-3 h-3 mr-1" />
-                              View Project
+                              <ExternalLink className="w-4 h-4 mr-2" />
+{t('profile.view_project')}
                             </a>
                           )}
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="text-sm text-muted-foreground mt-2 font-medium">
                             {project.date_started} -{" "}
-                            {project.date_finished || "Ongoing"}
+                            {project.date_finished || t('profile_modal.ongoing')}
                           </p>
-                          <p className="text-foreground mt-2">
+                          <p className="text-foreground mt-3 leading-relaxed">
                             {project.description}
                           </p>
                         </div>
@@ -629,15 +651,16 @@ export default function Profile() {
                 </Card>
               )}
 
-            {/* Resumes Section */}
-            <Card>
-              <CardHeader>
+            {/* Resumes Section - Enhanced LinkedIn Style */}
+            <Card className="shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+              <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div>
-                      <CardTitle>Resumes</CardTitle>
+                  <CardTitle className="text-2xl font-bold flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-primary" />
                     </div>
-                  </div>
+{t('profile.resumes')}
+                  </CardTitle>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -645,25 +668,28 @@ export default function Profile() {
                       setModalTab("resumes");
                       setIsProfileModalOpen(true);
                     }}
+                    className="text-muted-foreground hover:text-primary hover:bg-primary/5 transition-all duration-200"
                   >
                     <Edit className="w-4 h-4" />
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
                 {resumesList.length > 0 ? (
-                  <div className="space-y-3">
+                  <div className="space-y-4">
                     {resumesList.map((resume: any) => (
                       <div
                         key={resume.id}
-                        className="flex items-center justify-between p-3 border rounded-lg"
+                        className="flex items-center justify-between p-4 border border-border/50 rounded-xl hover:border-primary/30 hover:shadow-md transition-all duration-200 group"
                       >
-                        <div className="flex items-center space-x-3">
-                          <FileText className="w-8 h-8 text-primary" />
+                        <div className="flex items-center space-x-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-lg flex items-center justify-center group-hover:from-primary/20 group-hover:to-primary/30 transition-all duration-200">
+                            <FileText className="w-6 h-6 text-primary" />
+                          </div>
                           <div>
-                            <h4 className="font-medium">{resume.title}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              Uploaded:{" "}
+                            <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">{resume.title}</h4>
+                            <p className="text-sm text-muted-foreground font-medium">
+                              {t('profile.uploaded')}{" "}
                               {new Date(resume.created_at).toLocaleDateString()}
                             </p>
                           </div>
@@ -674,8 +700,9 @@ export default function Profile() {
                               variant="outline"
                               size="sm"
                               onClick={() => window.open(resume.file, "_blank")}
+                              className="shadow-sm hover:shadow-md transition-all duration-200"
                             >
-                              View
+{t('profile.view')}
                             </Button>
                           )}
                         </div>
@@ -683,25 +710,26 @@ export default function Profile() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-8 bg-muted rounded-lg">
-                    <FileText className="w-12 h-12 text-muted-foreground/60 mx-auto mb-3" />
-                    <p className="text-muted-foreground font-medium">
-                      No resumes uploaded
+                  <div className="text-center py-12 bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl border-2 border-dashed border-border/50">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary/10 to-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <FileText className="w-8 h-8 text-primary" />
+                    </div>
+                    <p className="text-muted-foreground font-semibold text-lg mb-2">
+                      {t('profile.no_resumes_uploaded')}
                     </p>
-                    <p className="text-sm text-muted-foreground">
-                      Upload your resume to showcase your experience to
-                      employers.
+                    <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+                      {t('profile.upload_resume_description')}
                     </p>
                     <Button
                       variant="outline"
                       size="sm"
-                      className="mt-3"
+                      className="shadow-sm hover:shadow-md transition-all duration-200"
                       onClick={() => {
                         setModalTab("resumes");
                         setIsProfileModalOpen(true);
                       }}
                     >
-                      Upload Resume
+{t('profile.upload_resume')}
                     </Button>
                   </div>
                 )}
@@ -709,53 +737,12 @@ export default function Profile() {
             </Card>
           </div>
 
-          {/* Right Column - Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Profile Stats Card */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Profile Stats</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-sm text-muted-foreground">Job Applications</span>
-                  <span className="font-semibold text-primary">
-                    {Array.isArray(applications) ? applications.length : 0}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-sm text-muted-foreground">Resumes</span>
-                  <span className="font-semibold text-green-600">
-                    {resumesList.length}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-sm text-muted-foreground">Education</span>
-                  <span className="font-semibold text-blue-600">
-                    {(fullProfile as any)?.educations?.length || 0}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-sm text-muted-foreground">Experience</span>
-                  <span className="font-semibold text-purple-600">
-                    {(fullProfile as any)?.experiences?.length || 0}
-                  </span>
-                </div>
-                
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-sm text-muted-foreground">Projects</span>
-                  <span className="font-semibold text-orange-600">
-                    {(fullProfile as any)?.projects?.length || 0}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Company Suggestions */}
-            <CompanySuggestions />
+          {/* Right Column - Enhanced Sidebar */}
+          <div className="lg:col-span-1 space-y-8">
+            {/* Company Suggestions - Enhanced */}
+            <div className="transform hover:scale-[1.02] transition-all duration-300">
+              <CompanySuggestions />
+            </div>
           </div>
         </div>
       </div>
